@@ -1,0 +1,528 @@
+#include <cstdio>
+#include <cmath>
+#include <cstdlib>
+#include <vector>
+#include <iostream>
+#include <fstream>
+#include <ctime>
+#include <algorithm>
+#include <string>
+
+#include <iomanip>   
+#ifndef M_PI
+#    define M_PI 3.14159265358979323846
+#endif
+
+
+#ifndef M_EULER
+#    define M_EULER 2.71828182845905
+#endif
+
+// Time prefactor in pico seconds
+#ifndef PRE_TIM
+#    define PRE_TIM 3.3333333333333
+#endif
+
+// Power prefactor in pico Watts 
+#ifndef PRE_POW
+#    define PRE_POW 9.53395
+#endif
+
+// Kinetic Energy prefactor in atto Joules
+#ifndef PRE_KIN
+#    define PRE_KIN 16.8226
+#endif
+
+// Current prefactor in mili Amperes
+#ifndef PRE_CUR
+#    define PRE_CUR 0.480653
+#endif
+
+// VDS prefactor in Volts
+#ifndef PRE_VDS
+#    define PRE_VDS 18.0951
+#endif
+
+#ifndef C_SPEED
+#    define C_SPEED 1000.0
+#endif
+
+
+
+using namespace std;
+
+
+float RealFreq(float s, float v, float L, int n){
+	float real;
+	if (fabs(v) < s ){
+		n = 2*n-1;
+	 }
+	else{
+		n = 2*n;
+		}
+	real =  fabs(s*s-v*v) * M_PI * n / (2.0 * L * s );
+	return real;
+}
+	
+	
+float ImagFreq(float s, float v, float L){
+	float imag;
+	imag =  (s*s-v*v) * log(fabs( (s+v)/(s-v) )) / (2.0 * L * s );
+	return imag;
+}	
+
+void BoundaryCond(int type, int N, float * n, float * v ){
+	
+	/*---------------*\
+	| Free        | 1 |
+	| Periodic 	  | 2 |
+	| DS Boundary | 3 | 
+	| DS+Driving  | 4 | 
+	\*---------------*/
+	
+	switch(type){
+		case 1 : n[0] = n[1];
+				 n[N-1] = n[N-2];
+				 v[0] = v[1];
+				 v[N-1] = v[N-2];		
+			break;
+		case 2 : n[0] = n[N-2];
+				 n[N-1] = n[1];
+				 v[0] = v[N-2];
+				 v[N-1] = v[1];	
+			break;
+		case 3 : n[0] = 1.0;
+				 v[0] = v[1];
+				 n[N-1] = n[N-2];
+				 v[N-1] = 1.0/n[N-1];			
+			break;	
+		case 4 : n[0] = 1.0;
+				 v[0] = v[1];
+				 n[N-1] = n[N-2];
+				 v[N-1] = (1.0 + 0.75*v[1]*n[1])/n[N-1];			
+			break;		
+		default : n[0] = 1.0;
+				  v[0] = v[1];
+				  n[N-1] = n[N-2];
+				  v[N-1] = 1.0/n[N-1];			
+	}
+}
+
+
+void InitialCondSine(int N, float dx,  float * n, float * p){
+  float L = (N-1)*dx;
+  float x;
+   
+  for (int i = 0; i < N; i++ )
+  {
+		x = (float)i * dx;
+		n[i] = 1.0 + 0.05*sin ( M_PI * x / L );
+		p[i] = 0.0;	
+  }
+}
+
+void InitialCondRand(int N, float dx,  float * n, float * p){
+  srand (time(NULL)); 
+  float noise; 
+   
+  for (int i = 0; i < N; i++ )
+  {
+		noise = (float) rand()/ (float) RAND_MAX ;
+		n[i] = 1.0 + 0.005*(noise-0.5);
+		p[i] = 0.0;
+  }
+}
+
+
+
+float DtElectricDipole(int N,float dx, float * J){
+	float dp=0.0;
+	
+	for(int j=1;j<N/2;j++){
+		dp += J[2*j-2] + 4*J[2*j-1] + J[2*j];
+	}
+	dp = dp*dx/3.0;
+	return dp;
+}
+
+
+float TotalElectricDipole(int N,float dx, float * n){
+	float p=0.0;
+	
+	for(int j=1;j<N/2;j++){	
+		p += dx*(2*j-2)*n[2*j-2] + 4*dx*(2*j-1)*n[2*j-1] + dx*(2*j)*n[2*j];
+	}
+	p = p*dx/3.0;
+	return p;
+}
+
+float TotalCurrent(int N,float dx, float * n,float * v){	
+	float p=0.0;
+	
+	for(int j=1;j<N/2;j++){	
+		p += n[2*j-2]*v[2*j-2] + 4*n[2*j-1]*v[2*j-1] + n[2*j]*v[2*j];
+	}
+	p = p*dx/3.0;
+	return p;
+}
+
+float KineticEnergy(int N,float dx, float * n, float * v){
+	float E = 0.0;
+	
+	for(int j=1;j<N/2;j++){
+		E +=  0.5*v[2*j-2]*v[2*j-2]*n[2*j-2] + 4*0.5*v[2*j-1]*v[2*j-1]*n[2*j-1] + 0.5*v[2*j]*v[2*j]*n[2*j];
+	}
+	return E*dx/3.0;
+}
+
+float RMS(int N, float dt, float * f){
+	float rms=0.0;
+	
+	for(int j=1;j<N/2;j++){
+		rms += f[2*j-2]*f[2*j-2] + 4*f[2*j-1]*f[2*j-1] + f[2*j]*f[2*j];
+	}
+	rms = rms*dt/3.0;
+	rms = sqrt( rms/(N*dt)  );
+	return rms;	
+}
+
+float AVG(int N, float dt, float * f){
+	float avg=0.0;
+	
+	for(int j=1;j<N/2;j++){
+		avg += f[2*j-2] + 4*f[2*j-1] + f[2*j];
+	}
+	avg = avg*dt/3.0;
+	avg = avg/(N*dt);
+	return avg;	
+}
+
+float GaussKernel(int n , float t){
+	float g;
+	
+	g = exp(-0.5*n*n/t);
+	g = g/(sqrt(2*M_PI*t));
+	
+	return g;	
+}
+
+
+float D_GaussKernel(int n , float t){
+	float g;
+	
+	g = -n*exp(-0.5*n*n/t)/t;
+	g = g/(sqrt(2*M_PI*t));
+	
+	return g;	
+}
+
+
+void ConvolveGauss(int type, float M, float t, float * in, float * out, int size){
+	
+	if(type==0){	
+		for(int i=0;i<size;i++){
+			if(i>=M && i<size-M){
+			for(int n=-M;n<=M;n++){
+					out[i]  += in[i-n]*GaussKernel(n,t);
+				}
+			}
+		}					
+	}
+	if(type==1){
+		for(int i=0;i<size;i++){
+			if(i>=M && i<size-M){
+			for(int n=-M;n<=M;n++){
+					out[i] += in[i-n]*D_GaussKernel(n,t);
+				}
+			}
+			out[i] = out[i] * size;
+		}							
+	}
+}
+
+void AverageFilter(float * vec_in, float * vec_out, int size , int width ){
+	
+	for ( int i = 0; i < size; i++ ){		
+		if(i>=width &&i<=size-1-width){
+			for(int k = i-width; k <= i+width;k++){			
+				vec_out[i] += vec_in[k]; 
+			}	
+			vec_out[i] = vec_out[i]/(2.0*width+1.0);
+			}
+		else{
+			vec_out[i] =	vec_in[i] ;
+		}	
+	}	
+}
+
+
+void ExtremaFinding(float *vec_in, int N, float S, float dt,float & sat, float & tau , float & error, std::string extremafile){		
+	ofstream data_extrema;
+	data_extrema.open(extremafile);
+	
+	data_extrema << "#pos_max" << "\t" << "Max" <<"\t"<< "pos_min" <<"\t"<< "Min"<<endl;	 
+	
+	int W;
+	int pos_max, pos_min;
+	float maximum,minimum;
+	
+	W = floor( 1.2*2*M_PI/(RealFreq(S, 1.0, 1.0, 1)*dt));	
+	int k = 0;
+	int M = ceil(0.5*dt*N*RealFreq(S, 1.0, 1.0, 1)/M_PI);
+	float *vec_max;			
+	vec_max =(float*) calloc (M,sizeof(float));
+	float *vec_pos;			
+	vec_pos =(float*) calloc (M,sizeof(float));
+	
+	for(int shift=0; shift < N-W ; shift += W){
+		maximum =  *max_element( vec_in + shift ,vec_in + shift + W );
+		pos_max =   max_element( vec_in + shift ,vec_in + shift + W ) - vec_in; 
+		
+		minimum =  *min_element( vec_in + shift ,vec_in + shift + W );
+		pos_min =   min_element( vec_in + shift ,vec_in + shift + W ) - vec_in; 
+		
+		data_extrema << pos_max*dt << "\t" << maximum <<"\t"<< pos_min*dt <<"\t"<< minimum  <<endl;	 	
+		vec_max[k] = maximum;
+		vec_pos[k] = pos_max*dt;
+		k++;
+	}
+
+	sat =  *max_element( vec_max ,vec_max + M );	
+	
+	for(int i=1;i<M-1;i++){
+		if( vec_max[i] > 0.99*sat ){
+			tau  = 	vec_pos[i];
+			error = 0.5*(vec_pos[i+1]-vec_pos[i]);
+			break;
+		}
+	}
+	data_extrema.close();		
+}
+
+void ShockFinding(float * in, int N, float t , float dx,  std::string shockfile){
+	
+	ofstream data_shock;
+	data_shock.open(shockfile);
+	
+	
+	for ( int i = 0; i < N; i++ )
+	{
+		if(i>=1){
+			float schockD=0.0;
+			schockD = (in[i]-in[i-1])/dx;
+			if(abs(schockD) >=20){
+				data_shock  <<t<<"\t"<< i*dx <<endl;	
+			}
+		}
+	}
+	data_shock.close();	
+}
+
+void Autocorrelation(float * out_gamma ,float * in , int crop, int size){
+	int M = size - crop;
+	float in_crop[M];
+
+	for(int k =0;k < M;k++){
+		in_crop[k] = in[k+crop];		
+	}
+	float sum;
+	for(int lag=0; lag < M ;lag++){		
+		for(int t=0; t < M ;t++){
+			sum += in_crop[ t ] * in_crop[ (t + lag)%M];
+		}
+		out_gamma[lag] = sum;
+		sum=0.0;
+	}
+}
+
+void TimeDerivative(int size_rows,int size_cols, float dt,float ** f_in , float ** df_out ){
+	//second order method
+	//f[tempo][posicao]
+
+	for(int i=1;i<size_rows-1;i++){
+		for(int j=0;j<size_cols;j++){
+
+			df_out[i][j] = (-0.5*f_in[i-1][j]+0.5*f_in[i+1][j])/dt;
+		
+		}
+	}
+
+	for(int j=0;j<size_cols;j++){
+		df_out[0][j]           = (-1.5*f_in[0][j]+2.0*f_in[1][j]-0.5*f_in[2][j])/dt;
+		df_out[size_rows-1][j] = ( 0.5*f_in[size_rows-1-2][j]-2.0*f_in[size_rows-1-1][j]+1.5*f_in[size_rows-1][j])/dt;
+	}
+}
+
+
+     
+void SpaceDerivative(int size_rows,int size_cols, float dt,float ** f_in , float ** df_out ){
+	//second order method
+	//f[tempo][posicao]
+
+	for(int i=0;i<size_rows;i++){
+		for(int j=1;j<size_cols-1;j++){
+
+			df_out[i][j] = (-0.5*f_in[i][j-1]+0.5*f_in[i][j+1])/dt;
+		
+		}
+	}
+
+	for(int i=0;i<size_rows;i++){
+		df_out[i][0]           = (-1.5*f_in[i][0]+2.0*f_in[i][1]-0.5*f_in[i][2])/dt;
+		df_out[i][size_cols-1] = ( 0.5*f_in[i][size_cols-1-2]-2.0*f_in[i][size_cols-1-1]+1.5*f_in[i][size_cols-1])/dt;
+	}
+}
+
+
+
+float R(float x , float y , float z, float X , float Y , float Z ){
+	float rsquared;
+	rsquared = pow(X-x,2) + pow(Y-y,2) + pow(Z-z,2);
+	return sqrt(rsquared);
+}
+
+float Retarded_time(float time, float x , float y , float z, float X , float Y , float Z ){
+	float tr;
+	tr = time - R( x, y, z, X, Y, Z)/C_SPEED;
+	if(tr>=0){
+		return tr;		
+	}
+	else{
+		return time;	
+	}
+}
+
+
+void JefimenkoEMfield(int XDIM, int YDIM, float dx, float dy, float dt, float Xpos, float Ypos, float Zpos,  float ** rho, float ** rho_dot, float ** cur, float ** cur_dot, float Time , float  * E_out , float  * B_out, float  * S_out   ){
+	float q =-1.0;
+	int k_retard;
+	float R_norm;
+	
+	float x0, y0;
+	x0=0.0;
+	y0=-0.5;
+	float x,y,z;
+	z=0.0;
+	
+	int N,M;
+	N = XDIM;
+	M = YDIM;
+	
+	float SumX_e0=0.0; 
+	float SumY_e0=0.0; 
+	float SumDiag_e0=0.0;
+	float Corners_e0=0.0;
+			
+	float SumX_cur=0.0; 
+	float SumY_cur=0.0; 
+	float SumDiag_cur=0.0;
+	float Corners_cur=0.0;
+			
+	float SumX_by=0.0; 
+	float SumY_by=0.0; 
+	float SumDiag_by=0.0;
+	float Corners_by=0.0;
+	
+	float E0 = 0.0;
+	float Cur= 0.0;
+	float B0 = 0.0;	
+	
+	for(int i=1;i<=N-1;i++){
+		/*y = 0 */
+		x = x0 + i*dx;
+		y = y0 + 0*dy;;
+		k_retard = nearbyint( Retarded_time(Time , x , y , z, Xpos, Ypos , Zpos )/dt);	
+		R_norm   =  R( x , y , z,  Xpos, Ypos , Zpos );		
+		SumX_e0  +=        ( rho[ k_retard][i]/pow(R_norm,3) + rho_dot[ k_retard][i]/(pow(R_norm,2)*C_SPEED) );
+		SumX_cur += -1.0*x*( rho[ k_retard][i]/pow(R_norm,3) + rho_dot[ k_retard][i]/(pow(R_norm,2)*C_SPEED) )- cur_dot[k_retard][i]/(R_norm*C_SPEED*C_SPEED);
+		SumX_by  +=        ( cur[ k_retard][i]/pow(R_norm,3) + cur_dot[ k_retard][i]/(pow(R_norm,2)*C_SPEED) );
+		/*y = M */
+		x = x0 + i*dx;
+		y = y0 + M*dy;
+		k_retard = nearbyint( Retarded_time(Time , x , y , z, Xpos, Ypos , Zpos )/dt);	
+		R_norm   =  R( x , y , z,  Xpos, Ypos , Zpos );	
+		SumX_e0  +=        ( rho[k_retard][i]/pow(R_norm,3) + rho_dot[k_retard][i]/(pow(R_norm,2)*C_SPEED) );
+		SumX_cur += -1.0*x*( rho[k_retard][i]/pow(R_norm,3) + rho_dot[k_retard][i]/(pow(R_norm,2)*C_SPEED) )- cur_dot[k_retard][i]/(R_norm*C_SPEED*C_SPEED);
+		SumX_by  +=        ( cur[k_retard][i]/pow(R_norm,3) + cur_dot[k_retard][i]/(pow(R_norm,2)*C_SPEED) );
+	}		
+				
+	for(int j=1;j<=M-1;j++){
+		/*x = 0*/
+		x = x0 + 0*dx;
+		y = y0 + j*dy;
+		k_retard = nearbyint( Retarded_time(Time, x , y , z, Xpos, Ypos , Zpos )/dt);	
+		R_norm   =  R( x , y , z,  Xpos, Ypos , Zpos );
+		SumY_e0  +=        ( rho[k_retard][0]/pow(R_norm,3) + rho_dot[k_retard][0]/(pow(R_norm,2)*C_SPEED) );
+		SumY_cur += -1.0*x*( rho[k_retard][0]/pow(R_norm,3) + rho_dot[k_retard][0]/(pow(R_norm,2)*C_SPEED) )- cur_dot[k_retard][0]/(R_norm*C_SPEED*C_SPEED);
+		SumY_by  +=        ( cur[k_retard][0]/pow(R_norm,3) + cur_dot[k_retard][0]/(pow(R_norm,2)*C_SPEED) ); 
+		/*x = N*/
+		x = x0 + N*dx;
+		y = y0 + j*dy;
+		k_retard = nearbyint( Retarded_time(Time, x , y , z, Xpos, Ypos , Zpos )/dt);	
+		R_norm   =  R( x , y , z,  Xpos, Ypos , Zpos );
+		SumY_e0  +=        ( rho[k_retard][N]/pow(R_norm,3) + rho_dot[k_retard][N]/(pow(R_norm,2)*C_SPEED) );
+		SumY_cur += -1.0*x*( rho[k_retard][N]/pow(R_norm,3) + rho_dot[k_retard][N]/(pow(R_norm,2)*C_SPEED) )- cur_dot[k_retard][N]/(R_norm*C_SPEED*C_SPEED);
+		SumY_by  +=        ( cur[k_retard][N]/pow(R_norm,3) + cur_dot[k_retard][N]/(pow(R_norm,2)*C_SPEED) ); 
+	}		
+			
+	for(int j=1;j<=M-1;j++){
+		for(int i=1;i<=N-1;i++){
+			x = x0 + i*dx;
+			y = y0 + j*dy;
+			k_retard = nearbyint( Retarded_time(Time, x , y , z, Xpos, Ypos , Zpos )/dt);	
+			R_norm   =  R( x , y , z,  Xpos, Ypos , Zpos );
+			SumDiag_e0  +=        ( rho[k_retard][i]/pow(R_norm,3) + rho_dot[k_retard][i]/(pow(R_norm,2)*C_SPEED));
+			SumDiag_cur += -1.0*x*( rho[k_retard][i]/pow(R_norm,3) + rho_dot[k_retard][i]/(pow(R_norm,2)*C_SPEED)) - cur_dot[k_retard][i]/(R_norm*C_SPEED);
+			SumDiag_by  +=        ( cur[k_retard][i]/pow(R_norm,3) + cur_dot[k_retard][i]/(pow(R_norm,2)*C_SPEED));
+		}			
+	}	
+	// (i=0,j=0)
+	x = x0 + 0*dx;
+	y = y0 + 0*dy;
+	k_retard = nearbyint( Retarded_time(Time, x , y , z, Xpos, Ypos , Zpos )/dt);	
+	R_norm   =  R( x , y , z,  Xpos, Ypos , Zpos );
+	Corners_e0  +=        ( rho[k_retard][0]/pow(R_norm,3) + rho_dot[k_retard][0]/(pow(R_norm,2)*C_SPEED) );
+	Corners_cur += -1.0*x*( rho[k_retard][0]/pow(R_norm,3) + rho_dot[k_retard][0]/(pow(R_norm,2)*C_SPEED) )- cur_dot[k_retard][0]/(R_norm*C_SPEED*C_SPEED);
+	Corners_by  +=        ( cur[k_retard][0]/pow(R_norm,3) + cur_dot[k_retard][0]/(pow(R_norm,2)*C_SPEED));
+	// (i=N,j=0)
+	x = x0 + N*dx;
+	y = y0 + 0*dy;
+	k_retard = nearbyint( Retarded_time(Time, x , y , z, Xpos, Ypos , Zpos )/dt);	
+	R_norm   =  R( x , y , z,  Xpos, Ypos , Zpos );
+	Corners_e0  +=        ( rho[k_retard][N]/pow(R_norm,3) + rho_dot[k_retard][N]/(pow(R_norm,2)*C_SPEED) );
+	Corners_cur += -1.0*x*( rho[k_retard][N]/pow(R_norm,3) + rho_dot[k_retard][N]/(pow(R_norm,2)*C_SPEED) ) - cur_dot[k_retard][N]/(R_norm*C_SPEED*C_SPEED);
+	Corners_by  +=        ( cur[k_retard][N]/pow(R_norm,3) + cur_dot[k_retard][N]/(pow(R_norm,2)*C_SPEED));
+	// (i=0,j=M)
+	x = x0 + 0*dx;
+	y = y0 + M*dy;
+	k_retard = nearbyint( Retarded_time(Time, x , y , z, Xpos, Ypos , Zpos )/dt);	
+	R_norm   =  R( x , y , z,  Xpos, Ypos , Zpos );
+	Corners_e0  +=        ( rho[k_retard][0]/pow(R_norm,3) + rho_dot[k_retard][0]/(pow(R_norm,2)*C_SPEED) );		
+	Corners_cur += -1.0*x*( rho[k_retard][0]/pow(R_norm,3) + rho_dot[k_retard][0]/(pow(R_norm,2)*C_SPEED) )- cur_dot[k_retard][0]/(R_norm*C_SPEED*C_SPEED);		
+	Corners_by  +=        ( cur[k_retard][0]/pow(R_norm,3) + cur_dot[k_retard][0]/(pow(R_norm,2)*C_SPEED));
+	// (i=N,j=M)
+	x = x0 + N*dx;
+	y = y0 + M*dy;
+	k_retard = nearbyint( Retarded_time(Time, x , y , z, Xpos, Ypos , Zpos )/dt);	
+	R_norm   =  R( x , y , z,  Xpos, Ypos , Zpos );
+	Corners_e0  +=        ( rho[k_retard][N]/pow(R_norm,3) + rho_dot[k_retard][N]/(pow(R_norm,2)*C_SPEED) );		 
+	Corners_cur += -1.0*x*( rho[k_retard][N]/pow(R_norm,3) + rho_dot[k_retard][N]/(pow(R_norm,2)*C_SPEED) )- cur_dot[k_retard][N]/(R_norm*C_SPEED*C_SPEED);			 
+	Corners_by  +=        ( cur[k_retard][N]/pow(R_norm,3) + cur_dot[k_retard][N]/(pow(R_norm,2)*C_SPEED));
+					
+	E0  = 0.25*dx*dy*( Corners_e0 + 2.0*SumX_e0 + 2.0*SumY_e0 + 4.0*SumDiag_e0);		
+	Cur = 0.25*dx*dy*( Corners_cur + 2.0*SumX_cur + 2.0*SumY_cur + 4.0*SumDiag_cur);					
+	B0  = 0.25*dx*dy*( Corners_by + 2.0*SumX_by + 2.0*SumY_by + 4.0*SumDiag_by);		
+			
+	E_out[0] = E0*Xpos + Cur;
+	E_out[1] = 0.0;
+	E_out[2] = E0*Zpos;
+	
+	B_out[0] = 0.0;
+	B_out[1] = -1.0*B0*Zpos;
+	B_out[2] = 0.0;
+		
+	S_out[0] = -E_out[2]*B_out[1];
+	S_out[1] = 0.0;
+	S_out[2] = E_out[0]*B_out[1];
+
+}
