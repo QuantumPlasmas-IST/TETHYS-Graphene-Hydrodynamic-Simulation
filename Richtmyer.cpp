@@ -26,6 +26,7 @@ int main(int argc, char **argv){
 	cout << "*******************************************************"<<endl;
 	cout << "************** ELECTRON FLOW SIMULATION ***************"<<endl;
 	cout << "**************     Richtmyer method     ***************"<<endl;
+	cout << "**************        Version 1.0       ***************"<<endl;
 	cout << "*******************************************************"<<endl;
 
 
@@ -40,7 +41,7 @@ int main(int argc, char **argv){
 	
 	int N=201; 								// number of spatial points
 	float t=0.0,L=1.0;						// spatial Length
-	float dx;								// spatial discretization
+	float dx;								// spatial discretisation
 	float dt;								// time step
 	float S;							    // Sound speed
 
@@ -67,8 +68,7 @@ int main(int argc, char **argv){
 	if(argc!=1){
 		
 		S = atof(argv[1]);
-			
-		flag = atoi(argv[2]);	
+		flag = atoi(argv[2]);	// full data or light save option
 	
 		}
 	else{
