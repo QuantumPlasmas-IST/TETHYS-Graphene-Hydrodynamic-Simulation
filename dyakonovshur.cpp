@@ -9,13 +9,13 @@
 #include <string>
 
 #include <iomanip>   
-#ifndef M_PI
-#    define M_PI 3.14159265358979323846
+#ifndef MAT_PI
+#    define MAT_PI 3.14159265358979323846
 #endif
 
 
-#ifndef M_EULER
-#    define M_EULER 2.71828182845905
+#ifndef MAT_EULER
+#    define MAT_EULER 2.71828182845905
 #endif
 
 // Time prefactor in pico seconds
@@ -52,26 +52,26 @@
 using namespace std;
 
 
-float RealFreq(float s, float v, float L, int n){
+float RealFreq(float s, float vel, float L, int mode){
 	float real;
-	if (fabs(v) < s ){
-		n = 2*n-1;
+	if (fabs(vel) < s ){
+		mode = 2*mode-1;
 	 }
 	else{
-		n = 2*n;
+		mode = 2*mode;
 		}
-	real =  fabs(s*s-v*v) * M_PI * n / (2.0 * L * s );
+	real =  fabs(s*s-vel*vel) * MAT_PI * mode / (2.0 * L * s );
 	return real;
 }
 	
 	
-float ImagFreq(float s, float v, float L){
+float ImagFreq(float s, float vel, float L){
 	float imag;
-	imag =  (s*s-v*v) * log(fabs( (s+v)/(s-v) )) / (2.0 * L * s );
+	imag =  (s*s-vel*vel) * log(fabs( (s+vel)/(s-vel) )) / (2.0 * L * s );
 	return imag;
 }	
 
-void BoundaryCond(int type, int N, float * n, float * v ){
+void BoundaryCond(int type, int N, float * den, float * vel ){
 	
 	/*---------------*\
 	| Free        | 1 |
@@ -81,96 +81,96 @@ void BoundaryCond(int type, int N, float * n, float * v ){
 	\*---------------*/
 	
 	switch(type){
-		case 1 : n[0] = n[1];
-				 n[N-1] = n[N-2];
-				 v[0] = v[1];
-				 v[N-1] = v[N-2];		
+		case 1 : den[0] = den[1];
+				 den[N-1] = den[N-2];
+				 vel[0] = vel[1];
+				 vel[N-1] = vel[N-2];		
 			break;
-		case 2 : n[0] = n[N-2];
-				 n[N-1] = n[1];
-				 v[0] = v[N-2];
-				 v[N-1] = v[1];	
+		case 2 : den[0] = den[N-2];
+				 den[N-1] = den[1];
+				 vel[0] = vel[N-2];
+				 vel[N-1] = vel[1];	
 			break;
-		case 3 : n[0] = 1.0;
-				 v[0] = v[1];
-				 n[N-1] = n[N-2];
-				 v[N-1] = 1.0/n[N-1];			
+		case 3 : den[0] = 1.0;
+				 vel[0] = vel[1];
+				 den[N-1] = den[N-2];
+				 vel[N-1] = 1.0/den[N-1];			
 			break;	
-		case 4 : n[0] = 1.0;
-				 v[0] = v[1];
-				 n[N-1] = n[N-2];
-				 v[N-1] = (1.0 + 0.75*v[1]*n[1])/n[N-1];			
+		case 4 : den[0] = 1.0;
+				 vel[0] = vel[1];
+				 den[N-1] = den[N-2];
+				 vel[N-1] = (1.0 + 0.75*vel[1]*den[1])/den[N-1];			
 			break;		
-		default : n[0] = 1.0;
-				  v[0] = v[1];
-				  n[N-1] = n[N-2];
-				  v[N-1] = 1.0/n[N-1];			
+		default : den[0] = 1.0;
+				  vel[0] = vel[1];
+				  den[N-1] = den[N-2];
+				  vel[N-1] = 1.0/den[N-1];			
 	}
 }
 
 
-void InitialCondSine(int N, float dx,  float * n, float * p){
+void InitialCondSine(int N, float dx,  float * den, float * vel){
   float L = (N-1)*dx;
   float x;
    
   for (int i = 0; i < N; i++ )
   {
 		x = (float)i * dx;
-		n[i] = 1.0 + 0.05*sin ( M_PI * x / L );
-		p[i] = 0.0;	
+		den[i] = 1.0 + 0.05*sin ( MAT_PI * x / L );
+		vel[i] = 0.0;	
   }
 }
 
-void InitialCondRand(int N, float dx,  float * n, float * p){
+void InitialCondRand(int N, float dx,  float * den, float * vel){
   srand (time(NULL)); 
   float noise; 
    
   for (int i = 0; i < N; i++ )
   {
 		noise = (float) rand()/ (float) RAND_MAX ;
-		n[i] = 1.0 + 0.005*(noise-0.5);
-		p[i] = 0.0;
+		den[i] = 1.0 + 0.005*(noise-0.5);
+		vel[i] = 0.0;
   }
 }
 
 
 
-float DtElectricDipole(int N,float dx, float * J){
+float DtElectricDipole(int N,float dx, float * cur){
 	float dp=0.0;
 	
 	for(int j=1;j<N/2;j++){
-		dp += J[2*j-2] + 4*J[2*j-1] + J[2*j];
+		dp += cur[2*j-2] + 4*cur[2*j-1] + cur[2*j];
 	}
 	dp = dp*dx/3.0;
 	return dp;
 }
 
 
-float TotalElectricDipole(int N,float dx, float * n){
+float TotalElectricDipole(int N,float dx, float * den){
 	float p=0.0;
 	
 	for(int j=1;j<N/2;j++){	
-		p += dx*(2*j-2)*n[2*j-2] + 4*dx*(2*j-1)*n[2*j-1] + dx*(2*j)*n[2*j];
+		p += dx*(2*j-2)*den[2*j-2] + 4*dx*(2*j-1)*den[2*j-1] + dx*(2*j)*den[2*j];
 	}
 	p = p*dx/3.0;
 	return p;
 }
 
-float TotalCurrent(int N,float dx, float * n,float * v){	
+float TotalCurrent(int N,float dx, float * den,float * vel){	
 	float p=0.0;
 	
 	for(int j=1;j<N/2;j++){	
-		p += n[2*j-2]*v[2*j-2] + 4*n[2*j-1]*v[2*j-1] + n[2*j]*v[2*j];
+		p += den[2*j-2]*vel[2*j-2] + 4*den[2*j-1]*vel[2*j-1] + den[2*j]*vel[2*j];
 	}
 	p = p*dx/3.0;
 	return p;
 }
 
-float KineticEnergy(int N,float dx, float * n, float * v){
+float KineticEnergy(int N,float dx, float * den, float * vel){
 	float E = 0.0;
 	
 	for(int j=1;j<N/2;j++){
-		E +=  0.5*v[2*j-2]*v[2*j-2]*n[2*j-2] + 4*0.5*v[2*j-1]*v[2*j-1]*n[2*j-1] + 0.5*v[2*j]*v[2*j]*n[2*j];
+		E +=  0.5*vel[2*j-2]*vel[2*j-2]*den[2*j-2] + 4*0.5*vel[2*j-1]*vel[2*j-1]*den[2*j-1] + 0.5*vel[2*j]*vel[2*j]*den[2*j];
 	}
 	return E*dx/3.0;
 }
@@ -197,21 +197,21 @@ float AVG(int N, float dt, float * f){
 	return avg;	
 }
 
-float GaussKernel(int n , float t){
+float GaussKernel(int position , float t){
 	float g;
 	
-	g = exp(-0.5*n*n/t);
-	g = g/(sqrt(2*M_PI*t));
+	g = exp(-0.5*position*position/t);
+	g = g/(sqrt(2*MAT_PI*t));
 	
 	return g;	
 }
 
 
-float D_GaussKernel(int n , float t){
+float GaussKernelDerivative(int position , float t){
 	float g;
 	
-	g = -n*exp(-0.5*n*n/t)/t;
-	g = g/(sqrt(2*M_PI*t));
+	g = -position*exp(-0.5*position*position/t)/t;
+	g = g/(sqrt(2*MAT_PI*t));
 	
 	return g;	
 }
@@ -222,8 +222,8 @@ void ConvolveGauss(int type, float M, float t, float * in, float * out, int size
 	if(type==0){	
 		for(int i=0;i<size;i++){
 			if(i>=M && i<size-M){
-			for(int n=-M;n<=M;n++){
-					out[i]  += in[i-n]*GaussKernel(n,t);
+			for(int k=-M;k<=M;k++){
+					out[i]  += in[i-k]*GaussKernel(k,t);
 				}
 			}
 		}					
@@ -231,8 +231,8 @@ void ConvolveGauss(int type, float M, float t, float * in, float * out, int size
 	if(type==1){
 		for(int i=0;i<size;i++){
 			if(i>=M && i<size-M){
-			for(int n=-M;n<=M;n++){
-					out[i] += in[i-n]*D_GaussKernel(n,t);
+			for(int k=-M;k<=M;k++){
+					out[i] += in[i-k]*GaussKernelDerivative(k,t);
 				}
 			}
 			out[i] = out[i] * size;
@@ -266,9 +266,9 @@ void ExtremaFinding(float *vec_in, int N, float S, float dt,float & sat, float &
 	int pos_max, pos_min;
 	float maximum,minimum;
 	
-	W = floor( 1.2*2*M_PI/(RealFreq(S, 1.0, 1.0, 1)*dt));	
+	W = floor( 1.2*2*MAT_PI/(RealFreq(S, 1.0, 1.0, 1)*dt));	
 	int k = 0;
-	int M = ceil(0.5*dt*N*RealFreq(S, 1.0, 1.0, 1)/M_PI);
+	int M = ceil(0.5*dt*N*RealFreq(S, 1.0, 1.0, 1)/MAT_PI);
 	float *vec_max;			
 	vec_max =(float*) calloc (M,sizeof(float));
 	float *vec_pos;			
@@ -375,15 +375,15 @@ void SpaceDerivative(int size_rows,int size_cols, float dt,float ** f_in , float
 
 
 
-float R(float x , float y , float z, float X , float Y , float Z ){
+float CartDistance(float x , float y , float z, float X , float Y , float Z ){
 	float rsquared;
 	rsquared = pow(X-x,2) + pow(Y-y,2) + pow(Z-z,2);
 	return sqrt(rsquared);
 }
 
-float Retarded_time(float time, float x , float y , float z, float X , float Y , float Z ){
+float RetardedTime(float time, float x , float y , float z, float X , float Y , float Z ){
 	float tr;
-	tr = time - R( x, y, z, X, Y, Z)/C_SPEED;
+	tr = time - CartDistance( x, y, z, X, Y, Z)/C_SPEED;
 	if(tr>=0){
 		return tr;		
 	}
@@ -393,7 +393,7 @@ float Retarded_time(float time, float x , float y , float z, float X , float Y ,
 }
 
 
-void JefimenkoEMfield(int XDIM, int YDIM, float dx, float dy, float dt, float Xpos, float Ypos, float Zpos,  float ** rho, float ** rho_dot, float ** cur, float ** cur_dot, float Time , float  * E_out , float  * B_out, float  * S_out   ){
+void JefimenkoEMField(int XDIM, int YDIM, float dx, float dy, float dt, float Xpos, float Ypos, float Zpos,  float ** rho, float ** rho_dot, float ** cur, float ** cur_dot, float Time , float  * E_out , float  * B_out, float  * S_out   ){
 	float q =-1.0;
 	int k_retard;
 	float R_norm;
@@ -431,16 +431,16 @@ void JefimenkoEMfield(int XDIM, int YDIM, float dx, float dy, float dt, float Xp
 		/*y = 0 */
 		x = x0 + i*dx;
 		y = y0 + 0*dy;;
-		k_retard = nearbyint( Retarded_time(Time , x , y , z, Xpos, Ypos , Zpos )/dt);	
-		R_norm   =  R( x , y , z,  Xpos, Ypos , Zpos );		
+		k_retard = nearbyint( RetardedTime(Time , x , y , z, Xpos, Ypos , Zpos )/dt);	
+		R_norm   =  CartDistance( x , y , z,  Xpos, Ypos , Zpos );		
 		SumX_e0  +=        ( rho[ k_retard][i]/pow(R_norm,3) + rho_dot[ k_retard][i]/(pow(R_norm,2)*C_SPEED) );
 		SumX_cur += -1.0*x*( rho[ k_retard][i]/pow(R_norm,3) + rho_dot[ k_retard][i]/(pow(R_norm,2)*C_SPEED) )- cur_dot[k_retard][i]/(R_norm*C_SPEED*C_SPEED);
 		SumX_by  +=        ( cur[ k_retard][i]/pow(R_norm,3) + cur_dot[ k_retard][i]/(pow(R_norm,2)*C_SPEED) );
 		/*y = M */
 		x = x0 + i*dx;
 		y = y0 + M*dy;
-		k_retard = nearbyint( Retarded_time(Time , x , y , z, Xpos, Ypos , Zpos )/dt);	
-		R_norm   =  R( x , y , z,  Xpos, Ypos , Zpos );	
+		k_retard = nearbyint( RetardedTime(Time , x , y , z, Xpos, Ypos , Zpos )/dt);	
+		R_norm   =  CartDistance( x , y , z,  Xpos, Ypos , Zpos );	
 		SumX_e0  +=        ( rho[k_retard][i]/pow(R_norm,3) + rho_dot[k_retard][i]/(pow(R_norm,2)*C_SPEED) );
 		SumX_cur += -1.0*x*( rho[k_retard][i]/pow(R_norm,3) + rho_dot[k_retard][i]/(pow(R_norm,2)*C_SPEED) )- cur_dot[k_retard][i]/(R_norm*C_SPEED*C_SPEED);
 		SumX_by  +=        ( cur[k_retard][i]/pow(R_norm,3) + cur_dot[k_retard][i]/(pow(R_norm,2)*C_SPEED) );
@@ -450,16 +450,16 @@ void JefimenkoEMfield(int XDIM, int YDIM, float dx, float dy, float dt, float Xp
 		/*x = 0*/
 		x = x0 + 0*dx;
 		y = y0 + j*dy;
-		k_retard = nearbyint( Retarded_time(Time, x , y , z, Xpos, Ypos , Zpos )/dt);	
-		R_norm   =  R( x , y , z,  Xpos, Ypos , Zpos );
+		k_retard = nearbyint( RetardedTime(Time, x , y , z, Xpos, Ypos , Zpos )/dt);	
+		R_norm   =  CartDistance( x , y , z,  Xpos, Ypos , Zpos );
 		SumY_e0  +=        ( rho[k_retard][0]/pow(R_norm,3) + rho_dot[k_retard][0]/(pow(R_norm,2)*C_SPEED) );
 		SumY_cur += -1.0*x*( rho[k_retard][0]/pow(R_norm,3) + rho_dot[k_retard][0]/(pow(R_norm,2)*C_SPEED) )- cur_dot[k_retard][0]/(R_norm*C_SPEED*C_SPEED);
 		SumY_by  +=        ( cur[k_retard][0]/pow(R_norm,3) + cur_dot[k_retard][0]/(pow(R_norm,2)*C_SPEED) ); 
 		/*x = N*/
 		x = x0 + N*dx;
 		y = y0 + j*dy;
-		k_retard = nearbyint( Retarded_time(Time, x , y , z, Xpos, Ypos , Zpos )/dt);	
-		R_norm   =  R( x , y , z,  Xpos, Ypos , Zpos );
+		k_retard = nearbyint( RetardedTime(Time, x , y , z, Xpos, Ypos , Zpos )/dt);	
+		R_norm   =  CartDistance( x , y , z,  Xpos, Ypos , Zpos );
 		SumY_e0  +=        ( rho[k_retard][N]/pow(R_norm,3) + rho_dot[k_retard][N]/(pow(R_norm,2)*C_SPEED) );
 		SumY_cur += -1.0*x*( rho[k_retard][N]/pow(R_norm,3) + rho_dot[k_retard][N]/(pow(R_norm,2)*C_SPEED) )- cur_dot[k_retard][N]/(R_norm*C_SPEED*C_SPEED);
 		SumY_by  +=        ( cur[k_retard][N]/pow(R_norm,3) + cur_dot[k_retard][N]/(pow(R_norm,2)*C_SPEED) ); 
@@ -469,8 +469,8 @@ void JefimenkoEMfield(int XDIM, int YDIM, float dx, float dy, float dt, float Xp
 		for(int i=1;i<=N-1;i++){
 			x = x0 + i*dx;
 			y = y0 + j*dy;
-			k_retard = nearbyint( Retarded_time(Time, x , y , z, Xpos, Ypos , Zpos )/dt);	
-			R_norm   =  R( x , y , z,  Xpos, Ypos , Zpos );
+			k_retard = nearbyint( RetardedTime(Time, x , y , z, Xpos, Ypos , Zpos )/dt);	
+			R_norm   =  CartDistance( x , y , z,  Xpos, Ypos , Zpos );
 			SumDiag_e0  +=        ( rho[k_retard][i]/pow(R_norm,3) + rho_dot[k_retard][i]/(pow(R_norm,2)*C_SPEED));
 			SumDiag_cur += -1.0*x*( rho[k_retard][i]/pow(R_norm,3) + rho_dot[k_retard][i]/(pow(R_norm,2)*C_SPEED)) - cur_dot[k_retard][i]/(R_norm*C_SPEED);
 			SumDiag_by  +=        ( cur[k_retard][i]/pow(R_norm,3) + cur_dot[k_retard][i]/(pow(R_norm,2)*C_SPEED));
@@ -479,32 +479,32 @@ void JefimenkoEMfield(int XDIM, int YDIM, float dx, float dy, float dt, float Xp
 	// (i=0,j=0)
 	x = x0 + 0*dx;
 	y = y0 + 0*dy;
-	k_retard = nearbyint( Retarded_time(Time, x , y , z, Xpos, Ypos , Zpos )/dt);	
-	R_norm   =  R( x , y , z,  Xpos, Ypos , Zpos );
+	k_retard = nearbyint( RetardedTime(Time, x , y , z, Xpos, Ypos , Zpos )/dt);	
+	R_norm   =  CartDistance( x , y , z,  Xpos, Ypos , Zpos );
 	Corners_e0  +=        ( rho[k_retard][0]/pow(R_norm,3) + rho_dot[k_retard][0]/(pow(R_norm,2)*C_SPEED) );
 	Corners_cur += -1.0*x*( rho[k_retard][0]/pow(R_norm,3) + rho_dot[k_retard][0]/(pow(R_norm,2)*C_SPEED) )- cur_dot[k_retard][0]/(R_norm*C_SPEED*C_SPEED);
 	Corners_by  +=        ( cur[k_retard][0]/pow(R_norm,3) + cur_dot[k_retard][0]/(pow(R_norm,2)*C_SPEED));
 	// (i=N,j=0)
 	x = x0 + N*dx;
 	y = y0 + 0*dy;
-	k_retard = nearbyint( Retarded_time(Time, x , y , z, Xpos, Ypos , Zpos )/dt);	
-	R_norm   =  R( x , y , z,  Xpos, Ypos , Zpos );
+	k_retard = nearbyint( RetardedTime(Time, x , y , z, Xpos, Ypos , Zpos )/dt);	
+	R_norm   =  CartDistance( x , y , z,  Xpos, Ypos , Zpos );
 	Corners_e0  +=        ( rho[k_retard][N]/pow(R_norm,3) + rho_dot[k_retard][N]/(pow(R_norm,2)*C_SPEED) );
 	Corners_cur += -1.0*x*( rho[k_retard][N]/pow(R_norm,3) + rho_dot[k_retard][N]/(pow(R_norm,2)*C_SPEED) ) - cur_dot[k_retard][N]/(R_norm*C_SPEED*C_SPEED);
 	Corners_by  +=        ( cur[k_retard][N]/pow(R_norm,3) + cur_dot[k_retard][N]/(pow(R_norm,2)*C_SPEED));
 	// (i=0,j=M)
 	x = x0 + 0*dx;
 	y = y0 + M*dy;
-	k_retard = nearbyint( Retarded_time(Time, x , y , z, Xpos, Ypos , Zpos )/dt);	
-	R_norm   =  R( x , y , z,  Xpos, Ypos , Zpos );
+	k_retard = nearbyint( RetardedTime(Time, x , y , z, Xpos, Ypos , Zpos )/dt);	
+	R_norm   =  CartDistance( x , y , z,  Xpos, Ypos , Zpos );
 	Corners_e0  +=        ( rho[k_retard][0]/pow(R_norm,3) + rho_dot[k_retard][0]/(pow(R_norm,2)*C_SPEED) );		
 	Corners_cur += -1.0*x*( rho[k_retard][0]/pow(R_norm,3) + rho_dot[k_retard][0]/(pow(R_norm,2)*C_SPEED) )- cur_dot[k_retard][0]/(R_norm*C_SPEED*C_SPEED);		
 	Corners_by  +=        ( cur[k_retard][0]/pow(R_norm,3) + cur_dot[k_retard][0]/(pow(R_norm,2)*C_SPEED));
 	// (i=N,j=M)
 	x = x0 + N*dx;
 	y = y0 + M*dy;
-	k_retard = nearbyint( Retarded_time(Time, x , y , z, Xpos, Ypos , Zpos )/dt);	
-	R_norm   =  R( x , y , z,  Xpos, Ypos , Zpos );
+	k_retard = nearbyint( RetardedTime(Time, x , y , z, Xpos, Ypos , Zpos )/dt);	
+	R_norm   =  CartDistance( x , y , z,  Xpos, Ypos , Zpos );
 	Corners_e0  +=        ( rho[k_retard][N]/pow(R_norm,3) + rho_dot[k_retard][N]/(pow(R_norm,2)*C_SPEED) );		 
 	Corners_cur += -1.0*x*( rho[k_retard][N]/pow(R_norm,3) + rho_dot[k_retard][N]/(pow(R_norm,2)*C_SPEED) )- cur_dot[k_retard][N]/(R_norm*C_SPEED*C_SPEED);			 
 	Corners_by  +=        ( cur[k_retard][N]/pow(R_norm,3) + cur_dot[k_retard][N]/(pow(R_norm,2)*C_SPEED));

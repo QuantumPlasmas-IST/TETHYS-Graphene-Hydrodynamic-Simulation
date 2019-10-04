@@ -15,10 +15,10 @@
 using namespace std;
 
 
-float F1(float n,float v,float s);
+float DensityFlux(float den,float vel,float s);
 
-float F2(float n,float v,float s);
-float F2sqrt(float n,float v,float s,float vf);
+float VelocityFlux(float den,float vel,float s);
+float F2sqrt(float den,float vel,float s,float vf);
 
 
 int main(int argc, char **argv){
@@ -26,7 +26,7 @@ int main(int argc, char **argv){
 	cout << "*******************************************************"<<endl;
 	cout << "************** ELECTRON FLOW SIMULATION ***************"<<endl;
 	cout << "**************     Richtmyer method     ***************"<<endl;
-	cout << "**************        Version 1.0       ***************"<<endl;
+	cout << "**************      Version 1.0.0       ***************"<<endl;
 	cout << "*******************************************************"<<endl;
 
 
@@ -45,21 +45,21 @@ int main(int argc, char **argv){
 	float dt;								// time step
 	float S;							    // Sound speed
 
-	float *n;							
-	n =(float*) calloc (N,sizeof(float));
-	float *n_mid;							
-	n_mid = (float*) calloc (N-1,sizeof(float));
-	float *v;							
- 	v = (float*) calloc (N,sizeof(float));
-	float *v_mid;						
-	v_mid = (float*) calloc (N-1,sizeof(float));
+	float *den;							
+	den =(float*) calloc (N,sizeof(float));
+	float *den_mid;							
+	den_mid = (float*) calloc (N-1,sizeof(float));
+	float *vel;							
+ 	vel = (float*) calloc (N,sizeof(float));
+	float *vel_mid;						
+	vel_mid = (float*) calloc (N-1,sizeof(float));
 	
-	float *n_cor;							
-	n_cor = (float*) calloc (N,sizeof(float));
-	float *v_cor;						
-	v_cor = (float*) calloc (N,sizeof(float));
- 	float *j_cor;						
-	j_cor = (float*) calloc (N,sizeof(float));
+	float *den_cor;							
+	den_cor = (float*) calloc (N,sizeof(float));
+	float *vel_cor;						
+	vel_cor = (float*) calloc (N,sizeof(float));
+ 	float *cur_cor;						
+	cur_cor = (float*) calloc (N,sizeof(float));
  	
  	
  	int flag=0;
@@ -161,19 +161,19 @@ int main(int argc, char **argv){
 	
 	////////////////////////////////////////////////////////////////////
 	// Initialization	
-	//InitialCondRand(N, dx, n_cor, v_cor);
-	//BoundaryCond(3, N, n_cor, v_cor);
+	//InitialCondRand(N, dx, den_cor, vel_cor);
+	//BoundaryCond(3, N, den_cor, vel_cor);
 	
-	InitialCondRand(N, dx, n, v);
-	BoundaryCond(3, N, n, v);
+	InitialCondRand(N, dx, den, vel);
+	BoundaryCond(3, N, den, vel);
 	////////////////////////////////////////////////////////////////////
 	
 	if(flag){
 		for(int i = 0; i<N  ;i++)
 		{
-			data_density   <<  n[i] <<"\t";
-			data_current   <<  v[i]*n[i] <<"\t";
-			data_velocity  <<  v[i] <<"\t";
+			data_density   <<  den[i] <<"\t";
+			data_current   <<  vel[i]*den[i] <<"\t";
+			data_velocity  <<  vel[i] <<"\t";
 		}
 	}
 	
@@ -181,7 +181,7 @@ int main(int argc, char **argv){
 	
 	int passo=0;
 	
-	while(t<=T_max && isfinite(v[(N-1)/2]))
+	while(t<=T_max && isfinite(vel[(N-1)/2]))
 	{	
 		++passo;
 		t += dt;
@@ -197,27 +197,27 @@ int main(int argc, char **argv){
 		//
 		for ( int i = 0; i < N - 1; i++ )
 		{
-			n_mid[i] = 0.5*( n[i] + n[i+1] )
-				- ( 0.5*dt/dx ) * ( F1(n[i+1],v[i+1],s[i+1]) - F1(n[i],v[i],s[i]) ) ;
-			v_mid[i] = 0.5*( v[i] + v[i+1] )
-				- ( 0.5*dt/dx ) * ( F2(n[i+1],v[i+1],s[i+1]) - F2(n[i],v[i],s[i]) ) ;	
-		//	v_mid[i] = 0.5*( v[i] + v[i+1] )
-		//		- ( 0.5*dt/dx ) * ( F2sqrt(n[i+1],v[i+1],s[i+1],5.0) - F2sqrt(n[i],v[i],s[i],5.0) ) ;
+			den_mid[i] = 0.5*( den[i] + den[i+1] )
+				- ( 0.5*dt/dx ) * ( DensityFlux(den[i+1],vel[i+1],s[i+1]) - DensityFlux(den[i],vel[i],s[i]) ) ;
+			vel_mid[i] = 0.5*( vel[i] + vel[i+1] )
+				- ( 0.5*dt/dx ) * ( VelocityFlux(den[i+1],vel[i+1],s[i+1]) - VelocityFlux(den[i],vel[i],s[i]) ) ;	
+		//	vel_mid[i] = 0.5*( vel[i] + vel[i+1] )
+		//		- ( 0.5*dt/dx ) * ( F2sqrt(den[i+1],vel[i+1],s[i+1],5.0) - F2sqrt(den[i],vel[i],s[i],5.0) ) ;
 		}
 		//
 		// Remaining step 
 		//
 		for ( int i = 1; i < N - 1; i++ )
 		{
-			n[i] = n[i] - (dt/dx) * ( F1(n_mid[i],v_mid[i],s[i]) - F1(n_mid[i-1],v_mid[i-1],s[i-1]) );
-			v[i] = v[i] - (dt/dx) * ( F2(n_mid[i],v_mid[i],s[i]) - F2(n_mid[i-1],v_mid[i-1],s[i-1]) );
-			//v[i] = v[i] - (dt/dx) * ( F2sqrt(n_mid[i],v_mid[i],s[i],5.0) - F2sqrt(n_mid[i-1],v_mid[i-1],s[i-1],5.0) );
+			den[i] = den[i] - (dt/dx) * ( DensityFlux(den_mid[i],vel_mid[i],s[i]) - DensityFlux(den_mid[i-1],vel_mid[i-1],s[i-1]) );
+			vel[i] = vel[i] - (dt/dx) * ( VelocityFlux(den_mid[i],vel_mid[i],s[i]) - VelocityFlux(den_mid[i-1],vel_mid[i-1],s[i-1]) );
+			//vel[i] = vel[i] - (dt/dx) * ( F2sqrt(den_mid[i],vel_mid[i],s[i],5.0) - F2sqrt(den_mid[i-1],vel_mid[i-1],s[i-1],5.0) );
 		}
 		
-		BoundaryCond(3, N, n, v);
+		BoundaryCond(3, N, den, vel);
 		
-		AverageFilter( n ,n_cor, N , 2);	
-		AverageFilter( v ,v_cor, N , 2);
+		AverageFilter( den ,den_cor, N , 2);	
+		AverageFilter( vel ,vel_cor, N , 2);
 		
 
 			
@@ -226,32 +226,32 @@ int main(int argc, char **argv){
 			{	
 				
 				
-				j_cor[i] = 	v_cor[i]*n_cor[i];	
+				cur_cor[i] = 	vel_cor[i]*den_cor[i];	
 				if(flag){
 				//Record full data
 					if(passo % 35 == 0){
-						data_density   << n_cor[i] <<"\t";
-						data_current   << j_cor[i] <<"\t";
-						data_velocity  << v_cor[i] <<"\t";
+						data_density   << den_cor[i] <<"\t";
+						data_current   << cur_cor[i] <<"\t";
+						data_velocity  << vel_cor[i] <<"\t";
 					}
 				}
 			}
 		
 		
 		//Record end points
-		data_slice <<t<<"\t"<< n_cor[N-1] <<"\t"<< v_cor[N-1] <<"\t"<< n_cor[0] <<"\t" << v_cor[0] <<endl;
-		data_electro <<t<<"\t"<< n_cor[N-1]-1.0 <<"\t"<< n_cor[0]*v_cor[0] <<"\t"<<  TotalElectricDipole(N,dx,n_cor)<<"\t"<<  DtElectricDipole(N,dx,j_cor) <<"\t"<< KineticEnergy(N,dx, n_cor, v_cor)  <<endl;
+		data_slice <<t<<"\t"<< den_cor[N-1] <<"\t"<< vel_cor[N-1] <<"\t"<< den_cor[0] <<"\t" << vel_cor[0] <<endl;
+		data_electro <<t<<"\t"<< den_cor[N-1]-1.0 <<"\t"<< den_cor[0]*vel_cor[0] <<"\t"<<  TotalElectricDipole(N,dx,den_cor)<<"\t"<<  DtElectricDipole(N,dx,cur_cor) <<"\t"<< KineticEnergy(N,dx, den_cor, vel_cor)  <<endl;
 	}
 	cout << "DONE!" <<endl;
 	cout << "*******************************************************"<<endl;
 
-	free(n);
-	free(n_mid);
-	free(n_cor);
-	free(v);
-	free(v_mid);
-	free(v_cor);
-	free(j_cor);
+	free(den);
+	free(den_mid);
+	free(den_cor);
+	free(vel);
+	free(vel_mid);
+	free(vel_cor);
+	free(cur_cor);
 
 
 		data_density.close();
@@ -267,26 +267,26 @@ int main(int argc, char **argv){
 	return 0;
 }
 
-float F1(float n,float v,float s){
+float DensityFlux(float den,float vel,float s){
 	float f1;
 	
-	f1 = n*v;
+	f1 = den*vel;
 	
 	return f1;
 }
 
-float F2(float n,float v,float s){
+float VelocityFlux(float den,float vel,float s){
 	float f2;
 	
-	f2 = 0.5*v*v + s*s*n;
+	f2 = 0.5*vel*vel + s*s*den;
 	
 	return f2;
 }
 
-float F2sqrt(float n,float v,float s,float vf){
+float F2sqrt(float den,float vel,float s,float vf){
 	float f2;
 	
-	f2 = 0.5*v*v + s*s*n +vf*vf*sqrt(n);
+	f2 = 0.5*vel*vel + s*s*den +vf*vf*sqrt(den);
 	
 	return f2;
 }
