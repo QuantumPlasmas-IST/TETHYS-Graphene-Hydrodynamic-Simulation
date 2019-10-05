@@ -53,22 +53,22 @@
 using namespace std;
 
 
-float RealFreq(float s, float vel, float L, int mode){
+float RealFreq(float sound, float vel, float L, int mode){
 	float real;
-	if (fabs(vel) < s ){
+	if (fabs(vel) < sound ){
 		mode = 2*mode-1;
 	 }
 	else{
 		mode = 2*mode;
 		}
-	real =  fabs(s*s-vel*vel) * MAT_PI * mode / (2.0 * L * s );
+	real =  fabs(sound*sound-vel*vel) * MAT_PI * mode / (2.0 * L * sound );
 	return real;
 }
 	
 	
-float ImagFreq(float s, float vel, float L){
+float ImagFreq(float sound, float vel, float L){
 	float imag;
-	imag =  (s*s-vel*vel) * log(fabs( (s+vel)/(s-vel) )) / (2.0 * L * s );
+	imag =  (sound*sound-vel*vel) * log(fabs( (sound+vel)/(sound-vel) )) / (2.0 * L * sound );
 	return imag;
 }	
 
@@ -137,46 +137,46 @@ void InitialCondRand(int N, float dx,  float * den, float * vel){
 
 
 float DtElectricDipole(int N,float dx, float * cur){
-	float dp=0.0;
+	float dipole_deriv=0.0;
 	
 	for(int j=1;j<N/2;j++){
-		dp += cur[2*j-2] + 4*cur[2*j-1] + cur[2*j];
+		dipole_deriv += cur[2*j-2] + 4*cur[2*j-1] + cur[2*j];
 	}
-	dp = dp*dx/3.0;
-	return dp;
+	dipole_deriv = dipole_deriv*dx/3.0;
+	return dipole_deriv;
 }
 
 
 float TotalElectricDipole(int N,float dx, float * den){
-	float p=0.0;
+	float dipole=0.0;
 	
 	for(int j=1;j<N/2;j++){	
-		p += dx*(2*j-2)*den[2*j-2] + 4*dx*(2*j-1)*den[2*j-1] + dx*(2*j)*den[2*j];
+		dipole += dx*(2*j-2)*den[2*j-2] + 4*dx*(2*j-1)*den[2*j-1] + dx*(2*j)*den[2*j];
 	}
-	p = p*dx/3.0;
-	return p;
+	dipole = dipole*dx/3.0;
+	return dipole;
 }
 
 float TotalCurrent(int N,float dx, float * den,float * vel){	
-	float p=0.0;
+	float cur_total=0.0;
 	
 	for(int j=1;j<N/2;j++){	
-		p += den[2*j-2]*vel[2*j-2] + 4*den[2*j-1]*vel[2*j-1] + den[2*j]*vel[2*j];
+		cur_total += den[2*j-2]*vel[2*j-2] + 4*den[2*j-1]*vel[2*j-1] + den[2*j]*vel[2*j];
 	}
-	p = p*dx/3.0;
-	return p;
+	cur_total = cur_total*dx/3.0;
+	return cur_total;
 }
 
 float KineticEnergy(int N,float dx, float * den, float * vel){
-	float E = 0.0;
+	float kin = 0.0;
 	
 	for(int j=1;j<N/2;j++){
-		E +=  0.5*vel[2*j-2]*vel[2*j-2]*den[2*j-2] + 4*0.5*vel[2*j-1]*vel[2*j-1]*den[2*j-1] + 0.5*vel[2*j]*vel[2*j]*den[2*j];
+		kin +=  0.5*vel[2*j-2]*vel[2*j-2]*den[2*j-2] + 4*0.5*vel[2*j-1]*vel[2*j-1]*den[2*j-1] + 0.5*vel[2*j]*vel[2*j]*den[2*j];
 	}
-	return E*dx/3.0;
+	return kin*dx/3.0;
 }
 
-float RMS(int N, float dt, float * f){
+float RootMeanSquare(int N, float dt, float * f){
 	float rms=0.0;
 	
 	for(int j=1;j<N/2;j++){
@@ -187,7 +187,7 @@ float RMS(int N, float dt, float * f){
 	return rms;	
 }
 
-float AVG(int N, float dt, float * f){
+float SignalAverage(int N, float dt, float * f){
 	float avg=0.0;
 	
 	for(int j=1;j<N/2;j++){
@@ -257,7 +257,7 @@ void AverageFilter(float * vec_in, float * vec_out, int size , int width ){
 }
 
 
-void ExtremaFinding(float *vec_in, int N, float S, float dt,float & sat, float & tau , float & error, std::string extremafile){		
+void ExtremaFinding(float *vec_in, int N, float sound, float dt,float & sat, float & tau , float & error, std::string extremafile){		
 	ofstream data_extrema;
 	data_extrema.open(extremafile);
 	
@@ -267,9 +267,9 @@ void ExtremaFinding(float *vec_in, int N, float S, float dt,float & sat, float &
 	int pos_max, pos_min;
 	float maximum,minimum;
 	
-	W = floor( 1.2*2*MAT_PI/(RealFreq(S, 1.0, 1.0, 1)*dt));	
+	W = floor( 1.2*2*MAT_PI/(RealFreq(sound, 1.0, 1.0, 1)*dt));	
 	int k = 0;
-	int M = ceil(0.5*dt*N*RealFreq(S, 1.0, 1.0, 1)/MAT_PI);
+	int M = ceil(0.5*dt*N*RealFreq(sound, 1.0, 1.0, 1)/MAT_PI);
 	float *vec_max;			
 	vec_max =(float*) calloc (M,sizeof(float));
 	float *vec_pos;			
