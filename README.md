@@ -1,9 +1,13 @@
 # Hydrodynamic Simulation
 ## Version 1.0.0
 
-## Richtmyer Method implementation
+## Richtmyer method implementation
 Repository for the elaboration of the hydrodymanic model simulation. 
 So far implemented only in 1D+1 for density and velocity fields.
+
+## Simplified flowchart of the code
+
+![Flowchart](/images/CodeFlowchart.png)
 
 ## Style guide
 
