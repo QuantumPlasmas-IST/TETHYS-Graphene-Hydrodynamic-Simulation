@@ -1,4 +1,4 @@
-# Hydrodynamic Simulation
+# TETHYS - *Two-dimensional Emitter of THz, Hydrodynamic Simulation.*
 ## Version 1.0.0
 
 ## Richtmyer method implementation
