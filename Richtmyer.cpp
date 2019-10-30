@@ -19,11 +19,11 @@ float DensityFlux(float den,float vel,float s);
 
 float VelocityFlux(float den,float vel,float s);
 
-float DensitySource(float den,float vel,float s);
+float DensitySource(float den,float vel,float s,float vF);
 
-float VelocitySource(float den,float vel,float s);
+float VelocitySource(float den,float vel,float s,float vF);
 
-//float F2sqrt(float den,float vel,float s,float vf);
+
 
 
 int main(int argc, char **argv){
@@ -201,20 +201,21 @@ int main(int argc, char **argv){
 		for ( int i = 0; i < Nx - 1; i++ )
 		{
 			den_mid[i] = 0.5*( den[i] + den[i+1] )
-				- ( 0.5*dt/dx ) * ( DensityFlux(den[i+1],vel[i+1],s[i+1]) - DensityFlux(den[i],vel[i],s[i]) ) ;
+				- ( 0.5*dt/dx ) * ( DensityFlux(den[i+1],vel[i+1],s[i+1]) - DensityFlux(den[i],vel[i],s[i]) ) 
+				+ ( 0.5*dt    ) * DensitySource(0.5*(den[i]+den[i+1]),0.5*(vel[i]+vel[i+1]),s[i],0.0) ;
 			vel_mid[i] = 0.5*( vel[i] + vel[i+1] )
-				- ( 0.5*dt/dx ) * ( VelocityFlux(den[i+1],vel[i+1],s[i+1]) - VelocityFlux(den[i],vel[i],s[i]) ) ;	
-		//	vel_mid[i] = 0.5*( vel[i] + vel[i+1] )
-		//		- ( 0.5*dt/dx ) * ( F2sqrt(den[i+1],vel[i+1],s[i+1],5.0) - F2sqrt(den[i],vel[i],s[i],5.0) ) ;
+				- ( 0.5*dt/dx ) * ( VelocityFlux(den[i+1],vel[i+1],s[i+1]) - VelocityFlux(den[i],vel[i],s[i]) ) 
+				+ ( 0.5*dt    ) * VelocitySource(0.5*(den[i]+den[i+1]),0.5*(vel[i]+vel[i+1]),s[i],0.0) ;
 		}
 		//
 		// Remaining step 
 		//
 		for ( int i = 1; i < Nx - 1; i++ )
 		{
-			den[i] = den[i] - (dt/dx) * ( DensityFlux(den_mid[i],vel_mid[i],s[i]) - DensityFlux(den_mid[i-1],vel_mid[i-1],s[i-1]) );
-			vel[i] = vel[i] - (dt/dx) * ( VelocityFlux(den_mid[i],vel_mid[i],s[i]) - VelocityFlux(den_mid[i-1],vel_mid[i-1],s[i-1]) );
-			//vel[i] = vel[i] - (dt/dx) * ( F2sqrt(den_mid[i],vel_mid[i],s[i],5.0) - F2sqrt(den_mid[i-1],vel_mid[i-1],s[i-1],5.0) );
+			den[i] = den[i] - (dt/dx) * ( DensityFlux(den_mid[i],vel_mid[i],s[i]) - DensityFlux(den_mid[i-1],vel_mid[i-1],s[i-1]) )
+							+  dt * DensitySource(den[i],vel[i],s[i],0.0);
+			vel[i] = vel[i] - (dt/dx) * ( VelocityFlux(den_mid[i],vel_mid[i],s[i]) - VelocityFlux(den_mid[i-1],vel_mid[i-1],s[i-1]) )
+							+  dt * VelocitySource(den[i],vel[i],s[i],0.0);
 		}
 		
 		// Impose boundary conditions
@@ -282,23 +283,15 @@ float VelocityFlux(float den,float vel,float sound){
 	return f2;
 }
 
-float DensitySource(float den,float vel,float s){
-	Q1=0.0;
+float DensitySource(float den,float vel,float s,float vF){
+	float Q1=0.0;
 return Q1;	
 }
 
-float VelocitySource(float den,float vel,float s){
-	float Q2=0.0;
+float VelocitySource(float den,float vel,float s,float vF){
+//	float Q2=0.0;
+float tau = 2.0;
+	float Q2=-1.0*(vel-1)/tau;
 return Q2;
 }
 
-
-/*
-float F2sqrt(float den,float vel,float s,float vf){
-	float f2;
-	
-	f2 = 0.5*vel*vel + s*s*den +vf*vf*sqrt(den);
-	
-	return f2;
-}
-*/
