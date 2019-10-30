@@ -18,6 +18,11 @@ using namespace std;
 float DensityFlux(float den,float vel,float s);
 
 float VelocityFlux(float den,float vel,float s);
+
+float DensitySource(float den,float vel,float s);
+
+float VelocitySource(float den,float vel,float s);
+
 //float F2sqrt(float den,float vel,float s,float vf);
 
 
@@ -276,6 +281,18 @@ float VelocityFlux(float den,float vel,float sound){
 	
 	return f2;
 }
+
+float DensitySource(float den,float vel,float s){
+	Q1=0.0;
+return Q1;	
+}
+
+float VelocitySource(float den,float vel,float s){
+	float Q2=0.0;
+return Q2;
+}
+
+
 /*
 float F2sqrt(float den,float vel,float s,float vf){
 	float f2;
