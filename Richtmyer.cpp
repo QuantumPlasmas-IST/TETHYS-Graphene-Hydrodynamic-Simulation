@@ -15,9 +15,9 @@
 using namespace std;
 
 
-float DensityFlux(float den,float vel,float s);
+float DensityFlux(float den,float vel,float vel_snd,float vel_fer);
 
-float VelocityFlux(float den,float vel,float s);
+float VelocityFlux(float den,float vel,float vel_snd,float vel_fer);
 //float F2sqrt(float den,float vel,float s,float vf);
 
 
@@ -44,8 +44,8 @@ int main(int argc, char **argv){
 	float t=0.0,leng=1.0;					// time variable and spatial Length
 	float dx;								// spatial discretisation
 	float dt;								// time step
-	float S;							    // Sound speed
-
+	float vel_snd;						    // Sound speed
+	float vel_fer;							// Fermi velocity
 	float *den;							 	//density field
 	den =(float*) calloc (Nx,sizeof(float));
 	float *den_mid;							//density auxiliary vector for midpoint calculation 
@@ -65,42 +65,47 @@ int main(int argc, char **argv){
  	
  	int data_save_mode=0;
 	
-	if(argc!=1){
+	if(argc==4){
 		
-		S = atof(argv[1]);
-		data_save_mode = atoi(argv[2]);	// full data or light save option
+		vel_snd = atof(argv[1]);
+		vel_fer = atof(argv[2]);
+		data_save_mode = atoi(argv[3]);	// full data or light save option
 	
 		}
 	else{
 		cout << "Define S value: ";
-		cin >> S;
+		cin >> vel_snd;
+		cout << "Define Vf value: ";
+		cin >> vel_fer;
+		cout << "Define data_save_mode value (0-> light save | 1-> full data):";
+		cin >> data_save_mode;
 		}
 	
 	
 	// NEEDS REVIEWING
 	/*......CFL routine to determine dt...............................*/	
 	dx = leng / ( float ) ( Nx - 1 );
-	if(S<5){
-		dt = dx / (5*S);
+	if(vel_snd<5){
+		dt = dx / (5*vel_snd);
 	}
 	else{
-		if(S>8 && S<10){
-			dt = dx / (30+3*S);
+		if(vel_snd>8 && vel_snd<10){
+			dt = dx / (30+3*vel_snd);
 		}
 		else{
-			dt = dx / (20+2*S);		
-			//dt = dx / (5+1.5*S);		
+			dt = dx / (20+2*vel_snd);		
+			//dt = dx / (5+1.5*vel_snd);		
 		}
 	}
 	/*................................................................*/
 	
 	
-	/*.........Fixed or variable S value..............................*/
-	float *s;							
-	s =(float*) calloc (Nx,sizeof(float));	
+	/*.........Fixed or variable vel_snd value..............................*/
+	float *arr_snd;							
+	arr_snd =(float*) calloc (Nx,sizeof(float));	
 	for(int i = 0; i<Nx  ;i++){
-		//s[i]= S - 0.15*S*( dx*i- floor(dx*i) );
-		s[i]=S;
+		//arr_snd[i]= vel_snd - 0.15*vel_snd*( dx*i- floor(dx*i) );
+		arr_snd[i]=vel_snd;
 	}
 	/*................................................................*/
 
@@ -108,21 +113,21 @@ int main(int argc, char **argv){
 	/*.........Output files and streams...............................*/
 	
 	// density(x,t)
-	string densityfile = "density_" + to_string(S)+ ".dat" ;
+	string densityfile = "density_" + to_string(vel_snd)+ ".dat" ;
 	densityfile.erase (densityfile.end()-9, densityfile.end()-5);
 	ofstream data_density;
 	data_density.open (densityfile);
 	data_density << fixed ;
 	data_density << setprecision(6);
 	// velocity(x,t)	
-	string velocityfile = "velocity_" + to_string(S)+ ".dat" ;
+	string velocityfile = "velocity_" + to_string(vel_snd)+ ".dat" ;
 	velocityfile.erase (velocityfile.end()-9, velocityfile.end()-5);
 	ofstream data_velocity;
 	data_velocity.open (velocityfile);
 	data_velocity << fixed ;
 	data_velocity << setprecision(6);
 	// current(x,t)	
-	string currentfile = "current_" + to_string(S)+ ".dat" ;
+	string currentfile = "current_" + to_string(vel_snd)+ ".dat" ;
 	currentfile.erase (currentfile.end()-9, currentfile.end()-5);
 	ofstream data_current;
 	data_current.open (currentfile);
@@ -130,13 +135,13 @@ int main(int argc, char **argv){
 	data_current << setprecision(6);	
 
 	// time density(L,t)-1=U(L,t) current(0,t) electric_dipole_moment(t)  derivative_electric_dipole_moment(t)
-	string electrofile = "electro_" + to_string(S)+ ".dat" ;
+	string electrofile = "electro_" + to_string(vel_snd)+ ".dat" ;
 	electrofile.erase (electrofile.end()-9, electrofile.end()-5);
 	ofstream data_electro;
 	data_electro.open (electrofile);
 	data_electro << scientific; 
 	// time density(L,t) velocity(L,t) density(0,t) velocity(0,t)
-	string slicefile = "slice_" + to_string(S)+ ".dat" ;
+	string slicefile = "slice_" + to_string(vel_snd)+ ".dat" ;
 	slicefile.erase (slicefile.end()-9, slicefile.end()-5);							
 	ofstream data_slice;
 	data_slice.open (slicefile);
@@ -146,13 +151,13 @@ int main(int argc, char **argv){
 	
 	
 //	cout << "\n*******************************************************"<< endl;
-	cout << "Sound speed S\t"<< S <<endl;
+	cout << "Sound speed S\t"<< vel_snd <<endl;
 	cout <<"dt= "<<dt<<"\tdx= "<<dx<<endl;
-	cout << "Predicted w'= "<< RealFreq(S,1.0,1.0,1) << "\t1/w'= "<< 1.0/RealFreq(S,1.0,1.0,1)  << endl;
-	cout << "Predicted w''= "<< ImagFreq(S,1.0,1.0) <<"\t1/w''= "<< 1.0/ImagFreq(S,1.0,1.0) <<endl;
+	cout << "Predicted w'= "<< RealFreq(vel_snd,1.0,1.0,1) << "\t1/w'= "<< 1.0/RealFreq(vel_snd,1.0,1.0,1)  << endl;
+	cout << "Predicted w''= "<< ImagFreq(vel_snd,1.0,1.0) <<"\t1/w''= "<< 1.0/ImagFreq(vel_snd,1.0,1.0) <<endl;
 	
-	logfile << "#S \t dt \t dx \t w' \t w'' " << endl;
-	logfile << S <<"\t"<< dt <<"\t"<< dx <<"\t"<< RealFreq(S,1.0,1.0,1) <<"\t"<< ImagFreq(S,1.0,1.0) ;
+	logfile << "#vel_snd \t dt \t dx \t w' \t w'' " << endl;
+	logfile << vel_snd <<"\t"<< dt <<"\t"<< dx <<"\t"<< RealFreq(vel_snd,1.0,1.0,1) <<"\t"<< ImagFreq(vel_snd,1.0,1.0) ;
 	
 //	cout << "*******************************************************"<< endl;
 	
@@ -196,20 +201,20 @@ int main(int argc, char **argv){
 		for ( int i = 0; i < Nx - 1; i++ )
 		{
 			den_mid[i] = 0.5*( den[i] + den[i+1] )
-				- ( 0.5*dt/dx ) * ( DensityFlux(den[i+1],vel[i+1],s[i+1]) - DensityFlux(den[i],vel[i],s[i]) ) ;
+				- ( 0.5*dt/dx ) * ( DensityFlux(den[i+1],vel[i+1],arr_snd[i+1], vel_fer) - DensityFlux(den[i],vel[i],arr_snd[i], vel_fer) ) ;
 			vel_mid[i] = 0.5*( vel[i] + vel[i+1] )
-				- ( 0.5*dt/dx ) * ( VelocityFlux(den[i+1],vel[i+1],s[i+1]) - VelocityFlux(den[i],vel[i],s[i]) ) ;	
+				- ( 0.5*dt/dx ) * ( VelocityFlux(den[i+1],vel[i+1],arr_snd[i+1], vel_fer) - VelocityFlux(den[i],vel[i],arr_snd[i], vel_fer) ) ;	
 		//	vel_mid[i] = 0.5*( vel[i] + vel[i+1] )
-		//		- ( 0.5*dt/dx ) * ( F2sqrt(den[i+1],vel[i+1],s[i+1],5.0) - F2sqrt(den[i],vel[i],s[i],5.0) ) ;
+		//		- ( 0.5*dt/dx ) * ( F2sqrt(den[i+1],vel[i+1],arr_snd[i+1],5.0) - F2sqrt(den[i],vel[i],arr_snd[i],5.0) ) ;
 		}
 		//
 		// Remaining step 
 		//
 		for ( int i = 1; i < Nx - 1; i++ )
 		{
-			den[i] = den[i] - (dt/dx) * ( DensityFlux(den_mid[i],vel_mid[i],s[i]) - DensityFlux(den_mid[i-1],vel_mid[i-1],s[i-1]) );
-			vel[i] = vel[i] - (dt/dx) * ( VelocityFlux(den_mid[i],vel_mid[i],s[i]) - VelocityFlux(den_mid[i-1],vel_mid[i-1],s[i-1]) );
-			//vel[i] = vel[i] - (dt/dx) * ( F2sqrt(den_mid[i],vel_mid[i],s[i],5.0) - F2sqrt(den_mid[i-1],vel_mid[i-1],s[i-1],5.0) );
+			den[i] = den[i] - (dt/dx) * ( DensityFlux(den_mid[i],vel_mid[i],arr_snd[i], vel_fer) - DensityFlux(den_mid[i-1],vel_mid[i-1],arr_snd[i-1], vel_fer) );
+			vel[i] = vel[i] - (dt/dx) * ( VelocityFlux(den_mid[i],vel_mid[i],arr_snd[i], vel_fer) - VelocityFlux(den_mid[i-1],vel_mid[i-1],arr_snd[i-1], vel_fer) );
+			//vel[i] = vel[i] - (dt/dx) * ( F2sqrt(den_mid[i],vel_mid[i],arr_snd[i],5.0) - F2sqrt(den_mid[i-1],vel_mid[i-1],arr_snd[i-1],5.0) );
 		}
 		
 		// Impose boundary conditions
@@ -261,7 +266,7 @@ int main(int argc, char **argv){
 	return 0;
 }
 
-float DensityFlux(float den,float vel,float sound){
+float DensityFlux(float den,float vel,float vel_snd,float vel_fer){
 	float f1;
 	
 	f1 = den*vel;
@@ -269,10 +274,11 @@ float DensityFlux(float den,float vel,float sound){
 	return f1;
 }
 
-float VelocityFlux(float den,float vel,float sound){
+float VelocityFlux(float den,float vel,float vel_snd,float vel_fer){
 	float f2;
 	
-	f2 = 0.5*vel*vel + sound*sound*den;
+	//f2 = 0.5*vel*vel + sound*sound*den;
+	f2 = 0.25*vel*vel + vel_fer*vel_fer*0.5*log(den) + 2*vel_snd*vel_snd*sqrt(den); 
 	
 	return f2;
 }
