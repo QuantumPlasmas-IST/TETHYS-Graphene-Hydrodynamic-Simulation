@@ -11,8 +11,16 @@ So far implemented only in 1D+1 for density and velocity fields.
 
 ## Style guide
 
+### Semantic Versioning
+
+Standard form of numeric *major.minor.patch* starting with the initial commit 1.0.0. Small (but relevant) bugs are considered lower level patches and new features (such as updating physical model) are minor level. Major level versions should be saved for breaking updates (like 2D implementation or parallelization)
+
+
+### Internal syntax
+
 | Type            | Style                                 | E.g.              |
 | :-------------: |:-------------:                        | :-----            |
 | *Macros*          | Prefix + _ + Uppercase                | MAT_PI            |
 | *Functions*       | Camel case                            | InitialCondRand   |
 | *Variables*       | Lowercase 3 letters code + suffix     | den_mid           |
+
