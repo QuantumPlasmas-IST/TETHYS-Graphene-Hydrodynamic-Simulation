@@ -16,7 +16,8 @@ So far implemented only in 1D+1 for density and velocity fields.
 Standard form of numeric *major.minor.patch* starting with the initial commit 1.0.0. Small (but relevant) bugs are considered lower level patches and new features (such as updating physical model) are minor level. Major level versions should be saved for breaking updates (like 2D implementation or parallelization)
 
 #### Version history
-1.0.0 Initial commit 
+1.0.0 Initial commit
+
 1.1.0 Updated nonlinear terms in velocity flux, explicit pressure term. (minor changes in variables)  
 
 ### Internal syntax
