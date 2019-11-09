@@ -15,9 +15,9 @@
 using namespace std;
 
 
-float DensityFlux(float den,float vel,float s);
+float DensityFlux(float den,float vel,float s,float vF);
 
-float VelocityFlux(float den,float vel,float s);
+float VelocityFlux(float den,float vel,float s,float vF);
 
 float DensitySource(float den,float vel,float s,float vF);
 
@@ -201,21 +201,21 @@ int main(int argc, char **argv){
 		for ( int i = 0; i < Nx - 1; i++ )
 		{
 			den_mid[i] = 0.5*( den[i] + den[i+1] )
-				- ( 0.5*dt/dx ) * ( DensityFlux(den[i+1],vel[i+1],s[i+1]) - DensityFlux(den[i],vel[i],s[i]) ) 
-				+ ( 0.5*dt    ) * DensitySource(0.5*(den[i]+den[i+1]),0.5*(vel[i]+vel[i+1]),s[i],0.0) ;
+				- ( 0.5*dt/dx ) * ( DensityFlux(den[i+1],vel[i+1],s[i+1],10.0) - DensityFlux(den[i],vel[i],s[i],10.0) ) 
+				+ ( 0.5*dt    ) * DensitySource(0.5*(den[i]+den[i+1]),0.5*(vel[i]+vel[i+1]),s[i],10.0) ;
 			vel_mid[i] = 0.5*( vel[i] + vel[i+1] )
-				- ( 0.5*dt/dx ) * ( VelocityFlux(den[i+1],vel[i+1],s[i+1]) - VelocityFlux(den[i],vel[i],s[i]) ) 
-				+ ( 0.5*dt    ) * VelocitySource(0.5*(den[i]+den[i+1]),0.5*(vel[i]+vel[i+1]),s[i],0.0) ;
+				- ( 0.5*dt/dx ) * ( VelocityFlux(den[i+1],vel[i+1],s[i+1],10.0) - VelocityFlux(den[i],vel[i],s[i],10.0) ) 
+				+ ( 0.5*dt    ) * VelocitySource(0.5*(den[i]+den[i+1]),0.5*(vel[i]+vel[i+1]),s[i],10.0) ;
 		}
 		//
 		// Remaining step 
 		//
 		for ( int i = 1; i < Nx - 1; i++ )
 		{
-			den[i] = den[i] - (dt/dx) * ( DensityFlux(den_mid[i],vel_mid[i],s[i]) - DensityFlux(den_mid[i-1],vel_mid[i-1],s[i-1]) )
-							+  dt * DensitySource(den[i],vel[i],s[i],0.0);
-			vel[i] = vel[i] - (dt/dx) * ( VelocityFlux(den_mid[i],vel_mid[i],s[i]) - VelocityFlux(den_mid[i-1],vel_mid[i-1],s[i-1]) )
-							+  dt * VelocitySource(den[i],vel[i],s[i],0.0);
+			den[i] = den[i] - (dt/dx) * ( DensityFlux(den_mid[i],vel_mid[i],s[i],10.0) - DensityFlux(den_mid[i-1],vel_mid[i-1],s[i-1],10.0) )
+							+  dt * DensitySource(den[i],vel[i],s[i],10.0);
+			vel[i] = vel[i] - (dt/dx) * ( VelocityFlux(den_mid[i],vel_mid[i],s[i],10.0) - VelocityFlux(den_mid[i-1],vel_mid[i-1],s[i-1],10.0) )
+							+  dt * VelocitySource(den[i],vel[i],s[i],10.0);
 		}
 		
 		// Impose boundary conditions
@@ -240,9 +240,9 @@ int main(int argc, char **argv){
 		}
 	
 		//Record end points
-		data_slice <<t<<"\t"<< den_cor[Nx-1] <<"\t"<< vel_cor[Nx-1] <<"\t"<< den_cor[0] <<"\t" << vel_cor[0] <<endl;
+		data_slice <<t<<"\t"<< den_cor[Nx-1] <<"\t"<< vel_cor[Nx-1] <<"\t"<< den_cor[0] <<"\t" << vel_cor[0] <<"\n";
 		//Record electric quantities
-		data_electro <<t<<"\t"<< den_cor[Nx-1]-1.0 <<"\t"<< den_cor[0]*vel_cor[0] <<"\t"<<  TotalElectricDipole(Nx,dx,den_cor)<<"\t"<<  DtElectricDipole(Nx,dx,cur_cor) <<"\t"<< KineticEnergy(Nx,dx, den_cor, vel_cor)  <<endl;
+		data_electro <<t<<"\t"<< den_cor[Nx-1]-1.0 <<"\t"<< den_cor[0]*vel_cor[0] <<"\t"<<  TotalElectricDipole(Nx,dx,den_cor)<<"\t"<<  DtElectricDipole(Nx,dx,cur_cor) <<"\t"<< KineticEnergy(Nx,dx, den_cor, vel_cor)  <<"\n";
 	}
 	cout << "DONE!" <<endl;
 	cout << "*******************************************************"<<endl;
@@ -267,7 +267,7 @@ int main(int argc, char **argv){
 	return 0;
 }
 
-float DensityFlux(float den,float vel,float sound){
+float DensityFlux(float den,float vel,float sound, float fermi){
 	float f1;
 	
 	f1 = den*vel;
@@ -275,13 +275,16 @@ float DensityFlux(float den,float vel,float sound){
 	return f1;
 }
 
-float VelocityFlux(float den,float vel,float sound){
+float VelocityFlux(float den,float vel,float sound, float fermi){
 	float f2;
 	
-	f2 = 0.5*vel*vel + sound*sound*den;
+	f2 = 0.25*vel*vel + fermi*fermi*0.5*log(den) + 2*sound*sound*sqrt(den); 
+	
 	
 	return f2;
 }
+
+
 
 float DensitySource(float den,float vel,float s,float vF){
 	float Q1=0.0;
