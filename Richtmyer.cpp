@@ -27,7 +27,6 @@ float VelocitySource(float den,float vel,float vel_snd,float vel_fer);
 
 
 int main(int argc, char **argv){
-
 	cout << "*******************************************************"<<endl;
 	cout << "************** ELECTRON FLOW SIMULATION ***************"<<endl;
 	cout << "**************     Richtmyer method     ***************"<<endl;

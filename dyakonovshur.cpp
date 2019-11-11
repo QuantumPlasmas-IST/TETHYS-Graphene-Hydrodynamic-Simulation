@@ -73,14 +73,12 @@ float ImagFreq(float sound, float vel, float L){
 }	
 
 void BoundaryCond(int type, int N, float * den, float * vel ){
-	
 	/*---------------*\
 	| Free        | 1 |
 	| Periodic 	  | 2 |
 	| DS Boundary | 3 | 
 	| DS+Driving  | 4 | 
 	\*---------------*/
-	
 	switch(type){
 		case 1 : den[0] = den[1];
 				 den[N-1] = den[N-2];
@@ -219,7 +217,6 @@ float GaussKernelDerivative(int position , float t){
 
 
 void ConvolveGauss(int type, float M, float t, float * in, float * out, int size){
-	
 	if(type==0){	
 		for(int i=0;i<size;i++){
 			if(i>=M && i<size-M){
@@ -242,7 +239,6 @@ void ConvolveGauss(int type, float M, float t, float * in, float * out, int size
 }
 
 void AverageFilter(float * vec_in, float * vec_out, int size , int width ){
-	
 	for ( int i = 0; i < size; i++ ){		
 		if(i>=width &&i<=size-1-width){
 			for(int k = i-width; k <= i+width;k++){			
@@ -287,9 +283,7 @@ void ExtremaFinding(float *vec_in, int N, float sound, float dt,float & sat, flo
 		vec_pos[k] = pos_max*dt;
 		k++;
 	}
-
 	sat =  *max_element( vec_max ,vec_max + M );	
-	
 	for(int i=1;i<M-1;i++){
 		if( vec_max[i] > 0.99*sat ){
 			tau  = 	vec_pos[i];
@@ -301,11 +295,8 @@ void ExtremaFinding(float *vec_in, int N, float sound, float dt,float & sat, flo
 }
 
 void ShockFinding(float * in, int N, float t , float dx,  std::string shockfile){
-	
 	ofstream data_shock;
 	data_shock.open(shockfile);
-	
-	
 	for ( int i = 0; i < N; i++ )
 	{
 		if(i>=1){
@@ -322,7 +313,6 @@ void ShockFinding(float * in, int N, float t , float dx,  std::string shockfile)
 void Autocorrelation(float * out_gamma ,float * in , int crop, int size){
 	int M = size - crop;
 	float in_crop[M];
-
 	for(int k =0;k < M;k++){
 		in_crop[k] = in[k+crop];		
 	}
@@ -339,12 +329,9 @@ void Autocorrelation(float * out_gamma ,float * in , int crop, int size){
 void TimeDerivative(int size_rows,int size_cols, float dt,float ** f_in , float ** df_out ){
 	//second order method
 	//f[tempo][posicao]
-
 	for(int i=1;i<size_rows-1;i++){
 		for(int j=0;j<size_cols;j++){
-
 			df_out[i][j] = (-0.5*f_in[i-1][j]+0.5*f_in[i+1][j])/dt;
-		
 		}
 	}
 
@@ -359,15 +346,11 @@ void TimeDerivative(int size_rows,int size_cols, float dt,float ** f_in , float 
 void SpaceDerivative(int size_rows,int size_cols, float dt,float ** f_in , float ** df_out ){
 	//second order method
 	//f[tempo][posicao]
-
 	for(int i=0;i<size_rows;i++){
 		for(int j=1;j<size_cols-1;j++){
-
 			df_out[i][j] = (-0.5*f_in[i][j-1]+0.5*f_in[i][j+1])/dt;
-		
 		}
 	}
-
 	for(int i=0;i<size_rows;i++){
 		df_out[i][0]           = (-1.5*f_in[i][0]+2.0*f_in[i][1]-0.5*f_in[i][2])/dt;
 		df_out[i][size_cols-1] = ( 0.5*f_in[i][size_cols-1-2]-2.0*f_in[i][size_cols-1-1]+1.5*f_in[i][size_cols-1])/dt;
@@ -525,5 +508,4 @@ void JefimenkoEMField(int XDIM, int YDIM, float dx, float dy, float dt, float Xp
 	S_out[0] = -E_out[2]*B_out[1];
 	S_out[1] = 0.0;
 	S_out[2] = E_out[0]*B_out[1];
-
 }
