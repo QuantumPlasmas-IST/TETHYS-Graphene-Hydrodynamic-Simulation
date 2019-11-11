@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 DIRNAME=$(date +"DataFiles_SINGLE_TEST_%F_%H:%M")
 mkdir -p "$DIRNAME"
