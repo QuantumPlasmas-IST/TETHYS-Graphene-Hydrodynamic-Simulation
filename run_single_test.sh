@@ -5,9 +5,10 @@ mkdir -p "$DIRNAME"
 
 s=20
 v=10
+l=10
 echo "calculating S="$s
 echo "calculating Vf="$v
-./Richtmyer $s $v 0 | tee -a Fluid.log
+./Richtmyer $s $v $l 0 | tee -a Fluid.log
 
 mv -- *.dat "./$DIRNAME"
 mv -- *.log "./$DIRNAME"
