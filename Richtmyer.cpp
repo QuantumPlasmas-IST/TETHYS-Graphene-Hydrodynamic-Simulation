@@ -118,37 +118,41 @@ int main(int argc, char **argv){
 
 	/*.........Output files and streams...............................*/
 	
+	string str_snd = to_string(vel_snd);
+	str_snd.erase(str_snd.end()-4,str_snd.end());
+	string str_fer = to_string(vel_fer);
+	str_fer.erase(str_fer.end()-4,str_fer.end());
+	string str_mfp = to_string(mfp);
+	str_mfp.erase(str_mfp.end()-4,str_mfp.end());
+	
+	string nam_post = "S="+str_snd+"vF="+str_fer+"l="+str_mfp;
+		
 	// density(x,t)
-	string densityfile = "density_" + to_string(vel_snd)+ ".dat" ;
-	densityfile.erase (densityfile.end()-9, densityfile.end()-5);
+	string densityfile = "density_" + nam_post + ".dat" ;
 	ofstream data_density;
 	data_density.open (densityfile);
 	data_density << fixed ;
 	data_density << setprecision(6);
 	// velocity(x,t)	
-	string velocityfile = "velocity_" + to_string(vel_snd)+ ".dat" ;
-	velocityfile.erase (velocityfile.end()-9, velocityfile.end()-5);
+	string velocityfile = "velocity_" + nam_post + ".dat" ;
 	ofstream data_velocity;
 	data_velocity.open (velocityfile);
 	data_velocity << fixed ;
 	data_velocity << setprecision(6);
 	// current(x,t)	
-	string currentfile = "current_" + to_string(vel_snd)+ ".dat" ;
-	currentfile.erase (currentfile.end()-9, currentfile.end()-5);
+	string currentfile = "current_" + nam_post + ".dat" ;
 	ofstream data_current;
 	data_current.open (currentfile);
 	data_current << fixed ;
 	data_current << setprecision(6);	
 
 	// time density(L,t)-1=U(L,t) current(0,t) electric_dipole_moment(t)  derivative_electric_dipole_moment(t)
-	string electrofile = "electro_" + to_string(vel_snd)+ ".dat" ;
-	electrofile.erase (electrofile.end()-9, electrofile.end()-5);
+	string electrofile = "electro_" + nam_post + ".dat" ;
 	ofstream data_electro;
 	data_electro.open (electrofile);
 	data_electro << scientific; 
 	// time density(L,t) velocity(L,t) density(0,t) velocity(0,t)
-	string slicefile = "slice_" + to_string(vel_snd)+ ".dat" ;
-	slicefile.erase (slicefile.end()-9, slicefile.end()-5);							
+	string slicefile = "slice_" + nam_post + ".dat" ;
 	ofstream data_slice;
 	data_slice.open (slicefile);
 	data_slice << scientific; 
@@ -158,12 +162,14 @@ int main(int argc, char **argv){
 	
 //	cout << "\n*******************************************************"<< endl;
 	cout << "Sound speed S\t"<< vel_snd <<endl;
+	cout << "Fermi velocity S\t"<< vel_fer <<endl;
+	cout << "Mean free path S\t"<< mfp <<endl;
 	cout <<"dt= "<<dt<<"\tdx= "<<dx<<endl;
 	cout << "Predicted w'= "<< RealFreq(vel_snd,1.0,1.0,1) << "\t1/w'= "<< 1.0/RealFreq(vel_snd,1.0,1.0,1)  << endl;
 	cout << "Predicted w''= "<< ImagFreq(vel_snd,1.0,1.0) <<"\t1/w''= "<< 1.0/ImagFreq(vel_snd,1.0,1.0) <<endl;
 	
-	logfile << "#vel_snd \t dt \t dx \t w' \t w'' " << endl;
-	logfile << vel_snd <<"\t"<< dt <<"\t"<< dx <<"\t"<< RealFreq(vel_snd,1.0,1.0,1) <<"\t"<< ImagFreq(vel_snd,1.0,1.0) ;
+	logfile << "#vel_snd \t vel_fer \t mfp \t dt \t dx \t w' \t w'' " << endl;
+	logfile << vel_snd <<"\t"<<vel_fer<< "\t"<< mfp<<"\t"<< dt <<"\t"<< dx <<"\t"<< RealFreq(vel_snd,1.0,1.0,1) <<"\t"<< ImagFreq(vel_snd,1.0,1.0) ;
 	
 //	cout << "*******************************************************"<< endl;
 	
