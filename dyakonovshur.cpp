@@ -528,7 +528,7 @@ cout<<"║      888      888ooo8        888      888ooo888      888     888ooooo
 cout<<"║      888      888    oo      888      888   888      888            888 ║\n";
 cout<<"║     o888o    o888ooo8888    o888o    o888o o888o    o888o   o88oooo888  ║\n";
 cout<<"║                                                                         ║\n";
-cout<<"║ Two-dimensional Emitter of THz, Hydrodynamic Simulation.  Version 1.2.1 ║\n";
+cout<<"║ Two-dimensional Emitter of THz, Hydrodynamic Simulation.  Version 1.2.2 ║\n";
 cout<<"╚═════════════════════════════════════════════════════════════════════════╝\n";
 cout<<"\n" ;                                                                                                                                                                                             
 //cout<<" Two-dimensional Emitter of THz, Hydrodynamic Simulation.    Version 1.2.1\n";
