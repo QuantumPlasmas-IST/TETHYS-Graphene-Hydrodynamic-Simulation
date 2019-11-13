@@ -21,8 +21,8 @@ Standard form of numeric *major.minor.patch* starting with the initial commit 1.
 1.1.0 Updated nonlinear terms in velocity flux, explicit pressure term. (minor changes in variables)  
 
 1.2.0 Addition of collisional loss term 
-  1.2.1 Mean free path added as command line parameter 
-  1.2.2 Update of frequency functions + minor changes in appearence 
+  <br>&emsp;1.2.1 Mean free path added as command line parameter 
+  <br>&emsp;1.2.2 Update of frequency functions + minor changes in appearence 
 
 ### Internal syntax
 
