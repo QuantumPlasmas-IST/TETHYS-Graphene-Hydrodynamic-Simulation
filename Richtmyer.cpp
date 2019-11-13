@@ -27,12 +27,8 @@ float VelocitySource(float den,float vel,float vel_snd,float vel_fer,float mfp);
 
 
 int main(int argc, char **argv){
-	cout << "*******************************************************"<<endl;
-	cout << "************** ELECTRON FLOW SIMULATION ***************"<<endl;
-	cout << "**************     Richtmyer method     ***************"<<endl;
-	cout << "**************      Version 1.0.0       ***************"<<endl;
-	cout << "*******************************************************"<<endl;
 
+    BannerDisplay();
 
 	/*......TIME stamp for the logfile................................*/
 	ofstream logfile;
@@ -66,6 +62,7 @@ int main(int argc, char **argv){
 	vel_cor = (float*) calloc (Nx,sizeof(float));
  	float *cur_cor;							//current density (n*v) corrected after average filter 
 	cur_cor = (float*) calloc (Nx,sizeof(float));
+ 	
  	
  	
  	int data_save_mode=0;
@@ -160,18 +157,18 @@ int main(int argc, char **argv){
 
 	
 	
-//	cout << "\n*******************************************************"<< endl;
-	cout << "Sound speed S\t"<< vel_snd <<endl;
-	cout << "Fermi velocity S\t"<< vel_fer <<endl;
-	cout << "Mean free path S\t"<< mfp <<endl;
+
+	cout << "Sound speed S/v0\t"<< vel_snd <<endl;
+	cout << "Fermi velocity vF/v0\t"<< vel_fer <<endl;
+	cout << "Mean free path l/L\t"<< mfp <<endl;
 	cout <<"dt= "<<dt<<"\tdx= "<<dx<<endl;
-	cout << "Predicted w'= "<< RealFreq(vel_snd,1.0,1.0,1) << "\t1/w'= "<< 1.0/RealFreq(vel_snd,1.0,1.0,1)  << endl;
-	cout << "Predicted w''= "<< ImagFreq(vel_snd,1.0,1.0) <<"\t1/w''= "<< 1.0/ImagFreq(vel_snd,1.0,1.0) <<endl;
+	cout << "Predicted w'= "<< RealFreq(vel_snd,1.0,1.0,1) << "\t1/w'= "<< 1.0/RealFreq(vel_snd,vel_fer,mfp,1)  << endl;
+	cout << "Predicted w''= "<< ImagFreq(vel_snd,1.0,1.0) <<"\t1/w''= "<< 1.0/ImagFreq(vel_snd,vel_fer,mfp) <<endl;
 	
 	logfile << "#vel_snd \t vel_fer \t mfp \t dt \t dx \t w' \t w'' " << endl;
-	logfile << vel_snd <<"\t"<<vel_fer<< "\t"<< mfp<<"\t"<< dt <<"\t"<< dx <<"\t"<< RealFreq(vel_snd,1.0,1.0,1) <<"\t"<< ImagFreq(vel_snd,1.0,1.0) ;
+	logfile << vel_snd <<"\t"<<vel_fer<< "\t"<< mfp<<"\t"<< dt <<"\t"<< dx <<"\t"<< RealFreq(vel_snd,vel_fer,mfp,1) <<"\t"<< ImagFreq(vel_snd,vel_fer,mfp) ;
 	
-//	cout << "*******************************************************"<< endl;
+
 	
 	float T_max=10.0;
 	

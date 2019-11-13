@@ -53,22 +53,28 @@
 using namespace std;
 
 
-float RealFreq(float sound, float vel, float L, int mode){
+float RealFreq(float sound, float fermi, float mfp, int mode){
 	float real;
-	if (fabs(vel) < sound ){
+	float vel_phs_sqr = sound*sound + fermi*fermi*0.5 + 0.0625;
+	float vel_phs = sqrt(vel_phs_sqr);
+	if (1 < vel_phs ){
 		mode = 2*mode-1;
 	 }
 	else{
 		mode = 2*mode;
 		}
-	real =  fabs(sound*sound-vel*vel) * MAT_PI * mode / (2.0 * L * sound );
+	
+	real =  fabs(vel_phs_sqr - 0.5625 ) * MAT_PI * mode / (2.0 * vel_phs );
 	return real;
 }
 	
 	
-float ImagFreq(float sound, float vel, float L){
-	float imag;
-	imag =  (sound*sound-vel*vel) * log(fabs( (sound+vel)/(sound-vel) )) / (2.0 * L * sound );
+float ImagFreq(float sound, float fermi, float mfp){
+	float imag;	
+	float vel_phs_sqr = sound*sound + fermi*fermi*0.5 + 0.0625;
+	float vel_phs = sqrt(vel_phs_sqr);
+	imag = (vel_phs_sqr - 0.5625 ) * log(fabs( (vel_phs+0.75)/(vel_phs-0.75) )) / (2.0 * vel_phs );
+	
 	return imag;
 }	
 
@@ -508,4 +514,25 @@ void JefimenkoEMField(int XDIM, int YDIM, float dx, float dy, float dt, float Xp
 	S_out[0] = -E_out[2]*B_out[1];
 	S_out[1] = 0.0;
 	S_out[2] = E_out[0]*B_out[1];
+}
+
+
+void BannerDisplay(){
+	
+	
+cout<<"\n";
+cout<<"╔═════════════════════════════════════════════════════════════════════════╗\n";
+cout<<"║  ooooooooooo ooooooooooo ooooooooooo ooooo ooooo ooooo  oooo oooooooo8  ║\n";
+cout<<"║  88  888  88  888    88  88  888  88  888   888    888  88  888         ║\n";
+cout<<"║      888      888ooo8        888      888ooo888      888     888oooooo  ║\n";
+cout<<"║      888      888    oo      888      888   888      888            888 ║\n";
+cout<<"║     o888o    o888ooo8888    o888o    o888o o888o    o888o   o88oooo888  ║\n";
+cout<<"║                                                                         ║\n";
+cout<<"║ Two-dimensional Emitter of THz, Hydrodynamic Simulation.  Version 1.2.1 ║\n";
+cout<<"╚═════════════════════════════════════════════════════════════════════════╝\n";
+cout<<"\n" ;                                                                                                                                                                                             
+//cout<<" Two-dimensional Emitter of THz, Hydrodynamic Simulation.    Version 1.2.1\n";
+
+
+
 }

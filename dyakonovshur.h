@@ -41,8 +41,8 @@
 
 
 
-float RealFreq(float sound, float vel, float L, int mode);  //
-float ImagFreq(float sound, float vel, float L);                  //
+float RealFreq(float sound, float fermi, float mfp, int mode);  //
+float ImagFreq(float sound, float fermi, float mfp);                  //
 void BoundaryCond(int type, int N, float * den, float * vel); //
 void InitialCondSine(int N, float dx,  float * den, float * vel); //
 void InitialCondRand(int N, float dx,  float * den, float * vel); //
@@ -64,3 +64,5 @@ void SpaceDerivative(int size_rows,int size_cols, float dt,float ** f_in , float
 float CartDistance(float x , float y , float z, float X , float Y , float Z );
 float RetardedTime(float time, float x , float y , float z, float X , float Y , float Z );	 
 void  JefimenkoEMField(int XDIM, int YDIM, float dx, float dy, float dt, float Xpos, float Ypos, float Zpos,  float ** rho, float ** rho_dot, float ** cur, float ** cur_dot, float Time , float  * E_out , float  * B_out, float  * S_out   );
+
+void BannerDisplay(void);
