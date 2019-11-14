@@ -41,8 +41,8 @@
 
 
 
-float RealFreq(float sound, float fermi, float mfp, int mode);  //
-float ImagFreq(float sound, float fermi, float mfp);                  //
+float RealFreq(float sound, float fermi, float col_freq, int mode);  //
+float ImagFreq(float sound, float fermi, float col_freq);                  //
 void BoundaryCond(int type, int N, float * den, float * vel); //
 void InitialCondSine(int N, float dx,  float * den, float * vel); //
 void InitialCondRand(int N, float dx,  float * den, float * vel); //

@@ -53,7 +53,7 @@
 using namespace std;
 
 
-float RealFreq(float sound, float fermi, float mfp, int mode){
+float RealFreq(float sound, float fermi, float col_freq, int mode){
 	float real;
 	float vel_phs_sqr = sound*sound + fermi*fermi*0.5 + 0.0625;
 	float vel_phs = sqrt(vel_phs_sqr);
@@ -69,11 +69,11 @@ float RealFreq(float sound, float fermi, float mfp, int mode){
 }
 	
 	
-float ImagFreq(float sound, float fermi, float mfp){
+float ImagFreq(float sound, float fermi, float col_freq){
 	float imag;	
 	float vel_phs_sqr = sound*sound + fermi*fermi*0.5 + 0.0625;
 	float vel_phs = sqrt(vel_phs_sqr);
-	imag = (vel_phs_sqr - 0.5625 ) * log(fabs( (vel_phs+0.75)/(vel_phs-0.75) )) / (2.0 * vel_phs );
+	imag = (vel_phs_sqr - 0.5625 ) * log(fabs( (vel_phs+0.75)/(vel_phs-0.75) )) / (2.0 * vel_phs ) - col_freq*(1-0.125/vel_phs);
 	
 	return imag;
 }	
@@ -531,7 +531,7 @@ cout<<"║                                                                      
 cout<<"║ Two-dimensional Emitter of THz, Hydrodynamic Simulation.  Version 1.2.2 ║\n";
 cout<<"╚═════════════════════════════════════════════════════════════════════════╝\n";
 cout<<"\n" ;                                                                                                                                                                                             
-//cout<<" Two-dimensional Emitter of THz, Hydrodynamic Simulation.    Version 1.2.1\n";
+
 
 
 

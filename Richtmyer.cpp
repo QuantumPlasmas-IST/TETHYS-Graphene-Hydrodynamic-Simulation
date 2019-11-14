@@ -22,7 +22,7 @@ float VelocityFlux(float den,float vel,float vel_snd,float vel_fer);
 
 float DensitySource(float den,float vel,float vel_snd,float vel_fer);
 
-float VelocitySource(float den,float vel,float vel_snd,float vel_fer,float mfp);
+float VelocitySource(float den,float vel,float vel_snd,float vel_fer,float col_freq);
 
 
 
@@ -46,7 +46,7 @@ int main(int argc, char **argv){
 	float dt;								// time step
 	float vel_snd;						    // Sound speed
 	float vel_fer;							// Fermi velocity
-	float mfp; 								// mean free path in units of GFET length
+	float col_freq; 								// mean free path in units of GFET length
 	float *den;							 	//density field
 	den =(float*) calloc (Nx,sizeof(float));
 	float *den_mid;							//density auxiliary vector for midpoint calculation 
@@ -70,7 +70,7 @@ int main(int argc, char **argv){
 	if(argc==5){
 		vel_snd = atof(argv[1]);
 		vel_fer = atof(argv[2]);
-		mfp     = atof(argv[3]); 
+		col_freq     = atof(argv[3]); 
 		data_save_mode = atoi(argv[4]);	// full data or light save option
 		}
 	else{
@@ -79,7 +79,7 @@ int main(int argc, char **argv){
 		cout << "Define Vf value: ";
 		cin >> vel_fer;
 		cout << "Define mean free path value: ";
-		cin >> mfp;
+		cin >> col_freq;
 		cout << "Define data_save_mode value (0-> light save | 1-> full data):";
 		cin >> data_save_mode;
 		}
@@ -119,10 +119,10 @@ int main(int argc, char **argv){
 	str_snd.erase(str_snd.end()-4,str_snd.end());
 	string str_fer = to_string(vel_fer);
 	str_fer.erase(str_fer.end()-4,str_fer.end());
-	string str_mfp = to_string(mfp);
-	str_mfp.erase(str_mfp.end()-4,str_mfp.end());
+	string str_col_freq = to_string(col_freq);
+	str_col_freq.erase(str_col_freq.end()-4,str_col_freq.end());
 	
-	string nam_post = "S="+str_snd+"vF="+str_fer+"l="+str_mfp;
+	string nam_post = "S="+str_snd+"vF="+str_fer+"l="+str_col_freq;
 		
 	// density(x,t)
 	string densityfile = "density_" + nam_post + ".dat" ;
@@ -160,13 +160,13 @@ int main(int argc, char **argv){
 
 	cout << "Sound speed S/v0\t"<< vel_snd <<endl;
 	cout << "Fermi velocity vF/v0\t"<< vel_fer <<endl;
-	cout << "Mean free path l/L\t"<< mfp <<endl;
+	cout << "Mean free path l/L\t"<< col_freq <<endl;
 	cout <<"dt= "<<dt<<"\tdx= "<<dx<<endl;
-	cout << "Predicted w'= "<< RealFreq(vel_snd,1.0,1.0,1) << "\t1/w'= "<< 1.0/RealFreq(vel_snd,vel_fer,mfp,1)  << endl;
-	cout << "Predicted w''= "<< ImagFreq(vel_snd,1.0,1.0) <<"\t1/w''= "<< 1.0/ImagFreq(vel_snd,vel_fer,mfp) <<endl;
+	cout << "Predicted w'= "<< RealFreq(vel_snd,1.0,1.0,1) << "\t1/w'= "<< 1.0/RealFreq(vel_snd,vel_fer,col_freq,1)  << endl;
+	cout << "Predicted w''= "<< ImagFreq(vel_snd,1.0,1.0) <<"\t1/w''= "<< 1.0/ImagFreq(vel_snd,vel_fer,col_freq) <<endl;
 	
-	logfile << "#vel_snd \t vel_fer \t mfp \t dt \t dx \t w' \t w'' " << endl;
-	logfile << vel_snd <<"\t"<<vel_fer<< "\t"<< mfp<<"\t"<< dt <<"\t"<< dx <<"\t"<< RealFreq(vel_snd,vel_fer,mfp,1) <<"\t"<< ImagFreq(vel_snd,vel_fer,mfp) ;
+	logfile << "#vel_snd \t vel_fer \t col_freq \t dt \t dx \t w' \t w'' " << endl;
+	logfile << vel_snd <<"\t"<<vel_fer<< "\t"<< col_freq<<"\t"<< dt <<"\t"<< dx <<"\t"<< RealFreq(vel_snd,vel_fer,col_freq,1) <<"\t"<< ImagFreq(vel_snd,vel_fer,col_freq) ;
 	
 
 	
@@ -214,7 +214,7 @@ int main(int argc, char **argv){
 				+ ( 0.5*dt    ) * DensitySource(0.5*(den[i]+den[i+1]),0.5*(vel[i]+vel[i+1]),arr_snd[i], vel_fer) ;
 			vel_mid[i] = 0.5*( vel[i] + vel[i+1] )
 				- ( 0.5*dt/dx ) * ( VelocityFlux(den[i+1],vel[i+1],arr_snd[i], vel_fer) - VelocityFlux(den[i],vel[i],arr_snd[i], vel_fer) ) 
-				+ ( 0.5*dt    ) * VelocitySource(0.5*(den[i]+den[i+1]),0.5*(vel[i]+vel[i+1]),arr_snd[i], vel_fer, mfp) ;
+				+ ( 0.5*dt    ) * VelocitySource(0.5*(den[i]+den[i+1]),0.5*(vel[i]+vel[i+1]),arr_snd[i], vel_fer, col_freq) ;
 		}
 		//
 		// Remaining step 
@@ -224,7 +224,7 @@ int main(int argc, char **argv){
 			den[i] = den[i] - (dt/dx) * ( DensityFlux(den_mid[i],vel_mid[i],arr_snd[i], vel_fer) - DensityFlux(den_mid[i-1],vel_mid[i-1],arr_snd[i], vel_fer) )
 							+  dt * DensitySource(den[i],vel[i],arr_snd[i], vel_fer);
 			vel[i] = vel[i] - (dt/dx) * ( VelocityFlux(den_mid[i],vel_mid[i],arr_snd[i], vel_fer) - VelocityFlux(den_mid[i-1],vel_mid[i-1],arr_snd[i], vel_fer) )
-							+  dt * VelocitySource(den[i],vel[i],arr_snd[i], vel_fer, mfp);
+							+  dt * VelocitySource(den[i],vel[i],arr_snd[i], vel_fer, col_freq);
 		}
 		
 		// Impose boundary conditions
@@ -296,14 +296,11 @@ float DensitySource(float den,float vel,float vel_snd,float vel_fer){
 return Q1;	
 }
 
-float VelocitySource(float den,float vel,float vel_snd,float vel_fer,float mfp){
+float VelocitySource(float den,float vel,float vel_snd,float vel_fer,float col_freq){
 	float Q2=0.0;
-	if(mfp==0.0){
-		Q2=0.0;
-	}
-	else{
-		Q2=-1.0*(vel-1)/mfp;
-		}
+	
+		Q2=-1.0*col_freq*(vel-1);
+	
 return Q2;
 }
 
