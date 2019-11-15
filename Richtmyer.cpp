@@ -160,7 +160,7 @@ int main(int argc, char **argv){
 
 	cout << "Sound speed S/v0\t"<< vel_snd <<endl;
 	cout << "Fermi velocity vF/v0\t"<< vel_fer <<endl;
-	if ( PhaseVel(vel_snd, vel_fer) < ver_fer){
+	if ( PhaseVel(vel_snd, vel_fer) < vel_fer){
 		cout << "Phase velocity\t" << PhaseVel(vel_snd, vel_fer)<<"\t WARNING plasmon wave in critical damping region"<<endl;
 	}else{
 		cout << "Phase velocity\t" << PhaseVel(vel_snd, vel_fer)<<endl;
