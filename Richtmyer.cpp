@@ -80,7 +80,7 @@ int main(int argc, char **argv){
 		cin >> vel_fer;
 		cout << "Define mean free path value: ";
 		cin >> col_freq;
-		cout << "Define data_save_mode value (0-> light save | 1-> full data):";
+		cout << "Define data_save_mode value (0-> light save | 1-> full data): ";
 		cin >> data_save_mode;
 		}
 	
@@ -156,9 +156,11 @@ int main(int argc, char **argv){
 	/*................................................................*/
 
 	
+	float T_max=10.0;
 	
+	WellcomeScreen(vel_snd, vel_fer, col_freq,dt,dx,T_max);
 
-	cout << "Sound speed S/v0\t"<< vel_snd <<endl;
+/*	cout << "Sound speed S/v0\t"<< vel_snd <<endl;
 	cout << "Fermi velocity vF/v0\t"<< vel_fer <<endl;
 	if ( PhaseVel(vel_snd, vel_fer) < vel_fer){
 		cout << "Phase velocity\t" << PhaseVel(vel_snd, vel_fer)<<"\t WARNING plasmon wave in critical damping region"<<endl;
@@ -172,12 +174,11 @@ int main(int argc, char **argv){
 	
 	logfile << "#vel_snd \t vel_fer \t col_freq \t dt \t dx \t w' \t w'' " << endl;
 	logfile << vel_snd <<"\t"<<vel_fer<< "\t"<< col_freq<<"\t"<< dt <<"\t"<< dx <<"\t"<< RealFreq(vel_snd,vel_fer,col_freq,1) <<"\t"<< ImagFreq(vel_snd,vel_fer,col_freq) ;
-	
+*/	
 
 	
-	float T_max=10.0;
 	
-	cout <<"Determined maximum simulated time\t" <<T_max<<endl;
+	
 	
 	////////////////////////////////////////////////////////////////////
 	// Initialization	

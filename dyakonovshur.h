@@ -66,3 +66,4 @@ float RetardedTime(float time, float x , float y , float z, float X , float Y , 
 void  JefimenkoEMField(int XDIM, int YDIM, float dx, float dy, float dt, float Xpos, float Ypos, float Zpos,  float ** rho, float ** rho_dot, float ** cur, float ** cur_dot, float Time , float  * E_out , float  * B_out, float  * S_out   );
 
 void BannerDisplay(void);
+void WellcomeScreen(float vel_snd, float vel_fer,float col_freq, float dt,float dx, float Tmax);
