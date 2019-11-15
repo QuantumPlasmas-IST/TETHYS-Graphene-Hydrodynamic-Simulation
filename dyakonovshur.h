@@ -40,7 +40,7 @@
 
 
 
-
+float PhaseVel(float sound, float fermi);
 float RealFreq(float sound, float fermi, float col_freq, int mode);  //
 float ImagFreq(float sound, float fermi, float col_freq);                  //
 void BoundaryCond(int type, int N, float * den, float * vel); //

@@ -53,6 +53,13 @@
 using namespace std;
 
 
+float PhaseVel(float sound, float fermi){
+	
+	float vel_phs = sqrt(sound*sound+0.5*fermi*fermi + 0.0625 );
+	return vel_phs ;
+
+}
+
 float RealFreq(float sound, float fermi, float col_freq, int mode){
 	float real;
 	float vel_phs_sqr = sound*sound + fermi*fermi*0.5 + 0.0625;
