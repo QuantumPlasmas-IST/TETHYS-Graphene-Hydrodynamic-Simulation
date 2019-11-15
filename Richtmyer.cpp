@@ -160,10 +160,15 @@ int main(int argc, char **argv){
 
 	cout << "Sound speed S/v0\t"<< vel_snd <<endl;
 	cout << "Fermi velocity vF/v0\t"<< vel_fer <<endl;
-	cout << "Mean free path l/L\t"<< col_freq <<endl;
+	if ( PhaseVel(vel_snd, vel_fer) < ver_fer){
+		cout << "Phase velocity\t" << PhaseVel(vel_snd, vel_fer)<<"\t WARNING plasmon wave in critical damping region"<<endl;
+	}else{
+		cout << "Phase velocity\t" << PhaseVel(vel_snd, vel_fer)<<endl;
+	}
+	cout << "Collision frequency \t"<< col_freq <<endl;
 	cout <<"dt= "<<dt<<"\tdx= "<<dx<<endl;
-	cout << "Predicted w'= "<< RealFreq(vel_snd,1.0,1.0,1) << "\t1/w'= "<< 1.0/RealFreq(vel_snd,vel_fer,col_freq,1)  << endl;
-	cout << "Predicted w''= "<< ImagFreq(vel_snd,1.0,1.0) <<"\t1/w''= "<< 1.0/ImagFreq(vel_snd,vel_fer,col_freq) <<endl;
+	cout << "Predicted w'= "<< RealFreq(vel_snd,vel_fer,col_freq,1) << "\t1/w'= "<< 1.0/RealFreq(vel_snd,vel_fer,col_freq,1)  << endl;
+	cout << "Predicted w''= "<< ImagFreq(vel_snd,vel_fer,col_freq) <<"\t1/w''= "<< 1.0/ImagFreq(vel_snd,vel_fer,col_freq) <<endl;
 	
 	logfile << "#vel_snd \t vel_fer \t col_freq \t dt \t dx \t w' \t w'' " << endl;
 	logfile << vel_snd <<"\t"<<vel_fer<< "\t"<< col_freq<<"\t"<< dt <<"\t"<< dx <<"\t"<< RealFreq(vel_snd,vel_fer,col_freq,1) <<"\t"<< ImagFreq(vel_snd,vel_fer,col_freq) ;
