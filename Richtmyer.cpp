@@ -159,26 +159,6 @@ int main(int argc, char **argv){
 	float T_max=10.0;
 	
 	WellcomeScreen(vel_snd, vel_fer, col_freq,dt,dx,T_max);
-
-/*	cout << "Sound speed S/v0\t"<< vel_snd <<endl;
-	cout << "Fermi velocity vF/v0\t"<< vel_fer <<endl;
-	if ( PhaseVel(vel_snd, vel_fer) < vel_fer){
-		cout << "Phase velocity\t" << PhaseVel(vel_snd, vel_fer)<<"\t WARNING plasmon wave in critical damping region"<<endl;
-	}else{
-		cout << "Phase velocity\t" << PhaseVel(vel_snd, vel_fer)<<endl;
-	}
-	cout << "Collision frequency \t"<< col_freq <<endl;
-	cout <<"dt= "<<dt<<"\tdx= "<<dx<<endl;
-	cout << "Predicted w'= "<< RealFreq(vel_snd,vel_fer,col_freq,1) << "\t1/w'= "<< 1.0/RealFreq(vel_snd,vel_fer,col_freq,1)  << endl;
-	cout << "Predicted w''= "<< ImagFreq(vel_snd,vel_fer,col_freq) <<"\t1/w''= "<< 1.0/ImagFreq(vel_snd,vel_fer,col_freq) <<endl;
-	
-	logfile << "#vel_snd \t vel_fer \t col_freq \t dt \t dx \t w' \t w'' " << endl;
-	logfile << vel_snd <<"\t"<<vel_fer<< "\t"<< col_freq<<"\t"<< dt <<"\t"<< dx <<"\t"<< RealFreq(vel_snd,vel_fer,col_freq,1) <<"\t"<< ImagFreq(vel_snd,vel_fer,col_freq) ;
-*/	
-
-	
-	
-	
 	
 	////////////////////////////////////////////////////////////////////
 	// Initialization	
@@ -195,7 +175,7 @@ int main(int argc, char **argv){
 		}
 	}
 	
-	cout << "Running"<<endl;
+	cout << "\033[1;7;5;33m Program Running \033[0m"<<endl;
 	
 	int time_step=0;
 	
@@ -259,8 +239,8 @@ int main(int argc, char **argv){
 		//Record electric quantities
 		data_electro <<t<<"\t"<< den_cor[Nx-1]-1.0 <<"\t"<< den_cor[0]*vel_cor[0] <<"\t"<<  TotalElectricDipole(Nx,dx,den_cor)<<"\t"<<  DtElectricDipole(Nx,dx,cur_cor) <<"\t"<< KineticEnergy(Nx,dx, den_cor, vel_cor)  <<"\n";
 	}
-	cout << "DONE!" <<endl;
-	cout << "*******************************************************"<<endl;
+	cout << "\033[1A\033[2K\033[1;32mDONE!\033[0m\n";
+	cout<<"═══════════════════════════════════════════════════════════════════════════" <<endl;
 
 	free(den);
 	free(den_mid);

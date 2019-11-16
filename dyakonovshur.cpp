@@ -527,35 +527,30 @@ void JefimenkoEMField(int XDIM, int YDIM, float dx, float dy, float dt, float Xp
 
 
 void BannerDisplay(void){
-	cout<<"\n";
+cout<<"\n" ;
 	cout<<"╔═════════════════════════════════════════════════════════════════════════╗\n";
-	cout<<"║  ooooooooooo ooooooooooo ooooooooooo ooooo ooooo ooooo  oooo oooooooo8  ║\n";
-	cout<<"║  88  888  88  888    88  88  888  88  888   888    888  88  888         ║\n";
-	cout<<"║      888      888ooo8        888      888ooo888      888     888oooooo  ║\n";
-	cout<<"║      888      888    oo      888      888   888      888            888 ║\n";
-	cout<<"║     o888o    o888ooo8888    o888o    o888o o888o    o888o   o88oooo888  ║\n";
+	cout<<"║\033[2m  ▆▆▆▆▆▆▆▆▆▆▆ ▆▆▆▆▆▆▆▆▆▆  ▆▆▆▆▆▆▆▆▆▆▆ ▆▆▆▆▆ ▆▆▆▆▆ ▆▆▆▖   ▗▆▆▆ ▗▆▆▆▆▆▆▆▖  \033[0m║\n";
+	cout<<"║\033[2m  █▘  ▐█▌  ▝█  ▐█▌    ▝█  █▘  ▐█▌  ▝█  ▐█▌   ▐█▌     █▌ ▐█   ▐█▌     ▝█  \033[0m║\n";
+	cout<<"║\033[2m      ▐█▌      ▐█▌▆▆▆█        ▐█▌      ▐█▌▆▆▆▐█▌      ▐█▌     ▝██▆▆▆▆▆▖  \033[0m║\n";
+	cout<<"║\033[2m      ▐█▌      ▐█▌    ▗▉      ▐█▌      ▐█▌   ▐█▌      ▐█▌    ▗       ██  \033[0m║\n";
+	cout<<"║\033[2m     ▆███▆    ▆███▆▆▆██▉     ▆███▆    ▆███▆ ▆███▆    ▆███▆   ▐█▆▆▆▆▆██▘  \033[0m║\n";
 	cout<<"║                                                                         ║\n";
-	cout<<"║ Two-dimensional Emitter of THz, Hydrodynamic Simulation.  Version 1.2.2 ║\n";
-	cout<<"╚═════════════════════════════════════════════════════════════════════════╝\n";
-	cout<<"\n" ;                                                                                                                                                                                             
+	cout<<"║ \033[1mTwo-dimensional Emitter of THz, Hydrodynamic Simulation.  Version 1.2.2\033[0m ║\n";
+	cout<<"╚═════════════════════════════════════════════════════════════════════════╝\n";                                                                                                                                                                                          
 }
 
 void WellcomeScreen(float vel_snd, float vel_fer, float col_freq, float dt,float dx, float Tmax){
-	cout <<"\n";
-	cout << "Fermi velocity\t\033[1mvF\t"<< vel_fer <<"v\342\202\200\033[0m\n";
-	//cout << "Sound speed\t\033[1mS\t"<< PhaseVel(vel_snd, vel_fer) <<"v\342\202\200\033[0m\n";
-	
-	
+	cout << "\nFermi velocity\t\033[1mvF\t"<< vel_fer <<" v\342\202\200\033[0m\n";
 	if ( PhaseVel(vel_snd, vel_fer) < vel_fer){
-		cout << "Phase velocity\t\033[1mS\t" << PhaseVel(vel_snd, vel_fer)<<"v\342\202\200\033[0m\t   \033[1;31m  WARNING plasmon in damping region \033[0m" <<endl;
+		cout << "Phase velocity\t\033[1mS'\t" << PhaseVel(vel_snd, vel_fer)<<" v\342\202\200\033[0m  \033[1;5;7;31m WARNING plasmon in damping region \033[0m" <<endl;
 	}else{
-		cout << "Phase velocity\t\033[1mS\t" << PhaseVel(vel_snd, vel_fer)<<"v\342\202\200\033[0m\n";
+		cout << "Phase velocity\t\033[1mS'\t" << PhaseVel(vel_snd, vel_fer)<<" v\342\202\200\033[0m\n";
 	}
-	cout << "Collision \t\033[1m\316\275\t"<< col_freq <<"v\342\202\200/L\n\033[0m";
-	//cout << "Collision\t"<< col_freq <<endl;
-	cout <<"dt= "<<dt<<"\tdx= "<<dx<<endl;
-	cout << "Predicted \317\211'= "<< RealFreq(vel_snd,vel_fer,col_freq,1) << "v\342\202\200/L\t1/\317\211'= "<< 1.0/RealFreq(vel_snd,vel_fer,col_freq,1)  << endl;
-	cout << "Predicted \317\211''= "<< ImagFreq(vel_snd,vel_fer,col_freq) <<"v\342\202\200/L\t1/\317\211''= "<< 1.0/ImagFreq(vel_snd,vel_fer,col_freq) <<endl;
-	
-	cout <<"Determined maximum simulated time\t" <<Tmax<<endl;
+	cout << "Collision \t\033[1m\316\275\t"<< col_freq <<" v\342\202\200/L\n\033[0m\n";
+	cout << "Theoretical frequency \033[1m\317\211=\317\211'+i\317\211''\033[0m\n";
+	cout << "\033[1m\317\211'\t"<< RealFreq(vel_snd,vel_fer,col_freq,1) << " v\342\202\200/L\t2\317\200/\317\211'\t"<< 2.0*MAT_PI/RealFreq(vel_snd,vel_fer,col_freq,1)  << " L/v\342\202\200\033[0m\n";
+	cout << "\033[1m\317\211''\t"<< ImagFreq(vel_snd,vel_fer,col_freq) <<" v\342\202\200/L\t2\317\200/\317\211''\t"<< 2.0*MAT_PI/ImagFreq(vel_snd,vel_fer,col_freq) <<" L/v\342\202\200\033[0m\n";
+	cout <<"Determined maximum simulated time\t\033[1m\nT\342\202\230\342\202\220\342\202\223\t" <<Tmax<<" L/v\342\202\200\033[0m\n";
+	cout <<"Discretisation\n";
+	cout <<"\033[1m\316\224t\t"<<dt<<" L/v\342\202\200\t\316\224x\t"<<dx<<" L\033[0m\n"<<endl;
 }
