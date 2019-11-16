@@ -15,7 +15,6 @@
 using namespace std;
 
 
-//<<<<<<< add_source_term
 float DensityFlux(float den,float vel,float vel_snd,float vel_fer);
 
 float VelocityFlux(float den,float vel,float vel_snd,float vel_fer);
@@ -27,19 +26,9 @@ float VelocitySource(float den,float vel,float vel_snd,float vel_fer,float col_f
 
 
 int main(int argc, char **argv){
-
+	/* Display name and version  */
     BannerDisplay();
 
-	/*......TIME stamp for the logfile................................*/
-	ofstream logfile;
-	logfile.open("Simulation.log",std::ios_base::app);
-	time_t time_raw;
-	struct tm * time_info;
-	time (&time_raw);
-	time_info = localtime (&time_raw);
-	logfile << "\n#Simulation @ " << asctime(time_info) ;
-	/*................................................................*/
-	
 	int Nx=201; 							// number of spatial points
 	float t=0.0,leng=1.0;					// time variable and spatial Length
 	float dx;								// spatial discretisation
@@ -76,11 +65,11 @@ int main(int argc, char **argv){
 	else{
 		cout << "Define S value: ";
 		cin >> vel_snd;
-		cout << "Define Vf value: ";
+		cout << "Define vF value: ";
 		cin >> vel_fer;
-		cout << "Define mean free path value: ";
+		cout << "Define collision frequency: ";
 		cin >> col_freq;
-		cout << "Define data_save_mode value (0-> light save | 1-> full data):";
+		cout << "Define data_save_mode value (0-> light save | 1-> full data): ";
 		cin >> data_save_mode;
 		}
 	
@@ -127,21 +116,24 @@ int main(int argc, char **argv){
 	// density(x,t)
 	string densityfile = "density_" + nam_post + ".dat" ;
 	ofstream data_density;
-	data_density.open (densityfile);
-	data_density << fixed ;
-	data_density << setprecision(6);
 	// velocity(x,t)	
 	string velocityfile = "velocity_" + nam_post + ".dat" ;
 	ofstream data_velocity;
-	data_velocity.open (velocityfile);
-	data_velocity << fixed ;
-	data_velocity << setprecision(6);
 	// current(x,t)	
 	string currentfile = "current_" + nam_post + ".dat" ;
 	ofstream data_current;
-	data_current.open (currentfile);
-	data_current << fixed ;
-	data_current << setprecision(6);	
+	if(data_save_mode){
+		data_density.open (densityfile);
+		data_density << fixed ;
+		data_density << setprecision(6);
+		data_velocity.open (velocityfile);
+		data_velocity << fixed ;
+		data_velocity << setprecision(6);			
+		data_current.open (currentfile);
+		data_current << fixed ;
+		data_current << setprecision(6);		
+	}
+
 
 	// time density(L,t)-1=U(L,t) current(0,t) electric_dipole_moment(t)  derivative_electric_dipole_moment(t)
 	string electrofile = "electro_" + nam_post + ".dat" ;
@@ -156,23 +148,10 @@ int main(int argc, char **argv){
 	/*................................................................*/
 
 	
-	
-
-	cout << "Sound speed S/v0\t"<< vel_snd <<endl;
-	cout << "Fermi velocity vF/v0\t"<< vel_fer <<endl;
-	cout << "Mean free path l/L\t"<< col_freq <<endl;
-	cout <<"dt= "<<dt<<"\tdx= "<<dx<<endl;
-	cout << "Predicted w'= "<< RealFreq(vel_snd,1.0,1.0,1) << "\t1/w'= "<< 1.0/RealFreq(vel_snd,vel_fer,col_freq,1)  << endl;
-	cout << "Predicted w''= "<< ImagFreq(vel_snd,1.0,1.0) <<"\t1/w''= "<< 1.0/ImagFreq(vel_snd,vel_fer,col_freq) <<endl;
-	
-	logfile << "#vel_snd \t vel_fer \t col_freq \t dt \t dx \t w' \t w'' " << endl;
-	logfile << vel_snd <<"\t"<<vel_fer<< "\t"<< col_freq<<"\t"<< dt <<"\t"<< dx <<"\t"<< RealFreq(vel_snd,vel_fer,col_freq,1) <<"\t"<< ImagFreq(vel_snd,vel_fer,col_freq) ;
-	
-
-	
 	float T_max=10.0;
 	
-	cout <<"Determined maximum simulated time\t" <<T_max<<endl;
+	WellcomeScreen(vel_snd, vel_fer, col_freq, dt, dx, T_max);
+	RecordLogFile( vel_snd, vel_fer, col_freq, dt, dx, T_max);
 	
 	////////////////////////////////////////////////////////////////////
 	// Initialization	
@@ -189,7 +168,7 @@ int main(int argc, char **argv){
 		}
 	}
 	
-	cout << "Running"<<endl;
+	cout << "\033[1;7;5;33m Program Running \033[0m"<<endl;
 	
 	int time_step=0;
 	
@@ -253,8 +232,8 @@ int main(int argc, char **argv){
 		//Record electric quantities
 		data_electro <<t<<"\t"<< den_cor[Nx-1]-1.0 <<"\t"<< den_cor[0]*vel_cor[0] <<"\t"<<  TotalElectricDipole(Nx,dx,den_cor)<<"\t"<<  DtElectricDipole(Nx,dx,cur_cor) <<"\t"<< KineticEnergy(Nx,dx, den_cor, vel_cor)  <<"\n";
 	}
-	cout << "DONE!" <<endl;
-	cout << "*******************************************************"<<endl;
+	cout << "\033[1A\033[2K\033[1;32mDONE!\033[0m\n";
+	cout<<"═══════════════════════════════════════════════════════════════════════════" <<endl;
 
 	free(den);
 	free(den_mid);
@@ -264,9 +243,11 @@ int main(int argc, char **argv){
 	free(vel_cor);
 	free(cur_cor);
 
-	data_density.close();
-	data_velocity.close();
-	data_current.close();
+	if(data_save_mode){
+		data_density.close();
+		data_velocity.close();
+		data_current.close();
+	}	
 	data_slice.close();
 	data_electro.close();
 	

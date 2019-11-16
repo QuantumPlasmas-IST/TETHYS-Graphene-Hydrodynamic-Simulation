@@ -8,5 +8,5 @@ scripts:
   - Makefile
 github_automation:
   -.github/**/*
-documentation:  
+documentation:
   -*md

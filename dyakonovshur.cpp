@@ -53,17 +53,21 @@
 using namespace std;
 
 
+float PhaseVel(float sound, float fermi){
+	float vel_phs = sqrt(sound*sound+0.5*fermi*fermi + 0.0625 );
+	return vel_phs ;
+}
+
 float RealFreq(float sound, float fermi, float col_freq, int mode){
 	float real;
-	float vel_phs_sqr = sound*sound + fermi*fermi*0.5 + 0.0625;
-	float vel_phs = sqrt(vel_phs_sqr);
+	float vel_phs = PhaseVel(sound,fermi);
+	float vel_phs_sqr = vel_phs*vel_phs ;
 	if (1 < vel_phs ){
 		mode = 2*mode-1;
 	 }
 	else{
 		mode = 2*mode;
 		}
-	
 	real =  fabs(vel_phs_sqr - 0.5625 ) * MAT_PI * mode / (2.0 * vel_phs );
 	return real;
 }
@@ -71,10 +75,9 @@ float RealFreq(float sound, float fermi, float col_freq, int mode){
 	
 float ImagFreq(float sound, float fermi, float col_freq){
 	float imag;	
-	float vel_phs_sqr = sound*sound + fermi*fermi*0.5 + 0.0625;
-	float vel_phs = sqrt(vel_phs_sqr);
+	float vel_phs = PhaseVel(sound,fermi);
+	float vel_phs_sqr = vel_phs*vel_phs ;
 	imag = (vel_phs_sqr - 0.5625 ) * log(fabs( (vel_phs+0.75)/(vel_phs-0.75) )) / (2.0 * vel_phs ) - col_freq*(1-0.125/vel_phs);
-	
 	return imag;
 }	
 
@@ -116,23 +119,19 @@ void BoundaryCond(int type, int N, float * den, float * vel ){
 
 void InitialCondSine(int N, float dx,  float * den, float * vel){
   float L = (N-1)*dx;
-  float x;
-   
   for (int i = 0; i < N; i++ )
   {
-		x = (float)i * dx;
+		float x = (float)i * dx;
 		den[i] = 1.0 + 0.05*sin ( MAT_PI * x / L );
 		vel[i] = 0.0;	
   }
 }
 
 void InitialCondRand(int N, float dx,  float * den, float * vel){
-  srand (time(NULL)); 
-  float noise; 
-   
+  srand (time(NULL));   
   for (int i = 0; i < N; i++ )
   {
-		noise = (float) rand()/ (float) RAND_MAX ;
+		float noise = (float) rand()/ (float) RAND_MAX ;
 		den[i] = 1.0 + 0.005*(noise-0.5);
 		vel[i] = 0.0;
   }
@@ -265,11 +264,7 @@ void ExtremaFinding(float *vec_in, int N, float sound, float dt,float & sat, flo
 	
 	data_extrema << "#pos_max" << "\t" << "Max" <<"\t"<< "pos_min" <<"\t"<< "Min"<<endl;	 
 	
-	int W;
-	int pos_max, pos_min;
-	float maximum,minimum;
-	
-	W = floor( 1.2*2*MAT_PI/(RealFreq(sound, 1.0, 1.0, 1)*dt));	
+	int W = floor( 1.2*2*MAT_PI/(RealFreq(sound, 1.0, 1.0, 1)*dt));	
 	int k = 0;
 	int M = ceil(0.5*dt*N*RealFreq(sound, 1.0, 1.0, 1)/MAT_PI);
 	float *vec_max;			
@@ -278,11 +273,11 @@ void ExtremaFinding(float *vec_in, int N, float sound, float dt,float & sat, flo
 	vec_pos =(float*) calloc (M,sizeof(float));
 	
 	for(int shift=0; shift < N-W ; shift += W){
-		maximum =  *max_element( vec_in + shift ,vec_in + shift + W );
-		pos_max =   max_element( vec_in + shift ,vec_in + shift + W ) - vec_in; 
+		float maximum =  *max_element( vec_in + shift ,vec_in + shift + W );
+		int pos_max =   max_element( vec_in + shift ,vec_in + shift + W ) - vec_in; 
 		
-		minimum =  *min_element( vec_in + shift ,vec_in + shift + W );
-		pos_min =   min_element( vec_in + shift ,vec_in + shift + W ) - vec_in; 
+		float minimum =  *min_element( vec_in + shift ,vec_in + shift + W );
+		int pos_min =   min_element( vec_in + shift ,vec_in + shift + W ) - vec_in; 
 		
 		data_extrema << pos_max*dt << "\t" << maximum <<"\t"<< pos_min*dt <<"\t"<< minimum  <<endl;	 	
 		vec_max[k] = maximum;
@@ -384,7 +379,7 @@ float RetardedTime(float time, float x , float y , float z, float X , float Y , 
 
 
 void JefimenkoEMField(int XDIM, int YDIM, float dx, float dy, float dt, float Xpos, float Ypos, float Zpos,  float ** rho, float ** rho_dot, float ** cur, float ** cur_dot, float Time , float  * E_out , float  * B_out, float  * S_out   ){
-	float q =-1.0;
+	//float q =-1.0;
 	int k_retard;
 	float R_norm;
 	
@@ -517,22 +512,50 @@ void JefimenkoEMField(int XDIM, int YDIM, float dx, float dy, float dt, float Xp
 }
 
 
-void BannerDisplay(){
-	
-	
-cout<<"\n";
-cout<<"╔═════════════════════════════════════════════════════════════════════════╗\n";
-cout<<"║  ooooooooooo ooooooooooo ooooooooooo ooooo ooooo ooooo  oooo oooooooo8  ║\n";
-cout<<"║  88  888  88  888    88  88  888  88  888   888    888  88  888         ║\n";
-cout<<"║      888      888ooo8        888      888ooo888      888     888oooooo  ║\n";
-cout<<"║      888      888    oo      888      888   888      888            888 ║\n";
-cout<<"║     o888o    o888ooo8888    o888o    o888o o888o    o888o   o88oooo888  ║\n";
-cout<<"║                                                                         ║\n";
-cout<<"║ Two-dimensional Emitter of THz, Hydrodynamic Simulation.  Version 1.2.2 ║\n";
-cout<<"╚═════════════════════════════════════════════════════════════════════════╝\n";
-cout<<"\n" ;                                                                                                                                                                                             
-
-
-
-
+void BannerDisplay(void){
+cout<<"\n" ;
+	cout<<"╔═════════════════════════════════════════════════════════════════════════╗\n";
+	cout<<"║\033[2m  ▆▆▆▆▆▆▆▆▆▆▆ ▆▆▆▆▆▆▆▆▆▆  ▆▆▆▆▆▆▆▆▆▆▆ ▆▆▆▆▆ ▆▆▆▆▆ ▆▆▆▖   ▗▆▆▆ ▗▆▆▆▆▆▆▆▖  \033[0m║\n";
+	cout<<"║\033[2m  █▘  ▐█▌  ▝█  ▐█▌    ▝█  █▘  ▐█▌  ▝█  ▐█▌   ▐█▌     █▌ ▐█   ▐█▌     ▝█  \033[0m║\n";
+	cout<<"║\033[2m      ▐█▌      ▐█▌▆▆▆█        ▐█▌      ▐█▌▆▆▆▐█▌      ▐█▌     ▝██▆▆▆▆▆▖  \033[0m║\n";
+	cout<<"║\033[2m      ▐█▌      ▐█▌    ▗▉      ▐█▌      ▐█▌   ▐█▌      ▐█▌    ▗       ██  \033[0m║\n";
+	cout<<"║\033[2m     ▆███▆    ▆███▆▆▆██▉     ▆███▆    ▆███▆ ▆███▆    ▆███▆   ▐█▆▆▆▆▆██▘  \033[0m║\n";
+	cout<<"║                                                                         ║\n";
+	cout<<"║ \033[1mTwo-dimensional Emitter of THz, Hydrodynamic Simulation.  Version 1.2.2\033[0m ║\n";
+	cout<<"╚═════════════════════════════════════════════════════════════════════════╝\n";                                                                                                                                                                                          
 }
+
+void WellcomeScreen(float vel_snd, float vel_fer, float col_freq, float dt,float dx, float Tmax){
+	cout << "\nFermi velocity\t\033[1mvF\t"<< vel_fer <<" v\342\202\200\033[0m\n";
+	if ( PhaseVel(vel_snd, vel_fer) < vel_fer){
+		cout << "Phase velocity\t\033[1mS'\t" << PhaseVel(vel_snd, vel_fer)<<" v\342\202\200\033[0m  \033[1;5;7;31m WARNING plasmon in damping region \033[0m" <<endl;
+	}else{
+		cout << "Phase velocity\t\033[1mS'\t" << PhaseVel(vel_snd, vel_fer)<<" v\342\202\200\033[0m\n";
+	}
+	cout << "Collision \t\033[1m\316\275\t"<< col_freq <<" v\342\202\200/L\n\033[0m\n";
+	cout << "Theoretical frequency \033[1m\317\211=\317\211'+i\317\211''\033[0m\n";
+	cout << "\033[1m\317\211'\t"<< RealFreq(vel_snd,vel_fer,col_freq,1) << " v\342\202\200/L\t2\317\200/\317\211'\t"<< 2.0*MAT_PI/RealFreq(vel_snd,vel_fer,col_freq,1)  << " L/v\342\202\200\033[0m\n";
+	cout << "\033[1m\317\211''\t"<< ImagFreq(vel_snd,vel_fer,col_freq) <<" v\342\202\200/L\t2\317\200/\317\211''\t"<< 2.0*MAT_PI/ImagFreq(vel_snd,vel_fer,col_freq) <<" L/v\342\202\200\033[0m\n";
+	cout <<"Determined maximum simulated time\t\033[1m\nT\342\202\230\342\202\220\342\202\223\t" <<Tmax<<" L/v\342\202\200\033[0m\n";
+	cout <<"Discretisation\n";
+	cout <<"\033[1m\316\224t\t"<<dt<<" L/v\342\202\200\t\316\224x\t"<<dx<<" L\033[0m\n"<<endl;
+}
+
+
+
+void RecordLogFile(float vel_snd, float vel_fer, float col_freq, float dt, float dx, float Tmax){
+	ofstream logfile;
+	logfile.open("Simulation.log",std::ios_base::app);
+	time_t time_raw;
+	struct tm * time_info;
+	time (&time_raw);
+	time_info = localtime (&time_raw);
+	logfile << "\n#Simulation @ " << asctime(time_info) ;
+	logfile << "#parameters:\n";
+	logfile << "#vel_snd \t vel_fer \t col_freq  \t w' \t w'' \n";
+	logfile << vel_snd <<"\t"<<vel_fer<< "\t"<< col_freq<<"\t"<< RealFreq(vel_snd,vel_fer,col_freq,1) <<"\t"<< ImagFreq(vel_snd,vel_fer,col_freq) <<"\n";
+	logfile << "#discretisation:\n";
+    logfile << "#dt\tdx\tTmax\ttime steps\tspace points\n";
+	logfile << dt<<"\t"<<dx<<"\t"<<Tmax<<"\t"<< (int) Tmax/dt <<"\t"<< (int) 1/dx <<endl;
+}
+
