@@ -15,7 +15,6 @@
 using namespace std;
 
 
-//<<<<<<< add_source_term
 float DensityFlux(float den,float vel,float vel_snd,float vel_fer);
 
 float VelocityFlux(float den,float vel,float vel_snd,float vel_fer);
@@ -75,9 +74,9 @@ int main(int argc, char **argv){
 	else{
 		cout << "Define S value: ";
 		cin >> vel_snd;
-		cout << "Define Vf value: ";
+		cout << "Define vF value: ";
 		cin >> vel_fer;
-		cout << "Define mean free path value: ";
+		cout << "Define collision frequency: ";
 		cin >> col_freq;
 		cout << "Define data_save_mode value (0-> light save | 1-> full data): ";
 		cin >> data_save_mode;
@@ -126,21 +125,24 @@ int main(int argc, char **argv){
 	// density(x,t)
 	string densityfile = "density_" + nam_post + ".dat" ;
 	ofstream data_density;
-	data_density.open (densityfile);
-	data_density << fixed ;
-	data_density << setprecision(6);
 	// velocity(x,t)	
 	string velocityfile = "velocity_" + nam_post + ".dat" ;
 	ofstream data_velocity;
-	data_velocity.open (velocityfile);
-	data_velocity << fixed ;
-	data_velocity << setprecision(6);
 	// current(x,t)	
 	string currentfile = "current_" + nam_post + ".dat" ;
 	ofstream data_current;
-	data_current.open (currentfile);
-	data_current << fixed ;
-	data_current << setprecision(6);	
+	if(data_save_mode){
+		data_density.open (densityfile);
+		data_density << fixed ;
+		data_density << setprecision(6);
+		data_velocity.open (velocityfile);
+		data_velocity << fixed ;
+		data_velocity << setprecision(6);			
+		data_current.open (currentfile);
+		data_current << fixed ;
+		data_current << setprecision(6);		
+	}
+
 
 	// time density(L,t)-1=U(L,t) current(0,t) electric_dipole_moment(t)  derivative_electric_dipole_moment(t)
 	string electrofile = "electro_" + nam_post + ".dat" ;
@@ -157,7 +159,8 @@ int main(int argc, char **argv){
 	
 	float T_max=10.0;
 	
-	WellcomeScreen(vel_snd, vel_fer, col_freq,dt,dx,T_max);
+	WellcomeScreen(vel_snd, vel_fer, col_freq, dt, dx, T_max);
+	RecordLogFile( vel_snd, vel_fer, col_freq, dt, dx, T_max);
 	
 	////////////////////////////////////////////////////////////////////
 	// Initialization	
@@ -249,9 +252,11 @@ int main(int argc, char **argv){
 	free(vel_cor);
 	free(cur_cor);
 
-	data_density.close();
-	data_velocity.close();
-	data_current.close();
+	if(data_save_mode){
+		data_density.close();
+		data_velocity.close();
+		data_current.close();
+	}	
 	data_slice.close();
 	data_electro.close();
 	

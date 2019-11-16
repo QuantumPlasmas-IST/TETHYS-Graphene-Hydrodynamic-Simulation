@@ -540,3 +540,22 @@ void WellcomeScreen(float vel_snd, float vel_fer, float col_freq, float dt,float
 	cout <<"Discretisation\n";
 	cout <<"\033[1m\316\224t\t"<<dt<<" L/v\342\202\200\t\316\224x\t"<<dx<<" L\033[0m\n"<<endl;
 }
+
+
+
+void RecordLogFile(float vel_snd, float vel_fer, float col_freq, float dt, float dx, float Tmax){
+	ofstream logfile;
+	logfile.open("Simulation.log",std::ios_base::app);
+	time_t time_raw;
+	struct tm * time_info;
+	time (&time_raw);
+	time_info = localtime (&time_raw);
+	logfile << "\n#Simulation @ " << asctime(time_info) ;
+	logfile << "#parameters:\n";
+	logfile << "#vel_snd \t vel_fer \t col_freq  \t w' \t w'' \n";
+	logfile << vel_snd <<"\t"<<vel_fer<< "\t"<< col_freq<<"\t"<< RealFreq(vel_snd,vel_fer,col_freq,1) <<"\t"<< ImagFreq(vel_snd,vel_fer,col_freq) <<"\n";
+	logfile << "#discretisation:\n";
+    logfile << "#dt\tdx\tTmax\ttime steps\tspace points\n";
+	logfile << dt<<"\t"<<dx<<"\t"<<Tmax<<"\t"<< (int) Tmax/dt <<"\t"<< (int) 1/dx <<endl;
+}
+
