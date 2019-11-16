@@ -54,24 +54,20 @@ using namespace std;
 
 
 float PhaseVel(float sound, float fermi){
-	
 	float vel_phs = sqrt(sound*sound+0.5*fermi*fermi + 0.0625 );
 	return vel_phs ;
-
 }
 
 float RealFreq(float sound, float fermi, float col_freq, int mode){
 	float real;
 	float vel_phs = PhaseVel(sound,fermi);
 	float vel_phs_sqr = vel_phs*vel_phs ;
-	
 	if (1 < vel_phs ){
 		mode = 2*mode-1;
 	 }
 	else{
 		mode = 2*mode;
 		}
-	
 	real =  fabs(vel_phs_sqr - 0.5625 ) * MAT_PI * mode / (2.0 * vel_phs );
 	return real;
 }
@@ -81,9 +77,7 @@ float ImagFreq(float sound, float fermi, float col_freq){
 	float imag;	
 	float vel_phs = PhaseVel(sound,fermi);
 	float vel_phs_sqr = vel_phs*vel_phs ;
-
 	imag = (vel_phs_sqr - 0.5625 ) * log(fabs( (vel_phs+0.75)/(vel_phs-0.75) )) / (2.0 * vel_phs ) - col_freq*(1-0.125/vel_phs);
-	
 	return imag;
 }	
 

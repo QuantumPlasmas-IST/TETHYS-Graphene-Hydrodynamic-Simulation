@@ -27,9 +27,8 @@ float VelocitySource(float den,float vel,float vel_snd,float vel_fer,float col_f
 
 
 int main(int argc, char **argv){
-
+	/* Display name and version  */
     BannerDisplay();
-
 	/*......TIME stamp for the logfile................................*/
 	ofstream logfile;
 	logfile.open("Simulation.log",std::ios_base::app);
