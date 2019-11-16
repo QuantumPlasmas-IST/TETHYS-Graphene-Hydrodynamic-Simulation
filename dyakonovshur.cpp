@@ -119,23 +119,19 @@ void BoundaryCond(int type, int N, float * den, float * vel ){
 
 void InitialCondSine(int N, float dx,  float * den, float * vel){
   float L = (N-1)*dx;
-  float x;
-   
   for (int i = 0; i < N; i++ )
   {
-		x = (float)i * dx;
+		float x = (float)i * dx;
 		den[i] = 1.0 + 0.05*sin ( MAT_PI * x / L );
 		vel[i] = 0.0;	
   }
 }
 
 void InitialCondRand(int N, float dx,  float * den, float * vel){
-  srand (time(NULL)); 
-  float noise; 
-   
+  srand (time(NULL));   
   for (int i = 0; i < N; i++ )
   {
-		noise = (float) rand()/ (float) RAND_MAX ;
+		float noise = (float) rand()/ (float) RAND_MAX ;
 		den[i] = 1.0 + 0.005*(noise-0.5);
 		vel[i] = 0.0;
   }
@@ -268,11 +264,7 @@ void ExtremaFinding(float *vec_in, int N, float sound, float dt,float & sat, flo
 	
 	data_extrema << "#pos_max" << "\t" << "Max" <<"\t"<< "pos_min" <<"\t"<< "Min"<<endl;	 
 	
-	int W;
-	int pos_max, pos_min;
-	float maximum,minimum;
-	
-	W = floor( 1.2*2*MAT_PI/(RealFreq(sound, 1.0, 1.0, 1)*dt));	
+	int W = floor( 1.2*2*MAT_PI/(RealFreq(sound, 1.0, 1.0, 1)*dt));	
 	int k = 0;
 	int M = ceil(0.5*dt*N*RealFreq(sound, 1.0, 1.0, 1)/MAT_PI);
 	float *vec_max;			
@@ -281,11 +273,11 @@ void ExtremaFinding(float *vec_in, int N, float sound, float dt,float & sat, flo
 	vec_pos =(float*) calloc (M,sizeof(float));
 	
 	for(int shift=0; shift < N-W ; shift += W){
-		maximum =  *max_element( vec_in + shift ,vec_in + shift + W );
-		pos_max =   max_element( vec_in + shift ,vec_in + shift + W ) - vec_in; 
+		float maximum =  *max_element( vec_in + shift ,vec_in + shift + W );
+		int pos_max =   max_element( vec_in + shift ,vec_in + shift + W ) - vec_in; 
 		
-		minimum =  *min_element( vec_in + shift ,vec_in + shift + W );
-		pos_min =   min_element( vec_in + shift ,vec_in + shift + W ) - vec_in; 
+		float minimum =  *min_element( vec_in + shift ,vec_in + shift + W );
+		int pos_min =   min_element( vec_in + shift ,vec_in + shift + W ) - vec_in; 
 		
 		data_extrema << pos_max*dt << "\t" << maximum <<"\t"<< pos_min*dt <<"\t"<< minimum  <<endl;	 	
 		vec_max[k] = maximum;
@@ -387,7 +379,7 @@ float RetardedTime(float time, float x , float y , float z, float X , float Y , 
 
 
 void JefimenkoEMField(int XDIM, int YDIM, float dx, float dy, float dt, float Xpos, float Ypos, float Zpos,  float ** rho, float ** rho_dot, float ** cur, float ** cur_dot, float Time , float  * E_out , float  * B_out, float  * S_out   ){
-	float q =-1.0;
+	//float q =-1.0;
 	int k_retard;
 	float R_norm;
 	
