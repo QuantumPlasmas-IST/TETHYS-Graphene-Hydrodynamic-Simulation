@@ -28,16 +28,7 @@ float VelocitySource(float den,float vel,float vel_snd,float vel_fer,float col_f
 int main(int argc, char **argv){
 	/* Display name and version  */
     BannerDisplay();
-	/*......TIME stamp for the logfile................................*/
-	ofstream logfile;
-	logfile.open("Simulation.log",std::ios_base::app);
-	time_t time_raw;
-	struct tm * time_info;
-	time (&time_raw);
-	time_info = localtime (&time_raw);
-	logfile << "\n#Simulation @ " << asctime(time_info) ;
-	/*................................................................*/
-	
+
 	int Nx=201; 							// number of spatial points
 	float t=0.0,leng=1.0;					// time variable and spatial Length
 	float dx;								// spatial discretisation
