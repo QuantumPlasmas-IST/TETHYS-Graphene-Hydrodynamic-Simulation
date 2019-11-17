@@ -4,7 +4,7 @@ algorithm:
 library:
   - dyakonovshur.*
 scripts:
-  - *.sh
+  -*sh
   - Makefile
 github_automation:
   -.github/**/*
