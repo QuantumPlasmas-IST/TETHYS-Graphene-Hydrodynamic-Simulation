@@ -1,5 +1,5 @@
 # TETHYS - *Two-dimensional Emitter of THz, Hydrodynamic Simulation.*
-## Version 1.2.2
+## Version 1.2.3
 
 ## Richtmyer method implementation
 Repository for the elaboration of the hydrodymanic model simulation. 
@@ -18,11 +18,12 @@ Standard form of numeric *major.minor.patch* starting with the initial commit 1.
 #### Version history
 1.0.0 Initial commit
 
-1.1.0 Updated nonlinear terms in velocity flux, explicit pressure term. (minor changes in variables)  
+1.1.0 Updated nonlinear terms in velocity flux, explicit pressure term. (minor changes in variables).
 
-1.2.0 Addition of collisional loss term 
-  <br>&emsp;1.2.1 Mean free path added as command line parameter 
-  <br>&emsp;1.2.2 Update of frequency functions + minor changes in appearence 
+1.2.0 Addition of collisional loss term.
+  <br>&emsp;1.2.1 Mean free path added as command line parameter. 
+  <br>&emsp;1.2.2 Update of frequency functions + minor changes in appearence. 
+  <br>&emsp;1.2.3 Added warning for the case on non-propagating plasmons + begining impementation of CI tasks.
 
 ### Internal syntax
 
