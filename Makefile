@@ -7,8 +7,8 @@ CLIBS  = -lm
 SIMULSRC = Richtmyer.cpp dyakonovshur.cpp
 SIMULOBJ = $(SIMULSRC:.cpp = .o)
 
-#ANALYSISSRC = AnalysisELEC.cpp dyakonovshur.cpp
-#ANALYSISOBJ = $(ANALYSISSRC:.cpp = .o)
+ANALYSISSRC = AnalysisELEC.cpp dyakonovshur.cpp
+ANALYSISOBJ = $(ANALYSISSRC:.cpp = .o)
 #JEFIMENKOSRC = Jefimenko.cpp dyakonovshur.cpp
 #JEFIMENKOOBJ = $(JEFIMENKOSRC:.cpp = .o)
 #BENCHMARKSRC = BenchMarking.cpp dyakonovshur.cpp
@@ -24,8 +24,8 @@ simul: $(SIMULOBJ)
 #benchmark: $(BENCHMARKOBJ)
 	#$(CC) $(CFLAGS) $(CLIBS) -o Benchmark $(BENCHMARKOBJ)
 
-#analysis: $(ANALYSISOBJ)
-	#$(CC) $(CFLAGS) -o AnalysisELEC $(ANALYSISOBJ) $(FFTLIBS) $(CLIBS)
+analysis: $(ANALYSISOBJ)
+	$(CC) $(CFLAGS) -o AnalysisELEC $(ANALYSISOBJ) $(FFTLIBS) $(CLIBS)
 
 #jefimenko: $(JEFIMENKOOBJ)
 	#$(CC) $(CFLAGS) $(CLIBS) -o Jefimenko $(JEFIMENKOOBJ)
