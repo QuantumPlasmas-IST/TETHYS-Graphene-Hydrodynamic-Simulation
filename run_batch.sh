@@ -9,6 +9,7 @@ for s in 10 20 40 60
 do 
 	echo "calculating S="$s
 	echo "calculating Vf="$v
+	echo "calculating Vc="$l
 	./Richtmyer $s $v $l 0 | tee -a Richt_full_output.log
 	mv -- *.dat "./$DIRNAME"
 done 
