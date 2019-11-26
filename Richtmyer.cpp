@@ -59,7 +59,7 @@ int main(int argc, char **argv){
 	if(argc==5){
 		vel_snd = atof(argv[1]);
 		vel_fer = atof(argv[2]);
-		col_freq     = atof(argv[3]); 
+		col_freq = atof(argv[3]); 
 		data_save_mode = atoi(argv[4]);	// full data or light save option
 		}
 	else{
@@ -73,11 +73,13 @@ int main(int argc, char **argv){
 		cin >> data_save_mode;
 		}
 	
-	
-	// NEEDS REVIEWING
 	/*......CFL routine to determine dt...............................*/	
 	dx = leng / ( float ) ( Nx - 1 );
-	if(vel_snd<5){
+	if(vel_fer<30 && (vel_snd-vel_fer<=10))
+		dt = 2 * dx / (2*vel_snd+sqrt(3*vel_fer*vel_fer + 24*vel_snd*vel_snd));
+	else 
+		dt = 4 * dx / (2*vel_snd+sqrt(3*vel_fer*vel_fer + 24*vel_snd*vel_snd));
+	/*if(vel_snd<5){
 		dt = dx / (5*vel_snd);
 	}
 	else{
@@ -88,7 +90,7 @@ int main(int argc, char **argv){
 			dt = dx / (20+2*vel_snd);		
 			//dt = dx / (5+1.5*vel_snd);		
 		}
-	}
+	}*/
 	/*................................................................*/
 	
 	
@@ -151,7 +153,7 @@ int main(int argc, char **argv){
 	float T_max=10.0;
 	
 	WellcomeScreen(vel_snd, vel_fer, col_freq, dt, dx, T_max);
-	RecordLogFile( vel_snd, vel_fer, col_freq, dt, dx, T_max);
+	RecordLogFile(vel_snd, vel_fer, col_freq, dt, dx, T_max);
 	
 	////////////////////////////////////////////////////////////////////
 	// Initialization	

@@ -8,6 +8,7 @@ v=10
 l=10
 echo "calculating S="$s
 echo "calculating Vf="$v
+echo "calculating Vc="$l
 ./Richtmyer $s $v $l 0 | tee -a Fluid.log
 
 mv -- *.dat "./$DIRNAME"
