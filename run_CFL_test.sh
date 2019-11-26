@@ -8,7 +8,7 @@ for v in 5 10 15 15 20 25 30
 do
 	DIRNAME2=$(date +"DataFiles_Batch_Vf=$v")
 	mkdir "./$DIRNAME1/$DIRNAME2"
-	for ((s = $v; s<=30; s+=5))
+	for ((s = v; s<=30; s+=5))
 		do 
 		DIRNAME3=$(date +"DataFiles_Single_Vf=$v S=$s")
 		mkdir "./$DIRNAME1/$DIRNAME2/$DIRNAME3"
