@@ -1,9 +1,9 @@
 
 set xlabel "time"
 set ylabel "density"
-set title "den-t Vf=30 S=40"
-set term png; set output "density.png"; plot "slice_S=40.00Vf=30.00l=0.00.dat" u 1:2 with linespoints ps 0 lw 0.1
+set title "den-t Vf=30 S=30"
+set term png; set output "density.png"; plot "slice_S=30.00Vf=30.00l=0.00.dat" u 1:2 with linespoints ps 0 lw 0.1
 set ylabel "velocity"
-set title "vel-t Vf=30 S=40"
-set output "velocity.png"; plot "slice_S=40.00Vf=30.00l=0.00.dat" u 1:3 with linespoints ps 0 lw 0.1
+set title "vel-t Vf=30 S=30"
+set output "velocity.png"; plot "slice_S=30.00Vf=30.00l=0.00.dat" u 1:3 with linespoints ps 0 lw 0.1
 quit
