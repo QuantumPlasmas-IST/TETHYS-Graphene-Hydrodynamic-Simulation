@@ -100,5 +100,12 @@ int main(int argc, char **argv){
 	cout << "\033[1A\033[2K\033[1;32mDONE!\033[0m\n";
 	cout<<"═══════════════════════════════════════════════════════════════════════════" <<endl;
 
+	free(Time);
+	free(in_vel_0);
+	free(in_vel_L);
+	free(in_den_0);
+	free(in_den_L);
+	logfile.close();
+	input.close();
 	return 0;
 }
