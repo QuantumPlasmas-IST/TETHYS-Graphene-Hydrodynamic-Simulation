@@ -66,9 +66,10 @@ int main(int argc, char **argv){
 	input.open(argv[2]);
 
 	cout << "Reading input file";
-	int i=0;
+	
 	if(input.is_open())
 	{
+		int i=0;
 		while(input.good())
 		{
 			input >> Time[i] >> in_potential[i] >> in_current[i] >>in_dipole[i] >> in_D_dipole[i] >> in_K_energy[i];

@@ -9,6 +9,10 @@ SIMULOBJ = $(SIMULSRC:.cpp = .o)
 
 ANALYSISSRC = AnalysisELEC.cpp dyakonovshur.cpp
 ANALYSISOBJ = $(ANALYSISSRC:.cpp = .o)
+
+TIMESERIESSRC = TimeSeries.cpp dyakonovshur.cpp
+TIMESERIESOBJ = $(TIMESERIESSRC:.cpp = .o)
+
 #JEFIMENKOSRC = Jefimenko.cpp dyakonovshur.cpp
 #JEFIMENKOOBJ = $(JEFIMENKOSRC:.cpp = .o)
 #BENCHMARKSRC = BenchMarking.cpp dyakonovshur.cpp
@@ -17,7 +21,7 @@ ANALYSISOBJ = $(ANALYSISSRC:.cpp = .o)
 #FFTOBJ = $(FFTSRC:.cpp = .o)
 #all: simul analysis jefimenko density benchmark
 
-all: simul analysis
+all: simul analysis timeseries
 simul: $(SIMULOBJ)
 	$(CC) $(CFLAGS) $(CLIBS) -o Richtmyer $(SIMULOBJ)
 
@@ -26,6 +30,9 @@ simul: $(SIMULOBJ)
 
 analysis: $(ANALYSISOBJ)
 	$(CC) $(CFLAGS) -o AnalysisELEC $(ANALYSISOBJ) $(FFTLIBS) $(CLIBS)
+
+timeseries: $(TIMESERIESOBJ)
+	$(CC) $(CFLAGS) -o TimeSeries $(TIMESERIESOBJ) $(FFTLIBS) $(CLIBS)
 
 #jefimenko: $(JEFIMENKOOBJ)
 	#$(CC) $(CFLAGS) $(CLIBS) -o Jefimenko $(JEFIMENKOOBJ)

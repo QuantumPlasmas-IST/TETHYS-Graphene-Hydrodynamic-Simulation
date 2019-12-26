@@ -9,6 +9,11 @@
 #bibliografy
 *.pdf
 
+# Mac stuff
+*DS_Store*
+
+#images
+*.png
 
 ###########################################
 # Github Template for C/C++
