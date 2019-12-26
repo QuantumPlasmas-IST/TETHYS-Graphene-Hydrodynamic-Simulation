@@ -67,29 +67,39 @@ int main(int argc, char **argv){
 	////////////////////////////////////////////////////////////////////
 
 
+	ofstream logfile;
+	logfile.open("ExtremaEnvelope.log",std::ios_base::app);
+	time_t rawtime;
+	struct tm * timeinfo;
+	time (&rawtime);
+	timeinfo = localtime (&rawtime);
+	logfile << "\n#Simulation @ " << asctime(timeinfo) ;
+
 
 	float saturation = 0.0;
 	float tau = 0.0;
 	float error = 0.0;
-	ExtremaFinding(in_den_0, N, S, dt,saturation,tau, error, "den0.dat");
-	cout << "Density saturation at x=0: " << saturation << endl;
-	cout << "Time for 99% of saturation: " << tau <<endl;		
+	//ExtremaFinding(in_den_0, N, S, dt,saturation,tau, error, "extrema_den_0.dat");
+	//cout << "Density saturation at x=0: " << saturation << endl;
+	//cout << "Time for 99% of saturation: " << tau <<endl;		
 
-	ExtremaFinding(in_den_L, N, S, dt,saturation,tau, error, "denL.dat");
-	cout << "Density saturation at x=L: " << saturation << endl;
-	cout << "Time for 99% of saturation: " << tau <<endl;		
+	ExtremaFinding(in_den_L, N, S, dt,saturation,tau, error, "Extrema_den_L.dat");
+	logfile << "#Density saturation at x=L:\n" << saturation << endl;
+	logfile << "#Time for 99% of saturation:\n" << tau <<endl;		
 
-	ExtremaFinding(in_vel_0, N, S, dt,saturation,tau, error, "vel0.dat");
-	cout << "Velocity saturation at x=0: " << saturation << endl
-	cout << "Time for 99% of saturation: " << tau <<endl;		;
+	ExtremaFinding(in_vel_0, N, S, dt,saturation,tau, error, "Extrema_vel_0.dat");
+	logfile << "#Velocity saturation at x=0:\n" << saturation << endl;
+	logfile << "#Time for 99% of saturation:\n" << tau <<endl;		
 
-	ExtremaFinding(in_vel_L, N, S, dt,saturation,tau, error, "velL.dat");	
-	cout << "Velocity saturation at x=L: " << saturation << endl;
-	cout << "Time for 99% of saturation: " << tau <<endl;		
+	ExtremaFinding(in_vel_L, N, S, dt,saturation,tau, error, "Extrema_vel_L.dat");	
+	logfile << "#Velocity saturation at x=L:\n" << saturation << endl;
+	logfile << "#Time for 99% of saturation:\n" << tau <<endl;		
 	
 	
-	
-	
+	cout << "\033[1;7;5;33m Program Running \033[0m"<<endl;
+	cout << "\033[1A\033[2K\033[1;32mDONE!\033[0m\n";
+	cout<<"═══════════════════════════════════════════════════════════════════════════" <<endl;
+
 	
 	return 0;
 	
