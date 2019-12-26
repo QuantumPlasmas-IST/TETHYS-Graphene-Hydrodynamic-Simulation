@@ -101,7 +101,7 @@ int main(int argc, char **argv){
 	/////  obtain dipole acceleration ///////////
 	for(int k=1;k<N-1;k++){
 	
-	out_D2_dipoleAux[k] = (-0.5*in_D_dipole[k-1]+0.5*in_D_dipole[k+1])/dt;
+	     out_D2_dipoleAux[k] = (-0.5*in_D_dipole[k-1]+0.5*in_D_dipole[k+1])/dt;
 	
 	}
     
@@ -126,10 +126,10 @@ int main(int argc, char **argv){
 	///// RMS values  //////////////////////////////////////////////////
 	
 	float I_rms, Ug_rms, d2P_rms,Power_rms; 
-	Ug_rms = RMS(N, dt, in_potential);
-	I_rms = RMS(N, dt, in_current);
-	d2P_rms = RMS(N, dt, out_D2_dipole);
-	Power_rms = RMS(N, dt, out_power);
+	Ug_rms = RootMeanSquare(N, dt, in_potential);
+	I_rms = RootMeanSquare(N, dt, in_current);
+	d2P_rms = RootMeanSquare(N, dt, out_D2_dipole);
+	Power_rms = RootMeanSquare(N, dt, out_power);
 	
 	cout << "RMS Ugs : " << Ug_rms <<endl;
 	cout << "RMS Ids : " << I_rms  <<endl;

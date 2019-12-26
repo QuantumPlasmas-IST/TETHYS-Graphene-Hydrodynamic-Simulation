@@ -17,7 +17,7 @@ ANALYSISOBJ = $(ANALYSISSRC:.cpp = .o)
 #FFTOBJ = $(FFTSRC:.cpp = .o)
 #all: simul analysis jefimenko density benchmark
 
-all: simul
+all: simul analysis
 simul: $(SIMULOBJ)
 	$(CC) $(CFLAGS) $(CLIBS) -o Richtmyer $(SIMULOBJ)
 
