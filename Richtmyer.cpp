@@ -75,9 +75,15 @@ int main(int argc, char **argv){
 	
 	/*......CFL routine to determine dt...............................*/	
 	dx = leng / ( float ) ( Nx - 1 );
-	if(vel_fer<30 && (vel_snd-vel_fer<=10))
+	if(vel_fer<10 && (vel_snd-vel_fer) <= 3)
+		dt = 0.5 * dx / (2*vel_snd+sqrt(3*vel_fer*vel_fer + 24*vel_snd*vel_snd));
+	else if (vel_fer<10 && (vel_snd-vel_fer<= 10 - vel_fer))
+		dt = 1.5 * dx / (2*vel_snd+sqrt(3*vel_fer*vel_fer + 24*vel_snd*vel_snd));
+	else if (vel_fer<15 && (vel_snd-vel_fer<= 5))
 		dt = 2 * dx / (2*vel_snd+sqrt(3*vel_fer*vel_fer + 24*vel_snd*vel_snd));
-	else 
+	else if (vel_fer<30 && (vel_snd-vel_fer<= 3))
+		dt = 3 * dx / (2*vel_snd+sqrt(3*vel_fer*vel_fer + 24*vel_snd*vel_snd));
+	else
 		dt = 4 * dx / (2*vel_snd+sqrt(3*vel_fer*vel_fer + 24*vel_snd*vel_snd));
 	/*if(vel_snd<5){
 		dt = dx / (5*vel_snd);
