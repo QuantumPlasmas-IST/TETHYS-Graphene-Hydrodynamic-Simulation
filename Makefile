@@ -32,7 +32,7 @@ simul: $(SIMULOBJ)
 #	$(CC) $(CFLAGS) -o AnalysisELEC $(ANALYSISOBJ) $(FFTLIBS) $(CLIBS)
 
 timeseries: $(TIMESERIESOBJ)
-	$(CC) $(CFLAGS) -o TimeSeries $(TIMESERIESOBJ) $(FFTLIBS) $(CLIBS)
+	$(CC) $(CFLAGS) -o TimeSeries $(TIMESERIESOBJ) $(CLIBS)
 
 #jefimenko: $(JEFIMENKOOBJ)
 	#$(CC) $(CFLAGS) $(CLIBS) -o Jefimenko $(JEFIMENKOOBJ)
