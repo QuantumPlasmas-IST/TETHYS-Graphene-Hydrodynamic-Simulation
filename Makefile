@@ -21,15 +21,15 @@ TIMESERIESOBJ = $(TIMESERIESSRC:.cpp = .o)
 #FFTOBJ = $(FFTSRC:.cpp = .o)
 #all: simul analysis jefimenko density benchmark
 
-all: simul analysis timeseries
+all: simul timeseries
 simul: $(SIMULOBJ)
 	$(CC) $(CFLAGS) $(CLIBS) -o Richtmyer $(SIMULOBJ)
 
 #benchmark: $(BENCHMARKOBJ)
 	#$(CC) $(CFLAGS) $(CLIBS) -o Benchmark $(BENCHMARKOBJ)
 
-analysis: $(ANALYSISOBJ)
-	$(CC) $(CFLAGS) -o AnalysisELEC $(ANALYSISOBJ) $(FFTLIBS) $(CLIBS)
+#analysis: $(ANALYSISOBJ)
+#	$(CC) $(CFLAGS) -o AnalysisELEC $(ANALYSISOBJ) $(FFTLIBS) $(CLIBS)
 
 timeseries: $(TIMESERIESOBJ)
 	$(CC) $(CFLAGS) -o TimeSeries $(TIMESERIESOBJ) $(FFTLIBS) $(CLIBS)

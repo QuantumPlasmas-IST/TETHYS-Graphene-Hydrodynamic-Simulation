@@ -9,7 +9,7 @@
 #include <string>
 #include <ctime>
 #include <numeric>
-#include <fftw3.h>
+//#include <fftw3.h>
 
 #include "dyakonovshur.h"
 
