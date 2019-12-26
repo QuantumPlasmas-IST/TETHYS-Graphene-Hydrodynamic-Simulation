@@ -20,7 +20,6 @@ using namespace std;
 
 
 int main(int argc, char **argv){
-
 	cout<<"\n" ;
 	cout<<"╔═════════════════════════════════════════════════════════════════════════╗\n";
 	cout<<"║ \033[1m Time Series analysis for TETHYS                                       \033[0m ║\n";
@@ -66,19 +65,21 @@ int main(int argc, char **argv){
 	cout << "time max " << Time[N-1] <<endl;	
 	////////////////////////////////////////////////////////////////////
 
-
 	ofstream logfile;
 	logfile.open("ExtremaEnvelope.log",std::ios_base::app);
-	time_t rawtime;
-	struct tm * timeinfo;
-	time (&rawtime);
-	timeinfo = localtime (&rawtime);
-	logfile << "\n#Simulation @ " << asctime(timeinfo) ;
+	time_t time_raw;
+	struct tm * time_info;
+	time (&time_raw);
+	time_info = localtime (&time_raw);
+	char buffer [80];
+	strftime (buffer,80,"%F %H:%M:%S\n",time_info);
+	logfile << "\n#Simulation @ " << buffer ;
 
 
 	float saturation = 0.0;
 	float tau = 0.0;
 	float error = 0.0;
+	/*not needed since density at x=0 is constant by the boundary conditions*/
 	//ExtremaFinding(in_den_0, N, S, dt,saturation,tau, error, "extrema_den_0.dat");
 	//cout << "Density saturation at x=0: " << saturation << endl;
 	//cout << "Time for 99% of saturation: " << tau <<endl;		
@@ -94,13 +95,10 @@ int main(int argc, char **argv){
 	ExtremaFinding(in_vel_L, N, S, dt,saturation,tau, error, "Extrema_vel_L.dat");	
 	logfile << "#Velocity saturation at x=L:\n" << saturation << endl;
 	logfile << "#Time for 99% of saturation:\n" << tau <<endl;		
-	
-	
+		
 	cout << "\033[1;7;5;33m Program Running \033[0m"<<endl;
 	cout << "\033[1A\033[2K\033[1;32mDONE!\033[0m\n";
 	cout<<"═══════════════════════════════════════════════════════════════════════════" <<endl;
 
-	
 	return 0;
-	
 }

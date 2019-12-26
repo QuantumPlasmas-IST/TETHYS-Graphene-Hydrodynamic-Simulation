@@ -550,7 +550,9 @@ void RecordLogFile(float vel_snd, float vel_fer, float col_freq, float dt, float
 	struct tm * time_info;
 	time (&time_raw);
 	time_info = localtime (&time_raw);
-	logfile << "\n#Simulation @ " << asctime(time_info) ;
+	char buffer [80];
+	strftime (buffer,80,"%F %H:%M:%S\n",time_info);
+	logfile << "\n#Simulation @ " << buffer ;
 	logfile << "#parameters:\n";
 	logfile << "#vel_snd \t vel_fer \t col_freq  \t w' \t w'' \n";
 	logfile << vel_snd <<"\t"<<vel_fer<< "\t"<< col_freq<<"\t"<< RealFreq(vel_snd,vel_fer,col_freq,1) <<"\t"<< ImagFreq(vel_snd,vel_fer,col_freq) <<"\n";
