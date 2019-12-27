@@ -1,6 +1,5 @@
 # TETHYS - *Two-dimensional Emitter of THz, Hydrodynamic Simulation.*
-## Version 1.2.4
-
+## Version 1.2.4    [![CodeFactor](https://www.codefactor.io/repository/github/pcosme/hydrodynamic-simulation/badge?s=00232ac4455fd1f2e77fbc58fe3823f751721249)](https://www.codefactor.io/repository/github/pcosme/hydrodynamic-simulation)
 ## Richtmyer method implementation
 Repository for the elaboration of the hydrodymanic model simulation. 
 So far implemented only in 1D+1 for density and velocity fields.
