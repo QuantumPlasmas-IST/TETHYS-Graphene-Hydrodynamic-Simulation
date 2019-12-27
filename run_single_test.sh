@@ -13,7 +13,7 @@ echo "calculating Vc="$l
 ./Richtmyer $s $v $l 0 | tee -a Fluid.log
 ./TimeSeries $(wc -l slice*) $s | tee -a TimeSeries.log
 
-mv -- Extrema* "$DIRNAME/extrema"
+mv -- Extrema* "./$DIRNAME/extrema"
 mv -- *.dat "./$DIRNAME"
 mv -- *.log "./$DIRNAME"
 
