@@ -19,11 +19,13 @@ float DensityFlux(float den,float vel,float vel_snd,float vel_fer);
 
 float VelocityFlux(float den,float vel,float vel_snd,float vel_fer);
 
+float EnergyFlux(float den,float vel,float vel_snd,float vel_fer);
+
 float DensitySource(float den,float vel,float vel_snd,float vel_fer);
 
 float VelocitySource(float den,float vel,float vel_snd,float vel_fer,float col_freq);
 
-
+float EnergySource(float den,float den_der,float vel,float vel_snd,float vel_fer);
 
 int main(int argc, char **argv){
 	/* Display name and version  */
@@ -40,15 +42,21 @@ int main(int argc, char **argv){
 	den =(float*) calloc (Nx,sizeof(float));
 	float *den_mid;							//density auxiliary vector for midpoint calculation 
 	den_mid = (float*) calloc (Nx-1,sizeof(float));
+	float *eng;							 	//energy density field
+	eng =(float*) calloc (Nx,sizeof(float));
+	float *eng_mid;							//energy density auxiliary vector for midpoint calculation 
+	eng_mid = (float*) calloc (Nx-1,sizeof(float));
 	float *vel;								//velocity field
  	vel = (float*) calloc (Nx,sizeof(float));
 	float *vel_mid;							//velocity auxiliary vector for midpoint calculation 
 	vel_mid = (float*) calloc (Nx-1,sizeof(float));
-	
+
 	float *den_cor;							//density corrected after average filter 
 	den_cor = (float*) calloc (Nx,sizeof(float));
 	float *vel_cor;							//velocity corrected after average filter 
 	vel_cor = (float*) calloc (Nx,sizeof(float));
+ 	float *eng_cor;							//energy density corrected after average filter 
+	eng_cor = (float*) calloc (Nx,sizeof(float));
  	float *cur_cor;							//current density (n*v) corrected after average filter 
 	cur_cor = (float*) calloc (Nx,sizeof(float));
  	
@@ -165,6 +173,11 @@ int main(int argc, char **argv){
 	// Initialization	
 	InitialCondRand(Nx, dx, den, vel);
 	BoundaryCond(3, Nx, den, vel);
+	
+	for(int i = 0; i<Nx  ;i++)
+	{
+		eng[i]=1.0;
+	}
 	////////////////////////////////////////////////////////////////////
 	
 	if(data_save_mode){
@@ -202,7 +215,14 @@ int main(int argc, char **argv){
 			vel_mid[i] = 0.5*( vel[i] + vel[i+1] )
 				- ( 0.5*dt/dx ) * ( VelocityFlux(den[i+1],vel[i+1],arr_snd[i], vel_fer) - VelocityFlux(den[i],vel[i],arr_snd[i], vel_fer) ) 
 				+ ( 0.5*dt    ) * VelocitySource(0.5*(den[i]+den[i+1]),0.5*(vel[i]+vel[i+1]),arr_snd[i], vel_fer, col_freq) ;
+			/* NEW ENERGY FLUX */				
+			eng_mid[i] = 0.5*( eng[i] + eng[i+1] )
+				- ( 0.5*dt/dx ) * ( EnergyFlux(den[i+1],vel[i+1],arr_snd[i], vel_fer) - EnergyFlux(den[i],vel[i],arr_snd[i], vel_fer) ) 	
+				+ ( 0.5*dt    ) * EnergySource(0.5*(den[i]+den[i+1]),0.5*(-1.0*den[i]+den[i+1])/dx,0.5*(vel[i]+vel[i+1]),arr_snd[i], vel_fer);
+				
 		}
+		
+		
 		//
 		// Remaining step 
 		//
@@ -212,6 +232,9 @@ int main(int argc, char **argv){
 							+  dt * DensitySource(den[i],vel[i],arr_snd[i], vel_fer);
 			vel[i] = vel[i] - (dt/dx) * ( VelocityFlux(den_mid[i],vel_mid[i],arr_snd[i], vel_fer) - VelocityFlux(den_mid[i-1],vel_mid[i-1],arr_snd[i], vel_fer) )
 							+  dt * VelocitySource(den[i],vel[i],arr_snd[i], vel_fer, col_freq);
+			/* NEW ENERGY FLUX */				
+			eng[i] = eng[i] - (dt/dx) * ( EnergyFlux(den_mid[i],vel_mid[i],arr_snd[i], vel_fer) - EnergyFlux(den_mid[i-1],vel_mid[i-1],arr_snd[i], vel_fer) )				
+							+  dt * EnergySource(den[i],0.5*(-1.0*den_mid[i-1]+den_mid[i])/dx,vel[i],arr_snd[i], vel_fer);	
 		}
 		
 		// Impose boundary conditions
@@ -220,6 +243,7 @@ int main(int argc, char **argv){
 		// Applying average filters for smoothing 
 		AverageFilter( den ,den_cor, Nx , 2);	
 		AverageFilter( vel ,vel_cor, Nx , 2);
+		AverageFilter( eng ,eng_cor, Nx , 2);
 		
 		// calculate current density already smoothed			
 		for ( int i = 0; i < Nx; i++ )
@@ -259,26 +283,27 @@ int main(int argc, char **argv){
 	data_slice.close();
 	data_electro.close();
 	
-	
-	
-	
 	return 0;
 }
 
 float DensityFlux(float den,float vel,float vel_snd,float vel_fer){
 	float f1;
-	
 	f1 = den*vel;
-	
 	return f1;
 }
-
 
 float VelocityFlux(float den,float vel,float vel_snd,float vel_fer){
 	float f2;
 	f2 = 0.25*vel*vel + vel_fer*vel_fer*0.5*log(den) + 2*vel_snd*vel_snd*sqrt(den); 
 	return f2;
 }
+
+float EnergyFlux(float den,float vel,float vel_snd,float vel_fer){
+	float f3;
+	f3 = vel*pow(den,1.5);
+ 	return f3;
+}
+
 
 float DensitySource(float den,float vel,float vel_snd,float vel_fer){
 	float Q1=0.0;
@@ -287,9 +312,13 @@ return Q1;
 
 float VelocitySource(float den,float vel,float vel_snd,float vel_fer,float col_freq){
 	float Q2=0.0;
-	
-		Q2=-1.0*col_freq*(vel-1);
-	
+	Q2=-1.0*col_freq*(vel-1);
 return Q2;
+}
+
+float EnergySource(float den,float den_der,float vel,float vel_snd,float vel_fer){
+	float Q3=0.0;
+	Q3=pow(vel_snd/vel_fer,2)*den*vel*den_der;
+return Q3;
 }
 
