@@ -16,10 +16,10 @@
 
 using namespace H5;
 using namespace std;
-const H5std_string      FILE_NAME( "Richtmyer.h5" );
-const H5std_string      DATASET_DEN( "Density" );
-const H5std_string      DATASET_VEL( "Velocity" );
-
+const H5std_string   FILE_NAME( "Richtmyer.h5" );
+const FloatType      hdf5_float(PredType::NATIVE_FLOAT);
+const IntType        hdf5_int(PredType::NATIVE_INT);
+           
 
 float DensityFlux(float den,float vel,float vel_snd,float vel_fer);
 
@@ -42,9 +42,13 @@ int main(int argc, char **argv){
 	const float leng=1.0;					
 	float dx;								// spatial discretisation
 	float dt;								// time step
+	const float T_max=10.0;					// maximum time of simulation
 	float vel_snd;						    // Sound speed
 	float vel_fer;							// Fermi velocity
 	float col_freq; 								// mean free path in units of GFET length
+	
+	
+	
 	float *den;							 	//density field
 	den =(float*) calloc (Nx,sizeof(float));
 	float *den_mid;							//density auxiliary vector for midpoint calculation 
@@ -154,36 +158,44 @@ int main(int argc, char **argv){
 	/*
 	 * Create attributes 
 	 */	
-	hsize_t dims[1] = { 1 };
+	hsize_t dim_atr[1] = { 1 };
 	// Create the data space for the attribute.
-	DataSpace atr_dataspace = DataSpace (1, dims );
+	DataSpace atr_dataspace = DataSpace (1, dim_atr );
 	// Create a group attribute. 
-	Attribute atr_vel_snd  = grp_dat->createAttribute( "S parameter", PredType::NATIVE_FLOAT, atr_dataspace);
-	Attribute atr_vel_fer  = grp_dat->createAttribute( "Fermi velocity", PredType::NATIVE_FLOAT, atr_dataspace);
-	Attribute atr_col_freq = grp_dat->createAttribute( "Collision frequency", PredType::NATIVE_FLOAT, atr_dataspace);
+	Attribute atr_vel_snd  = grp_dat->createAttribute( "S parameter", hdf5_float, atr_dataspace);
+	Attribute atr_vel_fer  = grp_dat->createAttribute( "Fermi velocity", hdf5_float, atr_dataspace);
+	Attribute atr_col_freq = grp_dat->createAttribute( "Collision frequency", hdf5_float, atr_dataspace);
+	Attribute atr_dx = grp_dat->createAttribute( "Space discretisation step", hdf5_float, atr_dataspace);
+	Attribute atr_dt = grp_dat->createAttribute( "Time discretisation step", hdf5_float, atr_dataspace);
+	Attribute atr_total_time = grp_dat->createAttribute( "Total simulation time", hdf5_float, atr_dataspace);
+	Attribute atr_num_time_steps = grp_dat->createAttribute( "Number of time steps", hdf5_int, atr_dataspace);
+	Attribute atr_num_space_points = grp_dat->createAttribute( "Number of spatial points", hdf5_int, atr_dataspace);
 	// Write the attribute data. 
-	atr_col_freq.write(PredType::NATIVE_FLOAT, &col_freq);
-	atr_vel_fer.write( PredType::NATIVE_FLOAT, &vel_fer);
-	atr_vel_snd.write( PredType::NATIVE_FLOAT, &vel_snd);
+	atr_col_freq.write(hdf5_float, &col_freq);
+	atr_vel_fer.write( hdf5_float, &vel_fer);
+	atr_vel_snd.write( hdf5_float, &vel_snd);
+	atr_dx.write(hdf5_float, &dx);
+	atr_dt.write( hdf5_float, &dt);
+	atr_total_time.write( hdf5_float, &T_max);
+	atr_num_space_points.write( hdf5_int, &Nx);
 	atr_col_freq.close();
 	atr_vel_fer.close();
 	atr_vel_snd.close();
-	
+	atr_dx.close();
+	atr_dt.close();
+	atr_total_time.close();
+	atr_num_space_points.close();
 	
 	const int RANK = 1; // 1D simulation
-	hsize_t     dimsf[1];              // dataset dimensions
-	dimsf[0] = Nx;
-	DataSpace dataspace_den( RANK, dimsf );
-	DataSpace dataspace_vel( RANK, dimsf );
-	DataSpace dataspace_cur( RANK, dimsf );
-	FloatType hdf5_float(PredType::NATIVE_FLOAT);
-	
-	
+	hsize_t     dim_snap[1];              // dataset dimensions
+	dim_snap[0] = Nx;
+	DataSpace dataspace_den( RANK, dim_snap );
+	DataSpace dataspace_vel( RANK, dim_snap );
+	DataSpace dataspace_cur( RANK, dim_snap );
+
+	/*................................................................*/
 
 	
-	/*................................................................*/
-	
-	float T_max=10.0;
 	
 	WellcomeScreen(vel_snd, vel_fer, col_freq, dt, dx, T_max);
 	RecordLogFile(vel_snd, vel_fer, col_freq, dt, dx, T_max);
@@ -227,8 +239,6 @@ int main(int argc, char **argv){
 				- ( 0.5*dt/dx ) * ( EnergyFlux(den[i+1],vel[i+1],arr_snd[i], vel_fer) - EnergyFlux(den[i],vel[i],arr_snd[i], vel_fer) ) 	
 				+ ( 0.5*dt    ) * EnergySource(0.5*(den[i]+den[i+1]),0.5*(-1.0*den[i]+den[i+1])/dx,0.5*(vel[i]+vel[i+1]),arr_snd[i], vel_fer);		
 		}
-		
-		
 		//
 		// Remaining step 
 		//
@@ -242,15 +252,12 @@ int main(int argc, char **argv){
 			eng[i] = eng[i] - (dt/dx) * ( EnergyFlux(den_mid[i],vel_mid[i],arr_snd[i], vel_fer) - EnergyFlux(den_mid[i-1],vel_mid[i-1],arr_snd[i], vel_fer) )				
 							+  dt * EnergySource(den[i],0.5*(-1.0*den_mid[i-1]+den_mid[i])/dx,vel[i],arr_snd[i], vel_fer);	
 		}
-		
 		// Impose boundary conditions
 		BoundaryCond(3, Nx, den, vel);
-		
 		// Applying average filters for smoothing 
 		AverageFilter( den ,den_cor, Nx , 2);	
 		AverageFilter( vel ,vel_cor, Nx , 2);
 		AverageFilter( eng ,eng_cor, Nx , 2);
-		
 		// calculate current density already smoothed			
 		for ( int i = 0; i < Nx; i++ )
 		{	
@@ -258,7 +265,6 @@ int main(int argc, char **argv){
 		}	
 		if(data_save_mode && time_step % 35 == 0 ){
 		//Record full data
-			
 			string str_time = to_string(time_step/35);
 			string name_dataset = "snapshot_"+str_time;
 			
@@ -274,8 +280,6 @@ int main(int argc, char **argv){
 			dataset_cur.write( cur_cor, hdf5_float );
 			dataset_cur.close();
 		}
-		
-	
 		//Record end points
 		data_slice <<t<<"\t"<< den_cor[Nx-1] <<"\t"<< vel_cor[Nx-1] <<"\t"<< den_cor[0] <<"\t" << vel_cor[0] <<"\n";
 		//Record electric quantities
@@ -283,7 +287,10 @@ int main(int argc, char **argv){
 	}
 	cout << "\033[1A\033[2K\033[1;32mDONE!\033[0m\n";
 	cout<<"═══════════════════════════════════════════════════════════════════════════" <<endl;
-
+	
+	atr_num_time_steps.write(hdf5_int, &time_step);
+	atr_num_time_steps.close();
+	
 	free(den);
 	free(den_mid);
 	free(den_cor);
@@ -291,16 +298,14 @@ int main(int argc, char **argv){
 	free(vel_mid);
 	free(vel_cor);
 	free(cur_cor);
-
-
 	data_slice.close();
 	data_electro.close();
 
 	grp_dat->close(); 
 	grp_den->close(); 
-	grp_vel->close(); 
-	
+	grp_vel->close();
 	hdf5file->close();
+	
 	return 0;
 }
 
