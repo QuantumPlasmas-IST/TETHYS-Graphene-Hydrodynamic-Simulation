@@ -34,16 +34,12 @@ float VelocitySource(float den,float vel,float vel_snd,float vel_fer,float col_f
 float EnergySource(float den,float den_der,float vel,float vel_snd,float vel_fer);
 
 int main(int argc, char **argv){
-	
-	
-	
-	
-	
 	/* Display name and version  */
     BannerDisplay();
 
-	const int Nx=201; 							// number of spatial points
-	float t=0.0,leng=1.0;					// time variable and spatial Length
+	const int Nx=201; 						// number of spatial points
+	float t=0.0;							// time variable and spatial Length
+	const float leng=1.0;					
 	float dx;								// spatial discretisation
 	float dt;								// time step
 	float vel_snd;						    // Sound speed
@@ -71,7 +67,6 @@ int main(int argc, char **argv){
  	float *cur_cor;							//current density (n*v) corrected after average filter 
 	cur_cor = (float*) calloc (Nx,sizeof(float));
 
- 	float TESTE[Nx];
  	
  	int data_save_mode=0;
 	
@@ -130,7 +125,6 @@ int main(int argc, char **argv){
 	string nam_post = "S="+str_snd+"vF="+str_fer+"l="+str_col_freq;
 		
 
-
 	// time density(L,t)-1=U(L,t) current(0,t) electric_dipole_moment(t)  derivative_electric_dipole_moment(t)
 	string electrofile = "electro_" + nam_post + ".dat" ;
 	ofstream data_electro;
@@ -156,6 +150,7 @@ int main(int argc, char **argv){
 	Group* grp_dat = new Group( hdf5file->createGroup( "/Data" ));
 	Group* grp_den = new Group( hdf5file->createGroup( "/Data/Density" ));
 	Group* grp_vel = new Group( hdf5file->createGroup( "/Data/Velocity" ));
+	Group* grp_cur = new Group( hdf5file->createGroup( "/Data/Current" ));
 	/*
 	 * Create attributes 
 	 */	
@@ -170,6 +165,9 @@ int main(int argc, char **argv){
 	atr_col_freq.write(PredType::NATIVE_FLOAT, &col_freq);
 	atr_vel_fer.write( PredType::NATIVE_FLOAT, &vel_fer);
 	atr_vel_snd.write( PredType::NATIVE_FLOAT, &vel_snd);
+	atr_col_freq.close();
+	atr_vel_fer.close();
+	atr_vel_snd.close();
 	
 	
 	const int RANK = 1; // 1D simulation
@@ -177,7 +175,8 @@ int main(int argc, char **argv){
 	dimsf[0] = Nx;
 	DataSpace dataspace_den( RANK, dimsf );
 	DataSpace dataspace_vel( RANK, dimsf );
-	FloatType datatype_float(PredType::NATIVE_FLOAT);
+	DataSpace dataspace_cur( RANK, dimsf );
+	FloatType hdf5_float(PredType::NATIVE_FLOAT);
 	
 	
 
@@ -226,8 +225,7 @@ int main(int argc, char **argv){
 			/* NEW ENERGY FLUX */				
 			eng_mid[i] = 0.5*( eng[i] + eng[i+1] )
 				- ( 0.5*dt/dx ) * ( EnergyFlux(den[i+1],vel[i+1],arr_snd[i], vel_fer) - EnergyFlux(den[i],vel[i],arr_snd[i], vel_fer) ) 	
-				+ ( 0.5*dt    ) * EnergySource(0.5*(den[i]+den[i+1]),0.5*(-1.0*den[i]+den[i+1])/dx,0.5*(vel[i]+vel[i+1]),arr_snd[i], vel_fer);
-				
+				+ ( 0.5*dt    ) * EnergySource(0.5*(den[i]+den[i+1]),0.5*(-1.0*den[i]+den[i+1])/dx,0.5*(vel[i]+vel[i+1]),arr_snd[i], vel_fer);		
 		}
 		
 		
@@ -261,17 +259,20 @@ int main(int argc, char **argv){
 		if(data_save_mode && time_step % 35 == 0 ){
 		//Record full data
 			
-			
 			string str_time = to_string(time_step/35);
 			string name_dataset = "snapshot_"+str_time;
 			
+			DataSet dataset_den = grp_den->createDataSet( name_dataset , hdf5_float, dataspace_den );
+			dataset_den.write( den_cor, hdf5_float );
+			dataset_den.close();
 			
-			DataSet dataset_den = grp_den->createDataSet( name_dataset , datatype_float, dataspace_den );
-			dataset_den.write( den_cor, PredType::NATIVE_FLOAT );
+			DataSet dataset_vel = grp_vel->createDataSet( name_dataset , hdf5_float, dataspace_vel );
+			dataset_vel.write( vel_cor, hdf5_float );
+			dataset_vel.close();	
 			
-			DataSet dataset_vel = grp_vel->createDataSet( name_dataset , datatype_float, dataspace_vel );
-			dataset_vel.write( vel_cor, PredType::NATIVE_FLOAT );
-			
+			DataSet dataset_cur = grp_cur->createDataSet( name_dataset , hdf5_float, dataspace_cur );
+			dataset_cur.write( cur_cor, hdf5_float );
+			dataset_cur.close();
 		}
 		
 	
@@ -295,9 +296,11 @@ int main(int argc, char **argv){
 	data_slice.close();
 	data_electro.close();
 
-
+	grp_dat->close(); 
+	grp_den->close(); 
+	grp_vel->close(); 
 	
-	delete hdf5file;
+	hdf5file->close();
 	return 0;
 }
 

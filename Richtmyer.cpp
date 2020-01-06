@@ -219,7 +219,6 @@ int main(int argc, char **argv){
 			eng_mid[i] = 0.5*( eng[i] + eng[i+1] )
 				- ( 0.5*dt/dx ) * ( EnergyFlux(den[i+1],vel[i+1],arr_snd[i], vel_fer) - EnergyFlux(den[i],vel[i],arr_snd[i], vel_fer) ) 	
 				+ ( 0.5*dt    ) * EnergySource(0.5*(den[i]+den[i+1]),0.5*(-1.0*den[i]+den[i+1])/dx,0.5*(vel[i]+vel[i+1]),arr_snd[i], vel_fer);
-				
 		}
 		
 		
