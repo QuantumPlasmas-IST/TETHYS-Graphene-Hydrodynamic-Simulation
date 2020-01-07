@@ -5,6 +5,7 @@
 
 # Data files 
 *.dat
+*.h5
 
 #bibliografy
 *.pdf

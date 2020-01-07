@@ -27,6 +27,7 @@ v_iterator () {
 	fi
 }
 
+
 s_iterator () {
 	S_ITER=2
 	if (( $1 >= 30 )); then
