@@ -6,8 +6,8 @@ DIR_IMG="$DIR_ROOT/Images"
 mkdir -p "$DIR_ROOT"
 mkdir -p "$DIR_IMG"
 
-rm *.dat
-rm *.log
+rm -- *.dat
+rm -- *.log
 
 l=0
 
@@ -54,7 +54,7 @@ do
 	s_iterator $v
 	s_range $v
         DIR_SUB="./$DIR_ROOT/Vf=$v"
-	mkdir -p $DIR_SUB
+	mkdir -p "$DIR_SUB"
 	#echo "calculating Vf="$v
 	for ((s = v; s<= v + S_RANGE; s+=S_ITER))
 		do 
