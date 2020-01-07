@@ -14,15 +14,15 @@ So far implemented only in 1D+1 for density and velocity fields.
 
 * HDF5 lybraries 
 
- For the writting of the complete data.
+  For the writting of the complete data.
 
 * ~~FFTW lybraries~~
 
- Temporarily not implemented, in future will be used for calculate Fourier Transform of the signal. 
+  Temporarily not implemented, in future will be used for calculate Fourier Transform of the signal. 
 
 * Gnuplot 
 
- Responsible for the plotting
+  Responsible for the plotting
 
 ## Style guide
 
