@@ -1,118 +1,84 @@
 #!/bin/bash
 
-DIRNAME1=$(date +"DataFiles_CFL_%F_%H:%M")
-DIRNAMEIMG=$(date +"Image_Vf=$v")
-mkdir -p "$DIRNAME1"
-mkdir "./$DIRNAME1/$DIRNAMEIMG"
+DIR_ROOT=$(date +"DataFiles_CFL_%F_%H:%M")
+DIR_IMG="$DIR_ROOT/Images"
+
+mkdir -p "$DIR_ROOT"
+mkdir -p "$DIR_IMG"
+
+rm *.dat
+rm *.log
 
 l=0
-for((v=3; v<=8; v+=1))
+
+V_MIN=3
+V_RANGE=50
+V_ITER=1
+S_ITER=2
+S_RANGE=4
+
+v_iterator () {
+	V_ITER=1
+	if (( $1 >= 8 )); then
+		V_ITER=2
+	fi
+	if (( $1 >= 30 )); then
+		V_ITER=5
+	fi
+}
+
+s_iterator () {
+	S_ITER=2
+	if (( $1 >= 30 )); then
+		S_ITER=5
+	fi
+}
+
+s_range () {
+	S_RANGE=4
+	if (( $1 >= 8 )); then
+		S_RANGE=2
+	fi
+	if (( $1 >= 15 )); then
+		S_RANGE=4
+	fi
+	if (( $1 >= 30 )); then
+		S_RANGE=5
+	fi
+}
+
+
+for((v=V_MIN; v<=V_RANGE; v+=V_ITER))
 do
-	DIRNAME2=$(date +"DataFiles_Batch_Vf=$v")
-	mkdir "./$DIRNAME1/$DIRNAME2"
-	for ((s = v; s<= v + 4; s+=2))
+	v_iterator $v
+	s_iterator $v
+	s_range $v
+        DIR_SUB="./$DIR_ROOT/Vf=$v"
+	mkdir -p $DIR_SUB
+	#echo "calculating Vf="$v
+	for ((s = v; s<= v + S_RANGE; s+=S_ITER))
 		do 
-		DIRNAME3=$(date +"DataFiles_Single_Vf=$v S=$s")
-		mkdir "./$DIRNAME1/$DIRNAME2/$DIRNAME3"
-		echo "calculating S="$s
-		echo "calculating Vf="$v
-		echo "calculating Vc="$l
-		./Richtmyer $s $v $l 0 | tee -a Richt_full_output.log
+		#echo "	calculating S="$s
+		IMG_DEN_NAME="S=$s.Vf=$v.l=$l.DEN.png"
+		IMG_VEL_NAME="S=$s.Vf=$v.l=$l.VEL.png"
+		
+		./Richtmyer $s $v $l 0 
+
+		FILE_NAME="slice_S=$s.00vF=$v.00l=$l.00.dat"
+
 		echo > gnuplot.in
-		echo "set xlabel \"time\"" >> gnuplot.in
-		echo "set ylabel \"density\"" >> gnuplot.in
-		echo "set title \"den-t Vf=$v S=$s\"" >> gnuplot.in
-		echo "set term png; set output \"density_$s.00Vf=$v.00l=$l.00.png\"; plot \"slice_S=$s.00Vf=$v.00l=$l.00.dat\" u 1:2 with linespoints ps 0 lw 0.1" >> gnuplot.in
-		echo "set ylabel \"velocity\"" >> gnuplot.in
-		echo "set title \"vel-t Vf=$v S=$s\"" >> gnuplot.in
-		echo "set output \"velocity_$s.00Vf=$v.00l=$l.00.png\"; plot \"slice_S=$s.00Vf=$v.00l=$l.00.dat\" u 1:3 with linespoints ps 0 lw 0.1" >> gnuplot.in
-		echo "quit" >> gnuplot.in
+		echo "set term png
+		set o '$IMG_DEN_NAME'
+		set title 'den-t Vf=$v S=$s'
+		plot '$FILE_NAME' u 1:2 w l noti
+		set o '$IMG_VEL_NAME'
+		set title 'vel-t Vf=$v S=$s'
+		plot '$FILE_NAME' u 1:3 w l noti
+		set o; set term pop" >> gnuplot.in
 		gnuplot gnuplot.in
-		mv -- *.dat "./$DIRNAME1/$DIRNAME2/$DIRNAME3"
-		mv -- *.png "./$DIRNAME1/$DIRNAMEIMG"
-		done 
-	done
+		mv -- *.dat "$DIR_SUB"
+		mv -- *.png "$DIR_IMG"
+	done 
+done
 	
-for((v=9; v<=15; v+=2))
-do
-	DIRNAME2=$(date +"DataFiles_Batch_Vf=$v")
-	mkdir "./$DIRNAME1/$DIRNAME2"
-	for ((s = v; s<= v + 2 ; s+=2))
-		do 
-		DIRNAME3=$(date +"DataFiles_Single_Vf=$v S=$s")
-		mkdir "./$DIRNAME1/$DIRNAME2/$DIRNAME3"
-		echo "calculating S="$s
-		echo "calculating Vf="$v
-		echo "calculating Vc="$l
-		./Richtmyer $s $v $l 0 | tee -a Richt_full_output.log
-		echo > gnuplot.in
-		echo "set xlabel \"time\"" >> gnuplot.in
-		echo "set ylabel \"density\"" >> gnuplot.in
-		echo "set title \"den-t Vf=$v S=$s\"" >> gnuplot.in
-		echo "set term png; set output \"density_$s.00Vf=$v.00l=$l.00.png\"; plot \"slice_S=$s.00Vf=$v.00l=$l.00.dat\" u 1:2 with linespoints ps 0 lw 0.1" >> gnuplot.in
-		echo "set ylabel \"velocity\"" >> gnuplot.in
-		echo "set title \"vel-t Vf=$v S=$s\"" >> gnuplot.in
-		echo "set output \"velocity_$s.00Vf=$v.00l=$l.00.png\"; plot \"slice_S=$s.00Vf=$v.00l=$l.00.dat\" u 1:3 with linespoints ps 0 lw 0.1" >> gnuplot.in
-		echo "quit" >> gnuplot.in
-		gnuplot gnuplot.in
-		mv -- *.dat "./$DIRNAME1/$DIRNAME2/$DIRNAME3"
-		mv -- *.png "./$DIRNAME1/$DIRNAMEIMG"
-		done 
-	done
-
-for((v=15; v<=30; v+=2))
-do
-	DIRNAME2=$(date +"DataFiles_Batch_Vf=$v")
-	mkdir "./$DIRNAME1/$DIRNAME2"
-	for ((s = v; s<= v 2 4; s+=2))
-		do 
-		DIRNAME3=$(date +"DataFiles_Single_Vf=$v S=$s")
-		mkdir "./$DIRNAME1/$DIRNAME2/$DIRNAME3"
-		echo "calculating S="$s
-		echo "calculating Vf="$v
-		echo "calculating Vc="$l
-		./Richtmyer $s $v $l 0 | tee -a Richt_full_output.log
-		echo > gnuplot.in
-		echo "set xlabel \"time\"" >> gnuplot.in
-		echo "set ylabel \"density\"" >> gnuplot.in
-		echo "set title \"den-t Vf=$v S=$s\"" >> gnuplot.in
-		echo "set term png; set output \"density_$s.00Vf=$v.00l=$l.00.png\"; plot \"slice_S=$s.00Vf=$v.00l=$l.00.dat\" u 1:2 with linespoints ps 0 lw 0.1" >> gnuplot.in
-		echo "set ylabel \"velocity\"" >> gnuplot.in
-		echo "set title \"vel-t Vf=$v S=$s\"" >> gnuplot.in
-		echo "set output \"velocity_$s.00Vf=$v.00l=$l.00.png\"; plot \"slice_S=$s.00Vf=$v.00l=$l.00.dat\" u 1:3 with linespoints ps 0 lw 0.1" >> gnuplot.in
-		echo "quit" >> gnuplot.in
-		gnuplot gnuplot.in
-		mv -- *.dat "./$DIRNAME1/$DIRNAME2/$DIRNAME3"
-		mv -- *.png "./$DIRNAME1/$DIRNAMEIMG"
-		done 
-	done
-
-
-for((v=30; v<=50; v+=5))
-do
-	DIRNAME2=$(date +"DataFiles_Batch_Vf=$v")
-	mkdir "./$DIRNAME1/$DIRNAME2"
-	for ((s = v; s<= v + 5; s+=5))
-		do 
-		DIRNAME3=$(date +"DataFiles_Single_Vf=$v S=$s")
-		mkdir "./$DIRNAME1/$DIRNAME2/$DIRNAME3"
-		echo "calculating S="$s
-		echo "calculating Vf="$v
-		echo "calculating Vc="$l
-		./Richtmyer $s $v $l 0 | tee -a Richt_full_output.log
-		echo > gnuplot.in
-		echo "set xlabel \"time\"" >> gnuplot.in
-		echo "set ylabel \"density\"" >> gnuplot.in
-		echo "set title \"den-t Vf=$v S=$s\"" >> gnuplot.in
-		echo "set term png; set output \"density_$s.00Vf=$v.00l=$l.00.png\"; plot \"slice_S=$s.00Vf=$v.00l=$l.00.dat\" u 1:2 with linespoints ps 0 lw 0.1" >> gnuplot.in
-		echo "set ylabel \"velocity\"" >> gnuplot.in
-		echo "set title \"vel-t Vf=$v S=$s\"" >> gnuplot.in
-		echo "set output \"velocity_$s.00Vf=$v.00l=$l.00.png\"; plot \"slice_S=$s.00Vf=$v.00l=$l.00.dat\" u 1:3 with linespoints ps 0 lw 0.1" >> gnuplot.in
-		echo "quit" >> gnuplot.in
-		gnuplot gnuplot.in
-		mv -- *.dat "./$DIRNAME1/$DIRNAME2/$DIRNAME3"
-		mv -- *.png "./$DIRNAME1/$DIRNAMEIMG"
-		done 
-	done
-
-mv -- *.log "./$DIRNAME1"
+mv -- *.log "$DIR_ROOT"
