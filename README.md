@@ -10,19 +10,19 @@ So far implemented only in 1D+1 for density and velocity fields.
 
 ## Requirements 
 
-*gcc compiler 
+* gcc compiler 
 
-*HDF5 lybraries 
+* HDF5 lybraries 
 
-..For the writting of the complete data.
+ For the writting of the complete data.
 
-*<s> FFTW lybraries</s> 
+* ~~FFTW lybraries~~
 
-..Temporarily not implemented, in future will be used for calculate Fourier Transform of the signal. 
+ Temporarily not implemented, in future will be used for calculate Fourier Transform of the signal. 
 
-*Gnuplot 
+* Gnuplot 
 
-..Responsible for the plotting
+ Responsible for the plotting
 
 ## Style guide
 
