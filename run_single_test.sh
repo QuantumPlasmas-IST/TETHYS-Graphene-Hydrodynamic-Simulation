@@ -16,7 +16,7 @@ FILENAME=$(find slice*.dat)
 WORDCOUNT=$(wc -l slice*.dat)
 LINENUMBER=${WORDCOUNT% *}
 
-./TimeSeries $LINENUMBER "$FILENAME" $s | tee -a TimeSeries.log
+./TimeSeries "$LINENUMBER" "$FILENAME" $s | tee -a TimeSeries.log
 
 mv -- Extrema* "./$DIRNAME/extrema"
 mv -- *.dat "./$DIRNAME"
