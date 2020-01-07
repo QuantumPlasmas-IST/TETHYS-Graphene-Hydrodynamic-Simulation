@@ -6,8 +6,8 @@ DIR_IMG="$DIR_ROOT/Images"
 mkdir -p "$DIR_ROOT"
 mkdir -p "$DIR_IMG"
 
-rm *.dat
-rm *.log
+rm -- *.dat
+rm -- *.log
 
 l=0
 
