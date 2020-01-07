@@ -11,8 +11,11 @@ echo "calculating S="$s
 echo "calculating Vf="$v
 echo "calculating Vc="$l
 ./Richtmyer $s $v $l 0 | tee -a Fluid.log
-FILENAME=slice*
-LINECOUNT=$(wc -l $FILENAME)
+
+
+
+LINECOUNT=`wc -l slice*.dat`
+./TimeSeries $LINECOUNT $s | tee -a TimeSeries.log
 ./TimeSeries $LINECOUNT $s | tee -a TimeSeries.log
 
 mv -- Extrema* "./$DIRNAME/extrema"
