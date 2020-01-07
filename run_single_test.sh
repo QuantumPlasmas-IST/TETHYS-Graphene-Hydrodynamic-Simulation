@@ -12,9 +12,6 @@ echo "calculating Vf="$v
 echo "calculating Vc="$l
 ./Richtmyer $s $v $l 0 | tee -a Fluid.log
 
-
-
-
 FILENAME=$(find slice*.dat)
 WORDCOUNT=$(wc -l slice*.dat)
 LINENUMBER=${WORDCOUNT% *}
