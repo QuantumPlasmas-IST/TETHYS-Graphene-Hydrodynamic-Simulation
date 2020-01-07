@@ -6,8 +6,8 @@ DIR_IMG="$DIR_ROOT/Images"
 mkdir -p "$DIR_ROOT"
 mkdir -p "$DIR_IMG"
 
-rm -- *.dat
-rm -- *.log
+rm *.dat
+rm *.log
 
 l=0
 
@@ -55,14 +55,14 @@ do
 	s_range $v
         DIR_SUB="./$DIR_ROOT/Vf=$v"
 	mkdir -p "$DIR_SUB"
-	#echo "calculating Vf="$v
+	echo "calculating Vf="$v
 	for ((s = v; s<= v + S_RANGE; s+=S_ITER))
 		do 
-		#echo "	calculating S="$s
+		echo "	calculating S="$s
 		IMG_DEN_NAME="S=$s.Vf=$v.l=$l.DEN.png"
 		IMG_VEL_NAME="S=$s.Vf=$v.l=$l.VEL.png"
 		
-		./Richtmyer $s $v $l 0 
+		echo "	Running ......"; ./Richtmyer $s $v $l 0  &> /dev/null
 
 		FILE_NAME="slice_S=$s.00vF=$v.00l=$l.00.dat"
 
