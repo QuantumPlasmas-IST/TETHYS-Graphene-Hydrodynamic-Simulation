@@ -8,6 +8,22 @@ So far implemented only in 1D+1 for density and velocity fields.
 
 ![Flowchart](/images/CodeFlowchart.png)
 
+## Requirements 
+
+*gcc compiler 
+
+*HDF5 lybraries 
+
+..For the writting of the complete data.
+
+*<s> FFTW lybraries</s> 
+
+..Temporarily not implemented, in future will be used for calculate Fourier Transform of the signal. 
+
+*Gnuplot 
+
+..Responsible for the plotting
+
 ## Style guide
 
 ### Semantic Versioning
