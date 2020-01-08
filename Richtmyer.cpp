@@ -315,12 +315,13 @@ float VelocityFlux(float den,float vel,float vel_snd,float vel_fer){
 	return f2;
 }
 
+/*
 float EnergyFlux(float den,float vel,float vel_snd,float vel_fer){
 	float f3;
 	f3 = vel*pow(den,1.5);
  	return f3;
 }
-
+*/
 
 float DensitySource(float den,float vel,float vel_snd,float vel_fer){
 	float Q1=0.0;
@@ -333,9 +334,10 @@ float VelocitySource(float den,float vel,float vel_snd,float vel_fer,float col_f
 return Q2;
 }
 
+/*
 float EnergySource(float den,float den_der,float vel,float vel_snd,float vel_fer){
 	float Q3=0.0;
 	Q3=pow(vel_snd/vel_fer,2)*den*vel*den_der;
 return Q3;
 }
-
+*/

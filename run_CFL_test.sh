@@ -63,7 +63,7 @@ do
 		IMG_DEN_NAME="S=$s.Vf=$v.l=$l.DEN.png"
 		IMG_VEL_NAME="S=$s.Vf=$v.l=$l.VEL.png"
 		
-		echo "	Running ......"; ./Richtmyer $s $v $l 0  &> /dev/null
+		echo "	Running ......"; ./RichtmyerHDF5 $s $v $l 0  &> /dev/null
 
 		FILE_NAME="slice_S=$s.00vF=$v.00l=$l.00.dat"
 

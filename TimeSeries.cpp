@@ -55,6 +55,7 @@ int main(int argc, char **argv){
 		int i=0;
 		while(input.good())
 		{	
+			// Reading input file 
 			input >> Time[i] >> in_den_L[i] >> in_vel_L[i] >> in_den_0[i] >> in_vel_0[i];
 			i++;	
 		}
@@ -79,6 +80,10 @@ int main(int argc, char **argv){
 	float saturation = 0.0;
 	float tau = 0.0;
 	float error = 0.0;
+	
+	
+	/* Uses the Functions defined in the library to find the extrema  */
+	
 	/*not needed since density at x=0 is constant by the boundary conditions*/
 	//ExtremaFinding(in_den_0, N, S, dt,saturation,tau, error, "extrema_den_0.dat");
 	//cout << "Density saturation at x=0: " << saturation << endl;
@@ -96,6 +101,8 @@ int main(int argc, char **argv){
 	logfile << "#Velocity saturation at x=L:\n" << saturation << endl;
 	logfile << "#Time for 99% of saturation:\n" << tau <<endl;		
 		
+	/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+	
 	cout << "\033[1;7;5;33m Program Running \033[0m"<<endl;
 	cout << "\033[1A\033[2K\033[1;32mDONE!\033[0m\n";
 	cout<<"═══════════════════════════════════════════════════════════════════════════" <<endl;

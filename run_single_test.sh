@@ -10,7 +10,7 @@ l=.1
 echo "calculating S="$s
 echo "calculating Vf="$v
 echo "calculating Vc="$l
-./Richtmyer $s $v $l 0 | tee -a Fluid.log
+./RichtmyerHDF5 $s $v $l 0 | tee -a Fluid.log
 
 FILENAME=$(find slice*.dat)
 WORDCOUNT=$(wc -l slice*.dat)
