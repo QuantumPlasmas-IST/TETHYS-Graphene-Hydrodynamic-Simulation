@@ -11,9 +11,9 @@
 
 #include <H5Cpp.h>
 
-//#include "GraphHydro.h"
-#include "TethysLib.h"
-//#include "EM_fields.h"
+
+//#include "TethysLib.h"
+
 
 using namespace H5;
 using namespace std;
@@ -45,6 +45,8 @@ class Fluid1D
 
 		void BoundaryCond();
 		
+		void InitialCondRand();
+		
 		void Richtmyer();
 		
 		virtual float DensityFlux(float den,float vel,float vel_snd){
@@ -74,16 +76,23 @@ class GrapheneFluid1D : public Fluid1D
 	public : 
 	 
 		float DensityFlux(float den,float vel,float vel_snd,float vel_fer){
-			
+			float f1;
+			f1 = den*vel;
+			return f1;			
 		}
 		float VelocityFlux(float den,float vel,float vel_snd,float vel_fer){
-			
+			float f2;
+			f2 = 0.25*vel*vel + vel_fer*vel_fer*0.5*log(den) + 2*vel_snd*vel_snd*sqrt(den); 
+			return f2;			
 		}
 		float DensitySource(float den,float vel,float vel_snd,float vel_fer){
-			
+			float Q1=0.0;
+			return Q1;				
 		}
 		float VelocitySource(float den,float vel,float vel_snd,float vel_fer,float col_freq){
-			
+			float Q2=0.0;
+			Q2=-1.0*col_freq*(vel-1);
+			return Q2;			
 		}
 };
 
@@ -105,10 +114,6 @@ int main(int argc, char **argv){
 	den =(float*) calloc (Nx,sizeof(float));
 	float *den_mid;							//density auxiliary vector for midpoint calculation 
 	den_mid = (float*) calloc (Nx-1,sizeof(float));
-//	float *eng;							 	//energy density field
-//	eng =(float*) calloc (Nx,sizeof(float));
-//	float *eng_mid;							//energy density auxiliary vector for midpoint calculation 
-//	eng_mid = (float*) calloc (Nx-1,sizeof(float));
 	float *vel;								//velocity field
  	vel = (float*) calloc (Nx,sizeof(float));
 	float *vel_mid;							//velocity auxiliary vector for midpoint calculation 
@@ -118,8 +123,6 @@ int main(int argc, char **argv){
 	den_cor = (float*) calloc (Nx,sizeof(float));
 	float *vel_cor;							//velocity corrected after average filter 
 	vel_cor = (float*) calloc (Nx,sizeof(float));
- //	float *eng_cor;							//energy density corrected after average filter 
-//	eng_cor = (float*) calloc (Nx,sizeof(float));
  	float *cur_cor;							//current density (n*v) corrected after average filter 
  		cur_cor = (float*) calloc (Nx,sizeof(float));
  	
