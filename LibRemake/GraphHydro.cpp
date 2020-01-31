@@ -32,6 +32,46 @@
 using namespace std;
 
 
+float DensityFlux(float den,float vel,float vel_snd,float vel_fer){
+	float f1;
+	f1 = den*vel;
+	return f1;
+}
+
+float VelocityFlux(float den,float vel,float vel_snd,float vel_fer){
+	float f2;
+	f2 = 0.25*vel*vel + vel_fer*vel_fer*0.5*log(den) + 2*vel_snd*vel_snd*sqrt(den); 
+	return f2;
+}
+
+/*
+float EnergyFlux(float den,float vel,float vel_snd,float vel_fer){
+	float f3;
+	f3 = vel*pow(den,1.5);
+ 	return f3;
+}
+*/
+
+float DensitySource(float den,float vel,float vel_snd,float vel_fer){
+	float Q1=0.0;
+return Q1;	
+}
+
+float VelocitySource(float den,float vel,float vel_snd,float vel_fer,float col_freq){
+	float Q2=0.0;
+	Q2=-1.0*col_freq*(vel-1);
+return Q2;
+}
+
+/*
+float EnergySource(float den,float den_der,float vel,float vel_snd,float vel_fer){
+	float Q3=0.0;
+	Q3=pow(vel_snd/vel_fer,2)*den*vel*den_der;
+return Q3;
+}
+*/
+
+
 
 
 float PhaseVel(float sound, float fermi){

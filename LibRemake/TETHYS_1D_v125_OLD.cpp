@@ -13,7 +13,7 @@
 
 //#include "GraphHydro.h"
 #include "TethysLib.h"
-//#include "EM_fields.h"
+#include "EM_fields.h"
 
 using namespace H5;
 using namespace std;
@@ -21,71 +21,7 @@ const H5std_string   FILE_NAME( "Richtmyer.h5" );
 const FloatType      hdf5_float(PredType::NATIVE_FLOAT);
 const IntType        hdf5_int(PredType::NATIVE_INT);
 
-class Fluid1D 
-{
 
-	public :
-	
-		float * den;
-		float * vec ;
-		float * cur ;
-		float * den_mid ;
-		float * vec_mid ;
-		float * cur_mid ;
-
-		Fluid1D(int Nx){
-			
-			
-		}
-
-		~Fluid1D(){
-			
-			
-		}
-
-		void BoundaryCond();
-		
-		void Richtmyer();
-		
-		virtual float DensityFlux(float den,float vel,float vel_snd){
-			
-			}
-		virtual float VelocityFlux(float den,float vel,float vel_snd){
-			
-			}
-		virtual float DensitySource(float den,float vel,float vel_snd){
-			return 0;
-			}
-		virtual float VelocitySource(float den,float vel,float vel_snd){
-			return 0;
-			}
-
-}
-
-
-class GrapheneFluid1D : public Fluid1D
-{
-	private :
-	
-		float vel_snd;						    
-		float vel_fer;							
-		float col_freq; 						
-	
-	public : 
-	 
-		float DensityFlux(float den,float vel,float vel_snd,float vel_fer){
-			
-		}
-		float VelocityFlux(float den,float vel,float vel_snd,float vel_fer){
-			
-		}
-		float DensitySource(float den,float vel,float vel_snd,float vel_fer){
-			
-		}
-		float VelocitySource(float den,float vel,float vel_snd,float vel_fer,float col_freq){
-			
-		}
-};
 
 int main(int argc, char **argv){
 	/* Display name and version  */
@@ -278,6 +214,10 @@ int main(int argc, char **argv){
 			vel_mid[i] = 0.5*( vel[i] + vel[i+1] )
 				- ( 0.5*dt/dx ) * ( VelocityFlux(den[i+1],vel[i+1],arr_snd[i], vel_fer) - VelocityFlux(den[i],vel[i],arr_snd[i], vel_fer) ) 
 				+ ( 0.5*dt    ) * VelocitySource(0.5*(den[i]+den[i+1]),0.5*(vel[i]+vel[i+1]),arr_snd[i], vel_fer, col_freq) ;
+			/* NEW ENERGY FLUX */				
+			//eng_mid[i] = 0.5*( eng[i] + eng[i+1] )
+			//	- ( 0.5*dt/dx ) * ( EnergyFlux(den[i+1],vel[i+1],arr_snd[i], vel_fer) - EnergyFlux(den[i],vel[i],arr_snd[i], vel_fer) ) 	
+			//	+ ( 0.5*dt    ) * EnergySource(0.5*(den[i]+den[i+1]),0.5*(-1.0*den[i]+den[i+1])/dx,0.5*(vel[i]+vel[i+1]),arr_snd[i], vel_fer);
 		}
 		
 		
@@ -291,6 +231,8 @@ int main(int argc, char **argv){
 			vel[i] = vel[i] - (dt/dx) * ( VelocityFlux(den_mid[i],vel_mid[i],arr_snd[i], vel_fer) - VelocityFlux(den_mid[i-1],vel_mid[i-1],arr_snd[i], vel_fer) )
 							+  dt * VelocitySource(den[i],vel[i],arr_snd[i], vel_fer, col_freq);
 			/* NEW ENERGY FLUX */				
+			//eng[i] = eng[i] - (dt/dx) * ( EnergyFlux(den_mid[i],vel_mid[i],arr_snd[i], vel_fer) - EnergyFlux(den_mid[i-1],vel_mid[i-1],arr_snd[i], vel_fer) )				
+			//				+  dt * EnergySource(den[i],0.5*(-1.0*den_mid[i-1]+den_mid[i])/dx,vel[i],arr_snd[i], vel_fer);	
 		}
 		
 		// Impose boundary conditions
@@ -326,7 +268,7 @@ int main(int argc, char **argv){
 		//Record end points
 		data_slice <<t<<"\t"<< den_cor[Nx-1] <<"\t"<< vel_cor[Nx-1] <<"\t"<< den_cor[0] <<"\t" << vel_cor[0] <<"\n";
 		//Record electric quantities
-		data_electro <<t<<"\t"<< den_cor[Nx-1]-1.0 <<"\t"<< den_cor[0]*vel_cor[0] <<"\n";//<<"\t"<<  TotalElectricDipole(Nx,dx,den_cor)<<"\t"<<  DtElectricDipole(Nx,dx,cur_cor) <<"\t"<< KineticEnergy(Nx,dx, den_cor, vel_cor)  <<"\n";
+		data_electro <<t<<"\t"<< den_cor[Nx-1]-1.0 <<"\t"<< den_cor[0]*vel_cor[0] <<"\t"<<  TotalElectricDipole(Nx,dx,den_cor)<<"\t"<<  DtElectricDipole(Nx,dx,cur_cor) <<"\t"<< KineticEnergy(Nx,dx, den_cor, vel_cor)  <<"\n";
 	}
 	cout << "\033[1A\033[2K\033[1;32mDONE!\033[0m\n";
 	cout<<"═══════════════════════════════════════════════════════════════════════════" <<endl;

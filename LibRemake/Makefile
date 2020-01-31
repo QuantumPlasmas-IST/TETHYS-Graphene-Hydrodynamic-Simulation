@@ -6,7 +6,7 @@ LIBS        = -lsz -lz -lm
 H5LIBS 	    = -lhdf5_hl_cpp -lhdf5_cpp -lhdf5_hl -lhdf5 	
 
 
-SIMULSRC = TETHYS_1D_v125.cpp GraphHydro.cpp TethysLib.cpp EM_fields.cpp
+SIMULSRC = TETHYS_1D_v125.cpp TethysLib.cpp EM_fields.cpp
 SIMULOBJ = $(SIMULSRC:.cpp = .o)
 
 ANALYSISSRC = AnalysisELEC.cpp dyakonovshur.cpp

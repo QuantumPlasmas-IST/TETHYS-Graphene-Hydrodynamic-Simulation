@@ -7,3 +7,17 @@ float PhaseVel(float sound, float fermi);
 float RealFreq(float sound, float fermi, float col_freq, int mode);  //
 void ShockFinding(float * in, int N, float t , float dx,  std::string shockfile);
 float TimeStepCFL(float dx, float sound, float fermi);
+
+
+
+float DensityFlux(float den,float vel,float vel_snd,float vel_fer);
+
+float VelocityFlux(float den,float vel,float vel_snd,float vel_fer);
+
+float EnergyFlux(float den,float vel,float vel_snd,float vel_fer);
+
+float DensitySource(float den,float vel,float vel_snd,float vel_fer);
+
+float VelocitySource(float den,float vel,float vel_snd,float vel_fer,float col_freq);
+
+float EnergySource(float den,float den_der,float vel,float vel_snd,float vel_fer);
