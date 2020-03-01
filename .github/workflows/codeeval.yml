@@ -11,15 +11,5 @@ jobs:
     - uses: actions/checkout@v1
     - name: action-cpp-lint
       uses: CyberZHG/github-action-cpp-lint@0.0.2
-    - name: clang-format lint
-      uses: DoozyX/clang-format-lint-action@v0.5
-
-    #- name: CPP Evaluation
-    #  uses: luke142367/cpp-evaluation-action@0.0.1
-    #- name: C/C++ code linter (clang-tidy, clang-format, and cppcheck)
-    #  uses: ArtificialAmateur/cpp-linter-action@0.01
-    #- name: C++ code linter (clang-tidy and cppcheck)
-    #  uses: smay1613/cpp-linter-action@0.0.2
     
-
 
