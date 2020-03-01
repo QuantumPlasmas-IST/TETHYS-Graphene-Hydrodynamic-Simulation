@@ -6,8 +6,11 @@ LIBS        = -lsz -lz -lm
 H5LIBS 	    = -lhdf5_hl_cpp -lhdf5_cpp -lhdf5_hl -lhdf5 	
 
 
-SIMULSRC = TETHYS_1D_v125.cpp TethysLib.cpp EM_fields.cpp
+SIMULSRC = TETHYS_1D_v125.cpp TethysLib.cpp 
 SIMULOBJ = $(SIMULSRC:.cpp = .o)
+
+#SIMULSRC = ObjectOriented.cpp TethysLib.cpp
+#SIMULOBJ = $(SIMULSRC:.cpp = .o)
 
 ANALYSISSRC = AnalysisELEC.cpp dyakonovshur.cpp
 ANALYSISOBJ = $(ANALYSISSRC:.cpp = .o)
@@ -21,7 +24,7 @@ all: tethys \
 
 
 tethys: $(SIMULOBJ)
-	$(CC) $(CFLAGS) $(LIBS) -o RichtmyerNEW $(SIMULOBJ) $(H5LIBS)
+	$(CC) $(CFLAGS) $(LIBS) -o RichtmyerTESTE2 $(SIMULOBJ) $(H5LIBS)
 
 #analysis: $(ANALYSISOBJ)
 #	$(CC) $(CFLAGS) -o AnalysisELEC $(ANALYSISOBJ) $(FFTLIBS) $(CLIBS)
