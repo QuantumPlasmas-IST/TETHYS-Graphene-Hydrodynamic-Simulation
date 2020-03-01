@@ -15,8 +15,8 @@ jobs:
     #  uses: luke142367/cpp-evaluation-action@0.0.1
     - name: C/C++ code linter (clang-tidy, clang-format, and cppcheck)
       uses: ArtificialAmateur/cpp-linter-action@0.01
-    - name: C++ code linter (clang-tidy and cppcheck)
-      uses: smay1613/cpp-linter-action@0.0.2
+    #- name: C++ code linter (clang-tidy and cppcheck)
+    #  uses: smay1613/cpp-linter-action@0.0.2
     
 
 
