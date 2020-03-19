@@ -7,12 +7,12 @@
 #include <ctime>
 #include <algorithm>
 #include <string>
-
 #include <iomanip>   
 
 
 #include "TethysLib.h"
 //#include "GraphHydro.h"
+
 
 using namespace std;
 
@@ -30,8 +30,9 @@ using namespace std;
 #    define C_SPEED 1000.0
 #endif
 
-
-
+/*....................................................................*/	
+/*.......... 1 Dimensional Fluid Class ...............................*/	
+/*....................................................................*/	
 Fluid1D::Fluid1D(int sizeN){		
 	Nx = sizeN;
 	den     = new float[sizeN]();
@@ -97,6 +98,8 @@ void Fluid1D::InitialCondRand(){
 
 void Fluid1D::SetVelSnd(float x){ vel_snd=x; }
 float Fluid1D::GetVelSnd(){ return vel_snd; }
+float Fluid1D::GetTmax(){return Tmax;}
+void Fluid1D::SetTmax(float x){ Tmax=x;}
 float Fluid1D::GetDx(){return dx;}
 void Fluid1D::SetDx(float x){ dx=x;}
 float Fluid1D::GetDt(){return dt;}
@@ -137,36 +140,35 @@ void Fluid1D::Richtmyer(){
 
 
 
+/*....................................................................*/	
+/*............ Derived Graphene Class  ...............................*/	
+/*....................................................................*/	
 
-		float GrapheneFluid1D::DensityFlux(float n,float v,float S){
-			float f1;
-			f1 = n*v;
-			return f1;			
-		}
-		float GrapheneFluid1D::VelocityFlux(float n,float v,float S){
-			float f2;
-			f2 = 0.25*v*v + vel_fer*vel_fer*0.5*log(n) + 2*S*S*sqrt(n); 
-			return f2;			
-		}
-		float GrapheneFluid1D::DensitySource(float n,float v,float S){
-			float Q1=0.0;
-			return Q1;				
-		}
-		float GrapheneFluid1D::VelocitySource(float n,float v,float S){
-			float Q2=0.0;
-			Q2=-1.0*col_freq*(v-1);
-			return Q2;			
-		}
+float GrapheneFluid1D::DensityFlux(float n,float v,float S){
+	float f1;
+	f1 = n*v;
+	return f1;			
+}
+float GrapheneFluid1D::VelocityFlux(float n,float v,float S){
+	float f2;
+	f2 = 0.25*v*v + vel_fer*vel_fer*0.5*log(n) + 2*S*S*sqrt(n); 
+	return f2;			
+}
+float GrapheneFluid1D::DensitySource(float n,float v,float S){
+	float Q1=0.0;
+	return Q1;				
+}
+float GrapheneFluid1D::VelocitySource(float n,float v,float S){
+	float Q2=0.0;
+	Q2=-1.0*col_freq*(v-1);
+	return Q2;			
+}
 		
-
-
-
 void GrapheneFluid1D::SetVelFer(float x){ vel_fer=x;	}
 float GrapheneFluid1D::GetVelFer(){ return vel_fer;  }
 void GrapheneFluid1D::SetColFreq(float x){ col_freq=x; }
 float GrapheneFluid1D::GetColFreq(){ return col_freq; }
 
-	 
 void GrapheneFluid1D::CFLCondition(){
 	dx = leng / ( float ) ( Nx - 1 );
 					
@@ -185,7 +187,7 @@ void GrapheneFluid1D::CFLCondition(){
 
 void GrapheneFluid1D::BoundaryCond(int type){
 	
-		/*---------------*\
+	/*---------------*\
 	| Free        | 1 |
 	| Periodic 	  | 2 |
 	| DS Boundary | 3 | 
@@ -217,8 +219,6 @@ void GrapheneFluid1D::BoundaryCond(int type){
 				  den[Nx-1] = den[Nx-2];
 				  vel[Nx-1] = 1.0/den[Nx-1];			
 	}
-
-	
 }
 
 float SoundVelocityAnisotropy(float i, float dx,float S){
@@ -227,22 +227,102 @@ float SoundVelocityAnisotropy(float i, float dx,float S){
 
 
 void AverageFilter(float * vec_in, float * vec_out, int size , int width ){
-			for ( int i = 0; i < size; i++ ){		
-				if(i>=width &&i<=size-1-width){
-					for(int k = i-width; k <= i+width;k++){			
-						vec_out[i] += vec_in[k]; 
-					}	
-					vec_out[i] = vec_out[i]/(2.0*width+1.0);
-					}
-				else{
-					vec_out[i] =	vec_in[i] ;
-				}	
+	for ( int i = 0; i < size; i++ ){		
+		if(i>=width &&i<=size-1-width){
+			for(int k = i-width; k <= i+width;k++){			
+				vec_out[i] += vec_in[k]; 
 			}	
-		}
+			vec_out[i] = vec_out[i]/(2.0*width+1.0);
+			}
+		else{
+			vec_out[i] =	vec_in[i] ;
+		}	
+	}	
+}
+/*....................................................................*/
+/*....................................................................*/	
+/*....................................................................*/	
+
+/*
+void HDF5SetUp(H5File hdf5file, GrapheneFluid1D graph_obj ){
+
+const FloatType      hdf5_float(PredType::NATIVE_FLOAT);
+const IntType        hdf5_int(PredType::NATIVE_INT);
+
+
+	int Npoints;
+	Npoints = graph_obj.SizeX();
+	float input_col_freq ;
+	input_col_freq = graph_obj.GetColFreq(); 
+	float input_vel_fer;
+	input_vel_fer= graph_obj.GetVelFer();
+	float input_vel_snd;
+	input_vel_snd=graph_obj.GetVelSnd();
+	float dx;
+	dx=graph_obj.GetDx();
+	float dt;
+	dt=graph_obj.GetDt();
+	float T_max;
+	T_max = graph_obj.GetTmax();
+
+
+	
+	Group* grp_dat = new Group( hdf5file->createGroup( "/Data" ));
+	Group* grp_den = new Group( hdf5file->createGroup( "/Data/Density" ));
+	Group* grp_vel = new Group( hdf5file->createGroup( "/Data/Velocity" ));
+	Group* grp_cur = new Group( hdf5file->createGroup( "/Data/Current" ));
+	
+	hsize_t dim_atr[1] = { 1 };
+	// Create the data space for the attribute.
+	DataSpace atr_dataspace = DataSpace (1, dim_atr );
+	// Create a group attribute. 
+	Attribute atr_vel_snd  = grp_dat->createAttribute( "S parameter", hdf5_float, atr_dataspace);
+	Attribute atr_vel_fer  = grp_dat->createAttribute( "Fermi velocity", hdf5_float, atr_dataspace);
+	Attribute atr_col_freq = grp_dat->createAttribute( "Collision frequency", hdf5_float, atr_dataspace);
+	Attribute atr_dx = grp_dat->createAttribute( "Space discretisation step", hdf5_float, atr_dataspace);
+	Attribute atr_dt = grp_dat->createAttribute( "Time discretisation step", hdf5_float, atr_dataspace);
+	Attribute atr_total_time = grp_dat->createAttribute( "Total simulation time", hdf5_float, atr_dataspace);
+	Attribute atr_num_time_steps = grp_dat->createAttribute( "Number of time steps", hdf5_int, atr_dataspace);
+	Attribute atr_num_space_points = grp_dat->createAttribute( "Number of spatial points", hdf5_int, atr_dataspace);
+	// Write the attribute data. 
+	atr_col_freq.write(hdf5_float, &input_col_freq);
+	atr_vel_fer.write( hdf5_float, &input_vel_fer);
+	atr_vel_snd.write( hdf5_float, &input_vel_snd);
+	atr_dx.write(hdf5_float, &dx);
+	atr_dt.write( hdf5_float, &dt);
+	atr_total_time.write( hdf5_float, &T_max);
+	atr_num_space_points.write( hdf5_int, &Npoints);
+	atr_col_freq.close();
+	atr_vel_fer.close();
+	atr_vel_snd.close();
+	atr_dx.close();
+	atr_dt.close();
+	atr_total_time.close();
+	atr_num_space_points.close();
+	
+	const int RANK = 1; // 1D simulation
+	hsize_t     dim_snap[1];              // dataset dimensions
+	dim_snap[0] = Npoints; 
+	DataSpace dataspace_den( RANK, dim_snap );
+	DataSpace dataspace_vel( RANK, dim_snap );
+	DataSpace dataspace_cur( RANK, dim_snap );
+
+	
+
+
+}
+*/
+//void HDF5SetUp( Fluid1D );  polimorfismo
+//void HDF5SaveSnapshot( GrapheneFluid1D graph_obj , string snap_name){
+	
+	
+//}
 
 
 
-
+/*....................................................................*/
+/*........ General Functions .........................................*/
+/*....................................................................*/
 void BannerDisplay(void){
 cout<<"\n" ;
 	cout<<"╔═════════════════════════════════════════════════════════════════════════╗\n";

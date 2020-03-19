@@ -31,6 +31,7 @@ class Fluid1D
 	protected:	
 		float dx=1.0;		
 		float dt=1.0;		
+		float Tmax=10;
 		const float leng=1.0;
 		int Nx;
 		float vel_snd =50.0;
@@ -56,6 +57,9 @@ class Fluid1D
 		void SetDx(float x);
 		float GetDt();
 		void SetDt(float x);
+		float GetTmax();
+		void SetTmax(float x);
+
 		int SizeX();
 		void InitialCondRand();
 		void Richtmyer();
@@ -88,5 +92,11 @@ class GrapheneFluid1D : public Fluid1D{
 		float DensitySource(float n,float v,float S);
 		float VelocitySource(float n,float v,float S);		
 };
+
+
+//void HDF5SetUp(H5::H5File hdf5file, GrapheneFluid1D graph_obj )
+//void HDF5SetUp( Fluid1D fluid_obj, string file_name );
+//void HDF5SetUp( GrapheneFluid1D );  polimorfismo
+//void HDF5SaveSnapshot( Fluid1D fluid_obj , string snap_name);
 
 #endif

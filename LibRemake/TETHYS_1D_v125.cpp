@@ -66,10 +66,10 @@ GrapheneFluid1D	graph(Npoints);
 	graph.CFLCondition();
 	dx=graph.GetDx();
 	dt=graph.GetDt();
+	graph.SetTmax(10.0);
 	/*................................................................*/
 	
-	
-	/*.........Fixed or variable vel_snd value..............................*/
+	/*.........Fixed or variable vel_snd value........................*/
 	graph.SetSound();
 	/*................................................................*/
 
@@ -106,6 +106,7 @@ GrapheneFluid1D	graph(Npoints);
 	 * Create a file.
 	 */
 	H5File* hdf5file = new H5File( FILE_NAME, H5F_ACC_TRUNC );
+	
 	/*
 	 * Create the groups ("folders") in the file
 	 */
@@ -155,7 +156,7 @@ GrapheneFluid1D	graph(Npoints);
 	
 	
 	WellcomeScreen(graph.GetVelSnd(), graph.GetVelFer(), graph.GetColFreq(), dt, dx, T_max);
-//	RecordLogFile(graph.vel_snd, graph.vel_fer, graph.col_freq, dt, dx, T_max);
+	RecordLogFile(graph.GetVelSnd(), graph.GetVelFer(), graph.GetColFreq(), dt, dx, T_max);
 	
 	////////////////////////////////////////////////////////////////////
 	// Initialization	
