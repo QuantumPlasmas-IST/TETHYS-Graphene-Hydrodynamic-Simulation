@@ -184,6 +184,9 @@ void GrapheneFluid1D::CFLCondition(){
 		dt = 4 * dx / (2*vel_snd+sqrt(3*vel_fer*vel_fer + 24*vel_snd*vel_snd));
 }	
 
+float GrapheneFluid1D::GetNetCharge(){
+	return Integral1D(Nx, dx, den_cor);
+}
 
 void GrapheneFluid1D::BoundaryCond(int type){
 	
@@ -224,6 +227,7 @@ void GrapheneFluid1D::BoundaryCond(int type){
 float SoundVelocityAnisotropy(float i, float dx,float S){
 	return S;
 }
+
 
 
 void AverageFilter(float * vec_in, float * vec_out, int size , int width ){
@@ -402,6 +406,16 @@ float RootMeanSquare(int N, float dt, float * f){
 	return rms;	
 }
 
+float Integral1D(int N, float ds, float * f){
+	float itg=0.0;
+	
+	for(int j=1;j<N/2;j++){
+		itg += f[2*j-2] + 4*f[2*j-1] + f[2*j];
+	}
+	itg = itg*ds/3.0;
+	return itg;	
+}
+
 float SignalAverage(int N, float dt, float * f){
 	float avg=0.0;
 	
@@ -450,12 +464,19 @@ void ConvolveGauss(int type, float M, float t, float * in, float * out, int size
 					out[i] += in[i-k]*GaussKernelDerivative(k,t);
 				}
 			}
-			out[i] = out[i] * size;
+			//out[i] = out[i] * size;
 		}							
 	}
 }
 
+void Derivative1D(int size, float ds,float * f_in , float * df_out ){
 
+	for(int i=1;i<size-1;i++){
+			df_out[i] = (-0.5*f_in[i-1]+0.5*f_in[i+1])/ds;
+	}
+	df_out[0]=(-1.5*f_in[0]+2.0*f_in[1]-0.5*f_in[2])/ds;
+	df_out[size-1]=( 0.5*f_in[size-1-2]-2.0*f_in[size-1-1]+1.5*f_in[size-1])/ds;
+	}
 
 void TimeDerivative(int size_rows,int size_cols, float dt,float ** f_in , float ** df_out ){
 	//second order method

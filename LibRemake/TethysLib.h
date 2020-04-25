@@ -11,8 +11,10 @@ float GaussKernelDerivative(int position , float t); //
 void RecordLogFile(float vel_snd, float vel_fer, float col_freq, float dt, float dx, float Tmax);
 float RootMeanSquare(int N, float dt, float * f);
 float SignalAverage(int N, float dt, float * f);
+float Integral1D(int N, float ds, float * f);
 void SpaceDerivative(int size_rows,int size_cols, float dt,float ** f_in , float ** df_out );
 void TimeDerivative(int size_rows,int size_cols, float dt,float ** f_in , float ** df_out );
+void Derivative1D(int size, float ds,float * f_in , float * df_out );
 void WellcomeScreen(float vel_snd, float vel_fer,float col_freq, float dt, float dx, float Tmax);
 void ExtremaFinding(float * vec_in, int N, float sound, float dt,float & sat, float  & tau, float & error, std::string extremafile);
 float ImagFreq(float sound, float fermi, float col_freq);                  //
@@ -60,6 +62,8 @@ class Fluid1D
 		float GetTmax();
 		void SetTmax(float x);
 
+		
+
 		int SizeX();
 		void InitialCondRand();
 		void Richtmyer();
@@ -80,6 +84,8 @@ class GrapheneFluid1D : public Fluid1D{
 	 	
 	public : 
 		using Fluid1D::Fluid1D;
+	
+		float GetNetCharge();
 	
 		void CFLCondition();
 	    void BoundaryCond(int type);		

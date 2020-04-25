@@ -16,9 +16,10 @@
 
 using namespace H5;
 using namespace std;
-const H5std_string   FILE_NAME( "RichtmyerCLASSTEST.h5" );
+const H5std_string   FILE_NAME( "Richtmyer_DATA_SET.h5" );
 const FloatType      hdf5_float(PredType::NATIVE_FLOAT);
 const IntType        hdf5_int(PredType::NATIVE_INT);
+
 
 
 
@@ -203,6 +204,7 @@ GrapheneFluid1D	graph(Npoints);
 		//Record end points
 		data_slice <<t<<"\t"<< graph.den_cor[Npoints-1] <<"\t"<< graph.vel_cor[Npoints-1] <<"\t"<< graph.den_cor[0] <<"\t" << graph.vel_cor[0] <<"\n";
 		//Record electric quantities
+		data_electro <<t<<"\t"<<graph.GetNetCharge() <<"\t"<<pow(graph.GetNetCharge(),2)*0.5<<"\n";
 		//data_electro <<t<<"\t"<< graph.den_cor[Nx-1]-1.0 <<"\t"<< graph.den_cor[0]*graph.vel_cor[0] <<"\n";//<<"\t"<<  TotalElectricDipole(Nx,dx,den_cor)<<"\t"<<  DtElectricDipole(Nx,dx,cur_cor) <<"\t"<< KineticEnergy(Nx,dx, den_cor, vel_cor)  <<"\n";
 	}
 	cout << "\033[1A\033[2K\033[1;32mDONE!\033[0m\n";
