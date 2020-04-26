@@ -85,8 +85,11 @@ class GrapheneFluid1D : public Fluid1D{
 	public : 
 		using Fluid1D::Fluid1D;
 	
-		float GetNetCharge();
-	
+		float NetCharge();
+		float OhmPower();
+		float AverageCurrent();
+		float ElectricDipole();
+		float ElectricDipoleVariation();
 		void CFLCondition();
 	    void BoundaryCond(int type);		
 		void SetVelFer(float x);

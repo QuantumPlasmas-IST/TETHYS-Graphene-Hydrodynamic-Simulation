@@ -34,15 +34,29 @@ int main(int argc, char **argv){
 	float *in_net_Q;			
 	in_net_Q =(float*) calloc (N,sizeof(float));
 
+
+	float * in_avg_I;
+	in_avg_I=(float*) calloc (N,sizeof(float));
+
 	float *in_sto_E;			
 	in_sto_E =(float*) calloc (N,sizeof(float));
 
-//	float *out_power2;			
-//	out_power2 =(float*) calloc (N,sizeof(float));
+	float *in_P_Ohm;			
+	in_P_Ohm =(float*) calloc (N,sizeof(float));
+
+
+	float *in_Dipole ;
+	in_Dipole =(float*) calloc (N,sizeof(float)); 
+	float *in_Dipole_Variation;
+	in_Dipole_Variation=(float*) calloc (N,sizeof(float)); 
+
+	float *out_Poynting;
+	out_Poynting=(float*) calloc (N,sizeof(float)); 
 
 	float *out_power;			
 	out_power =(float*) calloc (N,sizeof(float));
 
+	
 	//////////////////Reading input file ///////////////////////////////
 	ifstream input;
 	input.open(argv[2]);
@@ -55,7 +69,7 @@ int main(int argc, char **argv){
 		while(input.good())
 		{	
 			// Reading input file 
-			input >> Time[i] >>in_net_Q[i] >>in_sto_E[i];
+			input >> Time[i] >>in_net_Q[i] >>in_avg_I[i]>>in_sto_E[i] >> in_P_Ohm[i] >> in_Dipole[i] >> in_Dipole_Variation[i];
 			i++;	
 		}
 	}
@@ -74,13 +88,12 @@ int main(int argc, char **argv){
 	char time_stamp [80];
 	strftime (time_stamp,80,"%F %H:%M:%S\n",time_info);
 	logfile << "\n#Simulation @ " << time_stamp <<endl;
-
 	
 	ofstream data_elec;
 	data_elec.open("ElectronicProperties.dat");
 	
-
 	ConvolveGauss(1, 50, 65.0, in_sto_E, out_power, N);
+	ConvolveGauss(1, 50, 65.0, in_Dipole_Variation, out_Poynting, N);
 	//Derivative1D(N, dt,in_sto_E,  out_power2 );
 
 	
@@ -89,8 +102,7 @@ int main(int argc, char **argv){
 	logfile << "Average power " << avg_Power <<endl;
 	
 	for(int i=0;i<N;i++){
-		//data_elec << Time[i]<<"\t"<<out_power[i]/dt<<"\t"<<out_power2[i]<<"\n";
-		data_elec << Time[i]<<"\t"<<out_power[i]/dt<<"\n";
+		data_elec << Time[i]<<"\t"<<out_power[i]/dt<<"\t"<< out_Poynting[i]/dt <<"\n";
 	}	
 	cout << "\033[1;7;5;33m Program Running \033[0m"<<endl;
 	cout << "\033[1A\033[2K\033[1;32mDONE!\033[0m\n";
@@ -100,6 +112,10 @@ int main(int argc, char **argv){
 	free(in_net_Q);
 	free(in_sto_E);
 	free(out_power);
+	free(in_Dipole);
+	free(in_Dipole_Variation);
+	free(out_Poynting);
+
 	logfile.close();
 	data_elec.close();
 	input.close();

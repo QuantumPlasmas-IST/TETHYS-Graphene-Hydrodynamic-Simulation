@@ -184,8 +184,39 @@ void GrapheneFluid1D::CFLCondition(){
 		dt = 4 * dx / (2*vel_snd+sqrt(3*vel_fer*vel_fer + 24*vel_snd*vel_snd));
 }	
 
-float GrapheneFluid1D::GetNetCharge(){
+float GrapheneFluid1D::NetCharge(){
 	return Integral1D(Nx, dx, den_cor);
+}
+
+float GrapheneFluid1D::AverageCurrent(){
+	return Integral1D(Nx, dx, cur_cor);
+}
+
+float GrapheneFluid1D::ElectricDipoleVariation(){
+	return Integral1D(Nx, dx, cur_cor);
+}
+
+
+float GrapheneFluid1D::ElectricDipole(){
+	float p=0.0;
+	for(int j=1;j<Nx/2;j++){	
+		p += dx*(2*j-2)*den_cor[2*j-2] + 4*dx*(2*j-1)*den_cor[2*j-1] + dx*(2*j)*den_cor[2*j];
+	}
+	p = p*dx/3.0;
+	return p;
+}
+
+
+float GrapheneFluid1D::OhmPower(){
+	
+	float itg=0.0;
+		
+	for(int j=1;j<Nx/2;j++){
+		itg += cur_cor[2*j-2]*vel_cor[2*j-2] + 4*cur_cor[2*j-1]*vel_cor[2*j-1] + cur_cor[2*j]*vel_cor[2*j];
+	}
+	itg = itg*dx/3.0;
+	return itg;	
+	
 }
 
 void GrapheneFluid1D::BoundaryCond(int type){
