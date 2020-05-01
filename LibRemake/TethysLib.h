@@ -56,9 +56,7 @@ class Fluid1D
 		void SetVelSnd(float x);
 		float GetVelSnd();
 		float GetDx();
-		void SetDx(float x);
 		float GetDt();
-		void SetDt(float x);
 		float GetTmax();
 		void SetTmax(float x);
 

@@ -101,9 +101,7 @@ float Fluid1D::GetVelSnd(){ return vel_snd; }
 float Fluid1D::GetTmax(){return Tmax;}
 void Fluid1D::SetTmax(float x){ Tmax=x;}
 float Fluid1D::GetDx(){return dx;}
-void Fluid1D::SetDx(float x){ dx=x;}
 float Fluid1D::GetDt(){return dt;}
-void Fluid1D::SetDt(float x){ dt=x;}
 int Fluid1D::SizeX(){ return Nx; }
 
 void Fluid1D::Smooth(int width){
