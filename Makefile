@@ -1,4 +1,3 @@
-
 CC = g++
 CFLAGS = -Wall -Wextra -Wno-unused-parameter -O2 
 FFTLIBS  = -lfftw3 
@@ -7,44 +6,32 @@ LIBS        = -lsz -lz -lm
 H5LIBS 	    = -lhdf5_hl_cpp -lhdf5_cpp -lhdf5_hl -lhdf5 	
 
 
-SIMULSRC = Richtmyer.cpp dyakonovshur.cpp
+SIMULSRC = TETHYS_1D_Main_v131.cpp Tethys1DLib.cpp 
 SIMULOBJ = $(SIMULSRC:.cpp = .o)
 
-ANALYSISSRC = AnalysisELEC.cpp dyakonovshur.cpp
+ANALYSISSRC = TETHYS_1D_ElectronicAnalysis.cpp Tethys1DLib.cpp
 ANALYSISOBJ = $(ANALYSISSRC:.cpp = .o)
 
-TIMESERIESSRC = TimeSeries.cpp dyakonovshur.cpp
+TIMESERIESSRC = TETHYS_1D_TimeSeries.cpp Tethys1DLib.cpp
 TIMESERIESOBJ = $(TIMESERIESSRC:.cpp = .o)
 
-#JEFIMENKOSRC = Jefimenko.cpp dyakonovshur.cpp
-#JEFIMENKOOBJ = $(JEFIMENKOSRC:.cpp = .o)
-#BENCHMARKSRC = BenchMarking.cpp dyakonovshur.cpp
-#BENCHMARKOBJ = $(BENCHMARKSRC:.cpp = .o)
-#FFTSRC = AnalysisFFT.cpp dyakonovshur.cpp
-#FFTOBJ = $(FFTSRC:.cpp = .o)
-#all: simul analysis jefimenko density benchmark
+#all: tethys
 
-all: simul \
+all: tethys \
+     analysis \
      timeseries \
 
 
-simul: $(SIMULOBJ)
+
+tethys: $(SIMULOBJ)
 	$(CC) $(CFLAGS) $(LIBS) -o RichtmyerHDF5 $(SIMULOBJ) $(H5LIBS)
 
-#benchmark: $(BENCHMARKOBJ)
-	#$(CC) $(CFLAGS) $(CLIBS) -o Benchmark $(BENCHMARKOBJ)
-
-#analysis: $(ANALYSISOBJ)
-#	$(CC) $(CFLAGS) -o AnalysisELEC $(ANALYSISOBJ) $(FFTLIBS) $(CLIBS)
+analysis: $(ANALYSISOBJ)
+	$(CC) $(CFLAGS) -o ElectronicAnalysis $(ANALYSISOBJ) $(FFTLIBS) $(CLIBS)
 
 timeseries: $(TIMESERIESOBJ)
 	$(CC) $(CFLAGS) -o TimeSeries $(TIMESERIESOBJ) $(CLIBS)
 
-#jefimenko: $(JEFIMENKOOBJ)
-	#$(CC) $(CFLAGS) $(CLIBS) -o Jefimenko $(JEFIMENKOOBJ)
-	
-#density: $(FFTOBJ)
-	#$(CC) $(CFLAGS) -o AnalysisFFT $(FFTOBJ) $(FFTLIBS) $(CLIBS)
 
 
 clean:

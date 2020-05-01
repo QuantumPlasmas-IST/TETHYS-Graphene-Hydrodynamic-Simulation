@@ -9,9 +9,9 @@
 #include <string>
 #include <ctime>
 #include <numeric>
-//#include <fftw3.h>
 
-#include "TethysLib.h"
+
+#include "Tethys1DLib.h"
 
 using namespace std;
 
@@ -21,7 +21,7 @@ using namespace std;
 int main(int argc, char **argv){
 	cout<<"\n" ;
 	cout<<"╔═════════════════════════════════════════════════════════════════════════╗\n";
-	cout<<"║ \033[1m Electronic analysis for TETHYS                                        \033[0m ║\n";
+	cout<<"║ \033[1m Time Series analysis for TETHYS                                       \033[0m ║\n";
 	cout<<"╚═════════════════════════════════════════════════════════════════════════╝\n";       	
 
 	int N = atoi(argv[1]);	
@@ -31,31 +31,18 @@ int main(int argc, char **argv){
 	float *Time;			
 	Time =(float*) calloc (N,sizeof(float));
 	
-	float *in_net_Q;			
-	in_net_Q =(float*) calloc (N,sizeof(float));
-
-
-	float * in_avg_I;
-	in_avg_I=(float*) calloc (N,sizeof(float));
-
-	float *in_sto_E;			
-	in_sto_E =(float*) calloc (N,sizeof(float));
-
-	float *in_P_Ohm;			
-	in_P_Ohm =(float*) calloc (N,sizeof(float));
-
-
-	float *in_Dipole ;
-	in_Dipole =(float*) calloc (N,sizeof(float)); 
-	float *in_Dipole_Variation;
-	in_Dipole_Variation=(float*) calloc (N,sizeof(float)); 
-
-	float *out_Poynting;
-	out_Poynting=(float*) calloc (N,sizeof(float)); 
-
-	float *out_power;			
-	out_power =(float*) calloc (N,sizeof(float));
-
+	float *in_den_0;			
+	in_den_0 =(float*) calloc (N,sizeof(float));
+	
+	float *in_den_L;			
+	in_den_L =(float*) calloc (N,sizeof(float));
+	
+	float *in_vel_0;			
+	in_vel_0 =(float*) calloc (N,sizeof(float));
+	
+	float *in_vel_L;			
+	in_vel_L =(float*) calloc (N,sizeof(float));
+	
 	
 	//////////////////Reading input file ///////////////////////////////
 	ifstream input;
@@ -69,7 +56,7 @@ int main(int argc, char **argv){
 		while(input.good())
 		{	
 			// Reading input file 
-			input >> Time[i] >>in_net_Q[i] >>in_avg_I[i]>>in_sto_E[i] >> in_P_Ohm[i] >> in_Dipole[i] >> in_Dipole_Variation[i];
+			input >> Time[i] >> in_den_L[i] >> in_vel_L[i] >> in_den_0[i] >> in_vel_0[i] ;
 			i++;	
 		}
 	}
@@ -80,44 +67,52 @@ int main(int argc, char **argv){
 	////////////////////////////////////////////////////////////////////
 
 	ofstream logfile;
-	logfile.open("ElectronicAnalysis.log",std::ios_base::app);
+	logfile.open("ExtremaEnvelope.log",std::ios_base::app);
 	time_t time_raw;
 	struct tm * time_info;
 	time (&time_raw);
 	time_info = localtime (&time_raw);
 	char time_stamp [80];
 	strftime (time_stamp,80,"%F %H:%M:%S\n",time_info);
-	logfile << "\n#Simulation @ " << time_stamp <<endl;
-	
-	ofstream data_elec;
-	data_elec.open("ElectronicProperties.dat");
-	
-	ConvolveGauss(1, 50, 65.0, in_sto_E, out_power, N);
-	ConvolveGauss(1, 50, 65.0, in_Dipole_Variation, out_Poynting, N);
-	//Derivative1D(N, dt,in_sto_E,  out_power2 );
+	logfile << "\n#Simulation @ " << time_stamp ;
 
+
+	float saturation = 0.0;
+	float tau = 0.0;
+	float error = 0.0;
 	
-	float avg_Power;
-	avg_Power = SignalAverage(N, dt, out_power);	
-	logfile << "Average power " << avg_Power <<endl;
 	
-	for(int i=0;i<N;i++){
-		data_elec << Time[i]<<"\t"<<out_power[i]/dt<<"\t"<< out_Poynting[i]/dt <<"\n";
-	}	
+	/* Uses the Functions defined in the library to find the extrema  */
+	
+	/*not needed since density at x=0 is constant by the boundary conditions*/
+	//ExtremaFinding(in_den_0, N, S, dt,saturation,tau, error, "extrema_den_0.dat");
+	//cout << "Density saturation at x=0: " << saturation << endl;
+	//cout << "Time for 99% of saturation: " << tau <<endl;		
+
+	ExtremaFinding(in_den_L, N, S, dt,saturation,tau, error, "Extrema_den_L.dat");
+	logfile << "#Density saturation at x=L:\n" << saturation << endl;
+	logfile << "#Time for 99% of saturation:\n" << tau <<endl;		
+
+	ExtremaFinding(in_vel_0, N, S, dt,saturation,tau, error, "Extrema_vel_0.dat");
+	logfile << "#Velocity saturation at x=0:\n" << saturation << endl;
+	logfile << "#Time for 99% of saturation:\n" << tau <<endl;		
+
+	ExtremaFinding(in_vel_L, N, S, dt,saturation,tau, error, "Extrema_vel_L.dat");	
+	logfile << "#Velocity saturation at x=L:\n" << saturation << endl;
+	logfile << "#Time for 99% of saturation:\n" << tau <<endl;		
+		
+	/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+	
 	cout << "\033[1;7;5;33m Program Running \033[0m"<<endl;
 	cout << "\033[1A\033[2K\033[1;32mDONE!\033[0m\n";
 	cout<<"═══════════════════════════════════════════════════════════════════════════" <<endl;
 
 	free(Time);
-	free(in_net_Q);
-	free(in_sto_E);
-	free(out_power);
-	free(in_Dipole);
-	free(in_Dipole_Variation);
-	free(out_Poynting);
-
+	free(in_vel_0);
+	free(in_vel_L);
+	free(in_den_0);
+	free(in_den_L);
 	logfile.close();
-	data_elec.close();
 	input.close();
 	return 0;
 }

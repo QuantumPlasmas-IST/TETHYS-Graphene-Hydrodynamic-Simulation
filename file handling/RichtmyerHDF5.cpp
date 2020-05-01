@@ -9,7 +9,8 @@
 #include <string>
 #include <iomanip>   
 
-#include <H5Cpp.h>
+
+#include "H5Cpp.h"
 
 #include "dyakonovshur.h"
 
@@ -18,7 +19,7 @@ using namespace std;
 const H5std_string   FILE_NAME( "Richtmyer.h5" );
 const FloatType      hdf5_float(PredType::NATIVE_FLOAT);
 const IntType        hdf5_int(PredType::NATIVE_INT);
-
+           
 
 float DensityFlux(float den,float vel,float vel_snd,float vel_fer);
 
@@ -36,24 +37,26 @@ int main(int argc, char **argv){
 	/* Display name and version  */
     BannerDisplay();
 
-	const int Nx=201; 							// number of spatial points
-	float t=0.0;
-	float T_max=10.0;
-	const float leng=1.0;					// time variable and spatial Length
+	const int Nx=201; 						// number of spatial points
+	float t=0.0;							// time variable and spatial Length
+	const float leng=1.0;					
 	float dx;								// spatial discretisation
 	float dt;								// time step
+	const float T_max=10.0;					// maximum time of simulation
 	float vel_snd;						    // Sound speed
 	float vel_fer;							// Fermi velocity
 	float col_freq; 								// mean free path in units of GFET length
+	
+	
 	
 	float *den;							 	//density field
 	den =(float*) calloc (Nx,sizeof(float));
 	float *den_mid;							//density auxiliary vector for midpoint calculation 
 	den_mid = (float*) calloc (Nx-1,sizeof(float));
-//	float *eng;							 	//energy density field
-//	eng =(float*) calloc (Nx,sizeof(float));
-//	float *eng_mid;							//energy density auxiliary vector for midpoint calculation 
-//	eng_mid = (float*) calloc (Nx-1,sizeof(float));
+	float *eng;							 	//energy density field
+	eng =(float*) calloc (Nx,sizeof(float));
+	float *eng_mid;							//energy density auxiliary vector for midpoint calculation 
+	eng_mid = (float*) calloc (Nx-1,sizeof(float));
 	float *vel;								//velocity field
  	vel = (float*) calloc (Nx,sizeof(float));
 	float *vel_mid;							//velocity auxiliary vector for midpoint calculation 
@@ -63,12 +66,11 @@ int main(int argc, char **argv){
 	den_cor = (float*) calloc (Nx,sizeof(float));
 	float *vel_cor;							//velocity corrected after average filter 
 	vel_cor = (float*) calloc (Nx,sizeof(float));
- //	float *eng_cor;							//energy density corrected after average filter 
-//	eng_cor = (float*) calloc (Nx,sizeof(float));
+ 	float *eng_cor;							//energy density corrected after average filter 
+	eng_cor = (float*) calloc (Nx,sizeof(float));
  	float *cur_cor;							//current density (n*v) corrected after average filter 
- 		cur_cor = (float*) calloc (Nx,sizeof(float));
- 	
- 	
+	cur_cor = (float*) calloc (Nx,sizeof(float));
+
  	
  	int data_save_mode=0;
 	
@@ -91,8 +93,17 @@ int main(int argc, char **argv){
 	
 	/*......CFL routine to determine dt...............................*/	
 	dx = leng / ( float ) ( Nx - 1 );
-	dt = TimeStepCFL(dx, vel_snd, vel_fer);
-	
+	if(vel_fer<10 && (vel_snd-vel_fer) <= 3)
+		dt = 0.5 * dx / (2*vel_snd+sqrt(3*vel_fer*vel_fer + 24*vel_snd*vel_snd));
+	else if (vel_fer<10 && (vel_snd-vel_fer<= 10 - vel_fer))
+		dt = 1.5 * dx / (2*vel_snd+sqrt(3*vel_fer*vel_fer + 24*vel_snd*vel_snd));
+	else if (vel_fer<15 && (vel_snd-vel_fer<= 5))
+		dt = 2 * dx / (2*vel_snd+sqrt(3*vel_fer*vel_fer + 24*vel_snd*vel_snd));
+	else if (vel_fer<30 && (vel_snd-vel_fer<= 3))
+		dt = 3 * dx / (2*vel_snd+sqrt(3*vel_fer*vel_fer + 24*vel_snd*vel_snd));
+	else
+		dt = 4 * dx / (2*vel_snd+sqrt(3*vel_fer*vel_fer + 24*vel_snd*vel_snd));
+
 	/*................................................................*/
 	
 	
@@ -118,7 +129,6 @@ int main(int argc, char **argv){
 	string nam_post = "S="+str_snd+"vF="+str_fer+"l="+str_col_freq;
 		
 
-
 	// time density(L,t)-1=U(L,t) current(0,t) electric_dipole_moment(t)  derivative_electric_dipole_moment(t)
 	string electrofile = "electro_" + nam_post + ".dat" ;
 	ofstream data_electro;
@@ -131,8 +141,8 @@ int main(int argc, char **argv){
 	data_slice << scientific; 
 	/*................................................................*/
 
-	
-	
+
+
 	/*.............  HDF5 file .......................................*/  	
 	/*
 	 * Create a file.
@@ -184,6 +194,7 @@ int main(int argc, char **argv){
 	DataSpace dataspace_cur( RANK, dim_snap );
 
 	/*................................................................*/
+
 	
 	
 	WellcomeScreen(vel_snd, vel_fer, col_freq, dt, dx, T_max);
@@ -194,23 +205,23 @@ int main(int argc, char **argv){
 	InitialCondRand(Nx, dx, den, vel);
 	BoundaryCond(3, Nx, den, vel);
 	
-	//for(int i = 0; i<Nx  ;i++)
-	//{
-	//	eng[i]=1.0;
-	//}
+	for(int i = 0; i<Nx  ;i++)
+	{
+		eng[i]=1.0;
+	}
 	////////////////////////////////////////////////////////////////////
 	
-	
+
 	cout << "\033[1;7;5;33m Program Running \033[0m"<<endl;
 	
 	int time_step=0;
 	
 	while(t<=T_max && isfinite(vel[(Nx-1)/2]))
 	{	
-		++time_step;
+		time_step++;
 		t += dt;
 		
-		
+	//cout << "\nt= "<<t <<"\tstep\t"<<time_step;
 		
 		//
 		//  Half step calculate density and velocity at time k+0.5 at the spatial midpoints
@@ -224,12 +235,10 @@ int main(int argc, char **argv){
 				- ( 0.5*dt/dx ) * ( VelocityFlux(den[i+1],vel[i+1],arr_snd[i], vel_fer) - VelocityFlux(den[i],vel[i],arr_snd[i], vel_fer) ) 
 				+ ( 0.5*dt    ) * VelocitySource(0.5*(den[i]+den[i+1]),0.5*(vel[i]+vel[i+1]),arr_snd[i], vel_fer, col_freq) ;
 			/* NEW ENERGY FLUX */				
-			//eng_mid[i] = 0.5*( eng[i] + eng[i+1] )
-			//	- ( 0.5*dt/dx ) * ( EnergyFlux(den[i+1],vel[i+1],arr_snd[i], vel_fer) - EnergyFlux(den[i],vel[i],arr_snd[i], vel_fer) ) 	
-			//	+ ( 0.5*dt    ) * EnergySource(0.5*(den[i]+den[i+1]),0.5*(-1.0*den[i]+den[i+1])/dx,0.5*(vel[i]+vel[i+1]),arr_snd[i], vel_fer);
+			eng_mid[i] = 0.5*( eng[i] + eng[i+1] )
+				- ( 0.5*dt/dx ) * ( EnergyFlux(den[i+1],vel[i+1],arr_snd[i], vel_fer) - EnergyFlux(den[i],vel[i],arr_snd[i], vel_fer) ) 	
+				+ ( 0.5*dt    ) * EnergySource(0.5*(den[i]+den[i+1]),0.5*(-1.0*den[i]+den[i+1])/dx,0.5*(vel[i]+vel[i+1]),arr_snd[i], vel_fer);		
 		}
-		
-		
 		//
 		// Remaining step 
 		//
@@ -240,18 +249,15 @@ int main(int argc, char **argv){
 			vel[i] = vel[i] - (dt/dx) * ( VelocityFlux(den_mid[i],vel_mid[i],arr_snd[i], vel_fer) - VelocityFlux(den_mid[i-1],vel_mid[i-1],arr_snd[i], vel_fer) )
 							+  dt * VelocitySource(den[i],vel[i],arr_snd[i], vel_fer, col_freq);
 			/* NEW ENERGY FLUX */				
-			//eng[i] = eng[i] - (dt/dx) * ( EnergyFlux(den_mid[i],vel_mid[i],arr_snd[i], vel_fer) - EnergyFlux(den_mid[i-1],vel_mid[i-1],arr_snd[i], vel_fer) )				
-			//				+  dt * EnergySource(den[i],0.5*(-1.0*den_mid[i-1]+den_mid[i])/dx,vel[i],arr_snd[i], vel_fer);	
+			eng[i] = eng[i] - (dt/dx) * ( EnergyFlux(den_mid[i],vel_mid[i],arr_snd[i], vel_fer) - EnergyFlux(den_mid[i-1],vel_mid[i-1],arr_snd[i], vel_fer) )				
+							+  dt * EnergySource(den[i],0.5*(-1.0*den_mid[i-1]+den_mid[i])/dx,vel[i],arr_snd[i], vel_fer);	
 		}
-		
 		// Impose boundary conditions
 		BoundaryCond(3, Nx, den, vel);
-		
 		// Applying average filters for smoothing 
 		AverageFilter( den ,den_cor, Nx , 2);	
 		AverageFilter( vel ,vel_cor, Nx , 2);
-		//AverageFilter( eng ,eng_cor, Nx , 2);
-		
+		AverageFilter( eng ,eng_cor, Nx , 2);
 		// calculate current density already smoothed			
 		for ( int i = 0; i < Nx; i++ )
 		{	
@@ -281,7 +287,7 @@ int main(int argc, char **argv){
 	}
 	cout << "\033[1A\033[2K\033[1;32mDONE!\033[0m\n";
 	cout<<"═══════════════════════════════════════════════════════════════════════════" <<endl;
-
+	
 	atr_num_time_steps.write(hdf5_int, &time_step);
 	atr_num_time_steps.close();
 	
@@ -315,13 +321,12 @@ float VelocityFlux(float den,float vel,float vel_snd,float vel_fer){
 	return f2;
 }
 
-/*
 float EnergyFlux(float den,float vel,float vel_snd,float vel_fer){
 	float f3;
 	f3 = vel*pow(den,1.5);
  	return f3;
 }
-*/
+
 
 float DensitySource(float den,float vel,float vel_snd,float vel_fer){
 	float Q1=0.0;
@@ -334,10 +339,9 @@ float VelocitySource(float den,float vel,float vel_snd,float vel_fer,float col_f
 return Q2;
 }
 
-/*
 float EnergySource(float den,float den_der,float vel,float vel_snd,float vel_fer){
 	float Q3=0.0;
 	Q3=pow(vel_snd/vel_fer,2)*den*vel*den_der;
 return Q3;
 }
-*/
+

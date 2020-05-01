@@ -81,23 +81,6 @@ float ImagFreq(float sound, float fermi, float col_freq){
 	return imag;
 }	
 
-float TimeStepCFL(float dx, float sound, float fermi){
-float dt;	
-
-	if(fermi<10 && (sound-fermi) <= 3)
-		dt = 0.5 * dx / (2*sound+sqrt(3*fermi*fermi + 24*sound*sound));
-	else if (fermi<10 && (sound-fermi<= 10 - fermi))
-		dt = 1.5 * dx / (2*sound+sqrt(3*fermi*fermi + 24*sound*sound));
-	else if (fermi<15 && (sound-fermi<= 5))
-		dt = 2 * dx / (2*sound+sqrt(3*fermi*fermi + 24*sound*sound));
-	else if (fermi<30 && (sound-fermi<= 3))
-		dt = 3 * dx / (2*sound+sqrt(3*fermi*fermi + 24*sound*sound));
-	else
-		dt = 4 * dx / (2*sound+sqrt(3*fermi*fermi + 24*sound*sound));
-	
-return dt;
-}
-
 void BoundaryCond(int type, int N, float * den, float * vel ){
 	/*---------------*\
 	| Free        | 1 |
@@ -538,7 +521,7 @@ cout<<"\n" ;
 	cout<<"║\033[2m      ▐█▌      ▐█▌    ▗▉      ▐█▌      ▐█▌   ▐█▌      ▐█▌    ▗       ██  \033[0m║\n";
 	cout<<"║\033[2m     ▆███▆    ▆███▆▆▆██▉     ▆███▆    ▆███▆ ▆███▆    ▆███▆   ▐█▆▆▆▆▆██▘  \033[0m║\n";
 	cout<<"║                                                                         ║\n";
-	cout<<"║ \033[1mTwo-dimensional Emitter of THz, Hydrodynamic Simulation.  Version 1.2.5\033[0m ║\n";
+	cout<<"║ \033[1mTwo-dimensional Emitter of THz, Hydrodynamic Simulation.  Version 1.2.4\033[0m ║\n";
 	cout<<"╚═════════════════════════════════════════════════════════════════════════╝\n";                                                                                                                                                                                          
 }
 

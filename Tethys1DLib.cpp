@@ -10,8 +10,8 @@
 #include <iomanip>   
 
 
-#include "TethysLib.h"
-//#include "GraphHydro.h"
+#include "Tethys1DLib.h"
+
 
 
 using namespace std;

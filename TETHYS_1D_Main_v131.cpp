@@ -11,7 +11,7 @@
 
 #include <H5Cpp.h>
 
-#include "TethysLib.h"
+#include "Tethys1DLib.h"
 
 
 using namespace H5;

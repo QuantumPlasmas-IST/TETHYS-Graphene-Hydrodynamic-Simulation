@@ -1,4 +1,3 @@
-float TimeStepCFL(float dx, float sound, float fermi);
 float PhaseVel(float sound, float fermi);
 float RealFreq(float sound, float fermi, float col_freq, int mode);  //
 float ImagFreq(float sound, float fermi, float col_freq);                  //
