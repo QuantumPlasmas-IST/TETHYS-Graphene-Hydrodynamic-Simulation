@@ -88,16 +88,16 @@ class GrapheneFluid1D : public Fluid1D{
 		float AverageCurrent();
 		float ElectricDipole();
 		float ElectricDipoleVariation();
-		void CFLCondition();
+		void CFLCondition() override;
 	    void BoundaryCond(int type);		
 		void SetVelFer(float x);
 		float GetVelFer();
 		void SetColFreq(float x);
 		float GetColFreq();
-		float DensityFlux(float n,float v,float S);
-		float VelocityFlux(float n,float v,float S);
-		float DensitySource(float n,float v,float S);
-		float VelocitySource(float n,float v,float S);		
+		float DensityFlux(float n,float v,float S) override;
+		float VelocityFlux(float n,float v,float S) override;
+		float DensitySource(float n,float v,float S) override; 
+		float VelocitySource(float n,float v,float S) override;		
 };
 
 

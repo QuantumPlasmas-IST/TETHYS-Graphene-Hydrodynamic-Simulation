@@ -38,7 +38,7 @@ int main(int argc, char **argv){
 //	float vel_fer;							// Fermi velocity
 //	float col_freq; 								// mean free path in units of GFET length
 
-float Q_net, I_avg, P_ohm;
+
 
 GrapheneFluid1D	graph(Npoints);
 
@@ -206,6 +206,7 @@ GrapheneFluid1D	graph(Npoints);
 		//Record end points
 		data_slice <<t<<"\t"<< graph.den_cor[Npoints-1] <<"\t"<< graph.vel_cor[Npoints-1] <<"\t"<< graph.den_cor[0] <<"\t" << graph.vel_cor[0] <<"\n";
 		//Record electric quantities
+		float Q_net, I_avg, P_ohm;
 		Q_net = graph.NetCharge();
 		I_avg = graph.AverageCurrent(); 
 		P_ohm = graph.OhmPower();
