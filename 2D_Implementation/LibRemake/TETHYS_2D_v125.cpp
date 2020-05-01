@@ -29,25 +29,30 @@ int main(int argc, char **argv){
     BannerDisplay();
 
 
-	const int Npoints=201; 							// number of spatial points
+	const int NpointsX=201; 							// number of spatial points X
+	const int NpointsY=201; 							// number of spatial points Y
 	float t=0.0;
 	float T_max=10.0;
-//	const float leng=1.0;					// time variable and spatial Length
-	float dx;								// spatial discretisation
+	const float lengY=1.0;					// time variable and spatial Length
+	float dx;								// spatial discretisation X
+	float dy;								// spatial discretisation Y
 	float dt;								// time step
 //	float vel_snd;						    // Sound speed
 //	float vel_fer;							// Fermi velocity
-//	float col_freq; 								// mean free path in units of GFET length
+//	float col_freq; 						// mean free path in units of GFET length
 
-GrapheneFluid1D	graph(Npoints);
+GrapheneFluid2D	graph(NpointsX, NpointsY, lengY);
 
  	
  	int data_save_mode=0;
 	float input_vel_snd,input_vel_fer,input_col_freq;
 	if(argc==5){
 		input_vel_snd = atof(argv[1]);
+		graph.SetVelSnd(input_vel_snd);
 		input_vel_fer = atof(argv[2]);
+		//graph.SetVelFer(input_vel_fer);
 		input_col_freq = atof(argv[3]);
+		//graph.SetColFreq(input_col_freq);
 		data_save_mode = atoi(argv[4]);	// full data or light save option
 		}
 	else{
@@ -67,6 +72,7 @@ GrapheneFluid1D	graph(Npoints);
 	/*......CFL routine to determine dt...............................*/	
 	graph.CFLCondition();
 	dx=graph.GetDx();
+	dy=graph.GetDy();
 	dt=graph.GetDt();
 	/*................................................................*/
 	
