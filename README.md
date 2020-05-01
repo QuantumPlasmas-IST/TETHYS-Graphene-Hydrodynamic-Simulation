@@ -42,6 +42,7 @@ Standard form of numeric *major.minor.patch* starting with the initial commit 1.
   <br>&emsp;1.2.3 Added warning for the case on non-propagating plasmons + begining impementation of CI tasks.
   <br>&emsp;1.2.4 New CFL condition.
   <br>&emsp;1.2.5 Output in HDF5 format.
+  
 1.3.0 Transition to object oriented code. Addition of Time Series Analysis and Electronic properties extraction.
   <br>&emsp;1.3.1 Stored energy at the capacitor gate calculated. 
 
