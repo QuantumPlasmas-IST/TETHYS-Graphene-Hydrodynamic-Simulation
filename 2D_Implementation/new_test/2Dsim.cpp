@@ -78,8 +78,11 @@ int main()
 	DataSpace dataspace_velX( RANK, dim_snap );
 	DataSpace dataspace_velY( RANK, dim_snap );
 
-	basic.InitialCondRand();
+	//basic.InitialCondRand();
+	basic.InitialCondTEST();
 	//basic.BoundaryCond(2);
+
+
 
 	float t=0;
 	int time_step = 0;
@@ -90,17 +93,14 @@ int main()
 		if(data_save_mode && time_step % 35 == 0 ){
 		//Record full data
 			cout << "Chegamos à iterada : "<< time_step << "\n";
-			for(int i=0; i<NpointsX; i+=50){
-				for (int j=0; j<NpointsY; j+=50)
-				{
-					cout << "(" << i << "," << j << ")  " <<
-					"den = " << basic.den[i][j] << " | " <<
-					"velX = " << basic.velX[i][j] << " | " <<
-					"velY = " << basic.velY[i][j] << endl;
-				}
-			}
+			
+
+
+			
 			string str_time = to_string(time_step/35);
 			string name_dataset = "snapshot_"+str_time;
+			
+			
 			
 			DataSet dataset_den = grp_den->createDataSet( name_dataset , hdf5_float, dataspace_den );
 			dataset_den.write( basic.den, hdf5_float );
