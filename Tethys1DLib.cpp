@@ -1,14 +1,13 @@
 #include <cstdio>
 #include <cmath>
 #include <cstdlib>
-#include <vector>
 #include <iostream>
 #include <fstream>
 #include <ctime>
 #include <algorithm>
 #include <string>
 #include <iomanip>   
-
+#include <cassert>
 
 #include "Tethys1DLib.h"
 

@@ -1,13 +1,14 @@
 #include <cstdio>
 #include <cmath>
 #include <cstdlib>
-#include <vector>
+
 #include <iostream>
 #include <fstream>
 #include <ctime>
 #include <algorithm>
 #include <string>
 #include <iomanip>   
+#include <cassert>
 
 #include <H5Cpp.h>
 
@@ -49,6 +50,7 @@ GrapheneFluid1D	graph(Npoints);
 		input_vel_snd = atof(argv[1]);
 		input_vel_fer = atof(argv[2]);
 		input_col_freq = atof(argv[3]);
+		assert(atoi(argv[4])==0 || atoi(argv[4])==1);
 		data_save_mode = atoi(argv[4]);	// full data or light save option
 		}
 	else{
