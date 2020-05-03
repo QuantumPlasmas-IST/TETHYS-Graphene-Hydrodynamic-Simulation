@@ -50,11 +50,15 @@ GrapheneFluid1D	graph(Npoints);
 		input_vel_snd = atof(argv[1]);
 		input_vel_fer = atof(argv[2]);
 		input_col_freq = atof(argv[3]);
+		cout << atof(argv[3]);
 		assert(atoi(argv[4])==0 || atoi(argv[4])==1);
 		data_save_mode = atoi(argv[4]);	// full data or light save option
+		graph.SetVelSnd(input_vel_snd);
+		graph.SetVelFer(input_vel_fer);
+		graph.SetColFreq(input_col_freq);
 		}
 	else{
-		cout << "Define S value: ";
+		cout << "Define S value: "; // throw exceptions if the velocities or frequency are negative or if S<Vf
 		cin >> input_vel_snd;
 		graph.SetVelSnd(input_vel_snd);
 		cout << "Define vF value: ";
@@ -107,6 +111,7 @@ GrapheneFluid1D	graph(Npoints);
 	
 	
 	/*.............  HDF5 file .......................................*/  	
+	// throw HDF5 exceptions ???
 	/*
 	 * Create a file.
 	 */
@@ -174,7 +179,7 @@ GrapheneFluid1D	graph(Npoints);
 	
 	int time_step=0;
 	
-	while(t<=T_max && isfinite(graph.vel[(graph.SizeX()-1)/2]))
+	while(t<=T_max && isfinite(graph.vel[(graph.SizeX()-1)/2])) // throw exception para nan / inf 
 	{	
 		++time_step;
 		t += dt;

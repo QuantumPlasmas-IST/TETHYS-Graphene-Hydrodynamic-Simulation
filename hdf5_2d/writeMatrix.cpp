@@ -49,6 +49,16 @@ int main (void)
 	*/
 	int i, j, Time;
 	float data[NX][NY];          // buffer for data to write
+	
+	
+	int Nx,Ny;
+	
+	Nx=NX;
+	Ny=NY;
+	
+	float *teste1 = new float[Nx*Ny];
+	
+	
 
 	/*
 	* Create a new file using H5F_ACC_TRUNC access,
@@ -85,6 +95,7 @@ int main (void)
 		for (j = 0; j < NX; j++){
 			for (i = 0; i < NY; i++){
 			data[j][i] = sin(6.0*i/200.0-4.0*j/200.0-Time*0.01) ;
+			teste1[i+j*Nx] = sin(6.0*i/200.0-4.0*j/200.0-Time*0.01) ;
 			}
 		}
 		/*
@@ -98,7 +109,7 @@ int main (void)
 		* Write the data to the dataset using default memory space, file
 		* space, and transfer properties.
 		*/
-		dataset_den.write( data, hdf5_float );
+		dataset_den.write( teste1, hdf5_float );
 		dataset_den.close();
 		dataset_vel.write( data, hdf5_float );
 		dataset_vel.close();
