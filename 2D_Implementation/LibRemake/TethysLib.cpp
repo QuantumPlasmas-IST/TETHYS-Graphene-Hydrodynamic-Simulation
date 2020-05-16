@@ -258,21 +258,21 @@ void Fluid2D::Richtmyer(){
 									DensityFluxX(den_mid_x[i+1][j], velX_mid_x[i+1][j], velY_mid_x[i+1][j], vel_snd_arr[i][j])-
 									DensityFluxX(den_mid_x[i][j], velX_mid_x[i][j], velY_mid_x[i][j], vel_snd_arr[i][j]))/dx;
 								-dt*(
-									DensityFluxY(den_mid_y[i+1][j], velX_mid_y[i][j+1], velY_mid_y[i][j+1], vel_snd_arr[i][j])-
+									DensityFluxY(den_mid_y[i][j+1], velX_mid_y[i][j+1], velY_mid_y[i][j+1], vel_snd_arr[i][j])-
 									DensityFluxY(den_mid_y[i][j], velX_mid_y[i][j], velY_mid_y[i][j], vel_snd_arr[i][j]))/dy;
 				velX[i+1][j+1] = velX[i+1][j+1]
 								-dt*(
 									VelocityXFluxX(den_mid_x[i+1][j], velX_mid_x[i+1][j], velY_mid_x[i+1][j], vel_snd_arr[i][j])-
 									VelocityXFluxX(den_mid_x[i][j], velX_mid_x[i][j], velY_mid_x[i][j], vel_snd_arr[i][j]))/dx;
 								-dt*(
-									VelocityXFluxY(den_mid_y[i+1][j], velX_mid_y[i][j+1], velY_mid_y[i][j+1], vel_snd_arr[i][j])-
+									VelocityXFluxY(den_mid_y[i][j+1], velX_mid_y[i][j+1], velY_mid_y[i][j+1], vel_snd_arr[i][j])-
 									VelocityXFluxY(den_mid_y[i][j], velX_mid_y[i][j], velY_mid_y[i][j], vel_snd_arr[i][j]))/dy;
 				velY[i+1][j+1] = velY[i+1][j+1]
 								-dt*(
 									VelocityYFluxX(den_mid_x[i+1][j], velX_mid_x[i+1][j], velY_mid_x[i+1][j], vel_snd_arr[i][j])-
 									VelocityYFluxX(den_mid_x[i][j], velX_mid_x[i][j], velY_mid_x[i][j], vel_snd_arr[i][j]))/dx;
 								-dt*(
-									VelocityYFluxY(den_mid_y[i+1][j], velX_mid_y[i][j+1], velY_mid_y[i][j+1], vel_snd_arr[i][j])-
+									VelocityYFluxY(den_mid_y[i][j+1], velX_mid_y[i][j+1], velY_mid_y[i][j+1], vel_snd_arr[i][j])-
 									VelocityYFluxY(den_mid_y[i][j], velX_mid_y[i][j], velY_mid_y[i][j], vel_snd_arr[i][j]))/dy;
 								
 			}
