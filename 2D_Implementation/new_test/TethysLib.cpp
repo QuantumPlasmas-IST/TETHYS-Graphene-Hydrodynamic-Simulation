@@ -228,7 +228,7 @@ void Fluid2D::Richtmyer(){
 				velY[i+1+(j+1)*Nx] = velY[i+1+(j+1)*Nx]
 								-dt*(
 									VelocityYFluxX(den_mid_x[i+1+j*Nx], velX_mid_x[i+1+j*Nx], velY_mid_x[i+1+j*Nx], vel_snd_arr[i+j*Nx])-
-									VelocityYFluxX(den_mid_x[i+j*Nx], velX_mid_x[i+j*Nx], velY_mid_x[i+j*Nx], vel_snd_arr[i+j*Nx]))/dx;	
+									VelocityYFluxX(den_mid_x[i+j*Nx], velX_mid_x[i+j*Nx], velY_mid_x[i+j*Nx], vel_snd_arr[i+j*Nx]))/dx
 								-dt*(VelocityYFluxY(den_mid_y[i+(j+1)*Nx], velX_mid_y[i+(j+1)*Nx], velY_mid_y[i+(j+1)*Nx], vel_snd_arr[i+j*Nx])-
 									VelocityYFluxY(den_mid_x[i+j*Nx], velX_mid_x[i+j*Nx], velY_mid_x[i+j*Nx], vel_snd_arr[i+j*Nx]))/dy;							
 			}
