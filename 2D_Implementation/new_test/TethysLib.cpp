@@ -118,7 +118,16 @@ void Fluid2D::InitialCondRand(){
 void Fluid2D::InitialCondTEST(){
   	for (int i = 0; i < Nx; i++ ){
   		for (int j=0; j<Ny; j++){
-			den[i+j*Nx] = 1.0 + exp(-pow(i*dx-0.5,2)- pow(j*dy-0.5,2));
+			float densi;
+			if(i>=80&&i<=120&&j>=80&&j<=120){
+			densi=0.2;	
+			}
+			else{
+			densi=0.0;	
+			}
+			
+			den[i+j*Nx] = 1.0 + densi;
+			velX[i+j*Nx] = 0.1;
   		}
   	}	
 }
