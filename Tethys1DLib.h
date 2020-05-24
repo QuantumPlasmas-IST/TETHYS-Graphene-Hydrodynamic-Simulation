@@ -40,10 +40,12 @@ class Fluid1D
 		float * vel_snd_arr;	
 		float * den_mid ;
 		float * vel_mid ;
+		float * grad_vel_mid;
 
 	public :
 		float * den ;
 		float * vel ;
+		float * grad_vel;
 		float * cur ;
 		float * den_cor;
 		float * vel_cor ;
@@ -68,7 +70,7 @@ class Fluid1D
 		void SetSound();		
 		virtual void CFLCondition();
 		virtual float DensityFlux(float n,float v,float S);
-		virtual float VelocityFlux(float n,float v,float S);
+		virtual float VelocityFlux(float n,float v,float dv,float S);
 		virtual float DensitySource(float n,float v,float S);
 		virtual float VelocitySource(float n,float v,float S);
 };
@@ -95,7 +97,7 @@ class GrapheneFluid1D : public Fluid1D{
 		void SetColFreq(float x);
 		float GetColFreq();
 		float DensityFlux(float n,float v,float S) override;
-		float VelocityFlux(float n,float v,float S) override;
+		float VelocityFlux(float n,float v,float dv,float S) override;
 		float DensitySource(float n,float v,float S) override; 
 		float VelocitySource(float n,float v,float S) override;		
 };

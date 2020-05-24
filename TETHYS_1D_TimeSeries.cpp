@@ -67,7 +67,7 @@ int main(int argc, char **argv){
 	////////////////////////////////////////////////////////////////////
 
 	ofstream logfile;
-	logfile.open("ExtremaEnvelope.log",std::ios_base::app);
+	logfile.open("Envelope.log",std::ios_base::app);
 	time_t time_raw;
 	struct tm * time_info;
 	time (&time_raw);
@@ -75,7 +75,7 @@ int main(int argc, char **argv){
 	char time_stamp [80];
 	strftime (time_stamp,80,"%F %H:%M:%S\n",time_info);
 	logfile << "\n#Simulation @ " << time_stamp ;
-
+	logfile << "\n#S value \n" << S ;
 
 	float saturation = 0.0;
 	float tau = 0.0;
@@ -89,15 +89,26 @@ int main(int argc, char **argv){
 	//cout << "Density saturation at x=0: " << saturation << endl;
 	//cout << "Time for 99% of saturation: " << tau <<endl;		
 
-	ExtremaFinding(in_den_L, N, S, dt,saturation,tau, error, "Extrema_den_L.dat");
+
+	string str_snd = to_string(S);
+	string nam_post = "S="+str_snd;
+	string extrema_den_L_file = "Extrema_den_L" + nam_post + ".dat" ;
+	ExtremaFinding(in_den_L, N, S, dt,saturation,tau, error, extrema_den_L_file);
 	logfile << "#Density saturation at x=L:\n" << saturation << endl;
 	logfile << "#Time for 99% of saturation:\n" << tau <<endl;		
 
-	ExtremaFinding(in_vel_0, N, S, dt,saturation,tau, error, "Extrema_vel_0.dat");
+	//string str_snd = to_string(S);
+	//string nam_post = "S="+str_snd;
+	string extrema_vel_0_file = "Extrema_vel_0" + nam_post + ".dat" ;
+	ExtremaFinding(in_vel_0, N, S, dt,saturation,tau, error, extrema_vel_0_file);
 	logfile << "#Velocity saturation at x=0:\n" << saturation << endl;
 	logfile << "#Time for 99% of saturation:\n" << tau <<endl;		
 
-	ExtremaFinding(in_vel_L, N, S, dt,saturation,tau, error, "Extrema_vel_L.dat");	
+
+	//string str_snd = to_string(S);
+	//string nam_post = "S="+str_snd;
+	string extrema_vel_L_file = "Extrema_vel_L" + nam_post + ".dat" ;
+	ExtremaFinding(in_vel_L, N, S, dt,saturation,tau, error, extrema_vel_L_file);	
 	logfile << "#Velocity saturation at x=L:\n" << saturation << endl;
 	logfile << "#Time for 99% of saturation:\n" << tau <<endl;		
 		

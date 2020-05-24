@@ -88,9 +88,15 @@ int main(int argc, char **argv){
 	char time_stamp [80];
 	strftime (time_stamp,80,"%F %H:%M:%S\n",time_info);
 	logfile << "\n#Simulation @ " << time_stamp <<endl;
+	logfile << "\n#S value \n" << S <<"\n";
 	
+	string str_snd = to_string(S);
+	string nam_post = "S="+str_snd;
+	string electrofile = "electro_analysis_" + nam_post + ".dat" ;
 	ofstream data_elec;
-	data_elec.open("ElectronicProperties.dat");
+	data_elec.open(electrofile);
+	data_elec << scientific; 
+	
 	
 	ConvolveGauss(1, 50, 65.0, in_sto_E, out_power, N);
 	ConvolveGauss(1, 50, 65.0, in_Dipole_Variation, out_Poynting, N);
