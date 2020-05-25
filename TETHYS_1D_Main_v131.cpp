@@ -67,7 +67,7 @@ GrapheneFluid1D	graph(Npoints);
 		graph.SetVelFer(input_vel_fer);
 		cout << "Define kinetic viscosity: ";
 		cin >> input_kin_vis;
-		graph.SetColFreq(input_col_freq);
+		graph.SetColFreq(input_kin_vis);
 		cout << "Define collision frequency: ";
 		cin >> input_col_freq;
 		graph.SetColFreq(input_col_freq);
