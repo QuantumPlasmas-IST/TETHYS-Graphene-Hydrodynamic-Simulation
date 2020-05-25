@@ -7,12 +7,13 @@ mkdir -p "$DIRNAME/electronics"
 
 v=10
 l=0.0
+vis=0.0
 for s in 1 2 4 6 8 10 12 14 16 18 20 25 30 40 50 60
 do 
 	echo "calculating S="$s
 	echo "calculating Vf="$v
 	echo "calculating Vc="$l
-	./RichtmyerHDF5 $s $v $l 0 
+	./RichtmyerHDF5 $s $v $l $vis 0 
 	FILENAME1=$(find slice*.dat)
 	WORDCOUNT1=$(wc -l slice*.dat)
 	LINENUMBER1=${WORDCOUNT1% *}

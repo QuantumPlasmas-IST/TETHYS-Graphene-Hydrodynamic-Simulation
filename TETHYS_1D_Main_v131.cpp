@@ -45,16 +45,17 @@ GrapheneFluid1D	graph(Npoints);
 
  	
  	int data_save_mode=0;
-	float input_vel_snd,input_vel_fer,input_col_freq;
-	if(argc==5){
+	float input_vel_snd,input_vel_fer,input_col_freq,input_kin_vis;
+	if(argc==6){
 		input_vel_snd = atof(argv[1]);
 		input_vel_fer = atof(argv[2]);
 		input_col_freq = atof(argv[3]);
-		cout << atof(argv[3]);
-		assert(atoi(argv[4])==0 || atoi(argv[4])==1);
-		data_save_mode = atoi(argv[4]);	// full data or light save option
+		input_kin_vis = atof(argv[4]);
+		assert(atoi(argv[5])==0 || atoi(argv[5])==1);
+		data_save_mode = atoi(argv[5]);	// full data or light save option
 		graph.SetVelSnd(input_vel_snd);
 		graph.SetVelFer(input_vel_fer);
+		graph.SetKinVis(input_kin_vis);
 		graph.SetColFreq(input_col_freq);
 		}
 	else{
@@ -64,6 +65,9 @@ GrapheneFluid1D	graph(Npoints);
 		cout << "Define vF value: ";
 		cin >> input_vel_fer; 
 		graph.SetVelFer(input_vel_fer);
+		cout << "Define kinetic viscosity: ";
+		cin >> input_kin_vis;
+		graph.SetColFreq(input_col_freq);
 		cout << "Define collision frequency: ";
 		cin >> input_col_freq;
 		graph.SetColFreq(input_col_freq);
@@ -89,10 +93,13 @@ GrapheneFluid1D	graph(Npoints);
 	str_snd.erase(str_snd.end()-4,str_snd.end());
 	string str_fer = to_string(graph.GetVelFer());
 	str_fer.erase(str_fer.end()-4,str_fer.end());
+
+	string str_kin_vis = to_string(input_kin_vis);
+	str_kin_vis.erase(str_kin_vis.end()-4,str_kin_vis.end());
 	string str_col_freq = to_string(graph.GetColFreq());
 	str_col_freq.erase(str_col_freq.end()-4,str_col_freq.end());
 	
-	string nam_post = "S="+str_snd+"vF="+str_fer+"l="+str_col_freq;
+	string nam_post = "S="+str_snd+"vF="+str_fer+"vis="+str_kin_vis+"l="+str_col_freq;
 		
 
 
@@ -165,7 +172,7 @@ GrapheneFluid1D	graph(Npoints);
 	/*................................................................*/
 	
 	
-	WellcomeScreen(graph.GetVelSnd(), graph.GetVelFer(), graph.GetColFreq(), dt, dx, T_max);
+	WellcomeScreen(graph.GetVelSnd(), graph.GetVelFer(), graph.GetColFreq(),input_kin_vis, dt, dx, T_max);
 	RecordLogFile(graph.GetVelSnd(), graph.GetVelFer(), graph.GetColFreq(), dt, dx, T_max);
 	
 	////////////////////////////////////////////////////////////////////

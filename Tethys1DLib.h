@@ -15,7 +15,7 @@ float Integral1D(int N, float ds, float * f);
 void SpaceDerivative(int size_rows,int size_cols, float dt,float ** f_in , float ** df_out );
 void TimeDerivative(int size_rows,int size_cols, float dt,float ** f_in , float ** df_out );
 void Derivative1D(int size, float ds,float * f_in , float * df_out );
-void WellcomeScreen(float vel_snd, float vel_fer,float col_freq, float dt, float dx, float Tmax);
+void WellcomeScreen(float vel_snd, float vel_fer,float col_freq,float viscosity, float dt, float dx, float Tmax);
 void ExtremaFinding(float * vec_in, int N, float sound, float dt,float & sat, float  & tau, float & error, std::string extremafile);
 float ImagFreq(float sound, float fermi, float col_freq);                  //
 float PhaseVel(float sound, float fermi);
@@ -37,6 +37,7 @@ class Fluid1D
 		const float leng=1.0;
 		int Nx;
 		float vel_snd =50.0;
+		float kin_vis =0.0;
 		float * vel_snd_arr;	
 		float * den_mid ;
 		float * vel_mid ;
@@ -56,6 +57,7 @@ class Fluid1D
 
 		void Smooth(int width);
 		void SetVelSnd(float x);
+		void SetKinVis(float x);
 		float GetVelSnd();
 		float GetDx();
 		float GetDt();

@@ -66,7 +66,7 @@ float  Fluid1D::DensityFlux(float n,float v,float S){
 }
 float  Fluid1D::VelocityFlux(float n,float v,float dv,float S){
 	float f2;
-	f2 = 0.5*v*v + n + 0.0*dv; 
+	f2 = 0.5*v*v + n - kin_vis*dv; 
 	return f2;
 }
 float  Fluid1D::DensitySource(float n,float v,float S){
@@ -96,7 +96,7 @@ void Fluid1D::InitialCondRand(){
   }	
 }
 
-
+void Fluid1D::SetKinVis(float x){ kin_vis=x;}
 void Fluid1D::SetVelSnd(float x){ vel_snd=x; }
 float Fluid1D::GetVelSnd(){ return vel_snd; }
 float Fluid1D::GetTmax(){return Tmax;}
@@ -166,7 +166,7 @@ float GrapheneFluid1D::DensityFlux(float n,float v,float S){
 }
 float GrapheneFluid1D::VelocityFlux(float n,float v,float dv,float S){
 	float f2;
-	f2 = 0.25*v*v + vel_fer*vel_fer*0.5*log(n) + 2*S*S*sqrt(n) - 0.05*dv; 
+	f2 = 0.25*v*v + vel_fer*vel_fer*0.5*log(n) + 2*S*S*sqrt(n) - kin_vis*dv; 
 	return f2;			
 }
 float GrapheneFluid1D::DensitySource(float n,float v,float S){
@@ -178,7 +178,7 @@ float GrapheneFluid1D::VelocitySource(float n,float v,float S){
 	Q2=-1.0*col_freq*(v-1);
 	return Q2;			
 }
-		
+
 void GrapheneFluid1D::SetVelFer(float x){ vel_fer=x;	}
 float GrapheneFluid1D::GetVelFer(){ return vel_fer;  }
 void GrapheneFluid1D::SetColFreq(float x){ col_freq=x; }
@@ -386,13 +386,15 @@ cout<<"\n" ;
 	cout<<"╚═════════════════════════════════════════════════════════════════════════╝\n";                                                                                                                                                                                          
 }
 
-void WellcomeScreen(float vel_snd, float vel_fer, float col_freq, float dt,float dx, float Tmax){
+void WellcomeScreen(float vel_snd, float vel_fer, float col_freq,float viscosity, float dt,float dx, float Tmax){
 	cout << "\nFermi velocity\t\033[1mvF\t"<< vel_fer <<" v\342\202\200\033[0m\n";
 	if ( PhaseVel(vel_snd, vel_fer) < vel_fer){
 		cout << "Phase velocity\t\033[1mS'\t" << PhaseVel(vel_snd, vel_fer)<<" v\342\202\200\033[0m  \033[1;5;7;31m WARNING plasmon in damping region \033[0m" <<endl;
 	}else{
 		cout << "Phase velocity\t\033[1mS'\t" << PhaseVel(vel_snd, vel_fer)<<" v\342\202\200\033[0m\n";
 	}
+	cout << "Viscosity \t\033[1m\316\267\t"<< viscosity <<"\n";
+	if (viscosity !=0.0){ cout << "Reynolds n. \t\033[1mRe\t"<< 1.0/viscosity <<"\n";}
 	cout << "Collision \t\033[1m\316\275\t"<< col_freq <<" v\342\202\200/L\n\033[0m\n";
 	cout << "Theoretical frequency \033[1m\317\211=\317\211'+i\317\211''\033[0m\n";
 	cout << "\033[1m\317\211'\t"<< RealFreq(vel_snd,vel_fer,col_freq,1) << " v\342\202\200/L\t2\317\200/\317\211'\t"<< 2.0*MAT_PI/RealFreq(vel_snd,vel_fer,col_freq,1)  << " L/v\342\202\200\033[0m\n";

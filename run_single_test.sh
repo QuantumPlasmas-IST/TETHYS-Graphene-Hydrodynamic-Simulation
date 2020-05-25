@@ -7,11 +7,12 @@ mkdir -p "$DIRNAME/electronics"
 
 s=40
 v=10
-l=.1
+l=0.0
+vis=0.1
 echo "calculating S="$s
 echo "calculating Vf="$v
 echo "calculating Vc="$l
-./RichtmyerHDF5 $s $v $l 0 | tee -a Fluid.log
+./RichtmyerHDF5 $s $v $l $vis 0 | tee -a Fluid.log
 
 FILENAME1=$(find slice*.dat)
 WORDCOUNT1=$(wc -l slice*.dat)
