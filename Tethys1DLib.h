@@ -59,6 +59,7 @@ class Fluid1D
 		void SetVelSnd(float x);
 		void SetKinVis(float x);
 		float GetVelSnd();
+		float GetKinVis();
 		float GetDx();
 		float GetDt();
 		float GetTmax();

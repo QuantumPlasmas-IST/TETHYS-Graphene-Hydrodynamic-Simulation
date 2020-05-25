@@ -93,8 +93,7 @@ GrapheneFluid1D	graph(Npoints);
 	str_snd.erase(str_snd.end()-4,str_snd.end());
 	string str_fer = to_string(graph.GetVelFer());
 	str_fer.erase(str_fer.end()-4,str_fer.end());
-
-	string str_kin_vis = to_string(input_kin_vis);
+	string str_kin_vis = to_string(graph.GetKinVis());
 	str_kin_vis.erase(str_kin_vis.end()-4,str_kin_vis.end());
 	string str_col_freq = to_string(graph.GetColFreq());
 	str_col_freq.erase(str_col_freq.end()-4,str_col_freq.end());
@@ -172,7 +171,7 @@ GrapheneFluid1D	graph(Npoints);
 	/*................................................................*/
 	
 	
-	WellcomeScreen(graph.GetVelSnd(), graph.GetVelFer(), graph.GetColFreq(),input_kin_vis, dt, dx, T_max);
+	WellcomeScreen(graph.GetVelSnd(), graph.GetVelFer(), graph.GetColFreq(),graph.GetKinVis(), dt, dx, T_max);
 	RecordLogFile(graph.GetVelSnd(), graph.GetVelFer(), graph.GetColFreq(), dt, dx, T_max);
 	
 	////////////////////////////////////////////////////////////////////

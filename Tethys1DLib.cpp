@@ -99,6 +99,7 @@ void Fluid1D::InitialCondRand(){
 void Fluid1D::SetKinVis(float x){ kin_vis=x;}
 void Fluid1D::SetVelSnd(float x){ vel_snd=x; }
 float Fluid1D::GetVelSnd(){ return vel_snd; }
+float Fluid1D::GetKinVis(){ return kin_vis; }
 float Fluid1D::GetTmax(){return Tmax;}
 void Fluid1D::SetTmax(float x){ Tmax=x;}
 float Fluid1D::GetDx(){return dx;}
