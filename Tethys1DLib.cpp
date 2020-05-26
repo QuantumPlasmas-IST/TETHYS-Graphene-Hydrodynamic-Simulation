@@ -378,7 +378,7 @@ void RecordLogFile(float vel_snd, float vel_fer, float col_freq, float dt, float
 	logfile << dt<<"\t"<<dx<<"\t"<<Tmax<<"\t"<< (int) Tmax/dt <<"\t"<< (int) 1/dx <<endl;
 }
 
-
+/*
 void Autocorrelation(float * out_gamma ,float * in , int crop, int size){
 	int M = size - crop;
 	float in_crop[M];
@@ -394,9 +394,9 @@ void Autocorrelation(float * out_gamma ,float * in , int crop, int size){
 		sum=0.0;
 	}
 }
+*/
 
-
-
+/*
 float RootMeanSquare(int N, float dt, float * f){
 	float rms=0.0;
 	
@@ -407,7 +407,7 @@ float RootMeanSquare(int N, float dt, float * f){
 	rms = sqrt( rms/(N*dt)  );
 	return rms;	
 }
-
+*/
 float Integral1D(int N, float ds, float * f){
 	float itg=0.0;
 	
@@ -470,7 +470,7 @@ void ConvolveGauss(int type, float M, float t, float * in, float * out, int size
 		}							
 	}
 }
-
+/*
 void Derivative1D(int size, float ds,float * f_in , float * df_out ){
 	for(int i=1;i<size-1;i++){
 			df_out[i] = (-0.5*f_in[i-1]+0.5*f_in[i+1])/ds;
@@ -478,6 +478,7 @@ void Derivative1D(int size, float ds,float * f_in , float * df_out ){
 	df_out[0]=(-1.5*f_in[0]+2.0*f_in[1]-0.5*f_in[2])/ds;
 	df_out[size-1]=( 0.5*f_in[size-1-2]-2.0*f_in[size-1-1]+1.5*f_in[size-1])/ds;
 	}
+
 
 void TimeDerivative(int size_rows,int size_cols, float dt,float ** f_in , float ** df_out ){
 	//second order method
@@ -510,7 +511,7 @@ void SpaceDerivative(int size_rows,int size_cols, float dt,float ** f_in , float
 	}
 }
 
-
+*/
 
 float PhaseVel(float sound, float fermi){
 	float vel_phs = sqrt(sound*sound+0.5*fermi*fermi + 0.0625 );
@@ -577,7 +578,7 @@ void ExtremaFinding(float *vec_in, int N, float sound, float dt,float & sat, flo
 	}
 	data_extrema.close();		
 }
-
+/*
 void ShockFinding(float * in, int N, float t , float dx,  std::string shockfile){
 	ofstream data_shock;
 	data_shock.open(shockfile);
@@ -593,4 +594,4 @@ void ShockFinding(float * in, int N, float t , float dx,  std::string shockfile)
 	}
 	data_shock.close();	
 }
-
+*/
