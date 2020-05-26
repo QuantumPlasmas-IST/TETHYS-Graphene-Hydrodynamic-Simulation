@@ -80,7 +80,7 @@ int main(int argc, char **argv){
 	////////////////////////////////////////////////////////////////////
 
 	ofstream logfile;
-	logfile.open("ElectronicAnalysis.log",std::ios_base::app);
+	logfile.open("electronicAnalysis.log",std::ios_base::app);
 	time_t time_raw;
 	struct tm * time_info;
 	time (&time_raw);

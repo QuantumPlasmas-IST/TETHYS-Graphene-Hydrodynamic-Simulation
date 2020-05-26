@@ -170,7 +170,7 @@ GrapheneFluid1D	graph(Npoints);
 
 	/*................................................................*/
 	
-	
+	//WellcomeScreen(graph);
 	WellcomeScreen(graph.GetVelSnd(), graph.GetVelFer(), graph.GetColFreq(),graph.GetKinVis(), dt, dx, T_max);
 	RecordLogFile(graph.GetVelSnd(), graph.GetVelFer(), graph.GetColFreq(), dt, dx, T_max);
 	

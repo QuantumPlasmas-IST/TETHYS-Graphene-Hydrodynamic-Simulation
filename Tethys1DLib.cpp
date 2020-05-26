@@ -394,8 +394,8 @@ void WellcomeScreen(float vel_snd, float vel_fer, float col_freq,float viscosity
 	}else{
 		cout << "Phase velocity\t\033[1mS'\t" << PhaseVel(vel_snd, vel_fer)<<" v\342\202\200\033[0m\n";
 	}
-	cout << "Viscosity \t\033[1m\316\267\t"<< viscosity <<"\n";
-	if (viscosity !=0.0){ cout << "Reynolds n. \t\033[1mRe\t"<< 1.0/viscosity <<"\n";}
+	cout << "Viscosity \t\033[1m\316\267\t"<< viscosity <<"\033[0m\n";
+	if (viscosity !=0.0){ cout << "Reynolds n. \t\033[1mRe\t"<< 1.0/viscosity <<"\033[0m\n";}
 	cout << "Collision \t\033[1m\316\275\t"<< col_freq <<" v\342\202\200/L\n\033[0m\n";
 	cout << "Theoretical frequency \033[1m\317\211=\317\211'+i\317\211''\033[0m\n";
 	cout << "\033[1m\317\211'\t"<< RealFreq(vel_snd,vel_fer,col_freq,1) << " v\342\202\200/L\t2\317\200/\317\211'\t"<< 2.0*MAT_PI/RealFreq(vel_snd,vel_fer,col_freq,1)  << " L/v\342\202\200\033[0m\n";
@@ -404,6 +404,7 @@ void WellcomeScreen(float vel_snd, float vel_fer, float col_freq,float viscosity
 	cout <<"Discretisation\n";
 	cout <<"\033[1m\316\224t\t"<<dt<<" L/v\342\202\200\t\316\224x\t"<<dx<<" L\033[0m\n"<<endl;
 }
+
 
 
 

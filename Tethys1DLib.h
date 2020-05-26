@@ -106,9 +106,5 @@ class GrapheneFluid1D : public Fluid1D{
 };
 
 
-//void HDF5SetUp(H5::H5File hdf5file, GrapheneFluid1D graph_obj )
-//void HDF5SetUp( Fluid1D fluid_obj, string file_name );
-//void HDF5SetUp( GrapheneFluid1D );  polimorfismo
-//void HDF5SaveSnapshot( Fluid1D fluid_obj , string snap_name);
-
 #endif
+
