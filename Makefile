@@ -6,7 +6,7 @@ LIBS        = -lsz -lz -lm
 H5LIBS 	    = -lhdf5_hl_cpp -lhdf5_cpp -lhdf5_hl -lhdf5 	
 
 
-SIMULSRC = TETHYS_1D_Main_v131.cpp Tethys1DLib.cpp 
+SIMULSRC = TETHYS_1D_Main_v[0-9][0-9][0-9].cpp Tethys1DLib.cpp 
 SIMULOBJ = $(SIMULSRC:.cpp = .o)
 
 ANALYSISSRC = TETHYS_1D_ElectronicAnalysis.cpp Tethys1DLib.cpp

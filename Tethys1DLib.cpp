@@ -112,6 +112,23 @@ void Fluid1D::Smooth(int width){
 	AverageFilter( cur ,cur_cor, Nx , width);
 }
 
+void Fluid1D::SetFileName(){
+	char buffer [50];
+	sprintf (buffer, "S=%.2fvis=%.2f", vel_snd, kin_vis);
+	file_infix = buffer;
+}
+
+void Fluid1D::CreateFluidFile(){
+	this->SetFileName();
+	std::string previewfile = "preview_" + file_infix + ".dat" ;
+	data_preview.open (previewfile);
+	data_preview << scientific; 
+}
+
+void Fluid1D::WriteFluidFile(float t){
+data_preview <<t<<"\t"<< den_cor[Nx-1] <<"\t"<< vel_cor[Nx-1] <<"\t"<< den_cor[0] <<"\t" << vel_cor[0] <<"\n";
+}
+
 void Fluid1D::Richtmyer(){
 		//
 		//  Calculating the velocity gradient 
@@ -153,8 +170,6 @@ void Fluid1D::Richtmyer(){
 			cur[i] = vel[i]*den[i];
 		}
 } 
-
-
 
 /*....................................................................*/	
 /*............ Derived Graphene Class  ...............................*/	
@@ -212,7 +227,6 @@ float GrapheneFluid1D::ElectricDipoleVariation(){
 	return Integral1D(Nx, dx, cur_cor);
 }
 
-
 float GrapheneFluid1D::ElectricDipole(){
 	float p=0.0;
 	for(int j=1;j<Nx/2;j++){	
@@ -221,7 +235,6 @@ float GrapheneFluid1D::ElectricDipole(){
 	p = p*dx/3.0;
 	return p;
 }
-
 
 float GrapheneFluid1D::OhmPower(){
 	float itg=0.0;
@@ -232,32 +245,19 @@ float GrapheneFluid1D::OhmPower(){
 	return itg;	
 }
 
-void GrapheneFluid1D::CreateFluidFile(){
+void GrapheneFluid1D::SetFileName(){
 	char buffer [50];
 	sprintf (buffer, "S=%.2fvF=%.2fvis=%.2fl=%.2f", vel_snd, vel_fer, kin_vis, col_freq);
-	nam_post = buffer;
-	// time density(L,t) velocity(L,t) density(0,t) velocity(0,t)
-	std::string previewfile = "preview_" + nam_post + ".dat" ;
-	//ofstream data_preview;
-	data_preview.open (previewfile);
-	data_preview << scientific; 
+	file_infix = buffer;
 }
 
 void GrapheneFluid1D::CreateElectroFile(){
-	char buffer [50];
-	sprintf (buffer, "S=%.2fvF=%.2fvis=%.2fl=%.2f", vel_snd, vel_fer, kin_vis, col_freq);
-	nam_post = buffer;
-    // time density(L,t)-1=U(L,t) current(0,t) electric_dipole_moment(t)  derivative_electric_dipole_moment(t)
-	std::string electrofile = "electro_" + nam_post + ".dat" ;
-	//ofstream data_electro;
+	this->SetFileName();
+	std::string electrofile = "electro_" + file_infix + ".dat" ;
 	data_electro.open (electrofile);
 	data_electro << scientific; 	
 }
 
-
-void GrapheneFluid1D::WriteFluidFile(float t){
-data_preview <<t<<"\t"<< den_cor[Nx-1] <<"\t"<< vel_cor[Nx-1] <<"\t"<< den_cor[0] <<"\t" << vel_cor[0] <<"\n";
-}
 void GrapheneFluid1D::WriteElectroFile(float t){
 		float Q_net = this->NetCharge();
 		float I_avg = this->AverageCurrent(); 
@@ -266,8 +266,6 @@ void GrapheneFluid1D::WriteElectroFile(float t){
 		float Dipole=this->ElectricDipole();
 		data_electro <<t<<"\t"<< Q_net<<"\t"<<I_avg<<"\t"<<Q_net*Q_net*0.5 <<"\t"<<P_ohm<<"\t"<<Dipole<<"\t"<< Dipole_var <<"\n";
 }
-
-
 
 void GrapheneFluid1D::BoundaryCond(int type){
 	/*---------------*\

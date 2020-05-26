@@ -27,8 +27,9 @@ LINENUMBER2=${WORDCOUNT2% *}
 
 ./ElectronicAnalysis "$LINENUMBER2" "$FILENAME2" "$s" 
 
-mv -- electro* "./$DIRNAME/electronics"
+mv -- electro_S=*vF=*vis=*l=*.dat "./$DIRNAME/electronics"
 mv -- Extrema* "./$DIRNAME/extrema"
 mv -- *.dat "./$DIRNAME"
 mv -- *.log "./$DIRNAME"
+
 

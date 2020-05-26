@@ -42,8 +42,12 @@ class Fluid1D
 		float * den_mid ;
 		float * vel_mid ;
 		float * grad_vel_mid;
+		std::string file_infix ;
+		std::ofstream data_preview;
+		virtual void SetFileName();
 
 	public :
+	 				
 		float * den ;
 		float * vel ;
 		float * grad_vel;
@@ -65,8 +69,6 @@ class Fluid1D
 		float GetTmax();
 		void SetTmax(float x);
 
-		
-
 		int SizeX();
 		void InitialCondRand();
 		void Richtmyer();
@@ -76,6 +78,9 @@ class Fluid1D
 		virtual float VelocityFlux(float n,float v,float dv,float S);
 		virtual float DensitySource(float n,float v,float S);
 		virtual float VelocitySource(float n,float v,float S);
+		void CreateFluidFile();
+		void WriteFluidFile(float t) ;
+
 };
 
 
@@ -83,23 +88,14 @@ class GrapheneFluid1D : public Fluid1D{
 	protected : 
 		float vel_fer =10.0;							
 		float col_freq =0.0; 		
-		
-		std::string nam_post ;
-		std::ofstream data_preview;
 		std::ofstream data_electro;	
 	 	
 	public : 
 		using Fluid1D::Fluid1D;
 	
-		void CreateFluidFile();
+		void SetFileName() override;
 		void CreateElectroFile();
-		
-		void WriteFluidFile(float t);
-		void WriteElectroFile(float t);
-		
-		
-
-		
+		void WriteElectroFile(float t);				
 		float NetCharge();
 		float OhmPower();
 		float AverageCurrent();
