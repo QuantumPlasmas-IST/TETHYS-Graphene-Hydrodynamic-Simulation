@@ -88,30 +88,8 @@ GrapheneFluid1D	graph(Npoints);
 
 
 	/*.........Output files and streams...............................*/
-	
-	string str_snd = to_string(graph.GetVelSnd());
-	str_snd.erase(str_snd.end()-4,str_snd.end());
-	string str_fer = to_string(graph.GetVelFer());
-	str_fer.erase(str_fer.end()-4,str_fer.end());
-	string str_kin_vis = to_string(graph.GetKinVis());
-	str_kin_vis.erase(str_kin_vis.end()-4,str_kin_vis.end());
-	string str_col_freq = to_string(graph.GetColFreq());
-	str_col_freq.erase(str_col_freq.end()-4,str_col_freq.end());
-	
-	string nam_post = "S="+str_snd+"vF="+str_fer+"vis="+str_kin_vis+"l="+str_col_freq;
-		
-
-
-	// time density(L,t)-1=U(L,t) current(0,t) electric_dipole_moment(t)  derivative_electric_dipole_moment(t)
-	string electrofile = "electro_" + nam_post + ".dat" ;
-	ofstream data_electro;
-	data_electro.open (electrofile);
-	data_electro << scientific; 
-	// time density(L,t) velocity(L,t) density(0,t) velocity(0,t)
-	string slicefile = "slice_" + nam_post + ".dat" ;
-	ofstream data_slice;
-	data_slice.open (slicefile);
-	data_slice << scientific; 
+	graph.CreateElectroFile();
+	graph.CreateFluidFile();
 	/*................................................................*/
 
 	
@@ -170,7 +148,6 @@ GrapheneFluid1D	graph(Npoints);
 
 	/*................................................................*/
 	
-	//WellcomeScreen(graph);
 	WellcomeScreen(graph.GetVelSnd(), graph.GetVelFer(), graph.GetColFreq(),graph.GetKinVis(), dt, dx, T_max);
 	RecordLogFile(graph.GetVelSnd(), graph.GetVelFer(), graph.GetColFreq(), dt, dx, T_max);
 	
@@ -216,15 +193,9 @@ GrapheneFluid1D	graph(Npoints);
 			dataset_cur.write( graph.cur_cor, hdf5_float );
 			dataset_cur.close();
 		}
-		//Record end points
-		data_slice <<t<<"\t"<< graph.den_cor[Npoints-1] <<"\t"<< graph.vel_cor[Npoints-1] <<"\t"<< graph.den_cor[0] <<"\t" << graph.vel_cor[0] <<"\n";
-		//Record electric quantities
-		float Q_net, I_avg, P_ohm;
-		Q_net = graph.NetCharge();
-		I_avg = graph.AverageCurrent(); 
-		P_ohm = graph.OhmPower();
-		data_electro <<t<<"\t"<< Q_net<<"\t"<<I_avg<<"\t"<<Q_net*Q_net*0.5 <<"\t"<<P_ohm<<"\t"<<graph.ElectricDipole()<<"\t"<< graph.ElectricDipoleVariation() <<"\n";
-		//data_electro <<t<<"\t"<< graph.den_cor[Nx-1]-1.0 <<"\t"<< graph.den_cor[0]*graph.vel_cor[0] <<"\n";//<<"\t"<<  TotalElectricDipole(Nx,dx,den_cor)<<"\t"<<  DtElectricDipole(Nx,dx,cur_cor) <<"\t"<< KineticEnergy(Nx,dx, den_cor, vel_cor)  <<"\n";
+		graph.WriteFluidFile(t);
+		graph.WriteElectroFile(t);
+		
 	}
 	cout << "\033[1A\033[2K\033[1;32mDONE!\033[0m\n";
 	cout<<"═══════════════════════════════════════════════════════════════════════════" <<endl;
@@ -232,8 +203,6 @@ GrapheneFluid1D	graph(Npoints);
 	atr_num_time_steps.write(hdf5_int, &time_step);
 	atr_num_time_steps.close();
 
-	data_slice.close();
-	data_electro.close();
 
 	grp_dat->close(); 
 	grp_den->close(); 

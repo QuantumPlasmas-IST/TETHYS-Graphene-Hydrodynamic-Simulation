@@ -83,11 +83,24 @@ class GrapheneFluid1D : public Fluid1D{
 	
 	protected : 
 		float vel_fer =10.0;							
-		float col_freq =0.0; 						
+		float col_freq =0.0; 		
+		
+		std::string nam_post ;
+		std::ofstream data_preview;
+		std::ofstream data_electro;	
 	 	
 	public : 
 		using Fluid1D::Fluid1D;
 	
+		void CreateFluidFile();
+		void CreateElectroFile();
+		
+		void WriteFluidFile(float t);
+		void WriteElectroFile(float t);
+		
+		
+
+		
 		float NetCharge();
 		float OhmPower();
 		float AverageCurrent();

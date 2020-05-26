@@ -14,8 +14,8 @@ echo "calculating Vf="$v
 echo "calculating Vc="$l
 ./RichtmyerHDF5 $s $v $l $vis 0 
 
-FILENAME1=$(find slice*.dat)
-WORDCOUNT1=$(wc -l slice*.dat)
+FILENAME1=$(find preview*.dat)
+WORDCOUNT1=$(wc -l preview*.dat)
 LINENUMBER1=${WORDCOUNT1% *}
 
 ./TimeSeries "$LINENUMBER1" "$FILENAME1" "$s" 

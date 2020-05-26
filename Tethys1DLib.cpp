@@ -232,8 +232,44 @@ float GrapheneFluid1D::OhmPower(){
 	}
 	itg = itg*dx/3.0;
 	return itg;	
-	
 }
+
+void GrapheneFluid1D::CreateFluidFile(){
+	char buffer [50];
+	sprintf (buffer, "S=%.2fvF=%.2fvis=%.2fl=%.2f", vel_snd, vel_fer, kin_vis, col_freq);
+	nam_post = buffer;
+	// time density(L,t) velocity(L,t) density(0,t) velocity(0,t)
+	std::string previewfile = "preview_" + nam_post + ".dat" ;
+	//ofstream data_preview;
+	data_preview.open (previewfile);
+	data_preview << scientific; 
+}
+
+void GrapheneFluid1D::CreateElectroFile(){
+	char buffer [50];
+	sprintf (buffer, "S=%.2fvF=%.2fvis=%.2fl=%.2f", vel_snd, vel_fer, kin_vis, col_freq);
+	nam_post = buffer;
+    // time density(L,t)-1=U(L,t) current(0,t) electric_dipole_moment(t)  derivative_electric_dipole_moment(t)
+	std::string electrofile = "electro_" + nam_post + ".dat" ;
+	//ofstream data_electro;
+	data_electro.open (electrofile);
+	data_electro << scientific; 	
+}
+
+
+void GrapheneFluid1D::WriteFluidFile(float t){
+data_preview <<t<<"\t"<< den_cor[Nx-1] <<"\t"<< vel_cor[Nx-1] <<"\t"<< den_cor[0] <<"\t" << vel_cor[0] <<"\n";
+}
+void GrapheneFluid1D::WriteElectroFile(float t){
+		float Q_net = this->NetCharge();
+		float I_avg = this->AverageCurrent(); 
+		float P_ohm = this->OhmPower();
+		float Dipole_var=this->ElectricDipoleVariation();
+		float Dipole=this->ElectricDipole();
+		data_electro <<t<<"\t"<< Q_net<<"\t"<<I_avg<<"\t"<<Q_net*Q_net*0.5 <<"\t"<<P_ohm<<"\t"<<Dipole<<"\t"<< Dipole_var <<"\n";
+}
+
+
 
 void GrapheneFluid1D::BoundaryCond(int type){
 	
@@ -290,85 +326,6 @@ void AverageFilter(float * vec_in, float * vec_out, int size , int width ){
 		}	
 	}	
 }
-/*....................................................................*/
-/*....................................................................*/	
-/*....................................................................*/	
-
-/*
-void HDF5SetUp(H5File hdf5file, GrapheneFluid1D graph_obj ){
-
-const FloatType      hdf5_float(PredType::NATIVE_FLOAT);
-const IntType        hdf5_int(PredType::NATIVE_INT);
-
-
-	int Npoints;
-	Npoints = graph_obj.SizeX();
-	float input_col_freq ;
-	input_col_freq = graph_obj.GetColFreq(); 
-	float input_vel_fer;
-	input_vel_fer= graph_obj.GetVelFer();
-	float input_vel_snd;
-	input_vel_snd=graph_obj.GetVelSnd();
-	float dx;
-	dx=graph_obj.GetDx();
-	float dt;
-	dt=graph_obj.GetDt();
-	float T_max;
-	T_max = graph_obj.GetTmax();
-
-
-	
-	Group* grp_dat = new Group( hdf5file->createGroup( "/Data" ));
-	Group* grp_den = new Group( hdf5file->createGroup( "/Data/Density" ));
-	Group* grp_vel = new Group( hdf5file->createGroup( "/Data/Velocity" ));
-	Group* grp_cur = new Group( hdf5file->createGroup( "/Data/Current" ));
-	
-	hsize_t dim_atr[1] = { 1 };
-	// Create the data space for the attribute.
-	DataSpace atr_dataspace = DataSpace (1, dim_atr );
-	// Create a group attribute. 
-	Attribute atr_vel_snd  = grp_dat->createAttribute( "S parameter", hdf5_float, atr_dataspace);
-	Attribute atr_vel_fer  = grp_dat->createAttribute( "Fermi velocity", hdf5_float, atr_dataspace);
-	Attribute atr_col_freq = grp_dat->createAttribute( "Collision frequency", hdf5_float, atr_dataspace);
-	Attribute atr_dx = grp_dat->createAttribute( "Space discretisation step", hdf5_float, atr_dataspace);
-	Attribute atr_dt = grp_dat->createAttribute( "Time discretisation step", hdf5_float, atr_dataspace);
-	Attribute atr_total_time = grp_dat->createAttribute( "Total simulation time", hdf5_float, atr_dataspace);
-	Attribute atr_num_time_steps = grp_dat->createAttribute( "Number of time steps", hdf5_int, atr_dataspace);
-	Attribute atr_num_space_points = grp_dat->createAttribute( "Number of spatial points", hdf5_int, atr_dataspace);
-	// Write the attribute data. 
-	atr_col_freq.write(hdf5_float, &input_col_freq);
-	atr_vel_fer.write( hdf5_float, &input_vel_fer);
-	atr_vel_snd.write( hdf5_float, &input_vel_snd);
-	atr_dx.write(hdf5_float, &dx);
-	atr_dt.write( hdf5_float, &dt);
-	atr_total_time.write( hdf5_float, &T_max);
-	atr_num_space_points.write( hdf5_int, &Npoints);
-	atr_col_freq.close();
-	atr_vel_fer.close();
-	atr_vel_snd.close();
-	atr_dx.close();
-	atr_dt.close();
-	atr_total_time.close();
-	atr_num_space_points.close();
-	
-	const int RANK = 1; // 1D simulation
-	hsize_t     dim_snap[1];              // dataset dimensions
-	dim_snap[0] = Npoints; 
-	DataSpace dataspace_den( RANK, dim_snap );
-	DataSpace dataspace_vel( RANK, dim_snap );
-	DataSpace dataspace_cur( RANK, dim_snap );
-
-	
-
-
-}
-*/
-//void HDF5SetUp( Fluid1D );  polimorfismo
-//void HDF5SaveSnapshot( GrapheneFluid1D graph_obj , string snap_name){
-	
-	
-//}
-
 
 
 /*....................................................................*/
