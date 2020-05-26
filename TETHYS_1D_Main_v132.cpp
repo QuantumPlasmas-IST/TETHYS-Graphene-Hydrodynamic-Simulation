@@ -27,23 +27,14 @@ const IntType        hdf5_int(PredType::NATIVE_INT);
 int main(int argc, char **argv){
 	/* Display name and version  */
     BannerDisplay();
-
-
 	const int Npoints=201; 							// number of spatial points
 	float t=0.0;
 	float T_max=10.0;
-//	const float leng=1.0;					// time variable and spatial Length
 	float dx;								// spatial discretisation
 	float dt;								// time step
-//	float vel_snd;						    // Sound speed
-//	float vel_fer;							// Fermi velocity
-//	float col_freq; 								// mean free path in units of GFET length
 
+	GrapheneFluid1D	graph(Npoints);
 
-
-GrapheneFluid1D	graph(Npoints);
-
- 	
  	int data_save_mode=0;
 	float input_vel_snd,input_vel_fer,input_col_freq,input_kin_vis;
 	if(argc==6){
@@ -86,16 +77,12 @@ GrapheneFluid1D	graph(Npoints);
 	graph.SetSound();
 	/*................................................................*/
 
-
 	/*.........Output files and streams...............................*/
 	graph.CreateElectroFile();
 	graph.CreateFluidFile();
 	/*................................................................*/
-
-	
 	
 	/*.............  HDF5 file .......................................*/  	
-	// throw HDF5 exceptions ???
 	/*
 	 * Create a file.
 	 */
@@ -175,7 +162,6 @@ GrapheneFluid1D	graph(Npoints);
 		// Applying average filters for smoothing 	
 		graph.Smooth(2);
 		
-		
 		if(data_save_mode && time_step % 35 == 0 ){
 		//Record full data
 			string str_time = to_string(time_step/35);
@@ -195,7 +181,6 @@ GrapheneFluid1D	graph(Npoints);
 		}
 		graph.WriteFluidFile(t);
 		graph.WriteElectroFile(t);
-		
 	}
 	cout << "\033[1A\033[2K\033[1;32mDONE!\033[0m\n";
 	cout<<"═══════════════════════════════════════════════════════════════════════════" <<endl;

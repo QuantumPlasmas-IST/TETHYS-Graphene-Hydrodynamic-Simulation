@@ -224,9 +224,7 @@ float GrapheneFluid1D::ElectricDipole(){
 
 
 float GrapheneFluid1D::OhmPower(){
-	
 	float itg=0.0;
-		
 	for(int j=1;j<Nx/2;j++){
 		itg += cur_cor[2*j-2]*vel_cor[2*j-2] + 4*cur_cor[2*j-1]*vel_cor[2*j-1] + cur_cor[2*j]*vel_cor[2*j];
 	}
@@ -272,7 +270,6 @@ void GrapheneFluid1D::WriteElectroFile(float t){
 
 
 void GrapheneFluid1D::BoundaryCond(int type){
-	
 	/*---------------*\
 	| Free        | 1 |
 	| Periodic 	  | 2 |
@@ -340,7 +337,7 @@ cout<<"\n" ;
 	cout<<"║\033[2m      ▐█▌      ▐█▌    ▗▉      ▐█▌      ▐█▌   ▐█▌      ▐█▌    ▗       ██  \033[0m║\n";
 	cout<<"║\033[2m     ▆███▆    ▆███▆▆▆██▉     ▆███▆    ▆███▆ ▆███▆    ▆███▆   ▐█▆▆▆▆▆██▘  \033[0m║\n";
 	cout<<"║                                                                         ║\n";
-	cout<<"║ \033[1mTwo-dimensional Emitter of THz, Hydrodynamic Simulation.  Version 1.3.1\033[0m ║\n";
+	cout<<"║ \033[1mTwo-dimensional Emitter of THz, Hydrodynamic Simulation.  Version 1.3.2\033[0m ║\n";
 	cout<<"╚═════════════════════════════════════════════════════════════════════════╝\n";                                                                                                                                                                                          
 }
 
@@ -477,7 +474,6 @@ void ConvolveGauss(int type, float M, float t, float * in, float * out, int size
 }
 
 void Derivative1D(int size, float ds,float * f_in , float * df_out ){
-
 	for(int i=1;i<size-1;i++){
 			df_out[i] = (-0.5*f_in[i-1]+0.5*f_in[i+1])/ds;
 	}

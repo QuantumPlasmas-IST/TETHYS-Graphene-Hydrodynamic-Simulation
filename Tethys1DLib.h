@@ -80,7 +80,6 @@ class Fluid1D
 
 
 class GrapheneFluid1D : public Fluid1D{
-	
 	protected : 
 		float vel_fer =10.0;							
 		float col_freq =0.0; 		
