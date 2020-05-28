@@ -48,6 +48,10 @@ int main(int argc, char **argv){
 	ifstream input;
 	input.open(argv[2]);
 
+
+string input_name;
+input_name=argv[2];
+
 	cout << "Reading input file";
 	
 	if(input.is_open())
@@ -75,7 +79,8 @@ int main(int argc, char **argv){
 	char time_stamp [80];
 	strftime (time_stamp,80,"%F %H:%M:%S\n",time_info);
 	logfile << "\n#Simulation @ " << time_stamp ;
-	logfile << "\n#S value \n" << S ;
+	logfile <<"\n"<< input_name<<"\n";
+	//logfile << "\n#S value " << S <<"\n";
 
 	float saturation = 0.0;
 	float tau = 0.0;
@@ -92,14 +97,14 @@ int main(int argc, char **argv){
 
 	string str_snd = to_string(S);
 	string nam_post = "S="+str_snd;
-	string extrema_den_L_file = "Extrema_den_L" + nam_post + ".dat" ;
+	string extrema_den_L_file = "extrema_den_L_" + input_name;
 	ExtremaFinding(in_den_L, N, S, dt,saturation,tau, error, extrema_den_L_file);
 	logfile << "#Density saturation at x=L:\n" << saturation << endl;
 	logfile << "#Time for 99% of saturation:\n" << tau <<endl;		
 
 	//string str_snd = to_string(S);
 	//string nam_post = "S="+str_snd;
-	string extrema_vel_0_file = "Extrema_vel_0" + nam_post + ".dat" ;
+	string extrema_vel_0_file = "extrema_vel_0_" + input_name;
 	ExtremaFinding(in_vel_0, N, S, dt,saturation,tau, error, extrema_vel_0_file);
 	logfile << "#Velocity saturation at x=0:\n" << saturation << endl;
 	logfile << "#Time for 99% of saturation:\n" << tau <<endl;		
@@ -107,7 +112,7 @@ int main(int argc, char **argv){
 
 	//string str_snd = to_string(S);
 	//string nam_post = "S="+str_snd;
-	string extrema_vel_L_file = "Extrema_vel_L" + nam_post + ".dat" ;
+	string extrema_vel_L_file = "extrema_vel_L_" + input_name;
 	ExtremaFinding(in_vel_L, N, S, dt,saturation,tau, error, extrema_vel_L_file);	
 	logfile << "#Velocity saturation at x=L:\n" << saturation << endl;
 	logfile << "#Time for 99% of saturation:\n" << tau <<endl;		

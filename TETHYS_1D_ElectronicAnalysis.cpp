@@ -61,6 +61,9 @@ int main(int argc, char **argv){
 	ifstream input;
 	input.open(argv[2]);
 
+string input_name;
+input_name=argv[2];
+
 	cout << "Reading input file";
 	
 	if(input.is_open())
@@ -90,9 +93,7 @@ int main(int argc, char **argv){
 	logfile << "\n#Simulation @ " << time_stamp <<endl;
 	logfile << "\n#S value \n" << S <<"\n";
 	
-	string str_snd = to_string(S);
-	string nam_post = "S="+str_snd;
-	string electrofile = "electro_analysis_" + nam_post + ".dat" ;
+	string electrofile = "analysis_" + input_name;
 	ofstream data_elec;
 	data_elec.open(electrofile);
 	data_elec << scientific; 

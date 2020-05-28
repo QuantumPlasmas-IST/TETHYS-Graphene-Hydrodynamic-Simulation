@@ -104,6 +104,7 @@ int main(int argc, char **argv){
 	// Create a group attribute. 
 	Attribute atr_vel_snd  = grp_dat->createAttribute( "S parameter", hdf5_float, atr_dataspace);
 	Attribute atr_vel_fer  = grp_dat->createAttribute( "Fermi velocity", hdf5_float, atr_dataspace);
+	Attribute atr_kin_vis = grp_dat->createAttribute( "Kinetic viscosity", hdf5_float, atr_dataspace);
 	Attribute atr_col_freq = grp_dat->createAttribute( "Collision frequency", hdf5_float, atr_dataspace);
 	Attribute atr_dx = grp_dat->createAttribute( "Space discretisation step", hdf5_float, atr_dataspace);
 	Attribute atr_dt = grp_dat->createAttribute( "Time discretisation step", hdf5_float, atr_dataspace);
@@ -114,6 +115,7 @@ int main(int argc, char **argv){
 	atr_col_freq.write(hdf5_float, &input_col_freq);
 	atr_vel_fer.write( hdf5_float, &input_vel_fer);
 	atr_vel_snd.write( hdf5_float, &input_vel_snd);
+	atr_kin_vis.write(hdf5_float, &input_kin_vis); 
 	atr_dx.write(hdf5_float, &dx);
 	atr_dt.write( hdf5_float, &dt);
 	atr_total_time.write( hdf5_float, &T_max);
@@ -121,6 +123,7 @@ int main(int argc, char **argv){
 	atr_col_freq.close();
 	atr_vel_fer.close();
 	atr_vel_snd.close();
+	atr_kin_vis.close();
 	atr_dx.close();
 	atr_dt.close();
 	atr_total_time.close();
