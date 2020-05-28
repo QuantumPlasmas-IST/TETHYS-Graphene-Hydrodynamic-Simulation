@@ -95,8 +95,8 @@ input_name=argv[2];
 	//cout << "Time for 99% of saturation: " << tau <<endl;		
 
 
-	string str_snd = to_string(S);
-	string nam_post = "S="+str_snd;
+//	string str_snd = to_string(S);
+//	string nam_post = "S="+str_snd;
 	string extrema_den_L_file = "extrema_den_L_" + input_name;
 	ExtremaFinding(in_den_L, N, S, dt,saturation,tau, error, extrema_den_L_file);
 	logfile << "#Density saturation at x=L:\n" << saturation << endl;
