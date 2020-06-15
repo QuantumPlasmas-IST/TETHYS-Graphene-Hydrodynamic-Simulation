@@ -40,15 +40,26 @@ class Fluid2D
 		float vel_snd =50.0;
 		
 		float * vel_snd_arr;	
+		
 		float * den_mid ; // 1st Aux. Grid (Nx-1)*(Ny-1)
-		float * velX_mid ;
-		float * velY_mid ;
+//		float * velX_mid ;
+//		float * velY_mid ;
+		float * flxX_mid ;
+		float * flxY_mid ;
+
+		
 		float * den_mid_x ; // 2nd Aux. Grid X (Nx-1)*(Ny)
-		float * velX_mid_x ;
-		float * velY_mid_x ;
+//		float * velX_mid_x ;
+//		float * velY_mid_x ;
+		float * flxX_mid_x ;
+		float * flxY_mid_x ;
+
+		
 		float * den_mid_y ; // 2nd Aux. Grid Y (Nx)*(Ny-1)
-		float * velX_mid_y ;
-		float * velY_mid_y ;
+//		float * velX_mid_y ;
+//		float * velY_mid_y ;
+		float * flxX_mid_y ;
+		float * flxY_mid_y ;
 
 		float Tmax=10;
 
@@ -58,13 +69,17 @@ class Fluid2D
 		float * den ;
 		float * velX ;
 		float * velY ;
+		float * flxX ;
+		float * flxY ;
 		float * curX ;
 		float * curY ;
-		float * den_cor ;
-		float * velX_cor ;
-		float * velY_cor ;
-		float * curX_cor ;
-		float * curY_cor ;
+//		float * den_cor ;
+//		float * velX_cor ;
+//		float * velY_cor ;
+//		float * flxX_cor ;
+//		float * flxY_cor ;
+//		float * curX_cor ;
+//		float * curY_cor ;
 		
 		explicit Fluid2D(int sizeNx, int sizeNy, float width);
 		~Fluid2D();
@@ -88,14 +103,24 @@ class Fluid2D
 		virtual void BoundaryCond(int type);
 		virtual float DensityFluxX(float n, float velX, float velY, float S);
 		virtual float DensityFluxY(float n, float velX, float velY, float S);
-		virtual float VelocityXFluxX(float n, float velX, float velY, float S);
-		virtual float VelocityXFluxY(float n, float velX, float velY, float S);
-		virtual float VelocityYFluxX(float n, float velX, float velY, float S);
-		virtual float VelocityYFluxY(float n, float velX, float velY, float S);
-		virtual float DensitySource(float n, float velX, float velY, float S);
-		virtual float VelocityXSource(float n, float velX, float velY, float S);
-		virtual float VelocityYSource(float n, float velX, float velY, float S);
+//		virtual float VelocityXFluxX(float n, float velX, float velY, float S);
+//		virtual float VelocityXFluxY(float n, float velX, float velY, float S);
+//		virtual float VelocityYFluxX(float n, float velX, float velY, float S);
+//		virtual float VelocityYFluxY(float n, float velX, float velY, float S);
+		virtual float MassFluxXFluxX(float n, float flxX, float flxY, float S);
+		virtual float MassFluxXFluxY(float n, float flxX, float flxY, float S);
+		virtual float MassFluxYFluxX(float n, float flxX, float flxY, float S);
+		virtual float MassFluxYFluxY(float n, float flxX, float flxY, float S);
+		virtual float DensitySource(float n, float flxX, float flxY, float S);
+//		virtual float VelocityXSource(float n, float velX, float velY, float S);
+//		virtual float VelocityYSource(float n, float velX, float velY, float S);
+		virtual float MassFluxXSource(float n, float flxX, float flxY, float S);
+		virtual float MassFluxYSource(float n, float flxX, float flxY, float S);
+
+		virtual void MassFluxToVelocity();
+
 };
+
 
 
 class GrapheneFluid2D : public Fluid2D{
@@ -111,19 +136,31 @@ class GrapheneFluid2D : public Fluid2D{
 		float GetVelFer();
 		void SetColFreq(float x);
 		float GetColFreq();
-		void CFLCondition();
-	    void BoundaryCond(int type);		
+		void CFLCondition() override;
+//	    void BoundaryCond(int type);		
 	    
-		float DensityFluxX(float n, float velX, float velY, float S) override;
-		float DensityFluxY(float n, float velX, float velY, float S) override;
-		float VelocityXFluxX(float n, float velX, float velY, float S) override;
-		float VelocityXFluxY(float n, float velX, float velY, float S) override;
-		float VelocityYFluxX(float n, float velX, float velY, float S) override;
-		float VelocityYFluxY(float n, float velX, float velY, float S) override;
+	    void MassFluxToVelocity() override;
+	    
+		float DensityFluxX(float n, float flxX, float flxY, float S) override;
+		float DensityFluxY(float n, float flxX, float flxY, float S) override;
+//		float VelocityXFluxX(float n, float velX, float velY, float S) override;
+//		float VelocityXFluxY(float n, float velX, float velY, float S) override;
+//		float VelocityYFluxX(float n, float velX, float velY, float S) override;
+//		float VelocityYFluxY(float n, float velX, float velY, float S) override;
+	
+		float MassFluxXFluxX(float n, float flxX, float flxY, float S) override;
+		float MassFluxXFluxY(float n, float flxX, float flxY, float S) override;
+		float MassFluxYFluxX(float n, float flxX, float flxY, float S) override;
+		float MassFluxYFluxY(float n, float flxX, float flxY, float S) override;
+
 		
-		float DensitySource(float n, float velX, float velY, float S) override;
-		float VelocityXSource(float n, float velX, float velY, float S) override;
-		float VelocityYSource(float n, float velX, float velY, float S) override;
+		float DensitySource(float n, float flxX, float flxY, float S) override;
+//		float VelocityXSource(float n, float flxX, float flxY, float S) override;
+//		float VelocityYSource(float n, float flxX, float flxY, float S) override;
+	
+		float MassFluxXSource(float n, float flxX, float flxY, float S)  override;
+		float MassFluxYSource(float n, float flxX, float flxY, float S) override;
+
 };
 
 

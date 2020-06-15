@@ -14,7 +14,7 @@
 
 using namespace H5;
 using namespace std;
-const H5std_string   FILE_NAME( "RichtmyerCLASSTEST_2D.h5" );
+const H5std_string   FILE_NAME( "RichtmyerCLASSTEST_2D_Graphene.h5" );
 const FloatType      hdf5_float(PredType::NATIVE_FLOAT);
 const IntType        hdf5_int(PredType::NATIVE_INT);
 
@@ -24,9 +24,9 @@ int main()
 	int NpointsX = 201;
 	int NpointsY = 201;
 	int Npoints = NpointsX*NpointsY;
-	Fluid2D basic(NpointsX, NpointsY, 1);
+	GrapheneFluid2D basic(NpointsX, NpointsY, 1);
 	basic.CFLCondition();
-	float input_vel_snd = 50.0;
+	float input_vel_snd = 20.0;
 	float dt = basic.GetDt();
 	float dx = basic.GetDx();
 	float dy = basic.GetDy();
@@ -88,7 +88,7 @@ int main()
 	int time_step = 0;
 
 	cout << "Chegamos ao while\n";
-	while(t<= Tmax)
+	while(t<= Tmax && time_step<=1050)
 	{
 		if(data_save_mode && time_step % 35 == 0 ){
 		//Record full data

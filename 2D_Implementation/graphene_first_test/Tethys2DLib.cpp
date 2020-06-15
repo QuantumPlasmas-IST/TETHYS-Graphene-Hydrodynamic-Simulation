@@ -38,26 +38,36 @@ Fluid2D::Fluid2D(int sizeNx, int sizeNy, float width) : lengY(width){
 	den 		= new float[Nx*Ny](); 
 	velX 		= new float[Nx*Ny](); 
 	velY 		= new float[Nx*Ny](); 
+	flxX 		= new float[Nx*Ny](); 
+	flxY 		= new float[Nx*Ny](); 
 	curX 		= new float[Nx*Ny](); 
 	curY 		= new float[Nx*Ny](); 
-	den_cor 	= new float[Nx*Ny](); 
-	velX_cor	= new float[Nx*Ny](); 
-	velY_cor 	= new float[Nx*Ny](); 
-	curX_cor 	= new float[Nx*Ny](); 
-	curY_cor 	= new float[Nx*Ny](); 
+//	den_cor 	= new float[Nx*Ny](); 
+//	velX_cor	= new float[Nx*Ny](); 
+//	velY_cor 	= new float[Nx*Ny](); 
+//	flxX_cor	= new float[Nx*Ny](); 
+//	flxY_cor 	= new float[Nx*Ny](); 
+//	curX_cor 	= new float[Nx*Ny](); 
+//	curY_cor 	= new float[Nx*Ny](); 
 	vel_snd_arr	= new float[Nx*Ny](); 
 	// 1st Aux. Grid variables (Nx-1)*(Ny-1)
 	den_mid		= new float[(Nx-1)*(Ny-1)]();  
-	velX_mid	= new float[(Nx-1)*(Ny-1)]();
-	velY_mid	= new float[(Nx-1)*(Ny-1)]();
+//	velX_mid	= new float[(Nx-1)*(Ny-1)]();
+//	velY_mid	= new float[(Nx-1)*(Ny-1)]();
+	flxX_mid	= new float[(Nx-1)*(Ny-1)]();
+	flxY_mid	= new float[(Nx-1)*(Ny-1)]();
 	// 2nd Aux. Grid X (Nx-1)*(Ny)
 	den_mid_x	= new float[(Nx-1)*Ny]();
-	velX_mid_x	= new float[(Nx-1)*Ny]();
-	velY_mid_x	= new float[(Nx-1)*Ny]();
+//	velX_mid_x	= new float[(Nx-1)*Ny]();
+//	velY_mid_x	= new float[(Nx-1)*Ny]();
+	flxX_mid_x	= new float[(Nx-1)*Ny]();
+	flxY_mid_x	= new float[(Nx-1)*Ny]();
 	// 2nd Aux. Grid Y (Nx)*(Ny-1)
 	den_mid_y	= new float[Nx*(Ny-1)](); 
-	velX_mid_y	= new float[Nx*(Ny-1)](); 
-	velY_mid_y	= new float[Nx*(Ny-1)](); 
+//	velX_mid_y	= new float[Nx*(Ny-1)](); 
+//	velY_mid_y	= new float[Nx*(Ny-1)](); 
+	flxX_mid_y	= new float[Nx*(Ny-1)](); 
+	flxY_mid_y	= new float[Nx*(Ny-1)](); 
 }
 	
 Fluid2D::~Fluid2D(){
@@ -66,20 +76,20 @@ Fluid2D::~Fluid2D(){
 	delete [] velY;
 	delete [] curX;
 	delete [] curY;
-	delete [] den_cor;
-	delete [] velX_cor;
-	delete [] velY_cor;
-	delete [] curX_cor;
-	delete [] curY_cor;
+//	delete [] den_cor;
+//	delete [] velX_cor;
+//	delete [] velY_cor;
+//	delete [] curX_cor;
+//	delete [] curY_cor;
 	delete [] den_mid_y;
-	delete [] velX_mid_y;
-	delete [] velY_mid_y;		
+//	delete [] velX_mid_y;
+//	delete [] velY_mid_y;		
 	delete [] den_mid;
-	delete [] velX_mid;
-	delete [] velY_mid;
+//	delete [] velX_mid;
+//	delete [] velY_mid;
 	delete [] den_mid_x;
-	delete [] velX_mid_x;
-	delete [] velY_mid_x;
+//	delete [] velX_mid_x;
+//	delete [] velY_mid_x;
 	delete [] vel_snd_arr;
 }
 
@@ -124,22 +134,23 @@ void Fluid2D::InitialCondTEST(){
 			else{
 			densi=0.0;	
 			}
-			
 			den[i+j*Nx] = 1.0 + densi;
-			velX[i+j*Nx] = 0.1;
+			//velX[i+j*Nx] = 0.1;
+			flxX[i+j*Nx] = 0.1;
   		}
   	}	
 }
 
 
-void Fluid2D::Smooth(int width){
+/*void Fluid2D::Smooth(int width){
 	AverageFilter( den ,den_cor, Nx, Ny, width);	
 	AverageFilter( velX ,velX_cor, Nx, Ny, width);
 	AverageFilter( curX ,curX_cor, Nx , Ny, width);
 	AverageFilter( velY ,velY_cor, Ny, Ny, width);
 	AverageFilter( curY ,curY_cor, Ny , Ny, width);
-}
+}*/
 
+/*
 void Fluid2D::Richtmyer(){
 		//
 		//  Obtaining the 2nd auxiliary grids from averaging 2 neighbour cells in main grid
@@ -233,6 +244,112 @@ void Fluid2D::Richtmyer(){
 			}
 		}
 } 
+*/
+
+void Fluid2D::MassFluxToVelocity(){
+	for(int i=0; i<Nx-1; i++){
+		for(int j=0; j<Ny; j++){
+			velX[i+j*Nx]=flxX[i+j*Nx]/den[i+j*Nx];
+			velY[i+j*Nx]=flxY[i+j*Nx]/den[i+j*Nx];
+		}
+	}
+}
+
+void Fluid2D::Richtmyer(){
+		//
+		//  Obtaining the 2nd auxiliary grids from averaging 2 neighbour cells in main grid
+		//
+		// mid_x
+		for(int i=0; i<Nx-1; i++){
+			for(int j=0; j<Ny; j++){
+				den_mid_x[i+j*Nx] = 0.5*(den[i+j*Nx] + den[i+1+j*Nx]);
+				flxX_mid_x[i+j*Nx] = 0.5*(flxX[i+j*Nx] + flxX[i+1+j*Nx]);
+				flxY_mid_x[i+j*Nx] = 0.5*(flxY[i+j*Nx] + flxY[i+1+j*Nx]);
+			}
+		}
+		// mid_y
+		for(int i=0; i<Nx; i++){
+			for(int j=0; j<Ny-1; j++){
+				den_mid_y[i+j*Nx] = 0.5*(den[i+j*Nx] + den[i+(j+1)*Nx]);
+				flxX_mid_y[i+j*Nx] = 0.5*(flxX[i+j*Nx] + flxX[i+(j+1)*Nx]);
+				flxY_mid_y[i+j*Nx] = 0.5*(flxY[i+j*Nx] + flxY[i+(j+1)*Nx]);
+			}
+		}
+	  	//
+		//  Half step calculate density and velocity at time k+0.5 at the spatial midpoints
+		//
+		for(int i=0; i<Nx-1; i++){
+			for(int j=0; j<Ny-1; j++){
+				den_mid[i+j*Nx] = 0.25*(den[i+j*Nx] + den[i+1+j*Nx] + den[i+(j+1)*Nx] + den[i+1+(j+1)*Nx]) // How shall we include vel_snd_arr ?
+								-0.5*dt*(
+									DensityFluxX(den_mid_y[i+1+j*Nx], flxX_mid_y[i+1+j*Nx], flxY_mid_y[i+1+j*Nx],vel_snd_arr[i+j*Nx])-
+									DensityFluxX(den_mid_y[i+j*Nx], flxX_mid_y[i+j*Nx], flxY_mid_y[i+j*Nx],vel_snd_arr[i+j*Nx]))/dx
+								-0.5*dt*(
+									DensityFluxY(den_mid_x[i+(j+1)*Nx], flxX_mid_x[i+(j+1)*Nx], flxY_mid_x[i+(j+1)*Nx],vel_snd_arr[i+j*Nx])-
+									DensityFluxY(den_mid_x[i+j*Nx], flxX_mid_x[i+j*Nx], flxY_mid_x[i+j*Nx],vel_snd_arr[i+j*Nx]))/dy;
+				flxX_mid[i+j*Nx] = 0.25*(flxX[i+j*Nx] + flxX[i+1+j*Nx] + flxX[i+(j+1)*Nx] + flxX[i+1+(j+1)*Nx])
+								-0.5*dt*(
+									MassFluxXFluxX(den_mid_y[i+1+j*Nx], flxX_mid_y[i+1+j*Nx], flxY_mid_y[i+1+j*Nx],vel_snd_arr[i+j*Nx])-
+									MassFluxXFluxX(den_mid_y[i+j*Nx], flxX_mid_y[i+j*Nx], flxY_mid_y[i+j*Nx],vel_snd_arr[i+j*Nx]))/dx
+								-0.5*dt*(
+									MassFluxXFluxY(den_mid_x[i+(j+1)*Nx], flxX_mid_x[i+(j+1)*Nx], flxY_mid_x[i+(j+1)*Nx],vel_snd_arr[i+j*Nx])-
+									MassFluxXFluxY(den_mid_x[i+j*Nx], flxX_mid_x[i+j*Nx], flxY_mid_x[i+j*Nx],vel_snd_arr[i+j*Nx]))/dy;
+				flxY_mid[i+j*Nx] = 0.25*(flxY[i+j*Nx] + flxY[i+1+j*Nx] + flxY[i+(j+1)*Nx] + flxY[i+1+(j+1)*Nx])
+								-0.5*dt*(
+									MassFluxYFluxX(den_mid_y[i+1+j*Nx], flxX_mid_y[i+1+j*Nx], flxY_mid_y[i+1+j*Nx],vel_snd_arr[i+j*Nx])-
+									MassFluxYFluxX(den_mid_y[i+j*Nx], flxX_mid_y[i+j*Nx], flxY_mid_y[i+j*Nx],vel_snd_arr[i+j*Nx]))/dx
+								-0.5*dt*(
+									MassFluxYFluxY(den_mid_x[i+(j+1)*Nx], flxX_mid_x[i+(j+1)*Nx], flxY_mid_x[i+(j+1)*Nx],vel_snd_arr[i+j*Nx])-
+									MassFluxYFluxY(den_mid_x[i+j*Nx], flxX_mid_x[i+j*Nx], flxY_mid_x[i+j*Nx],vel_snd_arr[i+j*Nx]))/dy;
+			}
+		}
+		//
+		// Recalculate the 2nd auxiliary grids from averaging 2 neighbour cells in Aux grid / Note that dimension of the mid_x|mid_y is decreased by 2 in y|x
+		//
+		// mid_x
+		for(int i=0; i<Nx-1; i++){
+			for(int j=0; j<Ny-2; j++){
+				den_mid_x[i+j*Nx] = 0.5*(den_mid[i+j*Nx] + den_mid[i+(j+1)*Nx]);
+				flxX_mid_x[i+j*Nx] = 0.5*(flxX_mid[i+j*Nx] + flxX_mid[i+(j+1)*Nx]);
+				flxY_mid_x[i+j*Nx] = 0.5*(flxY_mid[i+j*Nx] + flxY_mid[i+(j+1)*Nx]);
+			}
+		}
+		// mid_y
+		for(int i=0; i<Nx-2; i++){
+			for(int j=0; j<Ny-1; j++){
+				den_mid_y[i+j*Nx] = 0.5*(den_mid[i+j*Nx] + den_mid[i+1+j*Nx]);
+				flxX_mid_y[i+j*Nx] = 0.5*(flxX_mid[i+j*Nx] + flxX_mid[i+1+j*Nx]);
+				flxY_mid_y[i+j*Nx] = 0.5*(flxY_mid[i+j*Nx] + flxY_mid[i+1+j*Nx]);
+			}
+		}
+		//
+		// Obtain main grid at time k+1 - Remaining  cells to be definied by 
+		//
+		for(int i=0; i<Nx-2; i++){
+			for(int j=0; j<Ny-2; j++){
+				den[i+1+(j+1)*Nx] = den[i+1+(j+1)*Nx]
+								-dt*(
+									DensityFluxX(den_mid_x[i+1+j*Nx], flxX_mid_x[i+1+j*Nx], flxY_mid_x[i+1+j*Nx], vel_snd_arr[i+j*Nx])-
+									DensityFluxX(den_mid_x[i+j*Nx], flxX_mid_x[i+j*Nx], flxY_mid_x[i+j*Nx], vel_snd_arr[i+j*Nx]))/dx
+								-dt*(DensityFluxY(den_mid_y[i+(j+1)*Nx], flxX_mid_y[i+(j+1)*Nx], flxY_mid_y[i+(j+1)*Nx], vel_snd_arr[i+j*Nx])-
+									DensityFluxY(den_mid_y[i+j*Nx], flxX_mid_y[i+j*Nx], flxY_mid_y[i+j*Nx], vel_snd_arr[i+j*Nx]))/dy;
+				flxX[i+1+(j+1)*Nx] = flxX[i+1+(j+1)*Nx]
+								-dt*(
+									MassFluxXFluxX(den_mid_x[i+1+j*Nx], flxX_mid_x[i+1+j*Nx], flxY_mid_x[i+1+j*Nx], vel_snd_arr[i+j*Nx])-
+									MassFluxXFluxX(den_mid_x[i+j*Nx], flxX_mid_x[i+j*Nx], flxY_mid_x[i+j*Nx], vel_snd_arr[i+j*Nx]))/dx
+								-dt*(MassFluxXFluxY(den_mid_y[i+(j+1)*Nx], flxX_mid_y[i+(j+1)*Nx], flxY_mid_y[i+(j+1)*Nx], vel_snd_arr[i+j*Nx])-
+									MassFluxXFluxY(den_mid_y[i+j*Nx], flxX_mid_y[i+j*Nx], flxY_mid_y[i+j*Nx], vel_snd_arr[i+j*Nx]))/dy;
+				flxY[i+1+(j+1)*Nx] = flxY[i+1+(j+1)*Nx]
+								-dt*(
+									MassFluxYFluxX(den_mid_x[i+1+j*Nx], flxX_mid_x[i+1+j*Nx], flxY_mid_x[i+1+j*Nx], vel_snd_arr[i+j*Nx])-
+									MassFluxYFluxX(den_mid_x[i+j*Nx], flxX_mid_x[i+j*Nx], flxY_mid_x[i+j*Nx], vel_snd_arr[i+j*Nx]))/dx
+								-dt*(MassFluxYFluxY(den_mid_y[i+(j+1)*Nx], flxX_mid_y[i+(j+1)*Nx], flxY_mid_y[i+(j+1)*Nx], vel_snd_arr[i+j*Nx])-
+									MassFluxYFluxY(den_mid_y[i+j*Nx], flxX_mid_y[i+j*Nx], flxY_mid_y[i+j*Nx], vel_snd_arr[i+j*Nx]))/dy;							
+			}
+		}
+} 
+
+
 
 void Fluid2D::CFLCondition(){ 
 		dx = lengX / ( float ) ( Nx - 1 );
@@ -240,7 +357,7 @@ void Fluid2D::CFLCondition(){
 		dt = dx/10.0;
 }
 
-void Fluid2D::BoundaryCond(int type){
+/*void Fluid2D::BoundaryCond(int type){
 	
 	// For now, periodic end in y 
 	for (int i=0; i<Nx; i++)
@@ -248,15 +365,16 @@ void Fluid2D::BoundaryCond(int type){
 		den[i+0*Nx] = den[i+(Ny-2)*Nx];
 		velX[i+0*Nx] = velX[i+(Ny-2)*Nx];
 		velY[i+0*Nx] = velY[i+(Ny-2)*Nx];
+		
 		den[i+(Ny-1)*Nx] = den[i+1*Nx];
 		velX[i+(Ny-1)*Nx] = velX[i+1*Nx];
 		velY[i+(Ny-1)*Nx] = velY[i+1*Nx];
 	}
 	// in x
-	/*---------------*\
-	| Free        | 1 |
-	| Periodic 	  | 2 |
-	\*---------------*/
+	
+	//| Free        | 1 |
+	//| Periodic 	  | 2 |
+	
 	switch(type){
 		case 1 : 
 		for(int j=0; j<Ny-1; j++){
@@ -288,19 +406,71 @@ void Fluid2D::BoundaryCond(int type){
 			velY[Nx-1+j*Nx] = velY[1+j*Nx];	
 		}		
 	}
+}*/
+
+void Fluid2D::BoundaryCond(int type){
+	
+	// For now, periodic end in y 
+	for (int i=0; i<Nx; i++)
+	{
+		den[i+0*Nx] = den[i+(Ny-2)*Nx];
+		flxX[i+0*Nx] = flxX[i+(Ny-2)*Nx];
+		flxY[i+0*Nx] = flxY[i+(Ny-2)*Nx];
+		
+		den[i+(Ny-1)*Nx] = den[i+1*Nx];
+		flxX[i+(Ny-1)*Nx] = flxX[i+1*Nx];
+		flxY[i+(Ny-1)*Nx] = flxY[i+1*Nx];
+	}
+	// in x
+	/*---------------*\
+	| Free        | 1 |
+	| Periodic 	  | 2 |
+	\*---------------*/
+	switch(type){
+		case 1 : 
+		for(int j=0; j<Ny-1; j++){
+			den[0+j*Nx] = den[1+j*Nx];
+			flxX[0+j*Nx] = flxX[1+j*Nx];
+			flxY[0+j*Nx] = flxY[1+j*Nx];
+			den[Nx-1+j*Nx] = den[Nx-2+j*Nx];
+			flxX[Nx-1+j*Nx] = flxX[Nx-2+j*Nx];
+			flxY[Nx-1+j*Nx] = flxY[Nx-2+j*Nx];	
+		}	
+			break;
+		case 2 :
+		for(int j=0; j<Ny-1; j++){
+			den[0+j*Nx] = den[Nx-2+j*Nx];
+			flxX[0+j*Nx] = flxX[Nx-2+j*Nx];
+			flxY[0+j*Nx] = flxY[Nx-2+j*Nx];
+			den[Nx-1+j*Nx] = den[1+j*Nx];
+			flxX[Nx-1+j*Nx] = flxX[1+j*Nx];
+			flxY[Nx-1+j*Nx] = flxY[1+j*Nx];	
+		}
+			break;	
+		default : 
+		for(int j=0; j<Ny-1; j++){
+			den[0+j*Nx] = den[Nx-2+j*Nx];
+			flxX[0+j*Nx] = flxX[Nx-2+j*Nx];
+			flxY[0+j*Nx] = flxY[Nx-2+j*Nx];
+			den[Nx-1+j*Nx] = den[1+j*Nx];
+			flxX[Nx-1+j*Nx] = flxX[1+j*Nx];
+			flxY[Nx-1+j*Nx] = flxY[1+j*Nx];	
+		}		
+	}
 }
 
-float  Fluid2D::DensityFluxX(float n,float velX, float velY, float S){ // Please Review this João 
+
+float  Fluid2D::DensityFluxX(float n,float flxX, float flxY, float S){ 
 	float f1;
-	f1 = velX;
+	f1 = flxX;
 	return f1;		
 }
-float  Fluid2D::DensityFluxY(float n,float velX, float velY, float S){ 
+float  Fluid2D::DensityFluxY(float n,float flxX, float flxY, float S){ 
 	float f1;
-	f1 = velY;
+	f1 = flxY;
 	return f1;		
 }
-float  Fluid2D::VelocityXFluxX(float n,float velX, float velY, float S){
+/*float  Fluid2D::VelocityXFluxX(float n,float velX, float velY, float S){
 	float f2;
 	f2 = velX*velX/n +n; 
 	return f2;
@@ -319,23 +489,62 @@ float  Fluid2D::VelocityYFluxY(float n,float velX, float velY, float S){
 	float f3;
 	f3 = velY*velY/n + n;
 	return f3;
-}
+}*/
 float  Fluid2D::DensitySource(float n,float velX, float velY, float S){
 	float Q1 =0;
 	return Q1;
 }
-float  Fluid2D::VelocityXSource(float n,float velX, float velY, float S){
+/*float  Fluid2D::VelocityXSource(float n,float velX, float velY, float S){
 	float Q2 =0;
 	return Q2;
 }
 float  Fluid2D::VelocityYSource(float n,float velX, float velY, float S){
 	float Q3 =0;
 	return Q3;
+}*/	
+float  Fluid2D::MassFluxXFluxX(float n,float flxX, float flxY, float S){
+	float f2;
+	f2 = flxX*flxX/n +n; 
+	return f2;
+}
+float  Fluid2D::MassFluxXFluxY(float n,float flxX, float flxY, float S){
+	float f2; 
+	f2 = flxX*flxY/n;
+	return f2;
+}
+float  Fluid2D::MassFluxYFluxX(float n,float flxX, float flxY, float S){
+	float f3;
+	f3 = flxX*flxY/n;
+	return f3;
+}
+float  Fluid2D::MassFluxYFluxY(float n,float flxX, float flxY, float S){
+	float f3;
+	f3 = flxY*flxY/n + n;
+	return f3;
+}
+
+float  Fluid2D::MassFluxXSource(float n,float flxX, float flxY, float S){
+	float Q2 =0;
+	return Q2;
+}
+float  Fluid2D::MassFluxYSource(float n,float flxX, float flxY, float S){
+	float Q3 =0;
+	return Q3;
 }	
+
 
 
 /***************************************************** GrapheneFluid *****************************************************\
 \*************************************************************************************************************************/
+
+void GrapheneFluid2D::MassFluxToVelocity(){
+	for(int i=0; i<Nx-1; i++){
+		for(int j=0; j<Ny; j++){
+			velX[i+j*Nx]=flxX[i+j*Nx]*pow(den[i+j*Nx],-1.5);
+			velY[i+j*Nx]=flxY[i+j*Nx]*pow(den[i+j*Nx],-1.5);
+		}
+	}
+}
 
 
 void GrapheneFluid2D::SetVelFer(float x){ vel_fer=x;	}
@@ -343,7 +552,7 @@ float GrapheneFluid2D::GetVelFer(){ return vel_fer;  }
 //void GrapheneFluid2D::SetColFreq(float x){ col_freq=x; }
 //float GrapheneFluid2D::GetColFreq(){ return col_freq; }
 
-/*
+
 void GrapheneFluid2D::CFLCondition(){ // Eventual redefinition 
 	dx = lengX / ( float ) ( Nx - 1 );
 	dy = lengY / ( float ) ( Ny - 1 );
@@ -361,6 +570,7 @@ void GrapheneFluid2D::CFLCondition(){ // Eventual redefinition
 		dt = 4 * dx / (2*vel_snd+sqrt(3*vel_fer*vel_fer + 24*vel_snd*vel_snd));
 }	
 
+/*
 void GrapheneFluid2D::BoundaryCond(int type){
 	
 	// For now, periodic end in y 
@@ -437,16 +647,17 @@ void GrapheneFluid2D::BoundaryCond(int type){
 
 */
 
-float  GrapheneFluid2D::DensityFluxX(float n,float velX, float velY, float S){ // Double Please Review this João 
+float  GrapheneFluid2D::DensityFluxX(float n,float flxX, float flxY, float S){ // Double Please Review this João 
 	float f1;
-	f1 = n*velX;
+	f1 = flxX/sqrt(n);
 	return f1;		
 }
-float  GrapheneFluid2D::DensityFluxY(float n,float velX, float velY, float S){ 
+float  GrapheneFluid2D::DensityFluxY(float n,float flxX, float flxY, float S){ 
 	float f1;
-	f1 = n*velY;
+	f1 = flxY/sqrt(n);
 	return f1;		
 }
+/*
 float  GrapheneFluid2D::VelocityXFluxX(float n,float velX, float velY, float S){
 	float f2;
 	f2 = 0.5*velX*velX + vel_fer*vel_fer*0.5*log(n) + 2*S*S*sqrt(n); 
@@ -466,13 +677,38 @@ float  GrapheneFluid2D::VelocityYFluxY(float n,float velX, float velY, float S){
 	f3 = 0.5*velY*velY + vel_fer*vel_fer*0.5*log(n) + 2*S*S*sqrt(n); 
 	return f3;
 }
+*/
+
+
+float  GrapheneFluid2D::MassFluxXFluxX(float n,float flxX, float flxY, float S){
+	float f2;
+	f2 = flxX*flxX*pow(n,-1.5) +vel_fer*vel_fer*pow(n,1.5)/3.0+0.5*S*S*n*n; 
+	return f2;
+}
+float  GrapheneFluid2D::MassFluxXFluxY(float n,float flxX, float flxY, float S){
+	float f2; 
+	f2 = flxX*flxY*pow(n,-1.5);
+	return f2;
+}
+float  GrapheneFluid2D::MassFluxYFluxX(float n,float flxX, float flxY, float S){
+	float f3;
+	f3 = flxX*flxY*pow(n,-1.5);
+	return f3;
+}
+float  GrapheneFluid2D::MassFluxYFluxY(float n,float flxX, float flxY, float S){
+	float f3;
+	f3 = flxY*flxY*pow(n,-1.5) + vel_fer*vel_fer*pow(n,1.5)/3.0+0.5*S*S*n*n;
+	return f3;
+}
+
+
 
 // Pedro: para ja nao vamos incluir sources 
-float  GrapheneFluid2D::DensitySource(float n,float velX, float velY, float S){
+float  GrapheneFluid2D::DensitySource(float n,float flxX, float flxY, float S){
 	float Q1 =0;
 	return Q1;
 }
-float  GrapheneFluid2D::VelocityXSource(float n,float velX, float velY, float S){
+/*float  GrapheneFluid2D::VelocityXSource(float n,float velX, float velY, float S){
 	float Q2 =0;
 	return Q2;
 }
@@ -480,6 +716,16 @@ float  GrapheneFluid2D::VelocityYSource(float n,float velX, float velY, float S)
 	float Q3 =0;
 	return Q3;
 }	
+*/
+float  GrapheneFluid2D::MassFluxXSource(float n,float flxX, float flxY, float S){
+	float Q2 =0;
+	return Q2;
+}
+float  GrapheneFluid2D::MassFluxYSource(float n,float flxX, float flxY, float S){
+	float Q3 =0;
+	return Q3;
+}	
+
 
 /**/
 
