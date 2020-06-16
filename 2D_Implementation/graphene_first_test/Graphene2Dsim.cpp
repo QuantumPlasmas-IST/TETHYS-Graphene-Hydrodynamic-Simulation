@@ -32,8 +32,15 @@ int main()
 	float dy = basic.GetDy();
 	basic.SetVelSnd(input_vel_snd);
 	basic.SetSound();
-	const float Tmax = 0.5;
+	const float Tmax = 2.0;
 	int data_save_mode =1;
+
+	string slicefile = "slice_test.dat" ;
+	ofstream data_slice;
+	data_slice.open (slicefile);
+	data_slice << scientific; 
+
+
 
 	// HDF5
 	H5File* hdf5file = new H5File( FILE_NAME, H5F_ACC_TRUNC );
@@ -78,23 +85,22 @@ int main()
 	DataSpace dataspace_velX( RANK, dim_snap );
 	DataSpace dataspace_velY( RANK, dim_snap );
 
-	//basic.InitialCondRand();
-	basic.InitialCondTEST();
-	//basic.BoundaryCond(2);
+	basic.InitialCondRand();
+	//basic.InitialCondTEST();
+	basic.BoundaryCond(2);
 
 
 
 	float t=0;
 	int time_step = 0;
 
-	cout << "Chegamos ao while\n";
-	while(t<= Tmax && time_step<=1050)
+	while(t<= Tmax )
 	{
-		if(data_save_mode && time_step % 35 == 0 ){
+		if(data_save_mode && time_step % 350 == 0 ){
 		//Record full data
-			cout << "Chegamos à iterada : "<< time_step << "\n";
+			cout << "t= "<< t << "\n";
 			
-			string str_time = to_string(time_step/35);
+			string str_time = to_string(time_step/350);
 			string name_dataset = "snapshot_"+str_time;
 			
 			
@@ -115,6 +121,15 @@ int main()
 		basic.MassFluxToVelocity();
 		basic.BoundaryCond(2);
 		//basic.Smooth(2);
+
+
+		//Record end points
+		data_slice <<t<<"\t"<< basic.den[0+100*NpointsX]<<"\t"<< basic.den[NpointsX-1+100*NpointsX] 
+				      <<"\t"<< basic.velX[0+100*NpointsX] <<"\t"<< basic.velX[NpointsX-1+100*NpointsX] 
+				      <<"\t"<< basic.flxX[0+100*NpointsX] <<"\t"<< basic.flxX[NpointsX-1+100*NpointsX]
+				      <<"\t"<< basic.velY[0+100*NpointsX] <<"\t"<< basic.velY[NpointsX-1+100*NpointsX] 
+				      <<"\t"<< basic.flxY[0+100*NpointsX] <<"\t"<< basic.flxY[NpointsX-1+100*NpointsX] <<"\n";
+
 
 		t+=dt;
 		time_step++;

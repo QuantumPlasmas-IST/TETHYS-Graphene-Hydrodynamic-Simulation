@@ -247,10 +247,14 @@ void Fluid2D::Richtmyer(){
 */
 
 void Fluid2D::MassFluxToVelocity(){
-	for(int i=0; i<Nx-1; i++){
+	for(int i=0; i<Nx; i++){
 		for(int j=0; j<Ny; j++){
 			velX[i+j*Nx]=flxX[i+j*Nx]/den[i+j*Nx];
 			velY[i+j*Nx]=flxY[i+j*Nx]/den[i+j*Nx];
+			
+			
+		    curX[i+j*Nx] =velX[i+j*Nx]*den[i+j*Nx];
+			curY[i+j*Nx] =velY[i+j*Nx]*den[i+j*Nx];			
 		}
 	}
 }
@@ -538,10 +542,14 @@ float  Fluid2D::MassFluxYSource(float n,float flxX, float flxY, float S){
 \*************************************************************************************************************************/
 
 void GrapheneFluid2D::MassFluxToVelocity(){
-	for(int i=0; i<Nx-1; i++){
+	for(int i=0; i<Nx; i++){
 		for(int j=0; j<Ny; j++){
 			velX[i+j*Nx]=flxX[i+j*Nx]*pow(den[i+j*Nx],-1.5);
 			velY[i+j*Nx]=flxY[i+j*Nx]*pow(den[i+j*Nx],-1.5);
+
+		    curX[i+j*Nx] =velX[i+j*Nx]*den[i+j*Nx];
+			curY[i+j*Nx] =velY[i+j*Nx]*den[i+j*Nx];			
+
 		}
 	}
 }
@@ -570,9 +578,37 @@ void GrapheneFluid2D::CFLCondition(){ // Eventual redefinition
 		dt = 4 * dx / (2*vel_snd+sqrt(3*vel_fer*vel_fer + 24*vel_snd*vel_snd));
 }	
 
-/*
+
 void GrapheneFluid2D::BoundaryCond(int type){
 	
+	//NOVAS
+	
+	
+	for(int j=0;j<Ny;j++){
+	
+	den[0+j*Nx]=1.0;               			//constant density at x=0
+	den[Nx-1+j*Nx]=den[Nx-2+j*Nx]; 			//free density at x=L
+	
+	flxY[0+j*Nx] = 0.0; 					//flux only on x at x=0
+	flxY[Nx-1+j*Nx] = 0.0 ;					//idem at x=L
+	
+	flxX[0+j*Nx] = flxX[1+j*Nx];			//free flux at x=0
+	flxX[Nx-1+j*Nx] = sqrt(den[Nx-1+j*Nx]);	//constant current at x=L (flux equals mass)
+	
+	}
+	
+	//needs to be forced afterwards
+	
+	for(int i=0;i<Nx;i++){					//no slip at walls
+	
+	flxX[i+0*Nx] = 0.0;
+	flxX[i+(Ny-1)*Nx] = 0.0;
+	flxY[i+0*Nx] = 0.0;
+	flxY[i+(Ny-1)*Nx] = 0.0;
+	 
+	}
+	
+/*	
 	// For now, periodic end in y 
 	for (int i=0; i<Nx; i++)
 	{
@@ -641,11 +677,11 @@ void GrapheneFluid2D::BoundaryCond(int type){
 			velY[Nx-1][j] = velY[Nx-2][j];
 		}			
 	}
-
+*/
 	
 }
 
-*/
+
 
 float  GrapheneFluid2D::DensityFluxX(float n,float flxX, float flxY, float S){ // Double Please Review this João 
 	float f1;

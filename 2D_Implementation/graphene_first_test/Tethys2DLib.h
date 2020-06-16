@@ -137,7 +137,7 @@ class GrapheneFluid2D : public Fluid2D{
 		void SetColFreq(float x);
 		float GetColFreq();
 		void CFLCondition() override;
-//	    void BoundaryCond(int type);		
+	    void BoundaryCond(int type) override ;		
 	    
 	    void MassFluxToVelocity() override;
 	    
