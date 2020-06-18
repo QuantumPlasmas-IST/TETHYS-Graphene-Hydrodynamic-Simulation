@@ -31,6 +31,7 @@ int main()
 	float dx = basic.GetDx();
 	float dy = basic.GetDy();
 	basic.SetVelSnd(input_vel_snd);
+	basic.SetVelFer(10.0);
 	basic.SetSound();
 	const float Tmax = 2.0;
 	int data_save_mode =1;
@@ -127,8 +128,10 @@ int main()
 		data_slice <<t<<"\t"<< basic.den[0+100*NpointsX]<<"\t"<< basic.den[NpointsX-1+100*NpointsX] 
 				      <<"\t"<< basic.velX[0+100*NpointsX] <<"\t"<< basic.velX[NpointsX-1+100*NpointsX] 
 				      <<"\t"<< basic.flxX[0+100*NpointsX] <<"\t"<< basic.flxX[NpointsX-1+100*NpointsX]
-				      <<"\t"<< basic.velY[0+100*NpointsX] <<"\t"<< basic.velY[NpointsX-1+100*NpointsX] 
-				      <<"\t"<< basic.flxY[0+100*NpointsX] <<"\t"<< basic.flxY[NpointsX-1+100*NpointsX] <<"\n";
+				      <<"\t"<< basic.curX[0+100*NpointsX] <<"\t"<< basic.curX[NpointsX-1+100*NpointsX]
+				      <<"\t"<< basic.velY[0+100*NpointsX] <<"\t"<< basic.velY[NpointsX-1+100*NpointsX]
+				      <<"\t"<< basic.flxY[0+100*NpointsX] <<"\t"<< basic.flxY[NpointsX-1+100*NpointsX] 
+				      <<"\t"<< basic.curY[0+100*NpointsX] <<"\t"<< basic.curY[NpointsX-1+100*NpointsX] <<"\n";
 
 
 		t+=dt;
