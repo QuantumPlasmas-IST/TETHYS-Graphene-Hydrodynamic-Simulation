@@ -616,7 +616,7 @@ void GrapheneFluid2D::BoundaryCond(int type){
 */	
 	
 	// For now, periodic end in y 
-	for (int i=0; i<Nx; i++)
+/*	for (int i=0; i<Nx; i++)
 	{
 		den[i+0*Nx] = den[i+(Ny-2)*Nx];
 		flxX[i+0*Nx] = flxX[i+(Ny-2)*Nx];
@@ -625,6 +625,18 @@ void GrapheneFluid2D::BoundaryCond(int type){
 		flxX[i+(Ny-1)*Nx] = flxX[i+1*Nx];
 		flxY[i+(Ny-1)*Nx] = flxY[i+1*Nx];
 	}
+*/	 
+	// For now, open end in y 	 
+	for (int i=0; i<Nx; i++)
+	{
+		den[i+0*Nx] = den[i+1*Nx];
+		flxX[i+0*Nx] = flxX[i+1*Nx];
+		flxY[i+0*Nx] = flxY[i+1*Nx];
+		den[i+(Ny-1)*Nx] = den[i+(Ny-2)*Nx];
+		flxX[i+(Ny-1)*Nx] = flxX[i+(Ny-2)*Nx];
+		flxY[i+(Ny-1)*Nx] = flxY[i+(Ny-2)*Nx];
+	}	 
+	 
 	 
 	/* 
 	// in x

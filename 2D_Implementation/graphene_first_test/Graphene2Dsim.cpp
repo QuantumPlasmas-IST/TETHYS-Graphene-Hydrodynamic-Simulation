@@ -14,7 +14,7 @@
 
 using namespace H5;
 using namespace std;
-const H5std_string   FILE_NAME( "RichtmyerCLASSTEST_2D_Graphene.h5" );
+const H5std_string   FILE_NAME( "OPEN_BC_RichtmyerCLASSTEST_2D_Graphene_DS.h5" );
 const FloatType      hdf5_float(PredType::NATIVE_FLOAT);
 const IntType        hdf5_int(PredType::NATIVE_INT);
 
@@ -33,10 +33,10 @@ int main()
 	basic.SetVelSnd(input_vel_snd);
 	basic.SetVelFer(10.0);
 	basic.SetSound();
-	const float Tmax = 2.0;
+	const float Tmax = 5.0;
 	int data_save_mode =1;
 
-	string slicefile = "slice_test.dat" ;
+	string slicefile = "OpenBC_slice_test.dat" ;
 	ofstream data_slice;
 	data_slice.open (slicefile);
 	data_slice << scientific; 
