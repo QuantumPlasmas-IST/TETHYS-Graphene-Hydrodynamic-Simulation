@@ -120,7 +120,7 @@ void Fluid1D::SetFileName(){
 
 void Fluid1D::CreateFluidFile(){
 	this->SetFileName();
-	std::string previewfile = "preview_" + file_infix + ".dat" ;
+	std::string previewfile = "preview_1D_" + file_infix + ".dat" ;
 	data_preview.open (previewfile);
 	data_preview << scientific; 
 }
