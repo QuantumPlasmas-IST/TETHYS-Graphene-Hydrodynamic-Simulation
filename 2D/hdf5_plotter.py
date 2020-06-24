@@ -12,7 +12,6 @@ density_group = f['Data/Density']
 velocity_x_group = f['Data/VelocityX']
 velocity_y_group = f['Data/VelocityY']
 
-
 # for key in density_group.keys():
 	# data_density=density_group[key]
 	# fig_name = key + '.jpeg'
@@ -25,37 +24,21 @@ velocity_y_group = f['Data/VelocityY']
 	# plt.savefig(fig_name,quality=60)
 	# plt.close("all")
 
-
-#u = velocity_x_group['snapshot_20']
-#v = velocity_y_group['snapshot_20']
-#U=np.array(u)
-#V=np.array(v)
-#Y= np.linspace(0, 1, num=201)
-#X= np.linspace(0, 1, num=201)
-#strm = plt.streamplot(X, Y, U, V,color=np.spqrt(U**2+V**2),cmap='Blues', density = 1)
-#cbar = plt.colorbar(strm.lines)
-#cbar.set_label('|v|')
- 
-
 for key in velocity_x_group.keys():
 	u = velocity_x_group[key]
 	v = velocity_y_group[key]
-	U=np.array(u)
-	V=np.array(v)
-	Y= np.linspace(0, 1, num=201)
-	X= np.linspace(0, 1, num=201)
-	norma = np.sqrt(U**2,V**2)
+	U = np.array(u)
+	V = np.array(v)
+	Y = np.linspace(0, 1, num=201)
+	X = np.linspace(0, 1, num=201)
+	norma = np.sqrt(U**2, V**2)
 	#strm = plt.streamplot(X, Y, U, V,color=norma,cmap='Blues', density = 1)
-	strm = plt.streamplot(X, Y, U, V, density = 1)
+	strm = plt.streamplot(X, Y, U, V, density=1)
 	#cbar = plt.colorbar(strm.lines)
 	#cbar.set_label('|v|')
 	fig_name = 'vel_' + key + '.jpeg'
-	plt.savefig(fig_name,quality=60)
+	plt.savefig(fig_name, quality=60)
 	plt.close("all")
-
-
-
-
 
 #total = np.loadtxt('OpenBC_slice_test.dat')
 #t=total[:,0]
@@ -67,11 +50,5 @@ for key in velocity_x_group.keys():
 #sinal = den-np.average(den)
 #Fspec, Tspec, Sxx = signal.spectrogram(sinal, fs)
 #plt.pcolormesh(Tspec, Fspec, Sxx)
-
-
-
-
-
-
 
 f.close()
