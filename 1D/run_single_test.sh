@@ -12,7 +12,7 @@ vis=0.1
 echo "calculating S="$s
 echo "calculating Vf="$v
 echo "calculating Vc="$l
-./RichtmyerHDF5 $s $v $l $vis 0 
+./TETHYS_1D $s $v $l $vis 0 
 
 FILENAME1=$(find preview*.dat)
 WORDCOUNT1=$(wc -l preview*.dat)
@@ -28,7 +28,7 @@ LINENUMBER2=${WORDCOUNT2% *}
 ./ElectronicAnalysis "$LINENUMBER2" "$FILENAME2" "$s" 
 
 mv -- electro_S=*vF=*vis=*l=*.dat "./$DIRNAME/electronics"
-mv -- Extrema* "./$DIRNAME/extrema"
+mv -- extrema* "./$DIRNAME/extrema"
 mv -- *.dat "./$DIRNAME"
 mv -- *.log "./$DIRNAME"
 

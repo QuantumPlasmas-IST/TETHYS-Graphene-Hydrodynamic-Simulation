@@ -80,6 +80,10 @@ void Fluid1D::CFLCondition(){
 		dx = leng / ( float ) ( Nx - 1 );
 		dt = dx/10.0;
 }
+
+void Fluid1D::SetSimulationTime(){
+	Tmax=5+0.02*vel_snd+20.0/vel_snd;
+}
 		
 void Fluid1D::SetSound(){
 	for(int i = 0; i<Nx  ;i++){
@@ -203,16 +207,29 @@ float GrapheneFluid1D::GetColFreq(){ return col_freq; }
 void GrapheneFluid1D::CFLCondition(){
 	dx = leng / ( float ) ( Nx - 1 );
 					
-	if(vel_fer<10 && (vel_snd-vel_fer) <= 3)
-		dt = 0.5 * dx / (2*vel_snd+sqrt(3*vel_fer*vel_fer + 24*vel_snd*vel_snd));
-	else if (vel_fer<10 && (vel_snd-vel_fer<= 10 - vel_fer))
-		dt = 1.5 * dx / (2*vel_snd+sqrt(3*vel_fer*vel_fer + 24*vel_snd*vel_snd));
-	else if (vel_fer<15 && (vel_snd-vel_fer<= 5))
-		dt = 2 * dx / (2*vel_snd+sqrt(3*vel_fer*vel_fer + 24*vel_snd*vel_snd));
-	else if (vel_fer<30 && (vel_snd-vel_fer<= 3))
-		dt = 3 * dx / (2*vel_snd+sqrt(3*vel_fer*vel_fer + 24*vel_snd*vel_snd));
-	else
-		dt = 4 * dx / (2*vel_snd+sqrt(3*vel_fer*vel_fer + 24*vel_snd*vel_snd));
+	float lambda;
+	
+	if(vel_snd<0.36*vel_fer){
+		lambda=1.2*vel_fer;
+	}else{
+		lambda=1.97*vel_snd + 0.5*vel_fer;
+	}
+		
+	
+	dt = dx/lambda;				
+					
+					
+					
+	//if(vel_fer<10 && (vel_snd-vel_fer) <= 3)
+		//dt = 0.5 * dx / (2*vel_snd+sqrt(3*vel_fer*vel_fer + 24*vel_snd*vel_snd));
+	//else if (vel_fer<10 && (vel_snd-vel_fer<= 10 - vel_fer))
+		//dt = 1.5 * dx / (2*vel_snd+sqrt(3*vel_fer*vel_fer + 24*vel_snd*vel_snd));
+	//else if (vel_fer<15 && (vel_snd-vel_fer<= 5))
+		//dt = 2 * dx / (2*vel_snd+sqrt(3*vel_fer*vel_fer + 24*vel_snd*vel_snd));
+	//else if (vel_fer<30 && (vel_snd-vel_fer<= 3))
+		//dt = 3 * dx / (2*vel_snd+sqrt(3*vel_fer*vel_fer + 24*vel_snd*vel_snd));
+	//else
+		//dt = 4 * dx / (2*vel_snd+sqrt(3*vel_fer*vel_fer + 24*vel_snd*vel_snd));
 }	
 
 float GrapheneFluid1D::NetCharge(){

@@ -244,6 +244,159 @@ void Fluid2D::CFLCondition(){
 		dt = dx/10.0;
 }
 
+//void Fluid2D::BCOpenAllX(int i){
+	//int I=i;
+	//if(i==0){
+		//I=1;
+	//}
+	//if(i==Nx-1){
+		//I=Nx-2;	
+	//}
+	//for(int j=0; j<Ny-1; j++){		
+		//den[i+j*Nx] = den[I+j*Nx];
+		//flxX[i+j*Nx] = flxX[I+j*Nx];
+		//flxY[i+j*Nx] = flxY[I+j*Nx];	
+	//}	
+//}
+//void Fluid2D::BCOpenAllY(int j){
+	//int J=j;
+	//if(j==0){
+		//J=1;
+	//}
+	//if(j==Ny-1){
+		//J=Ny-2;	
+	//}
+	//for(int i=0; i<Nx-1; i++){		
+		//den[i+j*Nx] = den[i+J*Nx];
+		//flxX[i+j*Nx] = flxX[i+J*Nx];
+		//flxY[i+j*Nx] = flxY[i+J*Nx];	
+	//}	
+//}
+
+
+//void Fluid2D::BCOpenDensityX(int i){
+	//int I=i;
+	//if(i==0){
+		//I=1;
+	//}
+	//if(i==Nx-1){
+		//I=Nx-2;	
+	//}
+	//for(int j=0; j<Ny-1; j++){		
+		//den[i+j*Nx] = den[I+j*Nx];	
+	//}	
+//}
+//void Fluid2D::BCOpenDensityY(int j){
+	//int J=j;
+	//if(j==0){
+		//J=1;
+	//}
+	//if(j==Ny-1){
+		//J=Ny-2;	
+	//}
+	//for(int i=0; i<Nx-1; i++){		
+		//den[i+j*Nx] = den[i+J*Nx];
+	//}	
+//}
+
+
+//void Fluid2D::BCOpenVelocityX(int i){
+	//int I=i;
+	//if(i==0){
+		//I=1;
+	//}
+	//if(i==Nx-1){
+		//I=Nx-2;	
+	//}
+	//for(int j=0; j<Ny-1; j++){		
+		//flxX[i+j*Nx] = flxX[I+j*Nx];
+		//flxY[i+j*Nx] = flxY[I+j*Nx];	
+	//}	
+//}
+//void Fluid2D::BCOpenVelocityY(int j){
+	//int J=j;
+	//if(j==0){
+		//J=1;
+	//}
+	//if(j==Ny-1){
+		//J=Ny-2;	
+	//}
+	//for(int i=0; i<Nx-1; i++){		
+		//flxX[i+j*Nx] = flxX[i+J*Nx];
+		//flxY[i+j*Nx] = flxY[i+J*Nx];	
+	//}	
+//}
+
+
+//void Fluid2D::BCPeriodicY(int j){
+	//int J=j;
+	//if(j==0){
+		//J=Ny-2;
+	//}
+	//if(j==Ny-1){
+		//J=1;	
+	//}
+	//for(int i=0; i<Nx-1; i++){		
+		//den[i+j*Nx] = den[i+J*Nx];
+		//flxX[i+j*Nx] = flxX[i+J*Nx];
+		//flxY[i+j*Nx] = flxY[i+J*Nx];	
+	//}	
+//}
+
+//void Fluid2D::BCPeriodicX(int i){
+	//int I=i;
+	//if(i==0){
+		//I=Nx-2;
+	//}
+	//if(i==Nx-1){
+		//I=1;	
+	//}
+	//for(int j=0; j<Ny-1; j++){		
+		//den[i+j*Nx] = den[I+j*Nx];
+		//flxX[i+j*Nx] = flxX[I+j*Nx];
+		//flxY[i+j*Nx] = flxY[I+j*Nx];	
+	//}	
+//}
+
+
+//void Fluid2D::BCDirichletDensityX(int i,float density){
+	//for(int j=0; j<Ny-1; j++){		
+		//den[i+j*Nx] = density;
+	//}		
+//}
+
+//void Fluid2D::BCDirichletDensityY(int j,float density){
+	//for(int i=0; i<Nx-1; i++){		
+		//den[i+j*Nx] = density;
+	//}			
+//}
+
+//void Fluid2D::BCNormalVelocityX(int i,float vel_nor){
+	//for(int j=0; j<Ny-1; j++){		
+		//flxX[i+j*Nx] = vel_nor;
+	//}		
+//}
+
+//void Fluid2D::BCNormalVelocityY(int j,float vel_nor){
+	//for(int i=0; i<Nx-1; i++){		
+		//flxY[i+j*Nx] = vel_nor;
+	//}				
+//}
+
+//void Fluid2D::BCTangentVelocityX(int i,float vel_tan){
+	//for(int j=0; j<Ny-1; j++){		
+		//flxY[i+j*Nx] = vel_tan;
+	//}			
+//}
+
+//void Fluid2D::BCTangentVelocityY(int j,float vel_tan){
+	//for(int i=0; i<Nx-1; i++){		
+		//flxX[i+j*Nx] = vel_tan;
+	//}			
+//}
+
+
+
 void Fluid2D::BoundaryCond(int type){	
 	// For now, periodic end in y 
 	for (int i=0; i<Nx; i++)
@@ -293,6 +446,9 @@ void Fluid2D::BoundaryCond(int type){
 		}		
 	}
 }
+
+
+
 
 float  Fluid2D::DensityFluxX(float n,float flxX, float flxY, float S){ 
 	float f1;
@@ -356,8 +512,19 @@ data_preview <<t<<"\t"<< den[Nx-1+j*Nx] <<"\t"<< velX[Nx-1+j*Nx] <<"\t"<< den[0+
 }
 
 
+
+void Fluid2D::SetSimulationTime(){
+	Tmax=5+0.02*vel_snd+20.0/vel_snd;
+}
+
 /***************************************************** GrapheneFluid *****************************************************\
 \*************************************************************************************************************************/
+
+void GrapheneFluid2D::SetSimulationTime(){
+	float s;
+	s=this->GetVelSnd();
+	this->SetTmax(5.0+0.02*s+20.0/s);
+}
 
 void GrapheneFluid2D::MassFluxToVelocity(){
 	for(int i=0; i<Nx; i++){
@@ -380,18 +547,93 @@ float GrapheneFluid2D::GetColFreq(){ return col_freq; }
 void GrapheneFluid2D::CFLCondition(){ // Eventual redefinition 
 	dx = lengX / ( float ) ( Nx - 1 );
 	dy = lengY / ( float ) ( Ny - 1 );					
-	if(vel_fer<10 && (vel_snd-vel_fer) <= 3)
-		dt = 0.5 * dx / (2*vel_snd+sqrt(3*vel_fer*vel_fer + 24*vel_snd*vel_snd));
-	else if (vel_fer<10 && (vel_snd-vel_fer<= 10 - vel_fer))
-		dt = 1.5 * dx / (2*vel_snd+sqrt(3*vel_fer*vel_fer + 24*vel_snd*vel_snd));
-	else if (vel_fer<15 && (vel_snd-vel_fer<= 5))
-		dt = 2 * dx / (2*vel_snd+sqrt(3*vel_fer*vel_fer + 24*vel_snd*vel_snd));
-	else if (vel_fer<30 && (vel_snd-vel_fer<= 3))
-		dt = 3 * dx / (2*vel_snd+sqrt(3*vel_fer*vel_fer + 24*vel_snd*vel_snd));
-	else
-		dt = 4 * dx / (2*vel_snd+sqrt(3*vel_fer*vel_fer + 24*vel_snd*vel_snd));
+
+	dt = 2.4/(vel_snd*sqrt(25.0/(dx*dx)+16.0/(dy*dy)));
+
+	//if(vel_fer<10 && (vel_snd-vel_fer) <= 3)
+		//dt = 0.5 * dx / (2*vel_snd+sqrt(3*vel_fer*vel_fer + 24*vel_snd*vel_snd));
+	//else if (vel_fer<10 && (vel_snd-vel_fer<= 10 - vel_fer))
+		//dt = 1.5 * dx / (2*vel_snd+sqrt(3*vel_fer*vel_fer + 24*vel_snd*vel_snd));
+	//else if (vel_fer<15 && (vel_snd-vel_fer<= 5))
+		//dt = 2 * dx / (2*vel_snd+sqrt(3*vel_fer*vel_fer + 24*vel_snd*vel_snd));
+	//else if (vel_fer<30 && (vel_snd-vel_fer<= 3))
+		//dt = 3 * dx / (2*vel_snd+sqrt(3*vel_fer*vel_fer + 24*vel_snd*vel_snd));
+	//else
+		//dt = 4 * dx / (2*vel_snd+sqrt(3*vel_fer*vel_fer + 24*vel_snd*vel_snd));
 }	
 
+//void GrapheneFluid2D::BCOpenAllX(int i){
+	//int I=i;
+	//if(i==0){
+		//I=1;
+	//}
+	//if(i==Nx-1){
+		//I=Nx-2;	
+	//}
+	//for(int j=0; j<Ny-1; j++){		
+		//den[i+j*Nx] = den[I+j*Nx];
+		//flxX[i+j*Nx] = flxX[I+j*Nx]*pow(den[i+j*Nx]/den[I+j*Nx],1.5);
+		//flxY[i+j*Nx] = flxY[I+j*Nx]*pow(den[i+j*Nx]/den[I+j*Nx],1.5);	
+	//}	
+//}
+
+
+//void GrapheneFluid2D::BCOpenAllY(int j){
+	//int J=j;
+	//if(j==0){
+		//J=1;
+	//}
+	//if(j==Ny-1){
+		//J=Ny-2;	
+	//}
+	//for(int i=0; i<Nx-1; i++){		
+		//den[i+j*Nx] = den[i+J*Nx];
+		//flxX[i+j*Nx] = flxX[i+J*Nx]*pow(den[i+j*Nx]/den[i+J*Nx],1.5);
+		//flxY[i+j*Nx] = flxY[i+J*Nx]*pow(den[i+j*Nx]/den[i+J*Nx],1.5);	
+	//}	
+//}
+
+
+//void GrapheneFluid2D::BCOpenVelocityX(int i){
+	//int I=i;
+	//if(i==0){
+		//I=1;
+	//}
+	//if(i==Nx-1){
+		//I=Nx-2;	
+	//}
+	//for(int j=0; j<Ny-1; j++){		
+		//flxX[i+j*Nx] = flxX[I+j*Nx]*pow(den[i+j*Nx]/den[I+j*Nx],1.5);
+		//flxY[i+j*Nx] = flxY[I+j*Nx]*pow(den[i+j*Nx]/den[I+j*Nx],1.5);	
+	//}	
+//}
+
+
+//void GrapheneFluid2D::BCOpenVelocityY(int j){
+	//int J=j;
+	//if(j==0){
+		//J=1;
+	//}
+	//if(j==Ny-1){
+		//J=Ny-2;	
+	//}
+	//for(int i=0; i<Nx-1; i++){		
+		//flxX[i+j*Nx] = flxX[i+J*Nx]*pow(den[i+j*Nx]/den[i+J*Nx],1.5);
+		//flxY[i+j*Nx] = flxY[i+J*Nx]*pow(den[i+j*Nx]/den[i+J*Nx],1.5);	
+	//}	
+//}
+
+
+//void GrapheneFluid2D::BCConstantCurrentX(int i,float current){
+	//for(int j=0; j<Ny-1; j++){		
+		//flxX[i+j*Nx] = current*sqrt(den[i+j*Nx]);
+	//}				
+//}
+//void GrapheneFluid2D::BCConstantCurrentY(int j,float current){
+	//for(int i=0; i<Nx-1; i++){		
+		//flxY[i+j*Nx] = current*sqrt(den[i+j*Nx]);
+	//}			
+//}
 
 void GrapheneFluid2D::BoundaryCond(int type){
 	//       X        Y 

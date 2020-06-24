@@ -24,7 +24,7 @@ all: tethys \
 
 
 tethys: $(SIMULOBJ)
-	$(CC) $(CFLAGS) $(LIBS) -o RichtmyerHDF5 $(SIMULOBJ) $(H5LIBS)
+	$(CC) $(CFLAGS) $(LIBS) -o TETHYS_1D $(SIMULOBJ) $(H5LIBS)
 
 analysis: $(ANALYSISOBJ)
 	$(CC) $(CFLAGS) -o ElectronicAnalysis $(ANALYSISOBJ) $(FFTLIBS) $(CLIBS)

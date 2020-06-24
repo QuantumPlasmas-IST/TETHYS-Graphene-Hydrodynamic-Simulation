@@ -50,10 +50,12 @@ class Fluid2D
 		float * flxX_mid_y ;
 		float * flxY_mid_y ;
 
+		void RunBorderY(int j);
+		void RunBorderX(int i);
+
 		std::string file_infix ;
 		std::ofstream data_preview;
 		virtual void SetFileName();
-
 
 	public :	
 		float * den ;
@@ -80,6 +82,8 @@ class Fluid2D
 		float GetTmax();
 		void SetTmax(float x);
 
+		void SetSimulationTime();
+
 		int SizeX();
 		int SizeY();
 		void InitialCondRand();
@@ -88,6 +92,22 @@ class Fluid2D
 		void Richtmyer();	
 		virtual void CFLCondition();
 		virtual void BoundaryCond(int type);
+		
+		//virtual void BCOpenAllX(int i);
+		//virtual void BCOpenAllY(int j);
+		//void BCOpenDensityX(int i);
+		//void BCOpenDensityY(int j); 
+		//virtual void BCOpenVelocityX(int i);
+		//virtual void BCOpenVelocityY(int j); 
+		//void BCPeriodicX(int i);
+		//void BCPeriodicY(int j);
+		//void BCDirichletDensityX(int i,float density);
+		//void BCDirichletDensityY(int j,float density);
+		//virtual void BCNormalVelocityX(int i,float vel_nor);
+		//virtual void BCNormalVelocityY(int j,float vel_nor);
+		//virtual void BCTangentVelocityX(int i,float vel_nor);
+		//virtual void BCTangentVelocityY(int j,float vel_nor);
+	
 		virtual float DensityFluxX(float n, float velX, float velY, float S);
 		virtual float DensityFluxY(float n, float velX, float velY, float S);
 		virtual float MassFluxXFluxX(float n, float flxX, float flxY, float S);
@@ -115,6 +135,16 @@ class GrapheneFluid2D : public Fluid2D{
 		float GetColFreq();
 		void CFLCondition() override;
 	    void BoundaryCond(int type) override ;		
+	    
+	    void SetSimulationTime();
+	    
+		//void BCOpenAllX(int i) override;
+		//void BCOpenAllY(int j) override; 
+		//void BCOpenVelocityX(int i) override;
+		//void BCOpenVelocityY(int j) override; 
+		//void BCConstantCurrentX(int i,float current);
+		//void BCConstantCurrentY(int j,float current);
+	    
 	    void MassFluxToVelocity() override;	    
 		float DensityFluxX(float n, float flxX, float flxY, float S) override;
 		float DensityFluxY(float n, float flxX, float flxY, float S) override;

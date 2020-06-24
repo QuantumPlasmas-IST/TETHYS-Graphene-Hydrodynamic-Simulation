@@ -150,13 +150,17 @@ int main(int argc, char **argv){
 	////////////////////////////////////////////////////////////////////
 	// Initialization	
 	graph.InitialCondRand();
-	graph.BoundaryCond(1);
+//	graph.BoundaryCond(1);
 	////////////////////////////////////////////////////////////////////
 	
 	
 	cout << "\033[1;7;5;33m Program Running \033[0m"<<endl;
 	
 	int time_step=0;
+	int snapshot_per_Period = 10;   
+	int points_per_Period = (2.0*MAT_PI/RealFreq(graph.GetVelSnd(), graph.GetVelFer(), graph.GetColFreq(),1))/dt;
+	int snapshot_step = points_per_Period/snapshot_per_Period; 
+
 	
 	while(t<=T_max && isfinite(graph.velX[Npoints/2])) // throw exception para nan / inf 
 	{	
@@ -168,12 +172,15 @@ int main(int argc, char **argv){
 		// Impose boundary conditions
 		graph.BoundaryCond(1);
 		
+
+		
+		
 		// Applying average filters for smoothing 	
 		//graph.Smooth(2);
 		
-		if(data_save_mode && time_step % 35 == 0 ){
+		if(data_save_mode && time_step % snapshot_step  == 0 ){
 		//Record full data
-			string str_time = to_string(time_step/35);
+			string str_time = to_string(time_step/snapshot_step );
 			string name_dataset = "snapshot_"+str_time;
 			
 			DataSet dataset_den = grp_den->createDataSet( name_dataset , hdf5_float, dataspace_den );

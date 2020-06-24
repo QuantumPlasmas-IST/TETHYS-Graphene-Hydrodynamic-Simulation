@@ -15,9 +15,13 @@
 #include "Tethys1DLib.h"
 
 
+#ifndef MAT_PI
+#    define MAT_PI 3.14159265358979323846
+#endif
+
 using namespace H5;
 using namespace std;
-const H5std_string   FILE_NAME( "Richtmyer_DATA_SET.h5" );
+const H5std_string   FILE_NAME( "Richtmyer_1D_DATA_SET.h5" );
 const FloatType      hdf5_float(PredType::NATIVE_FLOAT);
 const IntType        hdf5_int(PredType::NATIVE_INT);
 
@@ -29,7 +33,7 @@ int main(int argc, char **argv){
     BannerDisplay();
 	const int Npoints=201; 							// number of spatial points
 	float t=0.0;
-	float T_max=10.0;
+
 	float dx;								// spatial discretisation
 	float dt;								// time step
 
@@ -70,11 +74,13 @@ int main(int argc, char **argv){
 	graph.CFLCondition();
 	dx=graph.GetDx();
 	dt=graph.GetDt();
-	graph.SetTmax(10.0);
+//	graph.SetTmax(10.0);
 	/*................................................................*/
 	
 	/*.........Fixed or variable vel_snd value........................*/
 	graph.SetSound();
+	graph.SetSimulationTime();
+	float T_max=graph.GetTmax();
 	/*................................................................*/
 
 	/*.........Output files and streams...............................*/
@@ -147,10 +153,20 @@ int main(int argc, char **argv){
 	graph.BoundaryCond(3);
 	////////////////////////////////////////////////////////////////////
 	
+	int time_step=0;
+	int snapshot_per_Period = 10;   
+	int points_per_Period = (2.0*MAT_PI/RealFreq(graph.GetVelSnd(), graph.GetVelFer(), graph.GetColFreq(),1))/dt;
+	int snapshot_step = points_per_Period/snapshot_per_Period; 
+	
+	//cout <<"snapshot per Period "<< snapshot_per_Period<<endl;
+	//cout <<"Points per Period "<< (2.0*MAT_PI/RealFreq(graph.GetVelSnd(), graph.GetVelFer(), graph.GetColFreq(),1))/dt <<endl;
+	//cout <<"Points per Period "<< points_per_Period <<endl;
+	//cout <<"snapshot step "<<snapshot_step<<endl;
 	
 	cout << "\033[1;7;5;33m Program Running \033[0m"<<endl;
 	
-	int time_step=0;
+	
+	
 	
 	while(t<=T_max && isfinite(graph.vel[(graph.SizeX()-1)/2])) // throw exception para nan / inf 
 	{	
@@ -165,9 +181,9 @@ int main(int argc, char **argv){
 		// Applying average filters for smoothing 	
 		graph.Smooth(2);
 		
-		if(data_save_mode && time_step % 35 == 0 ){
+		if(data_save_mode && time_step % snapshot_step == 0 ){
 		//Record full data
-			string str_time = to_string(time_step/35);
+			string str_time = to_string(time_step/snapshot_step);
 			string name_dataset = "snapshot_"+str_time;
 			
 			DataSet dataset_den = grp_den->createDataSet( name_dataset , hdf5_float, dataspace_den );

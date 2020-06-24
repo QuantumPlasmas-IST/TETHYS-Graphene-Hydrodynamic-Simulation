@@ -68,7 +68,7 @@ class Fluid1D
 		float GetDt();
 		float GetTmax();
 		void SetTmax(float x);
-
+		void SetSimulationTime();
 		int SizeX();
 		void InitialCondRand();
 		void Richtmyer();
