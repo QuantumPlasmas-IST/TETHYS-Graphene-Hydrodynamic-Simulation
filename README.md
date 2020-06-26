@@ -48,7 +48,8 @@ Standard form of numeric *major.minor.patch* starting with the initial commit 1.
 1.3.0 Transition to object oriented code. Addition of Time Series Analysis and Electronic properties extraction.
   <br>&emsp;1.3.1 Stored energy at the capacitor gate calculated. 
   <br>&emsp;1.3.2 Viscosity term for Reynolds >10 implemented. 
-  
+  <br>&emsp;1.3.3 New class hierarchy on 1D algorithms. 
+
 2.0.0 Two dimensional code implementation. 1D version maintained for fast/simpler simulations. 
 
 ### Internal syntax

@@ -34,9 +34,10 @@ int main(int argc, char **argv){
 	float dx;								// spatial discretisation
 	float dt;								// time step
 
-	GrapheneFluid1D	graph(Npoints);
+
 	
-	graph.BannerDisplay();
+	
+	
 
  	int data_save_mode=0;
 	float input_vel_snd,input_vel_fer,input_col_freq,input_kin_vis;
@@ -47,28 +48,26 @@ int main(int argc, char **argv){
 		input_kin_vis = atof(argv[4]);
 		assert(atoi(argv[5])==0 || atoi(argv[5])==1);
 		data_save_mode = atoi(argv[5]);	// full data or light save option
-		graph.SetVelSnd(input_vel_snd);
-		graph.SetVelFer(input_vel_fer);
-		graph.SetKinVis(input_kin_vis);
-		graph.SetColFreq(input_col_freq);
 		}
 	else{
 		cout << "Define S value: "; // throw exceptions if the velocities or frequency are negative or if S<Vf
 		cin >> input_vel_snd;
-		graph.SetVelSnd(input_vel_snd);
 		cout << "Define vF value: ";
 		cin >> input_vel_fer; 
-		graph.SetVelFer(input_vel_fer);
 		cout << "Define kinetic viscosity: ";
 		cin >> input_kin_vis;
-		graph.SetKinVis(input_kin_vis);
 		cout << "Define collision frequency: ";
 		cin >> input_col_freq;
-		graph.SetColFreq(input_col_freq);
 		cout << "Define data_save_mode value (0-> light save | 1-> full data): ";
 		cin >> data_save_mode;
 		}
 	
+	
+	GrapheneFluid1D	graph(Npoints,input_vel_snd, input_vel_fer, input_kin_vis,input_col_freq);
+	
+
+	
+	graph.BannerDisplay();
 	/*......CFL routine to determine dt...............................*/	
 	graph.CFLCondition();
 	dx=graph.GetDx();

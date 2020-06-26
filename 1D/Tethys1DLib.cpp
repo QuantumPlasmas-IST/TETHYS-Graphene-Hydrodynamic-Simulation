@@ -29,11 +29,21 @@ using namespace std;
 #    define C_SPEED 1000.0
 #endif
 
+GrapheneFluid1D::GrapheneFluid1D(int sizeN,float VELSND, float FERMI,float VISCO,float COL): Fluid1D(sizeN, VELSND, VISCO){
+	vel_fer =FERMI;							
+	col_freq =COL; 
+	char buffer [50];
+	sprintf (buffer, "S=%.2fvF=%.2fvis=%.2fl=%.2f", vel_snd, vel_fer, kin_vis, col_freq);
+	file_infix = buffer;
+}
+
 /*....................................................................*/	
 /*.......... 1 Dimensional Fluid Class ...............................*/	
 /*....................................................................*/	
-Fluid1D::Fluid1D(int sizeN): TETHYSBase{sizeN}{	
+Fluid1D::Fluid1D(int sizeN,float VELSND, float VISCO): TETHYSBase{sizeN}{	
 	Nx = sizeN;
+	vel_snd =VELSND;
+	kin_vis =VISCO;
 	den     = new float[sizeN]();
 	vel     = new float[sizeN]();
 	grad_vel= new float[sizeN]();
@@ -45,6 +55,9 @@ Fluid1D::Fluid1D(int sizeN): TETHYSBase{sizeN}{
 	vel_mid = new float[sizeN-1]();
 	grad_vel_mid = new float[sizeN-1]();
 	vel_snd_arr = new float[sizeN-1]();
+	char buffer [50];
+	sprintf (buffer, "S=%.2fvis=%.2f", vel_snd, kin_vis);
+	file_infix = buffer;
 }	
 	
 Fluid1D::~Fluid1D(){			
@@ -116,15 +129,9 @@ void Fluid1D::Smooth(int width){
 	AverageFilter( cur ,cur_cor, Nx , width);
 }
 
-void Fluid1D::SetFileName(){
-	char buffer [50];
-	sprintf (buffer, "S=%.2fvis=%.2f", vel_snd, kin_vis);
-	file_infix = buffer;
-}
 
 
 void Fluid1D::CreateFluidFile(){
-	this->SetFileName();
 	std::string previewfile = "preview_1D_" + file_infix + ".dat" ;
 	data_preview.open (previewfile);
 	data_preview << scientific; 
@@ -255,13 +262,6 @@ void GrapheneFluid1D::CFLCondition(){
 
 
 
-void GrapheneFluid1D::SetFileName(){
-	char buffer [50];
-	sprintf (buffer, "S=%.2fvF=%.2fvis=%.2fl=%.2f", vel_snd, vel_fer, kin_vis, col_freq);
-	file_infix = buffer;
-}
-
-
 void GrapheneFluid1D::BoundaryCond(int type){
 	/*---------------*\
 	| Free        | 1 |
@@ -321,7 +321,7 @@ void AverageFilter(float * vec_in, float * vec_out, int size , int width ){
 /*....................................................................*/
 
 void ElectroAnalysis::CreateElectroFile(GrapheneFluid1D& graphene){
-	graphene.SetFileName();
+	//graphene.SetFileName();
 	std::string infix = graphene.GetInfix();
 	std::string electrofile = "electro_" + infix + ".dat" ;
 	data_electro.open (electrofile);
@@ -382,7 +382,7 @@ cout<<"\n" ;
 	cout<<"║\033[2m      ▐█▌      ▐█▌    ▗▉      ▐█▌      ▐█▌   ▐█▌      ▐█▌    ▗       ██  \033[0m║\n";
 	cout<<"║\033[2m     ▆███▆    ▆███▆▆▆██▉     ▆███▆    ▆███▆ ▆███▆    ▆███▆   ▐█▆▆▆▆▆██▘  \033[0m║\n";
 	cout<<"║                                                                         ║\n";
-	cout<<"║ \033[1mTwo-dimensional Emitter of THz, Hydrodynamic Simulation.  Version 1.3.3\033[0m ║\n";
+	cout<<"║ \033[1mTwo-dimensional Emitter of THz, Hydrodynamic Simulation.  Version 1.3.2\033[0m ║\n";
 	cout<<"╚═════════════════════════════════════════════════════════════════════════╝\n";                                                                                                                                                                                          
 }
 
@@ -418,14 +418,11 @@ TETHYSBase::TETHYSBase(int sizeN){
 	Nx = sizeN;
 	const FloatType      hdf5_float(PredType::NATIVE_FLOAT);
 	const IntType        hdf5_int(PredType::NATIVE_INT);	
-}
-
-
-void TETHYSBase::SetFileName(){
 	char buffer [50];
 	sprintf (buffer, "Fluido1D_Nx=%d", Nx);
 	file_infix = buffer;
 }
+
 
 
 

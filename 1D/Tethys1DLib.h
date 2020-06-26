@@ -28,7 +28,7 @@ class TETHYSBase {
 	protected:
 		int   Nx ;                    // dataset dimensions
 		int   RANK=1;
-		std::string file_infix ;
+		std::string file_infix = "BaseFluid1D" ;
 	
 	public:
 		TETHYSBase(int sizeN); // acho que pelo menos para já nao vai precisar de construtor ou entao ponho o banner mesmo no constrturos 
@@ -44,7 +44,7 @@ class TETHYSBase {
 		DataSpace* dataspace_cur;
 		
 		std::string GetInfix();
-		void virtual SetFileName();
+//		void virtual SetFileName();
 		void CreateHDF5File();
 		void BannerDisplay(void);
 		void WellcomeScreen(float vel_snd, float vel_fer,float col_freq,float viscosity, float dt, float dx, float Tmax);
@@ -75,10 +75,10 @@ class Fluid1D : public TETHYSBase{
 		float * vel_cor ;
 		float * cur_cor ;
 		
-		Fluid1D(int sizeN);
+		Fluid1D(int sizeN,float VELSND, float VISCO);
 		~Fluid1D();
 
-		void SetFileName() override;
+//		void SetFileName() override;
 		void Smooth(int width);
 		void SetVelSnd(float x);
 		void SetKinVis(float x);
@@ -111,7 +111,9 @@ class GrapheneFluid1D : public Fluid1D{
 	public : 
 		using Fluid1D::Fluid1D;
 	
-		void SetFileName() override;
+		GrapheneFluid1D(int sizeN,float VELSND, float FERMI,float VISCO,float COL);
+	
+//		void SetFileName() override;
 		void CFLCondition() override;
 	    void BoundaryCond(int type);		
 		void SetVelFer(float x);
