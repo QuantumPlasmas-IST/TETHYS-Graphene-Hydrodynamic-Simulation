@@ -12,7 +12,6 @@ class Fluid1D : public TETHYSBase{
 		float dt=1.0;		
 		float Tmax=10;
 		const float leng=1.0;
-		int Nx;
 		float vel_snd =50.0;
 		float kin_vis =0.0;
 		float * vel_snd_arr;	
