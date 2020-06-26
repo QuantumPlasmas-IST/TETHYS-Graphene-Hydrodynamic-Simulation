@@ -548,7 +548,17 @@ void GrapheneFluid2D::CFLCondition(){ // Eventual redefinition
 	dx = lengX / ( float ) ( Nx - 1 );
 	dy = lengY / ( float ) ( Ny - 1 );					
 
-	dt = 2.4/(vel_snd*sqrt(25.0/(dx*dx)+16.0/(dy*dy)));
+	//dt = 2.4/(vel_snd*sqrt(25.0/(dx*dx)+16.0/(dy*dy)));
+
+	float lambda;
+	
+	if(vel_snd<0.36*vel_fer){
+		lambda=1.2*vel_fer;
+	}else{
+		lambda=1.97*vel_snd + 0.5*vel_fer;
+	}
+		
+	dt = dx/lambda;				
 
 	//if(vel_fer<10 && (vel_snd-vel_fer) <= 3)
 		//dt = 0.5 * dx / (2*vel_snd+sqrt(3*vel_fer*vel_fer + 24*vel_snd*vel_snd));

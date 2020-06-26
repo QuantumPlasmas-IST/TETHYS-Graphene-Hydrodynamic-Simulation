@@ -27,10 +27,10 @@ tethys: $(SIMULOBJ)
 	$(CC) $(CFLAGS) $(LIBS) -o TETHYS_1D $(SIMULOBJ) $(H5LIBS)
 
 analysis: $(ANALYSISOBJ)
-	$(CC) $(CFLAGS) -o ElectronicAnalysis $(ANALYSISOBJ) $(FFTLIBS) $(CLIBS)
+	$(CC) $(CFLAGS) -o ElectronicAnalysis $(ANALYSISOBJ) $(H5LIBS) $(FFTLIBS) $(CLIBS)
 
 timeseries: $(TIMESERIESOBJ)
-	$(CC) $(CFLAGS) -o TimeSeries $(TIMESERIESOBJ) $(CLIBS)
+	$(CC) $(CFLAGS) -o TimeSeries $(TIMESERIESOBJ) $(CLIBS) $(H5LIBS)
 
 
 

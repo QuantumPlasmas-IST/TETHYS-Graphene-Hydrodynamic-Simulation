@@ -10,9 +10,9 @@
 #include <cassert>
 
 #include "Tethys1DLib.h"
+#include <H5Cpp.h>
 
-
-
+using namespace H5;
 using namespace std;
 
 
@@ -32,7 +32,7 @@ using namespace std;
 /*....................................................................*/	
 /*.......... 1 Dimensional Fluid Class ...............................*/	
 /*....................................................................*/	
-Fluid1D::Fluid1D(int sizeN){		
+Fluid1D::Fluid1D(int sizeN): TETHYSBase{sizeN}{	
 	Nx = sizeN;
 	den     = new float[sizeN]();
 	vel     = new float[sizeN]();
@@ -122,6 +122,7 @@ void Fluid1D::SetFileName(){
 	file_infix = buffer;
 }
 
+
 void Fluid1D::CreateFluidFile(){
 	this->SetFileName();
 	std::string previewfile = "preview_1D_" + file_infix + ".dat" ;
@@ -148,8 +149,6 @@ void Fluid1D::Richtmyer(){
 		grad_vel_mid[0] = (-1.5*vel_mid[0]+2.0*vel_mid[1]-0.5*vel_mid[2])/dx;
 		grad_vel[Nx-1] =  ( 0.5*vel[Nx-1-2]-2.0*vel[Nx-1-1]+1.5*vel[Nx-1])/dx;
 		grad_vel_mid[(Nx-1)-1] = ( 0.5*vel[(Nx-1)-1-2]-2.0*vel[(Nx-1)-1-1]+1.5*vel[(Nx-1)-1])/dx;
-		
-		
     	//
 		//  Half step calculate density and velocity at time k+0.5 at the spatial midpoints
 		//
@@ -199,68 +198,62 @@ float GrapheneFluid1D::VelocitySource(float n,float v,float S){
 	return Q2;			
 }
 
-void GrapheneFluid1D::SetVelFer(float x){ vel_fer=x;	}
-float GrapheneFluid1D::GetVelFer(){ return vel_fer;  }
+void GrapheneFluid1D::SetVelFer(float x){ vel_fer=x; }
+float GrapheneFluid1D::GetVelFer(){ return vel_fer; }
 void GrapheneFluid1D::SetColFreq(float x){ col_freq=x; }
 float GrapheneFluid1D::GetColFreq(){ return col_freq; }
 
+void GrapheneFluid1D::WriteAtributes(){
+	const FloatType      hdf5_float(PredType::NATIVE_FLOAT);
+	const IntType        hdf5_int(PredType::NATIVE_INT);
+	int total_steps=Tmax/dt;
+	//Create the data space for the attribute.
+	hsize_t dim_atr[1] = { 1 };
+	DataSpace atr_dataspace = DataSpace (1, dim_atr );
+	// Create a group attribute. 
+	Attribute atr_vel_snd  = grp_dat->createAttribute( "S parameter", hdf5_float, atr_dataspace);
+	Attribute atr_vel_fer  = grp_dat->createAttribute( "Fermi velocity", hdf5_float, atr_dataspace);
+	Attribute atr_kin_vis = grp_dat->createAttribute( "Kinetic viscosity", hdf5_float, atr_dataspace);
+	Attribute atr_col_freq = grp_dat->createAttribute( "Collision frequency", hdf5_float, atr_dataspace);
+	Attribute atr_dx = grp_dat->createAttribute( "Space discretisation step", hdf5_float, atr_dataspace);
+	Attribute atr_dt = grp_dat->createAttribute( "Time discretisation step", hdf5_float, atr_dataspace);
+	Attribute atr_total_time = grp_dat->createAttribute( "Total simulation time", hdf5_float, atr_dataspace);
+	Attribute atr_num_space_points = grp_dat->createAttribute( "Number of spatial points", hdf5_int, atr_dataspace);
+	Attribute atr_num_time_steps = grp_dat->createAttribute( "Number of time steps", hdf5_int, atr_dataspace);
+	// Write the attribute data.
+	atr_vel_snd.write( hdf5_float, &vel_snd);
+	atr_vel_fer.write( hdf5_float, &vel_fer);
+	atr_col_freq.write(hdf5_float, &col_freq);
+	atr_kin_vis.write(hdf5_float, &kin_vis); 
+	atr_dx.write(hdf5_float, &dx);
+	atr_dt.write( hdf5_float, &dt);
+	atr_num_space_points.write( hdf5_int, &Nx);
+	atr_total_time.write( hdf5_float, &Tmax);
+	atr_num_time_steps.write(hdf5_int, &total_steps);
+	// Close the attributes.
+	atr_num_time_steps.close();
+	atr_col_freq.close();
+	atr_vel_fer.close();
+	atr_vel_snd.close();
+	atr_kin_vis.close();
+	atr_dx.close();
+	atr_dt.close();
+	atr_total_time.close();
+	atr_num_space_points.close();
+}
+
 void GrapheneFluid1D::CFLCondition(){
-	dx = leng / ( float ) ( Nx - 1 );
-					
+	dx = leng / ( float ) ( Nx - 1 );	
 	float lambda;
-	
 	if(vel_snd<0.36*vel_fer){
 		lambda=1.2*vel_fer;
 	}else{
 		lambda=1.97*vel_snd + 0.5*vel_fer;
 	}
-		
-	
 	dt = dx/lambda;				
-					
-					
-					
-	//if(vel_fer<10 && (vel_snd-vel_fer) <= 3)
-		//dt = 0.5 * dx / (2*vel_snd+sqrt(3*vel_fer*vel_fer + 24*vel_snd*vel_snd));
-	//else if (vel_fer<10 && (vel_snd-vel_fer<= 10 - vel_fer))
-		//dt = 1.5 * dx / (2*vel_snd+sqrt(3*vel_fer*vel_fer + 24*vel_snd*vel_snd));
-	//else if (vel_fer<15 && (vel_snd-vel_fer<= 5))
-		//dt = 2 * dx / (2*vel_snd+sqrt(3*vel_fer*vel_fer + 24*vel_snd*vel_snd));
-	//else if (vel_fer<30 && (vel_snd-vel_fer<= 3))
-		//dt = 3 * dx / (2*vel_snd+sqrt(3*vel_fer*vel_fer + 24*vel_snd*vel_snd));
-	//else
-		//dt = 4 * dx / (2*vel_snd+sqrt(3*vel_fer*vel_fer + 24*vel_snd*vel_snd));
 }	
 
-float GrapheneFluid1D::NetCharge(){
-	return Integral1D(Nx, dx, den_cor);
-}
 
-float GrapheneFluid1D::AverageCurrent(){
-	return Integral1D(Nx, dx, cur_cor);
-}
-
-float GrapheneFluid1D::ElectricDipoleVariation(){
-	return Integral1D(Nx, dx, cur_cor);
-}
-
-float GrapheneFluid1D::ElectricDipole(){
-	float p=0.0;
-	for(int j=1;j<Nx/2;j++){	
-		p += dx*(2*j-2)*den_cor[2*j-2] + 4*dx*(2*j-1)*den_cor[2*j-1] + dx*(2*j)*den_cor[2*j];
-	}
-	p = p*dx/3.0;
-	return p;
-}
-
-float GrapheneFluid1D::OhmPower(){
-	float itg=0.0;
-	for(int j=1;j<Nx/2;j++){
-		itg += cur_cor[2*j-2]*vel_cor[2*j-2] + 4*cur_cor[2*j-1]*vel_cor[2*j-1] + cur_cor[2*j]*vel_cor[2*j];
-	}
-	itg = itg*dx/3.0;
-	return itg;	
-}
 
 void GrapheneFluid1D::SetFileName(){
 	char buffer [50];
@@ -268,21 +261,6 @@ void GrapheneFluid1D::SetFileName(){
 	file_infix = buffer;
 }
 
-void GrapheneFluid1D::CreateElectroFile(){
-	this->SetFileName();
-	std::string electrofile = "electro_" + file_infix + ".dat" ;
-	data_electro.open (electrofile);
-	data_electro << scientific; 	
-}
-
-void GrapheneFluid1D::WriteElectroFile(float t){
-		float Q_net = this->NetCharge();
-		float I_avg = this->AverageCurrent(); 
-		float P_ohm = this->OhmPower();
-		float Dipole_var=this->ElectricDipoleVariation();
-		float Dipole=this->ElectricDipole();
-		data_electro <<t<<"\t"<< Q_net<<"\t"<<I_avg<<"\t"<<Q_net*Q_net*0.5 <<"\t"<<P_ohm<<"\t"<<Dipole<<"\t"<< Dipole_var <<"\n";
-}
 
 void GrapheneFluid1D::BoundaryCond(int type){
 	/*---------------*\
@@ -341,9 +319,61 @@ void AverageFilter(float * vec_in, float * vec_out, int size , int width ){
 
 
 /*....................................................................*/
+
+void ElectroAnalysis::CreateElectroFile(GrapheneFluid1D& graphene){
+	graphene.SetFileName();
+	std::string infix = graphene.GetInfix();
+	std::string electrofile = "electro_" + infix + ".dat" ;
+	data_electro.open (electrofile);
+	data_electro << scientific; 	
+}
+
+void ElectroAnalysis::WriteElectroFile(float t,GrapheneFluid1D& graphene){
+		float Q_net = this->NetCharge(graphene);
+		float I_avg = this->AverageCurrent(graphene); 
+		float P_ohm = this->OhmPower(graphene);
+		float Dipole_var=this->ElectricDipoleVariation(graphene);
+		float Dipole=this->ElectricDipole(graphene);
+		data_electro <<t<<"\t"<< Q_net<<"\t"<<I_avg<<"\t"<<Q_net*Q_net*0.5 <<"\t"<<P_ohm<<"\t"<<Dipole<<"\t"<< Dipole_var <<"\n";
+}
+
+float ElectroAnalysis::NetCharge(GrapheneFluid1D& graphene){
+	return Integral1D(graphene.SizeX(), graphene.GetDx(), graphene.den_cor);
+}
+
+float ElectroAnalysis::AverageCurrent(GrapheneFluid1D& graphene){
+	return Integral1D(graphene.SizeX(), graphene.GetDx(), graphene.cur_cor);
+}
+
+float ElectroAnalysis::ElectricDipoleVariation(GrapheneFluid1D& graphene){
+	return Integral1D(graphene.SizeX(), graphene.GetDx(), graphene.cur_cor);
+}
+
+float ElectroAnalysis::ElectricDipole(GrapheneFluid1D& graphene){
+	float p=0.0;
+	float dx=graphene.GetDx();
+	for(int j=1;j<graphene.SizeX()/2;j++){	
+		p += dx*(2*j-2)*graphene.den_cor[2*j-2] + 4*dx*(2*j-1)*graphene.den_cor[2*j-1] + dx*(2*j)*graphene.den_cor[2*j];
+	}
+	p = p*graphene.GetDx()/3.0;
+	return p;
+}
+
+float ElectroAnalysis::OhmPower(GrapheneFluid1D& graphene){
+	float itg=0.0;
+	for(int j=1;j<graphene.SizeX()/2;j++){
+		itg += graphene.cur_cor[2*j-2]*graphene.vel_cor[2*j-2] + 4*graphene.cur_cor[2*j-1]*graphene.vel_cor[2*j-1] + graphene.cur_cor[2*j]*graphene.vel_cor[2*j];
+	}
+	itg = itg*graphene.GetDx()/3.0;
+	return itg;	
+}
+
+
+
+/*....................................................................*/
 /*........ General Functions .........................................*/
 /*....................................................................*/
-void BannerDisplay(void){
+void TETHYSBase::BannerDisplay(void){
 cout<<"\n" ;
 	cout<<"╔═════════════════════════════════════════════════════════════════════════╗\n";
 	cout<<"║\033[2m  ▆▆▆▆▆▆▆▆▆▆▆ ▆▆▆▆▆▆▆▆▆▆  ▆▆▆▆▆▆▆▆▆▆▆ ▆▆▆▆▆ ▆▆▆▆▆ ▆▆▆▖   ▗▆▆▆ ▗▆▆▆▆▆▆▆▖  \033[0m║\n";
@@ -352,11 +382,11 @@ cout<<"\n" ;
 	cout<<"║\033[2m      ▐█▌      ▐█▌    ▗▉      ▐█▌      ▐█▌   ▐█▌      ▐█▌    ▗       ██  \033[0m║\n";
 	cout<<"║\033[2m     ▆███▆    ▆███▆▆▆██▉     ▆███▆    ▆███▆ ▆███▆    ▆███▆   ▐█▆▆▆▆▆██▘  \033[0m║\n";
 	cout<<"║                                                                         ║\n";
-	cout<<"║ \033[1mTwo-dimensional Emitter of THz, Hydrodynamic Simulation.  Version 1.3.2\033[0m ║\n";
+	cout<<"║ \033[1mTwo-dimensional Emitter of THz, Hydrodynamic Simulation.  Version 1.3.3\033[0m ║\n";
 	cout<<"╚═════════════════════════════════════════════════════════════════════════╝\n";                                                                                                                                                                                          
 }
 
-void WellcomeScreen(float vel_snd, float vel_fer, float col_freq,float viscosity, float dt,float dx, float Tmax){
+void TETHYSBase::WellcomeScreen(float vel_snd, float vel_fer, float col_freq,float viscosity, float dt,float dx, float Tmax){
 	cout << "\nFermi velocity\t\033[1mvF\t"<< vel_fer <<" v\342\202\200\033[0m\n";
 	if ( PhaseVel(vel_snd, vel_fer) < vel_fer){
 		cout << "Phase velocity\t\033[1mS'\t" << PhaseVel(vel_snd, vel_fer)<<" v\342\202\200\033[0m  \033[1;5;7;31m WARNING plasmon in damping region \033[0m" <<endl;
@@ -374,8 +404,61 @@ void WellcomeScreen(float vel_snd, float vel_fer, float col_freq,float viscosity
 	cout <<"\033[1m\316\224t\t"<<dt<<" L/v\342\202\200\t\316\224x\t"<<dx<<" L\033[0m\n"<<endl;
 }
 
+std::string TETHYSBase::GetInfix(){return file_infix;}
 
 
+ TETHYSBase::~TETHYSBase(){
+	grp_dat->close(); 
+	grp_den->close(); 
+	grp_vel->close();
+	hdf5file->close();
+}
+
+TETHYSBase::TETHYSBase(int sizeN){
+	Nx = sizeN;
+	const FloatType      hdf5_float(PredType::NATIVE_FLOAT);
+	const IntType        hdf5_int(PredType::NATIVE_INT);	
+}
+
+
+void TETHYSBase::SetFileName(){
+	char buffer [50];
+	sprintf (buffer, "Fluido1D_Nx=%d", Nx);
+	file_infix = buffer;
+}
+
+
+
+void TETHYSBase::CreateHDF5File(){
+
+	std::string hdf5name = "hdf5_1D_" + this->GetInfix() + ".h5" ;	
+	H5std_string  FILE_NAME( hdf5name );
+
+    hdf5file = new H5File( FILE_NAME, H5F_ACC_TRUNC );
+	grp_dat = new Group( hdf5file->createGroup( "/Data" ));
+	grp_den = new Group( hdf5file->createGroup( "/Data/Density" ));
+	grp_vel = new Group( hdf5file->createGroup( "/Data/Velocity" ));
+	grp_cur = new Group( hdf5file->createGroup( "/Data/Current" ));
+	
+	
+	/* Define the size of the array and create the data space for fixed
+	* size dataset.
+	*/
+	//hsize_t     dimsf[2];              // dataset dimensions
+	hsize_t     dimsf[1];              // dataset dimensions
+	dimsf[0] = Nx;
+	//dimsf[1] = Ny;
+	
+	dataspace_den = new DataSpace( RANK, dimsf );
+	dataspace_vel = new DataSpace( RANK, dimsf );
+	dataspace_cur = new DataSpace( RANK, dimsf );
+	
+}
+
+
+//======================================================================
+//======================================================================
+//======================================================================
 
 void RecordLogFile(float vel_snd, float vel_fer, float col_freq, float dt, float dx, float Tmax){
 	ofstream logfile;
@@ -395,36 +478,6 @@ void RecordLogFile(float vel_snd, float vel_fer, float col_freq, float dt, float
 	logfile << dt<<"\t"<<dx<<"\t"<<Tmax<<"\t"<< (int) Tmax/dt <<"\t"<< (int) 1/dx <<endl;
 }
 
-/*
-void Autocorrelation(float * out_gamma ,float * in , int crop, int size){
-	int M = size - crop;
-	float in_crop[M];
-	for(int k =0;k < M;k++){
-		in_crop[k] = in[k+crop];		
-	}
-	float sum;
-	for(int lag=0; lag < M ;lag++){		
-		for(int t=0; t < M ;t++){
-			sum += in_crop[ t ] * in_crop[ (t + lag)%M];
-		}
-		out_gamma[lag] = sum;
-		sum=0.0;
-	}
-}
-*/
-
-/*
-float RootMeanSquare(int N, float dt, float * f){
-	float rms=0.0;
-	
-	for(int j=1;j<N/2;j++){
-		rms += f[2*j-2]*f[2*j-2] + 4*f[2*j-1]*f[2*j-1] + f[2*j]*f[2*j];
-	}
-	rms = rms*dt/3.0;
-	rms = sqrt( rms/(N*dt)  );
-	return rms;	
-}
-*/
 float Integral1D(int N, float ds, float * f){
 	float itg=0.0;
 	
@@ -487,48 +540,6 @@ void ConvolveGauss(int type, float M, float t, float * in, float * out, int size
 		}							
 	}
 }
-/*
-void Derivative1D(int size, float ds,float * f_in , float * df_out ){
-	for(int i=1;i<size-1;i++){
-			df_out[i] = (-0.5*f_in[i-1]+0.5*f_in[i+1])/ds;
-	}
-	df_out[0]=(-1.5*f_in[0]+2.0*f_in[1]-0.5*f_in[2])/ds;
-	df_out[size-1]=( 0.5*f_in[size-1-2]-2.0*f_in[size-1-1]+1.5*f_in[size-1])/ds;
-	}
-
-
-void TimeDerivative(int size_rows,int size_cols, float dt,float ** f_in , float ** df_out ){
-	//second order method
-	//f[tempo][posicao]
-	for(int i=1;i<size_rows-1;i++){
-		for(int j=0;j<size_cols;j++){
-			df_out[i][j] = (-0.5*f_in[i-1][j]+0.5*f_in[i+1][j])/dt;
-		}
-	}
-
-	for(int j=0;j<size_cols;j++){
-		df_out[0][j]           = (-1.5*f_in[0][j]+2.0*f_in[1][j]-0.5*f_in[2][j])/dt;
-		df_out[size_rows-1][j] = ( 0.5*f_in[size_rows-1-2][j]-2.0*f_in[size_rows-1-1][j]+1.5*f_in[size_rows-1][j])/dt;
-	}
-}
-
-
-     
-void SpaceDerivative(int size_rows,int size_cols, float dt,float ** f_in , float ** df_out ){
-	//second order method
-	//f[tempo][posicao]
-	for(int i=0;i<size_rows;i++){
-		for(int j=1;j<size_cols-1;j++){
-			df_out[i][j] = (-0.5*f_in[i][j-1]+0.5*f_in[i][j+1])/dt;
-		}
-	}
-	for(int i=0;i<size_rows;i++){
-		df_out[i][0]           = (-1.5*f_in[i][0]+2.0*f_in[i][1]-0.5*f_in[i][2])/dt;
-		df_out[i][size_cols-1] = ( 0.5*f_in[i][size_cols-1-2]-2.0*f_in[i][size_cols-1-1]+1.5*f_in[i][size_cols-1])/dt;
-	}
-}
-
-*/
 
 float PhaseVel(float sound, float fermi){
 	float vel_phs = sqrt(sound*sound+0.5*fermi*fermi + 0.0625 );
@@ -595,20 +606,3 @@ void ExtremaFinding(float *vec_in, int N, float sound, float dt,float & sat, flo
 	}
 	data_extrema.close();		
 }
-/*
-void ShockFinding(float * in, int N, float t , float dx,  std::string shockfile){
-	ofstream data_shock;
-	data_shock.open(shockfile);
-	for ( int i = 0; i < N; i++ )
-	{
-		if(i>=1){
-			float schockD=0.0;
-			schockD = (in[i]-in[i-1])/dx;
-			if(abs(schockD) >=20){
-				data_shock  <<t<<"\t"<< i*dx <<endl;	
-			}
-		}
-	}
-	data_shock.close();	
-}
-*/

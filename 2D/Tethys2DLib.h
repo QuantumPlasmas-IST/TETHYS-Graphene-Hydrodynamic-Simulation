@@ -33,7 +33,7 @@ class Fluid2D
 		float dy=1.0;		
 		float dt=1.0;		
 		const float lengX=1.0;
-		const float lengY;
+		const float lengY=1.0;
 		int Nx;
 		int Ny;
 		float vel_snd =50.0;

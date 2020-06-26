@@ -15,6 +15,11 @@
 #include "Tethys2DLib.h"
 
 
+#ifndef MAT_PI
+#    define MAT_PI 3.14159265358979323846
+#endif
+
+
 using namespace H5;
 using namespace std;
 const H5std_string   FILE_NAME( "Richtmyer_DATA_2D_SET.h5" );
@@ -27,13 +32,13 @@ const IntType        hdf5_int(PredType::NATIVE_INT);
 int main(int argc, char **argv){
 	/* Display name and version  */
     BannerDisplay();
+    float T_max=5.0;
 	int NpointsX = 201;
 	int NpointsY = 201;
 	int Npoints = NpointsX*NpointsY;
 	GrapheneFluid2D graph(NpointsX, NpointsY, 1);
 
 	float t=0.0;
-	float T_max=10.0;
 	float dx,dy;								// spatial discretisation
 	float dt;								// time step
 
@@ -75,11 +80,13 @@ int main(int argc, char **argv){
 	dx=graph.GetDx();
 	dy=graph.GetDy();
 	dt=graph.GetDt();
-	graph.SetTmax(10.0);
+	graph.SetTmax(5.0);
 	/*................................................................*/
 	
 	/*.........Fixed or variable vel_snd value........................*/
 	graph.SetSound();
+	//graph.SetSimulationTime();
+	//float T_max=graph.GetTmax();
 	/*................................................................*/
 
 	/*.........Output files and streams...............................*/
