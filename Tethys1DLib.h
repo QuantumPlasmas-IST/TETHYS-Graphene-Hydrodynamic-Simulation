@@ -1,55 +1,11 @@
-#ifndef TESTLIB_H
-#define TESTLIB_H
+#ifndef TETHYSLIB_1D_H
+#define TETHYSLIB_1D_H
 
 #include <H5Cpp.h>
-
+#include "TethysLib.h"
 using namespace H5;
 
-//REVER A NECESSIDADES DESTAS FUNCOES 
-void ConvolveGauss(int type, float M, float t, float * in, float * out, int size);
-float GaussKernel(int position , float t); //
-float GaussKernelDerivative(int position , float t); //
-void RecordLogFile(float vel_snd, float vel_fer, float col_freq, float dt, float dx, float Tmax);
-
-float SignalAverage(int N, float dt, float * f);
-float Integral1D(int N, float ds, float * f);
-
-void ExtremaFinding(float * vec_in, int N, float sound, float dt,float & sat, float  & tau, float & error, std::string extremafile);
-float ImagFreq(float sound, float fermi, float col_freq);                  //
-float PhaseVel(float sound, float fermi);
-float RealFreq(float sound, float fermi, float col_freq, int mode);  //
-
-//-----------------------------------
-
-float SoundVelocityAnisotropy(float i, float dx,float S);
-void AverageFilter(float * vec_in, float * vec_out, int size , int width );
-
-class TETHYSBase {
-	protected:
-		int   Nx ;                    // dataset dimensions
-		int   RANK=1;
-		std::string file_infix = "BaseFluid1D" ;
-	
-	public:
-		TETHYSBase(int sizeN); // acho que pelo menos para já nao vai precisar de construtor ou entao ponho o banner mesmo no constrturos 
-		~TETHYSBase();	
-
-		H5File* hdf5file ; // se tirar o namespace nao esquecer usar o H5::
-		Group* grp_dat ;
-		Group* grp_den ;
-		Group* grp_vel ;
-		Group* grp_cur ;
-		DataSpace* dataspace_den;
-		DataSpace* dataspace_vel;
-		DataSpace* dataspace_cur;
-		
-		std::string GetInfix();
-//		void virtual SetFileName();
-		void CreateHDF5File();
-		void BannerDisplay(void);
-		void WellcomeScreen(float vel_snd, float vel_fer,float col_freq,float viscosity, float dt, float dx, float Tmax);
-};  
-
+ 
 class Fluid1D : public TETHYSBase{
 	protected:	
 		float dx=1.0;		
@@ -78,7 +34,6 @@ class Fluid1D : public TETHYSBase{
 		Fluid1D(int sizeN,float VELSND, float VISCO);
 		~Fluid1D();
 
-//		void SetFileName() override;
 		void Smooth(int width);
 		void SetVelSnd(float x);
 		void SetKinVis(float x);
@@ -113,7 +68,6 @@ class GrapheneFluid1D : public Fluid1D{
 	
 		GrapheneFluid1D(int sizeN,float VELSND, float FERMI,float VISCO,float COL);
 	
-//		void SetFileName() override;
 		void CFLCondition() override;
 	    void BoundaryCond(int type);		
 		void SetVelFer(float x);
@@ -126,7 +80,6 @@ class GrapheneFluid1D : public Fluid1D{
 		float VelocitySource(float n,float v,float S) override;		
 		void WriteAtributes();
 };
-
 
 
 class ElectroAnalysis {

@@ -51,6 +51,7 @@ Standard form of numeric *major.minor.patch* starting with the initial commit 1.
   <br>&emsp;1.3.3 New class hierarchy on 1D algorithms. 
 
 2.0.0 Two dimensional code implementation. 1D version maintained for fast/simpler simulations. 
+  <br>&emsp;2.0.1 New class hierarchy on 2D algorithms. New organization of header files
 
 ### Internal syntax
 
