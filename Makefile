@@ -24,10 +24,10 @@ all: tethys1D \
      timeseries \
 
 tethys1D: $(SIMUL1DOBJ)
-	$(CC) $(CFLAGS) $(LIBS) -o TEST_TETHYS_1D $(SIMUL1DOBJ) $(H5LIBS)
+	$(CC) $(CFLAGS) $(LIBS) -o TETHYS_1D $(SIMUL1DOBJ) $(H5LIBS)
 
 tethys2D: $(SIMUL2DOBJ)
-	$(CC) $(CFLAGS) $(LIBS) -o TEST_TETHYS_2D $(SIMUL2DOBJ) $(H5LIBS)
+	$(CC) $(CFLAGS) $(LIBS) -o TETHYS_2D $(SIMUL2DOBJ) $(H5LIBS)
 
 analysis: $(ANALYSISOBJ)
 	$(CC) $(CFLAGS) -o ElectronicAnalysis $(ANALYSISOBJ) $(H5LIBS) $(FFTLIBS) $(CLIBS)
