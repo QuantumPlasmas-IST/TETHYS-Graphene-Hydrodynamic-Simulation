@@ -29,7 +29,7 @@ Implemented for in 1D+1 and 2D+1 for density and velocity fields.
 
 ## Class Hierarchy
 
-![Flowchart](./images/classhierarchy.png)
+![Classes](/images/classhierarchy.png)
 
 
 ## Style guide
