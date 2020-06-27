@@ -13,8 +13,6 @@ class Fluid2D : public TETHYSBase
 		float dt=1.0;		
 		const float lengX=1.0;
 		const float lengY=1.0;
-//		int Nx;
-//		int Ny;
 		float vel_snd =50.0;
 		float kin_vis =0.0;
 		float * vel_snd_arr;	
@@ -29,10 +27,6 @@ class Fluid2D : public TETHYSBase
 		float * flxX_mid_y ;
 		float * flxY_mid_y ;
 
-//		void RunBorderY(int j);
-//		void RunBorderX(int i);
-
-//		std::string file_infix ;
 		std::ofstream data_preview;
 		virtual void SetFileName();
 
@@ -44,9 +38,7 @@ class Fluid2D : public TETHYSBase
 		float * flxY ;
 		float * curX ;
 		float * curY ;
-		
-		//explicit Fluid2D(int sizeNx, int sizeNy, float width);
-		explicit Fluid2D(int sizeNx, int sizeNy,float VELSND, float VISCO);
+				explicit Fluid2D(int sizeNx, int sizeNy,float VELSND, float VISCO);
 		~Fluid2D();
 		void SetVelSnd(float x);
 		void SetSound();	
@@ -59,19 +51,14 @@ class Fluid2D : public TETHYSBase
 		void SetDy(float x);
 		float GetDt();
 		void SetDt(float x);
-		float GetTmax();
-		void SetTmax(float x);
 
 		void SetSimulationTime();
 
-		int SizeX();
-		int SizeY();
 		void InitialCondRand();
 		void InitialCondTEST();
 		void Richtmyer();	
 		virtual void CFLCondition();
-		virtual void BoundaryCond(int type);
-		
+
 		virtual float DensityFluxX(float n, float velX, float velY, float S);
 		virtual float DensityFluxY(float n, float velX, float velY, float S);
 		virtual float MassFluxXFluxX(float n, float flxX, float flxY, float S);
@@ -102,7 +89,6 @@ class GrapheneFluid2D : public Fluid2D{
 		void SetColFreq(float x);
 		float GetColFreq();
 		void CFLCondition() override;
-	    void BoundaryCond(int type) override ;		
 	    
 	    void SetSimulationTime();
 	    

@@ -13,7 +13,7 @@
 #include <H5Cpp.h>
 
 #include "Tethys2DLib.h"
-
+#include "BoundaryLib.h"
 
 #ifndef MAT_PI
 #    define MAT_PI 3.14159265358979323846
@@ -67,8 +67,12 @@ int main(int argc, char **argv){
 	
 	
 	GrapheneFluid2D	graph(NpointsX,NpointsY,input_vel_snd, input_vel_fer, input_kin_vis,input_col_freq);
-	
+
 	graph.BannerDisplay();
+	
+	
+    BoundaryCondition::DyakonovShur BC;
+
 	
 	/*......CFL routine to determine dt...............................*/	
 	graph.CFLCondition();
@@ -116,10 +120,10 @@ int main(int argc, char **argv){
 		graph.Richtmyer();
 		graph.MassFluxToVelocity();
 		// Impose boundary conditions
-		graph.BoundaryCond(1);
+//		graph.BoundaryCond(1);
 		
-
-		
+BC.X(graph);
+BC.YFree(graph);		
 		
 		// Applying average filters for smoothing 	
 		//graph.Smooth(2);

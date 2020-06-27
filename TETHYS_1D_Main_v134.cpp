@@ -13,7 +13,7 @@
 #include <H5Cpp.h>
 
 #include "Tethys1DLib.h"
-
+#include "BoundaryLib.h"
 
 #ifndef MAT_PI
 #    define MAT_PI 3.14159265358979323846
@@ -59,9 +59,10 @@ int main(int argc, char **argv){
 	
 	
 	GrapheneFluid1D	graph(Npoints,input_vel_snd, input_vel_fer, input_kin_vis,input_col_freq);
+	BoundaryCondition::DyakonovShur BC;
 	
 
-	
+
 	graph.BannerDisplay();
 	/*......CFL routine to determine dt...............................*/	
 	graph.CFLCondition();
@@ -90,7 +91,7 @@ int main(int argc, char **argv){
 	////////////////////////////////////////////////////////////////////
 	// Initialization	
 	graph.InitialCondRand();
-	graph.BoundaryCond(3);
+	BC.X(graph);
 	////////////////////////////////////////////////////////////////////
 	int time_step=0;
 	int snapshot_per_Period = 10;   
@@ -107,7 +108,7 @@ int main(int argc, char **argv){
 		// Main algorithm		
 		graph.Richtmyer();
 		// Impose boundary conditions
-		graph.BoundaryCond(3);
+		BC.X(graph);
 		// Applying average filters for smoothing 	
 		graph.Smooth(2);
 		//Record full data

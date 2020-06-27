@@ -54,9 +54,12 @@ Standard form of numeric *major.minor.patch* starting with the initial commit 1.
   <br>&emsp;1.3.1 Stored energy at the capacitor gate calculated. 
   <br>&emsp;1.3.2 Viscosity term for Reynolds >10 implemented. 
   <br>&emsp;1.3.3 New class hierarchy on 1D algorithms. 
+  <br>&emsp;1.3.4 Boundary conditions implemented as a separate class
+
 
 2.0.0 Two dimensional code implementation. 1D version maintained for fast/simpler simulations. 
   <br>&emsp;2.0.1 New class hierarchy on 2D algorithms. New organization of header files
+  <br>&emsp;2.0.2 Boundary conditions implemented as a separate class
 
 ### Internal syntax
 

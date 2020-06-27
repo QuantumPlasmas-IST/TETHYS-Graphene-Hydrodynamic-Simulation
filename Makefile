@@ -6,10 +6,10 @@ LIBS        = -lsz -lz -lm
 H5LIBS 	    = -lhdf5_hl_cpp -lhdf5_cpp -lhdf5_hl -lhdf5 	
 
 
-SIMUL1DSRC = TETHYS_1D_Main_v[0-9][0-9][0-9].cpp TethysLib.cpp Tethys1DLib.cpp 
+SIMUL1DSRC = TETHYS_1D_Main_v[0-9][0-9][0-9].cpp TethysLib.cpp BoundaryLib.cpp Tethys1DLib.cpp 
 SIMUL1DOBJ = $(SIMUL1DSRC:.cpp = .o)
 
-SIMUL2DSRC = TETHYS_2D_Main_v[0-9][0-9][0-9].cpp TethysLib.cpp Tethys2DLib.cpp 
+SIMUL2DSRC = TETHYS_2D_Main_v[0-9][0-9][0-9].cpp TethysLib.cpp BoundaryLib.cpp Tethys2DLib.cpp 
 SIMUL2DOBJ = $(SIMUL2DSRC:.cpp = .o)
 
 ANALYSISSRC = TETHYS_1D_ElectronicAnalysis.cpp TethysLib.cpp Tethys1DLib.cpp

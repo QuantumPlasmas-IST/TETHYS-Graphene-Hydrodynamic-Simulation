@@ -10,7 +10,6 @@ class Fluid1D : public TETHYSBase{
 	protected:	
 		float dx=1.0;		
 		float dt=1.0;		
-		float Tmax=10;
 		const float leng=1.0;
 		float vel_snd =50.0;
 		float kin_vis =0.0;
@@ -40,10 +39,7 @@ class Fluid1D : public TETHYSBase{
 		float GetKinVis();
 		float GetDx();
 		float GetDt();
-		float GetTmax();
-		void SetTmax(float x);
 		void SetSimulationTime();
-		int SizeX();
 		void InitialCondRand();
 		void Richtmyer();
 		void SetSound();		
@@ -68,7 +64,7 @@ class GrapheneFluid1D : public Fluid1D{
 		GrapheneFluid1D(int sizeN,float VELSND, float FERMI,float VISCO,float COL);
 	
 		void CFLCondition() override;
-	    void BoundaryCond(int type);		
+//	    void BoundaryCond(int type);		
 		void SetVelFer(float x);
 		float GetVelFer();
 		void SetColFreq(float x);

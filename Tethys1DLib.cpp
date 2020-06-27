@@ -119,11 +119,9 @@ void Fluid1D::SetKinVis(float x){ kin_vis=x;}
 void Fluid1D::SetVelSnd(float x){ vel_snd=x; }
 float Fluid1D::GetVelSnd(){ return vel_snd; }
 float Fluid1D::GetKinVis(){ return kin_vis; }
-float Fluid1D::GetTmax(){return Tmax;}
-void Fluid1D::SetTmax(float x){ Tmax=x;}
 float Fluid1D::GetDx(){return dx;}
 float Fluid1D::GetDt(){return dt;}
-int Fluid1D::SizeX(){ return Nx; }
+
 
 void Fluid1D::Smooth(int width){
 	AverageFilter( den ,den_cor, Nx, width);	
@@ -263,41 +261,6 @@ void GrapheneFluid1D::CFLCondition(){
 }	
 
 
-
-void GrapheneFluid1D::BoundaryCond(int type){
-	/*---------------*\
-	| Free        | 1 |
-	| Periodic 	  | 2 |
-	| DS Boundary | 3 | 
-	| DS+Driving  | 4 | 
-	\*---------------*/
-	switch(type){
-		case 1 : den[0] = den[1];
-				 den[Nx-1] = den[Nx-2];
-				 vel[0] = vel[1];
-				 vel[Nx-1] = vel[Nx-2];		
-			break;
-		case 2 : den[0] = den[Nx-2];
-				 den[Nx-1] = den[1];
-				 vel[0] = vel[Nx-2];
-				 vel[Nx-1] = vel[1];	
-			break;
-		case 3 : den[0] = 1.0;
-				 vel[0] = vel[1];
-				 den[Nx-1] = den[Nx-2];
-				 vel[Nx-1] = 1.0/den[Nx-1];			
-			break;	
-		case 4 : den[0] = 1.0;
-				 vel[0] = vel[1];
-				 den[Nx-1] = den[Nx-2];
-				 vel[Nx-1] = (1.0 + 0.75*vel[1]*den[1])/den[Nx-1];			
-			break;		
-		default : den[0] = 1.0;
-				  vel[0] = vel[1];
-				  den[Nx-1] = den[Nx-2];
-				  vel[Nx-1] = 1.0/den[Nx-1];			
-	}
-}
 
 /*....................................................................*/
 
