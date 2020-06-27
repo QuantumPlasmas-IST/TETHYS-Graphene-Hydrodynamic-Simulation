@@ -1,5 +1,5 @@
 # TETHYS - *Two-dimensional Emitter of THz, Hydrodynamic Simulation.*
-## Version 2.0.1
+## Version 2.0.2
 [![CodeFactor](https://www.codefactor.io/repository/github/pcosme/hydrodynamic-simulation/badge?s=00232ac4455fd1f2e77fbc58fe3823f751721249)](https://www.codefactor.io/repository/github/pcosme/hydrodynamic-simulation)
 [![CodeStatus](https://www.code-inspector.com/project/1694/status/svg)](https://www.code-inspector.com/project/1694/status/svg)
 [![CodeScore](https://www.code-inspector.com/project/1694/score/svg)](https://www.code-inspector.com/project/1694/score/svg)
