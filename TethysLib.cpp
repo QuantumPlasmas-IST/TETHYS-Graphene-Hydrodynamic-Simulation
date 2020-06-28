@@ -121,17 +121,14 @@ TETHYSBase::TETHYSBase(int sizeNX,int sizeNY,int dimension){
 	file_infix = buffer;
 }
 
-
-
-
 void TETHYSBase::CreateHDF5File(){
+	std::string hdf5name;
 	if(RANK==1){
-		std::string hdf5name = "hdf5_1D_" + this->GetInfix() + ".h5" ;	
+		hdf5name = "hdf5_1D_" + this->GetInfix() + ".h5" ;	
 	}
 	if(RANK==2){
-		std::string hdf5name = "hdf5_2D_" + this->GetInfix() + ".h5" ;	
+		hdf5name = "hdf5_2D_" + this->GetInfix() + ".h5" ;	
 	}
-	std::string hdf5name = "hdf5_1D_" + this->GetInfix() + ".h5" ;	
 	H5std_string  FILE_NAME( hdf5name );
     hdf5file = new H5File( FILE_NAME, H5F_ACC_TRUNC );
 
