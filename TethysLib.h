@@ -31,6 +31,7 @@ class TETHYSBase {
 		int   RANK;
 		std::string file_infix = "BaseFluid1D" ;
 		float Tmax=10;
+		
 	public:
 		TETHYSBase(int sizeNX,int sizeNY,int dimensions); // acho que pelo menos para já nao vai precisar de construtor ou entao ponho o banner mesmo no constrturos 
 //		~TETHYSBase();	

@@ -30,7 +30,6 @@ const IntType        hdf5_int(PredType::NATIVE_INT);
 
 
 int main(int argc, char **argv){
-	
     float T_max=1.5;
 	int NpointsX = 201;
 	int NpointsY = 201;
@@ -39,8 +38,6 @@ int main(int argc, char **argv){
 	float t=0.0;
 	float dx,dy;								// spatial discretisation
 	float dt;								// time step
-
-
 
  	int data_save_mode=0;
 	float input_vel_snd,input_vel_fer,input_col_freq,input_kin_vis;
@@ -146,7 +143,6 @@ BC.YFree(graph);
 			dataset_velY.close();	
 		}
 		graph.WriteFluidFile(t);
-		
 	}
 	
 	

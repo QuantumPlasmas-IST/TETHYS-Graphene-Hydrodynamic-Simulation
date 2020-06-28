@@ -28,7 +28,6 @@ const IntType        hdf5_int(PredType::NATIVE_INT);
 
 
 int main(int argc, char **argv){
-
 	const int Npoints=201; 							// number of spatial points
 	float t=0.0;
 	float dx;								// spatial discretisation
@@ -123,7 +122,6 @@ int main(int argc, char **argv){
 			DataSet dataset_vel = graph.grp_velX->createDataSet( name_dataset , hdf5_float, *graph.dataspace_velX );
 			dataset_vel.write( graph.vel_cor, hdf5_float );
 			dataset_vel.close();	
-			
 		}
 		graph.WriteFluidFile(t);
 		elec.WriteElectroFile(t,graph);

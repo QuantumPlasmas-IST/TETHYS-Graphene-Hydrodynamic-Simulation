@@ -124,7 +124,6 @@ void BoundaryCondition::Dirichlet::Density(GrapheneFluid2D& graphene, float L, f
 	for (int i=0; i<Nx; i++){
 		graphene.den[i+(Ny-1)*Nx] = T;		
 		graphene.den[i+0*Nx] = B;
-		
 	}
 } 
 
@@ -138,7 +137,6 @@ void BoundaryCondition::Dirichlet::VelocityX(GrapheneFluid2D& graphene, float L,
 	for (int i=0; i<Nx; i++){
 		graphene.velX[i+(Ny-1)*Nx] = T;		
 		graphene.velX[i+0*Nx] = B;
-		
 	}
 } 
 void BoundaryCondition::Dirichlet::VelocityY(GrapheneFluid2D& graphene, float L, float R, float T, float B){
@@ -151,7 +149,6 @@ void BoundaryCondition::Dirichlet::VelocityY(GrapheneFluid2D& graphene, float L,
 	for (int i=0; i<Nx; i++){
 		graphene.velY[i+(Ny-1)*Nx] = T;		
 		graphene.velY[i+0*Nx] = B;
-		
 	}
 } 
 
@@ -175,7 +172,6 @@ void BoundaryCondition::DyakonovShur::X(GrapheneFluid2D& graphene) {
 		graphene.flxY[Nx-1+j*Nx] = 0.0 ;					//idem at x=L
 	}	
 }
-
 
 void BoundaryCondition::DyakonovShur::YFree(GrapheneFluid2D& graphene) {
 	BoundaryCondition enclosing;	
