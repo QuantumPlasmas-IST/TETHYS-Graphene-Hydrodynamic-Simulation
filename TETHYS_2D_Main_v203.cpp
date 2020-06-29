@@ -41,33 +41,11 @@ int main(int argc, char **argv){
 
  	int data_save_mode=0;
 	float input_vel_snd,input_vel_fer,input_col_freq,input_kin_vis;
-	if(argc==6){
-		input_vel_snd = atof(argv[1]);
-		input_vel_fer = atof(argv[2]);
-		input_col_freq = atof(argv[3]);
-		input_kin_vis = atof(argv[4]);
-		assert(atoi(argv[5])==0 || atoi(argv[5])==1);
-		data_save_mode = atoi(argv[5]);	// full data or light save option
-		}
-	else{
-		cout << "Define S value: "; // throw exceptions if the velocities or frequency are negative or if S<Vf
-		cin >> input_vel_snd;
-		cout << "Define vF value: ";
-		cin >> input_vel_fer; 
-		cout << "Define kinetic viscosity: ";
-		cin >> input_kin_vis;
-		cout << "Define collision frequency: ";
-		cin >> input_col_freq;
-		cout << "Define data_save_mode value (0-> light save | 1-> full data): ";
-		cin >> data_save_mode;
-		}
+	ParameterInitalization(argc,argv,data_save_mode,input_vel_snd,input_vel_fer,input_col_freq,input_kin_vis);
 	
 	
 	GrapheneFluid2D	graph(NpointsX,NpointsY,input_vel_snd, input_vel_fer, input_kin_vis,input_col_freq);
-
 	graph.BannerDisplay();
-	
-	
     BoundaryCondition::DyakonovShur BC;
 
 	
@@ -76,13 +54,13 @@ int main(int argc, char **argv){
 	dx=graph.GetDx();
 	dy=graph.GetDy();
 	dt=graph.GetDt();
-	graph.SetTmax(1.5);
 	/*................................................................*/
 	
 	/*.........Fixed or variable vel_snd value........................*/
 	graph.SetSound();
 	//graph.SetSimulationTime();
 	//float T_max=graph.GetTmax();
+	graph.SetTmax(1.5);
 	/*................................................................*/
 
 	/*.........Output files and streams...............................*/
@@ -97,7 +75,6 @@ int main(int argc, char **argv){
 	////////////////////////////////////////////////////////////////////
 	// Initialization	
 	graph.InitialCondRand();
-//	graph.BoundaryCond(1);
 	////////////////////////////////////////////////////////////////////
 	
 	
@@ -109,19 +86,16 @@ int main(int argc, char **argv){
 	int snapshot_step = points_per_Period/snapshot_per_Period; 
 
 	
-	while(t<=T_max && isfinite(graph.velX[Npoints/2])) // throw exception para nan / inf 
+//	while(t<=T_max && isfinite(graph.velX[Npoints/2])) // throw exception para nan / inf 
+	while(time_step<=10000 && isfinite(graph.velX[Npoints/2])) // throw exception para nan / inf 
 	{	
 		++time_step;
 		t += dt;
-		
 		graph.Richtmyer();
 		graph.MassFluxToVelocity();
 		// Impose boundary conditions
-//		graph.BoundaryCond(1);
-		
-BC.X(graph);
-BC.YFree(graph);		
-		
+		BC.X(graph);
+		BC.YFree(graph);		
 		// Applying average filters for smoothing 	
 		//graph.Smooth(2);
 		

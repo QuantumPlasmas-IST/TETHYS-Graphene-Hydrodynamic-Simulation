@@ -2,7 +2,7 @@
 #define TESTLIB_H
 
 #include <H5Cpp.h>
-
+using namespace std;
 using namespace H5;
 
 //REVER A NECESSIDADES DESTAS FUNCOES 
@@ -18,6 +18,8 @@ void ExtremaFinding(float * vec_in, int N, float sound, float dt,float & sat, fl
 float ImagFreq(float sound, float fermi, float col_freq);                  //
 float PhaseVel(float sound, float fermi);
 float RealFreq(float sound, float fermi, float col_freq, int mode);  //
+
+void ParameterInitalization(int argc,char ** argv,int &data_save_mode, float &input_vel_snd,float &input_vel_fer,float &input_col_freq,float &input_kin_vis);
 
 //-----------------------------------
 

@@ -26,9 +26,29 @@ using namespace std;
 #    define MAT_EULER 2.71828182845905
 #endif
 
-#ifndef C_SPEED
-#    define C_SPEED 1000.0
-#endif
+
+void ParameterInitalization(int argc,char ** argv,int &data_save_mode, float &input_vel_snd,float &input_vel_fer,float &input_col_freq,float &input_kin_vis){
+		if(argc==6){
+		input_vel_snd = atof(argv[1]);
+		input_vel_fer = atof(argv[2]);
+		input_col_freq = atof(argv[3]);
+		input_kin_vis = atof(argv[4]);
+		assert(atoi(argv[5])==0 || atoi(argv[5])==1);
+		data_save_mode = atoi(argv[5]);	// full data or light save option
+		}
+	else{
+		cout << "Define S value: "; // throw exceptions if the velocities or frequency are negative or if S<Vf
+		cin >> input_vel_snd;
+		cout << "Define vF value: ";
+		cin >> input_vel_fer; 
+		cout << "Define kinetic viscosity: ";
+		cin >> input_kin_vis;
+		cout << "Define collision frequency: ";
+		cin >> input_col_freq;
+		cout << "Define data_save_mode value (0-> light save | 1-> full data): ";
+		cin >> data_save_mode;
+		}
+}
 
 
 
@@ -68,7 +88,7 @@ cout<<"\n" ;
 	cout<<"║\033[2m      ▐█▌      ▐█▌    ▗▉      ▐█▌      ▐█▌   ▐█▌      ▐█▌    ▗       ██  \033[0m║\n";
 	cout<<"║\033[2m     ▆███▆    ▆███▆▆▆██▉     ▆███▆    ▆███▆ ▆███▆    ▆███▆   ▐█▆▆▆▆▆██▘  \033[0m║\n";
 	cout<<"║                                                                         ║\n";
-	cout<<"║ \033[1mTwo-dimensional Emitter of THz, Hydrodynamic Simulation.  Version 1.3.2\033[0m ║\n";
+	cout<<"║ \033[1mTwo-dimensional Emitter of THz, Hydrodynamic Simulation.  Version 2.0.3\033[0m ║\n";
 	cout<<"╚═════════════════════════════════════════════════════════════════════════╝\n";                                                                                                                                                                                          
 }
 

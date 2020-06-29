@@ -35,26 +35,7 @@ int main(int argc, char **argv){
 
  	int data_save_mode=0;
 	float input_vel_snd,input_vel_fer,input_col_freq,input_kin_vis;
-	if(argc==6){
-		input_vel_snd = atof(argv[1]);
-		input_vel_fer = atof(argv[2]);
-		input_col_freq = atof(argv[3]);
-		input_kin_vis = atof(argv[4]);
-		assert(atoi(argv[5])==0 || atoi(argv[5])==1);
-		data_save_mode = atoi(argv[5]);	// full data or light save option
-		}
-	else{
-		cout << "Define S value: "; // throw exceptions if the velocities or frequency are negative or if S<Vf
-		cin >> input_vel_snd;
-		cout << "Define vF value: ";
-		cin >> input_vel_fer; 
-		cout << "Define kinetic viscosity: ";
-		cin >> input_kin_vis;
-		cout << "Define collision frequency: ";
-		cin >> input_col_freq;
-		cout << "Define data_save_mode value (0-> light save | 1-> full data): ";
-		cin >> data_save_mode;
-		}
+	ParameterInitalization(argc,argv,data_save_mode,input_vel_snd,input_vel_fer,input_col_freq,input_kin_vis);
 	
 	
 	GrapheneFluid1D	graph(Npoints,input_vel_snd, input_vel_fer, input_kin_vis,input_col_freq);
