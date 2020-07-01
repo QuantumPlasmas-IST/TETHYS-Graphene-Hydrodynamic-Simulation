@@ -10,7 +10,6 @@
 #include <cassert>
 
 #include "TethysLib.h"
-
 #include <H5Cpp.h>
 
 using namespace H5;
@@ -178,7 +177,7 @@ void TETHYSBase::CreateHDF5File(){
 //======================================================================
 //======================================================================
 
-void RecordLogFile(float vel_snd, float vel_fer, float col_freq, float dt, float dx, float Tmax){
+void RecordLogFile(float vel_snd, float vel_fer, float col_freq, float dt, float dx,float dy, float Tmax){
 	ofstream logfile;
 	logfile.open("Simulation.log",std::ios_base::app);
 	time_t time_raw;
@@ -193,7 +192,7 @@ void RecordLogFile(float vel_snd, float vel_fer, float col_freq, float dt, float
 	logfile << vel_snd <<"\t"<<vel_fer<< "\t"<< col_freq<<"\t"<< RealFreq(vel_snd,vel_fer,col_freq,1) <<"\t"<< ImagFreq(vel_snd,vel_fer,col_freq) <<"\n";
 	logfile << "#discretisation:\n";
     logfile << "#dt\tdx\tTmax\ttime steps\tspace points\n";
-	logfile << dt<<"\t"<<dx<<"\t"<<Tmax<<"\t"<< (int) Tmax/dt <<"\t"<< (int) 1/dx <<endl;
+	logfile << dt<<"\t"<<dx<<"\t"<<dy<<"\t"<<Tmax<<"\t"<< (int) Tmax/dt <<"\t"<< (int) 1/dx <<endl;
 }
 
 float Integral1D(int N, float ds, float * f){
@@ -325,84 +324,6 @@ void ExtremaFinding(float *vec_in, int N, float sound, float dt,float & sat, flo
 	data_extrema.close();		
 }
 
-
-//~ void BoundaryCondition::DyakonovShur::X(GrapheneFluid1D& graphene) {
-	//~ graphene.den[0] = 1.0;
-	//~ graphene.vel[0] = vel[1];
-	//~ graphene.den[Nx-1] = den[Nx-2];
-	//~ graphene.vel[Nx-1] = 1.0/den[Nx-1];		
-//~ }
-
-//~ void BoundaryCondition::DyakonovShur::X(GrapheneFluid2D& graphene) {
-	//~ for(int j=0;j<Ny;j++){	
-		//~ graphene.den[0+j*Nx]=1.0;               			//constant density at x=0
-		//~ graphene.den[Nx-1+j*Nx]=graphene.den[Nx-2+j*Nx]; 			//free density at x=L
-		//~ graphene.flxX[0+j*Nx] = graphene.flxX[1+j*Nx]*pow(graphene.den[1+j*Nx],-1.5);			//free flux at x=0
-		//~ graphene.flxX[Nx-1+j*Nx] = sqrt(graphene.den[Nx-1+j*Nx]);	//constant current at x=L (flux equals mass)
-		//~ graphene.flxY[0+j*Nx] = 0.0; 					//flux only on x at x=0
-		//~ graphene.flxY[Nx-1+j*Nx] = 0.0 ;					//idem at x=L
-	//~ }	
-//~ }
-
-
-//~ void BoundaryCondition::XFree(GrapheneFluid1D& graphene){
-	//~ graphene.den[0] = graphene.den[1];
-	//~ graphene.den[Nx-1] = den[Nx-2];
-	//~ graphene.vel[0] = graphene.vel[1];
-	//~ graphene.vel[Nx-1] = graphene.vel[Nx-2];	
-//~ }
-//~ void BoundaryCondition::XPeriodic(GrapheneFluid1D& graphene){
-	//~ graphene.den[0] = graphene.den[Nx-2];
-	//~ graphene.den[Nx-1] = graphene.den[1];
-	//~ graphene.vel[0] = graphene.vel[Nx-2];
-	//~ graphene.vel[Nx-1] = graphene.vel[1];	
-//~ }
-//~ void BoundaryCondition::XFree(GrapheneFluid2D& graphene){
-	//~ for(int j=0;j<Ny;j++){	
-		//~ graphene.den[0+j*Nx]=graphene.den[1+j*Nx];                	
-		//~ graphene.den[Nx-1+j*Nx]=graphene.den[Nx-2+j*Nx]; 			//free density at x=L
-		//~ graphene.flxY[0+j*Nx] = 0.0; 					//flux only on x at x=0
-		//~ graphene.flxY[Nx-1+j*Nx] = 0.0 ;					//idem at x=L
-		//~ graphene.flxX[0+j*Nx] = graphene.flxX[1+j*Nx]*pow(graphene.den[1+j*Nx],-1.5);			//free flux at x=0
-		//~ graphene.flxX[Nx-1+j*Nx] =  graphene.flxX[Nx-2+j*Nx];
-	//~ }	
-//~ }
-//~ void BoundaryCondition::XPeriodic(GrapheneFluid2D& graphene){
-	//~ for(int j=0;j<Ny;j++){	
-		//~ graphene.den[0+j*Nx]=graphene.den[(Nx-2)+j*Nx];                	
-		//~ graphene.den[Nx-1+j*Nx]=graphene.den[1+j*Nx]; 			
-		//~ graphene.flxY[0+j*Nx] = 0.0; 					//flux only on x at x=0
-		//~ graphene.flxY[Nx-1+j*Nx] = 0.0 ;					//idem at x=L
-		//~ graphene.flxX[0+j*Nx] = graphene.flxX[(Ny-2)+j*Nx];
-		//~ graphene.flxX[Nx-1+j*Nx] =  graphene.flxX[1+j*Nx];
-	//~ }	
-//~ }
-//~ void BoundaryCondition::YFree(GrapheneFluid2D& graphene){
-	//~ for (int i=0; i<Nx; i++){
-		//~ graphene.den[i+0*Nx] = graphene.den[i+1*Nx];
-		//~ graphene.flxX[i+0*Nx] = graphene.flxX[i+1*Nx];
-		//~ graphene.flxY[i+0*Nx] = graphene.flxY[i+1*Nx];
-		//~ graphene.den[i+(Ny-1)*Nx] = graphene.den[i+(Ny-2)*Nx];
-		//~ graphene.flxX[i+(Ny-1)*Nx] = graphene.flxX[i+(Ny-2)*Nx];
-		//~ graphene.flxY[i+(Ny-1)*Nx] = graphene.flxY[i+(Ny-2)*Nx];
-	//~ }	 	
-//~ }
-//~ void BoundaryCondition::YPeriodic(GrapheneFluid2D& graphene){
-	//~ for (int i=0; i<Nx; i++){
-		//~ graphene.den[i+0*Nx] = graphene.den[i+(Ny-2)*Nx];
-		//~ graphene.flxX[i+0*Nx] = graphene.flxX[i+(Ny-2)*Nx];
-		//~ graphene.flxY[i+0*Nx] = graphene.flxY[i+(Ny-2)*Nx];
-		//~ graphene.den[i+(Ny-1)*Nx] = graphene.den[i+1*Nx];
-		//~ graphene.flxX[i+(Ny-1)*Nx] = graphene.flxX[i+1*Nx];
-		//~ graphene.flxY[i+(Ny-1)*Nx] = graphene.flxY[i+1*Nx];
-	//~ }
-//~ }
-
-
-
-//~ class  BoundaryCondition::Dirichlet { }; // definition of nested class
-//~ void enclose::inner::f(int i) {} // definition of method of nestedd class
-//~ void BoundaryCondition::DyakonovShur::f(int i) {} // definition of method of nestedd class
 
 
 

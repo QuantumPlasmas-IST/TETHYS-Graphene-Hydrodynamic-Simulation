@@ -19,12 +19,6 @@ class Fluid2D : public TETHYSBase
 		float * den_mid ; // 1st Aux. Grid (Nx-1)*(Ny-1)
 		float * flxX_mid ;
 		float * flxY_mid ;		
-		float * den_mid_x ; // 2nd Aux. Grid X (Nx-1)*(Ny)
-		float * flxX_mid_x ;
-		float * flxY_mid_x ;
-		float * den_mid_y ; // 2nd Aux. Grid Y (Nx)*(Ny-1)
-		float * flxX_mid_y ;
-		float * flxY_mid_y ;
 
 		std::ofstream data_preview;
 		virtual void SetFileName();
@@ -56,6 +50,7 @@ class Fluid2D : public TETHYSBase
 		void InitialCondRand();
 		void InitialCondTEST();
 		void Richtmyer();	
+		void DimensionalSplittingMethod();	
 		virtual void CFLCondition();
 
 		virtual float DensityFluxX(float n, float velX, float velY, float S);

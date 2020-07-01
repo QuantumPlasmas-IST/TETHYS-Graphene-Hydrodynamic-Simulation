@@ -66,7 +66,7 @@ int main(int argc, char **argv){
 	/*................................................................*/
 	
 	graph.WellcomeScreen(graph.GetVelSnd(), graph.GetVelFer(), graph.GetColFreq(),graph.GetKinVis(), dt, dx, T_max);
-	RecordLogFile(graph.GetVelSnd(), graph.GetVelFer(), graph.GetColFreq(), dt, dx, T_max);
+	RecordLogFile(graph.GetVelSnd(), graph.GetVelFer(), graph.GetColFreq(), dt, dx,0.0, T_max);
 	
 	////////////////////////////////////////////////////////////////////
 	// Initialization	
@@ -109,7 +109,8 @@ int main(int argc, char **argv){
 	}
 	
 	graph.WriteAtributes();
-	
+
+
 	cout << "\033[1A\033[2K\033[1;32mDONE!\033[0m\n";
 	cout<<"═══════════════════════════════════════════════════════════════════════════" <<endl;
 

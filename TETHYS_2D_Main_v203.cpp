@@ -69,7 +69,7 @@ int main(int argc, char **argv){
 	/*................................................................*/
 	
 	graph.WellcomeScreen(graph.GetVelSnd(), graph.GetVelFer(), graph.GetColFreq(),graph.GetKinVis(), dt, dx, T_max);
-	RecordLogFile(graph.GetVelSnd(), graph.GetVelFer(), graph.GetColFreq(), dt, dx, T_max);
+	RecordLogFile(graph.GetVelSnd(), graph.GetVelFer(), graph.GetColFreq(), dt, dx,dy, T_max);
 
 		
 	////////////////////////////////////////////////////////////////////
@@ -86,8 +86,8 @@ int main(int argc, char **argv){
 	int snapshot_step = points_per_Period/snapshot_per_Period; 
 
 	
-//	while(t<=T_max && isfinite(graph.velX[Npoints/2])) // throw exception para nan / inf 
-	while(time_step<=10000 && isfinite(graph.velX[Npoints/2])) // throw exception para nan / inf 
+	while(t<=T_max && isfinite(graph.velX[Npoints/2])) // throw exception para nan / inf 
+//	while(time_step<=10000 && isfinite(graph.velX[Npoints/2])) // throw exception para nan / inf 
 	{	
 		++time_step;
 		t += dt;

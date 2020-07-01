@@ -90,5 +90,7 @@ class ElectroAnalysis {
 		float ElectricDipoleVariation(GrapheneFluid1D& graphene);
 };
 
+
+
 #endif
 

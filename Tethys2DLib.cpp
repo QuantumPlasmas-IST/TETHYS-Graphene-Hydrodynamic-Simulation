@@ -46,14 +46,7 @@ Fluid2D::Fluid2D(int sizeNx, int sizeNy, float VELSND, float VISCO) : TETHYSBase
 	den_mid		= new float[(Nx-1)*(Ny-1)]();  
 	flxX_mid	= new float[(Nx-1)*(Ny-1)]();
 	flxY_mid	= new float[(Nx-1)*(Ny-1)]();
-	// 2nd Aux. Grid X (Nx-1)*(Ny)
-	den_mid_x	= new float[(Nx-1)*Ny]();
-	flxX_mid_x	= new float[(Nx-1)*Ny]();
-	flxY_mid_x	= new float[(Nx-1)*Ny]();
-	// 2nd Aux. Grid Y (Nx)*(Ny-1)
-	den_mid_y	= new float[Nx*(Ny-1)](); 
-	flxX_mid_y	= new float[Nx*(Ny-1)](); 
-	flxY_mid_y	= new float[Nx*(Ny-1)](); 
+
 }
 	
 Fluid2D::~Fluid2D(){
@@ -64,12 +57,6 @@ Fluid2D::~Fluid2D(){
 	delete [] flxY;
 	delete [] curX;
 	delete [] curY;
-	delete [] den_mid_x;
-	delete [] flxX_mid_x;
-	delete [] flxY_mid_x;		
-	delete [] den_mid_y;
-	delete [] flxX_mid_y;
-	delete [] flxY_mid_y;		
 	delete [] den_mid;
 	delete [] flxX_mid;
 	delete [] flxY_mid;		
@@ -135,91 +122,148 @@ void Fluid2D::MassFluxToVelocity(){
 	}
 }
 
+void Fluid2D::DimensionalSplittingMethod(){
+// x-sweeps runing all lines from 0<y<W i.e. excluding the boundaries
+	for(int j=1;j<Ny-1;j++){
+		//  Half step calculate density and velocity at time k+0.5 at the spatial midpoints
+		for ( int i = 0; i < Nx - 1; i++ )
+		{
+			den_mid[i+j*Nx] = 0.5*( den[i+j*Nx] + den[i+1+j*Nx] )
+				- ( 0.5*dt/dx ) * ( DensityFluxX(den[i+1+j*Nx],flxX[i+1+j*Nx],flxY[i+1+j*Nx],vel_snd) - DensityFluxX(den[i+j*Nx],flxX[i+j*Nx],flxY[i+j*Nx],vel_snd) );
+			flxX_mid[i+j*Nx] = 0.5*( flxX[i+j*Nx] + flxX[i+1+j*Nx] )
+				- ( 0.5*dt/dx ) * ( MassFluxXFluxX(den[i+1+j*Nx],flxX[i+1+j*Nx],flxY[i+1+j*Nx],vel_snd) - MassFluxXFluxX(den[i+j*Nx],flxX[i+j*Nx],flxY[i+j*Nx],vel_snd) );
+			flxY_mid[i+j*Nx] = 0.5*( flxY[i+j*Nx] + flxY[i+1+j*Nx] )
+				- ( 0.5*dt/dx ) * ( MassFluxYFluxX(den[i+1+j*Nx],flxX[i+1+j*Nx],flxY[i+1+j*Nx],vel_snd) - MassFluxYFluxX(den[i+j*Nx],flxX[i+j*Nx],flxY[i+j*Nx],vel_snd) );	
+		}
+		// Remaining step 
+		for ( int i = 1; i < Nx - 1; i++ )
+		{
+			den[i+j*Nx] =  den[i+j*Nx]  - (dt/dx) * ( DensityFluxX(den_mid[i+j*Nx],flxX_mid[i+j*Nx],flxY_mid[i+j*Nx],vel_snd) - DensityFluxX(den_mid[i-1+j*Nx],flxX_mid[i-1+j*Nx],flxY_mid[i-1+j*Nx],vel_snd) );
+			flxX[i+j*Nx] = flxX[i+j*Nx] - (dt/dx) * ( MassFluxXFluxX(den_mid[i+j*Nx],flxX_mid[i+j*Nx],flxY_mid[i+j*Nx],vel_snd) - MassFluxXFluxX(den_mid[i-1+j*Nx],flxX_mid[i-1+j*Nx],flxY_mid[i-1+j*Nx],vel_snd) );
+			flxY[i+j*Nx] = flxY[i+j*Nx] - (dt/dx) * ( MassFluxYFluxX(den_mid[i+j*Nx],flxX_mid[i+j*Nx],flxY_mid[i+j*Nx],vel_snd) - MassFluxYFluxX(den_mid[i-1+j*Nx],flxX_mid[i-1+j*Nx],flxY_mid[i-1+j*Nx],vel_snd) );
+		}
+	}
+// y-sweeps	
+	for(int i=1;i<Nx-1;i++){
+		//  Half step calculate density and velocity at time k+0.5 at the spatial midpoints
+		for ( int j = 0; j < Ny - 1; j++ )
+		{
+			den_mid[i+j*Nx] = 0.5*( den[i+j*Nx] + den[i+1+j*Nx] )
+				- ( 0.5*dt/dx ) * ( DensityFluxY(den[i+1+j*Nx],flxX[i+1+j*Nx],flxY[i+1+j*Nx],vel_snd) - DensityFluxY(den[i+j*Nx],flxX[i+j*Nx],flxY[i+j*Nx],vel_snd) );
+			flxX_mid[i+j*Nx] = 0.5*( flxX[i+j*Nx] + flxX[i+1+j*Nx] )
+				- ( 0.5*dt/dx ) * ( MassFluxXFluxY(den[i+1+j*Nx],flxX[i+1+j*Nx],flxY[i+1+j*Nx],vel_snd) - MassFluxXFluxY(den[i+j*Nx],flxX[i+j*Nx],flxY[i+j*Nx],vel_snd) );
+			flxY_mid[i+j*Nx] = 0.5*( flxY[i+j*Nx] + flxY[i+1+j*Nx] )
+				- ( 0.5*dt/dx ) * ( MassFluxYFluxY(den[i+1+j*Nx],flxX[i+1+j*Nx],flxY[i+1+j*Nx],vel_snd) - MassFluxYFluxY(den[i+j*Nx],flxX[i+j*Nx],flxY[i+j*Nx],vel_snd) );	
+		}
+		// Remaining step 
+		for ( int j = 1; j < Ny - 1; j++ )
+		{
+			den[i+j*Nx] =  den[i+j*Nx]  - (dt/dx) * ( DensityFluxY(den_mid[i+j*Nx],flxX_mid[i+j*Nx],flxY_mid[i+j*Nx],vel_snd) - DensityFluxY(den_mid[i-1+j*Nx],flxX_mid[i-1+j*Nx],flxY_mid[i-1+j*Nx],vel_snd) );
+			flxX[i+j*Nx] = flxX[i+j*Nx] - (dt/dx) * ( MassFluxXFluxY(den_mid[i+j*Nx],flxX_mid[i+j*Nx],flxY_mid[i+j*Nx],vel_snd) - MassFluxXFluxY(den_mid[i-1+j*Nx],flxX_mid[i-1+j*Nx],flxY_mid[i-1+j*Nx],vel_snd) );
+			flxY[i+j*Nx] = flxY[i+j*Nx] - (dt/dx) * ( MassFluxYFluxY(den_mid[i+j*Nx],flxX_mid[i+j*Nx],flxY_mid[i+j*Nx],vel_snd) - MassFluxYFluxY(den_mid[i-1+j*Nx],flxX_mid[i-1+j*Nx],flxY_mid[i-1+j*Nx],vel_snd) );
+		}		
+	}
+}
 
-		
 
 void Fluid2D::Richtmyer(){
-int E,S,SE;	
-	//Cycle A
-	for(int C=0;C<=Nx*Ny-2;C++){
-		if(C%Nx<=Nx-2){
-			E=C+1;
-			den_mid_x[C] = 0.5*(den[C] + den[E]);
-			flxX_mid_x[C] = 0.5*(flxX[C] + flxX[E]);
-			flxY_mid_x[C] = 0.5*(flxY[C] + flxY[E]);	
+		int NE,NW,SE,SW;
+		float n_N, n_S ,n_E ,n_W, px_N, px_S, px_E, px_W, py_N, py_S, py_E, py_W; 
+		//k=i+j*Nx
+		for(int k=0; k<=Nx*Ny-Nx-2; k++){
+			if(k%Nx<=Nx-2){
+				NE=k+1+Nx;
+				NW=k+Nx;
+				SE=k+1;
+				SW=k;
+		
+				n_N = 0.5*(den[NE]+den[NW]); 
+				n_S = 0.5*(den[SE]+den[SW]); 
+				n_E = 0.5*(den[NE]+den[SE]); 
+				n_W = 0.5*(den[NW]+den[SW]);
+
+				px_N = 0.5*(flxX[NE]+flxX[NW]); 
+				px_S = 0.5*(flxX[SE]+flxX[SW]); 
+				px_E = 0.5*(flxX[NE]+flxX[SE]); 
+				px_W = 0.5*(flxX[NW]+flxX[SW]); 
+				
+				py_N = 0.5*(flxY[NE]+flxY[NW]); 
+				py_S = 0.5*(flxY[SE]+flxY[SW]); 
+				py_E = 0.5*(flxY[NE]+flxY[SE]); 
+				py_W = 0.5*(flxY[NW]+flxY[SW]); 
+				
+				den_mid[k] = 0.25*(den[SW] + den[SE] + den[NW] + den[NE]) // How shall we include vel_snd_arr ?
+								-0.5*(dt/dx)*(
+									DensityFluxX(n_E, px_E, py_E,vel_snd)-
+									DensityFluxX(n_W, px_W, py_W,vel_snd))
+								-0.5*(dt/dy)*(
+									DensityFluxY(n_N, px_N, py_N,vel_snd)-
+									DensityFluxY(n_S, px_S, py_S,vel_snd));
+				flxX_mid[k] = 0.25*(flxX[SW] + flxX[SE] + flxX[NW] + flxX[NE])
+								-0.5*(dt/dx)*(
+									MassFluxXFluxX(n_E, px_E, py_E,vel_snd)-
+									MassFluxXFluxX(n_W, px_W, py_W,vel_snd))
+								-0.5*(dt/dy)*(
+									MassFluxXFluxY(n_N, px_N, py_N,vel_snd)-
+									MassFluxXFluxY(n_S, px_S, py_S,vel_snd));
+				flxY_mid[k] = 0.25*(flxY[SW] + flxY[SE] + flxY[NW] + flxY[NE])
+								-0.5*(dt/dx)*(
+									MassFluxYFluxX(n_E, px_E, py_E,vel_snd)-
+									MassFluxYFluxX(n_W, px_W, py_W,vel_snd))
+								-0.5*(dt/dy)*(
+									MassFluxYFluxY(n_N, px_N, py_N,vel_snd)-
+									MassFluxYFluxY(n_S, px_S, py_S,vel_snd));
+			}						
 		}
-	}
-	//Cycle B		
-	for(int C=0;C<=Nx*Ny-Nx-1;C++){
-		if(C%Nx<=Nx-1){		
-			S=C+Nx;
-			den_mid_y[C] = 0.5*(den[C] + den[S]);
-			flxX_mid_y[C] = 0.5*(flxX[C] + flxX[S]);
-			flxY_mid_y[C] = 0.5*(flxY[C] + flxY[S]);
-		}
-	}
-	//Cycle C
-	for(int C=0;C<=Nx*Ny-Nx-2;C++){
-		if(C%Nx<=Nx-2){				
-			E=C+1;
-			S=C+Nx;
-			SE=C+1+Nx;
-			den_mid[C] = 0.25*(den[C] + den[E] + den[S] + den[SE]) // How shall we include vel_snd_arr ?
-				-0.5*(dt/dx)*(	DensityFluxX(den_mid_y[E], flxX_mid_y[E], flxY_mid_y[E],vel_snd)-
-								DensityFluxX(den_mid_y[C], flxX_mid_y[C], flxY_mid_y[C],vel_snd))
-				-0.5*(dt/dy)*(	DensityFluxY(den_mid_x[S], flxX_mid_x[S], flxY_mid_x[S],vel_snd)-
-								DensityFluxY(den_mid_x[C], flxX_mid_x[C], flxY_mid_x[C],vel_snd));
-			flxX_mid[C] = 0.25*(flxX[C] + flxX[E] + flxX[S] + flxX[SE])
-				-0.5*(dt/dx)*(	MassFluxXFluxX(den_mid_y[E], flxX_mid_y[E], flxY_mid_y[E],vel_snd)-
-								MassFluxXFluxX(den_mid_y[C], flxX_mid_y[C], flxY_mid_y[C],vel_snd))
-				-0.5*(dt/dy)*(	MassFluxXFluxY(den_mid_x[S], flxX_mid_x[S], flxY_mid_x[S],vel_snd)-
-								MassFluxXFluxY(den_mid_x[C], flxX_mid_x[C], flxY_mid_x[C],vel_snd));
-			flxY_mid[C] = 0.25*(flxY[C] + flxY[E] + flxY[S] + flxY[SE])
-				-0.5*(dt/dx)*(	MassFluxYFluxX(den_mid_y[E], flxX_mid_y[E], flxY_mid_y[E],vel_snd)-
-								MassFluxYFluxX(den_mid_y[C], flxX_mid_y[C], flxY_mid_y[C],vel_snd))
-				-0.5*(dt/dy)*(  MassFluxYFluxY(den_mid_x[S], flxX_mid_x[S], flxY_mid_x[S],vel_snd)-
-								MassFluxYFluxY(den_mid_x[C], flxX_mid_x[C], flxY_mid_x[C],vel_snd));		
-		}
-	}
-	//Cycle D			
-	for(int C=0;C<=Nx*Ny-2*Nx-2;C++){
-		if(C%Nx<=Nx-2){				
-			S=C+Nx;
-			den_mid_x[C] = 0.5*(den_mid[C] + den_mid[S]);
-			flxX_mid_x[C] = 0.5*(flxX_mid[C] + flxX_mid[S]);
-			flxY_mid_x[C] = 0.5*(flxY_mid[C] + flxY_mid[S]);
-		}			
-	}
-	//Cycle E
-	for(int C=0;C<=Nx*Ny-Nx-3;C++){
-		if(C%Nx<=Nx-3){				
-			E=C+1;
-			den_mid_y[C] = 0.5*(den_mid[C] + den_mid[E]);
-			flxX_mid_y[C] = 0.5*(flxX_mid[C] + flxX_mid[E]);
-			flxY_mid_y[C] = 0.5*(flxY_mid[C] + flxY_mid[E]);
-		}
-	}
-	//Cycle F		
-	for(int C=0;C<=Nx*Ny-2*Nx-3;C++){
-		if(C%Nx<=Nx-3){				
-			E=C+1;
-			S=C+Nx;
-			SE=C+1+Nx;
-			den[SE] = den[SE]  -(dt/dx)*(DensityFluxX(den_mid_x[E], flxX_mid_x[E], flxY_mid_x[E], vel_snd)-
-										 DensityFluxX(den_mid_x[C], flxX_mid_x[C], flxY_mid_x[C], vel_snd))
-							   -(dt/dy)*(DensityFluxY(den_mid_y[S], flxX_mid_y[S], flxY_mid_y[S], vel_snd)-
-										 DensityFluxY(den_mid_y[C], flxX_mid_y[C], flxY_mid_y[C], vel_snd));
-			flxX[SE] = flxX[SE]-(dt/dx)*(MassFluxXFluxX(den_mid_x[E], flxX_mid_x[E], flxY_mid_x[E], vel_snd)-
-										 MassFluxXFluxX(den_mid_x[C], flxX_mid_x[C], flxY_mid_x[C], vel_snd))
-							   -(dt/dy)*(MassFluxXFluxY(den_mid_y[S], flxX_mid_y[S], flxY_mid_y[S], vel_snd)-
-										 MassFluxXFluxY(den_mid_y[C], flxX_mid_y[C], flxY_mid_y[C], vel_snd));
-			flxY[SE] = flxY[SE]-(dt/dx)*(MassFluxYFluxX(den_mid_x[E], flxX_mid_x[E], flxY_mid_x[E], vel_snd)-
-								         MassFluxYFluxX(den_mid_x[C], flxX_mid_x[C], flxY_mid_x[C], vel_snd))
-							   -(dt/dy)*(MassFluxYFluxY(den_mid_y[S], flxX_mid_y[S], flxY_mid_y[S], vel_snd)-
-								         MassFluxYFluxY(den_mid_y[C], flxX_mid_y[C], flxY_mid_y[C], vel_snd));							
-		}
-	}
-} 
+		for(int k=0; k<=Nx*Ny-Nx-2; k++){
+			if(k%Nx<=Nx-2){				
+				
+				NE=k;
+				NW=k-1;
+				SE=k-Nx;
+				SW=k-1-Nx;
+				
+				n_N = 0.5*(den_mid[NE]+den_mid[NW]); 
+				n_S = 0.5*(den_mid[SE]+den_mid[SW]); 
+				n_E = 0.5*(den_mid[NE]+den_mid[SE]); 
+				n_W = 0.5*(den_mid[NW]+den_mid[SW]);
+
+				px_N = 0.5*(flxX_mid[NE]+flxX_mid[NW]); 
+				px_S = 0.5*(flxX_mid[SE]+flxX_mid[SW]); 
+				px_E = 0.5*(flxX_mid[NE]+flxX_mid[SE]); 
+				px_W = 0.5*(flxX_mid[NW]+flxX_mid[SW]); 
+				
+				py_N = 0.5*(flxY_mid[NE]+flxY_mid[NW]); 
+				py_S = 0.5*(flxY_mid[SE]+flxY_mid[SW]); 
+				py_E = 0.5*(flxY_mid[NE]+flxY_mid[SE]); 
+				py_W = 0.5*(flxY_mid[NW]+flxY_mid[SW]); 
+								
+				den[k] = den[k]
+								-(dt/dx)*(
+									DensityFluxX(n_E, px_E, py_E,vel_snd)-
+									DensityFluxX(n_W, px_W, py_W,vel_snd))
+								-(dt/dy)*(
+									DensityFluxY(n_N, px_N, py_N,vel_snd)-
+									DensityFluxY(n_S, px_S, py_S,vel_snd));
+				flxX[k] = flxX[k]
+								-(dt/dx)*(
+									MassFluxXFluxX(n_E, px_E, py_E,vel_snd)-
+									MassFluxXFluxX(n_W, px_W, py_W,vel_snd))
+								-(dt/dy)*(
+									MassFluxXFluxY(n_N, px_N, py_N,vel_snd)-
+									MassFluxXFluxY(n_S, px_S, py_S,vel_snd));
+				flxY[k] = flxY[k]
+								-(dt/dx)*(
+									MassFluxYFluxX(n_E, px_E, py_E,vel_snd)-
+									MassFluxYFluxX(n_W, px_W, py_W,vel_snd))
+								-(dt/dy)*(
+									MassFluxYFluxY(n_N, px_N, py_N,vel_snd)-
+									MassFluxYFluxY(n_S, px_S, py_S,vel_snd));
+			}
+		}	
+	
+}
+		
 
 
 void Fluid2D::CFLCondition(){ 

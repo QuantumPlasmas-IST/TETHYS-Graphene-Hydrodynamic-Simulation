@@ -173,10 +173,12 @@ void Fluid1D::Richtmyer(){
 		//
 		for ( int i = 1; i < Nx - 1; i++ )
 		{
+			float den_old = den[i];
+			float vel_old = vel[i];
 			den[i] = den[i] - (dt/dx) * ( DensityFlux(den_mid[i],vel_mid[i],vel_snd_arr[i]) - DensityFlux(den_mid[i-1],vel_mid[i-1],vel_snd_arr[i]) )
-							+  dt * DensitySource(den[i],vel[i],vel_snd_arr[i]);
+							+  dt * DensitySource(den_old,vel_old,vel_snd_arr[i]);
 			vel[i] = vel[i] - (dt/dx) * ( VelocityFlux(den_mid[i],vel_mid[i],grad_vel_mid[i],vel_snd_arr[i]) - VelocityFlux(den_mid[i-1],vel_mid[i-1],grad_vel_mid[i-1],vel_snd_arr[i]) )
-							+  dt * VelocitySource(den[i],vel[i],vel_snd_arr[i]);
+							+  dt * VelocitySource(den_old,vel_old,vel_snd_arr[i]);
 			cur[i] = vel[i]*den[i];
 		}
 } 
@@ -209,6 +211,9 @@ void GrapheneFluid1D::SetVelFer(float x){ vel_fer=x; }
 float GrapheneFluid1D::GetVelFer(){ return vel_fer; }
 void GrapheneFluid1D::SetColFreq(float x){ col_freq=x; }
 float GrapheneFluid1D::GetColFreq(){ return col_freq; }
+
+
+
 
 void GrapheneFluid1D::WriteAtributes(){
 	const FloatType      hdf5_float(PredType::NATIVE_FLOAT);
@@ -248,6 +253,9 @@ void GrapheneFluid1D::WriteAtributes(){
 	atr_total_time.close();
 	atr_num_space_points.close();
 }
+
+
+
 
 void GrapheneFluid1D::CFLCondition(){
 	dx = leng / ( float ) ( Nx - 1 );	

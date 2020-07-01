@@ -5,11 +5,12 @@
 using namespace std;
 using namespace H5;
 
+
 //REVER A NECESSIDADES DESTAS FUNCOES 
 void ConvolveGauss(int type, float M, float t, float * in, float * out, int size);
 float GaussKernel(int position , float t); //
 float GaussKernelDerivative(int position , float t); //
-void RecordLogFile(float vel_snd, float vel_fer, float col_freq, float dt, float dx, float Tmax);
+void RecordLogFile(float vel_snd, float vel_fer, float col_freq, float dt, float dx,float dy, float Tmax);
 
 float SignalAverage(int N, float dt, float * f);
 float Integral1D(int N, float ds, float * f);
