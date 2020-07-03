@@ -30,7 +30,7 @@ const IntType        hdf5_int(PredType::NATIVE_INT);
 
 
 int main(int argc, char **argv){
-    float T_max=1.5;
+    float T_max=6;
 	int NpointsX = 201;
 	int NpointsY = 201;
 	int Npoints = NpointsX*NpointsY;
@@ -60,7 +60,7 @@ int main(int argc, char **argv){
 	graph.SetSound();
 	//graph.SetSimulationTime();
 	//float T_max=graph.GetTmax();
-	graph.SetTmax(1.5);
+	graph.SetTmax(6.0);
 	/*................................................................*/
 
 	/*.........Output files and streams...............................*/
@@ -89,15 +89,19 @@ int main(int argc, char **argv){
 	while(t<=T_max && isfinite(graph.velX[Npoints/2])) // throw exception para nan / inf 
 //	while(time_step<=10000 && isfinite(graph.velX[Npoints/2])) // throw exception para nan / inf 
 	{	
+
 		++time_step;
 		t += dt;
+		
 		graph.Richtmyer();
+//		graph.MagneticSource();
 		graph.MassFluxToVelocity();
 		// Impose boundary conditions
 		BC.X(graph);
 		BC.YFree(graph);		
 		// Applying average filters for smoothing 	
 		//graph.Smooth(2);
+
 		
 		if(data_save_mode && time_step % snapshot_step  == 0 ){
 		//Record full data
@@ -117,6 +121,10 @@ int main(int argc, char **argv){
 			dataset_velY.close();	
 		}
 		graph.WriteFluidFile(t);
+		
+		
+	
+		
 	}
 	
 	

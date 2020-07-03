@@ -171,7 +171,7 @@ void Fluid2D::Richtmyer(){
 		float n_N, n_S ,n_E ,n_W, px_N, px_S, px_E, px_W, py_N, py_S, py_E, py_W; 
 		//k=i+j*Nx
 		for(int k=0; k<=Nx*Ny-Nx-2; k++){
-			if(k%Nx<=Nx-2){
+//			if(k%Nx<=Nx-2){
 				NE=k+1+Nx;
 				NW=k+Nx;
 				SE=k+1;
@@ -213,10 +213,10 @@ void Fluid2D::Richtmyer(){
 								-0.5*(dt/dy)*(
 									MassFluxYFluxY(n_N, px_N, py_N,vel_snd)-
 									MassFluxYFluxY(n_S, px_S, py_S,vel_snd));
-			}						
+	//		}						
 		}
-		for(int k=0; k<=Nx*Ny-Nx-2; k++){
-			if(k%Nx<=Nx-2){				
+		for(int k=1+Nx; k<=Nx*Ny-Nx-2; k++){
+			if( k%Nx<Nx-1 && k%Nx!=0){				
 				
 				NE=k;
 				NW=k-1;
@@ -417,6 +417,8 @@ float  GrapheneFluid2D::MassFluxYFluxY(float n,float flxX, float flxY, float S){
 }
 
 
+
+
 // Pedro: para ja nao vamos incluir sources 
 float  GrapheneFluid2D::DensitySource(float n,float flxX, float flxY, float S){
 	float Q1 =0;
@@ -430,6 +432,22 @@ float  GrapheneFluid2D::MassFluxYSource(float n,float flxX, float flxY, float S)
 	float Q3 =0;
 	return Q3;
 }	
+
+
+void GrapheneFluid2D::MagneticSource(){
+	float px0,py0,sqrtn0;
+	float Wc=10.0;
+	for(int k=1+Nx; k<=Nx*Ny-Nx-2; k++){
+		if(k%Nx<=Nx-2){	
+			sqrtn0=sqrt(den[k]);
+			px0=flxX[k];
+			py0=flxY[k];
+			flxX[k]=px0*cos(Wc*dt/sqrtn0)-py0*sin(Wc*dt/sqrtn0); 
+			flxY[k]=px0*sin(Wc*dt/sqrtn0)+py0*cos(Wc*dt/sqrtn0);
+		}
+	}		
+}
+
 
 void GrapheneFluid2D::WriteAtributes(){
 	const FloatType      hdf5_float(PredType::NATIVE_FLOAT);

@@ -1,5 +1,5 @@
 # TETHYS - *Two-dimensional Emitter of THz, Hydrodynamic Simulation.*
-## Version 2.0.3
+## Version 2.1.0
 [![CodeFactor](https://www.codefactor.io/repository/github/pcosme/hydrodynamic-simulation/badge?s=00232ac4455fd1f2e77fbc58fe3823f751721249)](https://www.codefactor.io/repository/github/pcosme/hydrodynamic-simulation)
 [![CodeStatus](https://www.code-inspector.com/project/1694/status/svg)](https://www.code-inspector.com/project/1694/status/svg)
 [![CodeScore](https://www.code-inspector.com/project/1694/score/svg)](https://www.code-inspector.com/project/1694/score/svg)
@@ -61,7 +61,7 @@ Standard form of numeric *major.minor.patch* starting with the initial commit 1.
   <br>&emsp;2.0.1 New class hierarchy on 2D algorithms. New organization of header files
   <br>&emsp;2.0.2 Boundary conditions implemented as a separate class
   <br>&emsp;2.0.3 Linear _for_ loops
-
+  <br>&emsp;2.1.0 Magnetic Field inclusion with _Godunov Splitting_ 
 ### Internal syntax
 
 | Type            | Style                                 | E.g.              |

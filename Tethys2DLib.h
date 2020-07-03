@@ -31,7 +31,7 @@ class Fluid2D : public TETHYSBase
 		float * flxY ;
 		float * curX ;
 		float * curY ;
-				explicit Fluid2D(int sizeNx, int sizeNy,float VELSND, float VISCO);
+		explicit Fluid2D(int sizeNx, int sizeNy,float VELSND, float VISCO);
 		~Fluid2D();
 		void SetVelSnd(float x);
 		void SetSound();	
@@ -96,6 +96,8 @@ class GrapheneFluid2D : public Fluid2D{
 		float DensitySource(float n, float flxX, float flxY, float S) override;
 		float MassFluxXSource(float n, float flxX, float flxY, float S)  override;
 		float MassFluxYSource(float n, float flxX, float flxY, float S) override;
+		
+		void MagneticSource();
 		
 		void WriteAtributes();
 };
