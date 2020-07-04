@@ -101,7 +101,7 @@ void Fluid1D::SetSimulationTime(){
 }
 		
 void Fluid1D::SetSound(){
-	for(int i = 0; i<Nx  ;i++){
+	for(int i = 0; i<Nx-1  ;i++){
 		vel_snd_arr[i]=SoundVelocityAnisotropy(i,dx,vel_snd);
 	}
 }
@@ -143,19 +143,15 @@ data_preview <<t<<"\t"<< den_cor[Nx-1] <<"\t"<< vel_cor[Nx-1] <<"\t"<< den_cor[0
 
 void Fluid1D::Richtmyer(){
 		//
-		//  Calculating the velocity gradient 
+		//  Calculating the velocity gradient at k time
 		//
-		for ( int i = 1; i < Nx-1 ; i++ )
+		for ( int i = 1; i <= Nx-2 ; i++ )
 		{
 			grad_vel[i] = (-0.5*vel[i-1]+0.5*vel[i+1])/dx;
-			if( i != Nx-1){
-			grad_vel_mid[i] =(-0.5*vel_mid[i-1]+0.5*vel_mid[i+1])/dx;
-			}
 		}
 		grad_vel[0] = (-1.5*vel[0]+2.0*vel[1]-0.5*vel[2])/dx;;
-		grad_vel_mid[0] = (-1.5*vel_mid[0]+2.0*vel_mid[1]-0.5*vel_mid[2])/dx;
 		grad_vel[Nx-1] =  ( 0.5*vel[Nx-1-2]-2.0*vel[Nx-1-1]+1.5*vel[Nx-1])/dx;
-		grad_vel_mid[(Nx-1)-1] = ( 0.5*vel[(Nx-1)-1-2]-2.0*vel[(Nx-1)-1-1]+1.5*vel[(Nx-1)-1])/dx;
+
     	//
 		//  Half step calculate density and velocity at time k+0.5 at the spatial midpoints
 		//
@@ -168,6 +164,15 @@ void Fluid1D::Richtmyer(){
 				- ( 0.5*dt/dx ) * ( VelocityFlux(den[i+1],vel[i+1],grad_vel[i+1],vel_snd_arr[i]) - VelocityFlux(den[i],vel[i],grad_vel[i],vel_snd_arr[i]) ) 
 				+ ( 0.5*dt    ) * VelocitySource(0.5*(den[i]+den[i+1]),0.5*(vel[i]+vel[i+1]),vel_snd_arr[i]) ;
 		}
+        //
+        //  Calculating the velocity gradient at k+1/2 time
+        //
+        for ( int i = 1; i <= Nx-3 ; i++ )
+        {
+            grad_vel_mid[i] =(-0.5*vel_mid[i-1]+0.5*vel_mid[i+1])/dx;
+        }
+        grad_vel_mid[0] = (-1.5*vel_mid[0]+2.0*vel_mid[1]-0.5*vel_mid[2])/dx;
+        grad_vel_mid[(Nx-1)-1] = ( 0.5*vel[(Nx-1)-3]-2.0*vel[(Nx-1)-2]+1.5*vel[(Nx-1)-1])/dx;
 		//
 		// Remaining step 
 		//

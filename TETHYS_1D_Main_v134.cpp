@@ -75,7 +75,7 @@ int main(int argc, char **argv){
 	////////////////////////////////////////////////////////////////////
 	int time_step=0;
 	int snapshot_per_Period = 10;   
-	int points_per_Period = (2.0*MAT_PI/RealFreq(graph.GetVelSnd(), graph.GetVelFer(), graph.GetColFreq(),1))/dt;
+	int points_per_Period = (2*MAT_PI/RealFreq(graph.GetVelSnd(), graph.GetVelFer(), graph.GetColFreq(),1))/dt;
 	int snapshot_step = points_per_Period/snapshot_per_Period; 
 
 	cout << "\033[1;7;5;33m Program Running \033[0m"<<endl;
