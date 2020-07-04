@@ -39,6 +39,7 @@ class TETHYSBase {
 		TETHYSBase(int sizeNX,int sizeNY,int dimensions); // acho que pelo menos para já nao vai precisar de construtor ou entao ponho o banner mesmo no constrturos 
 //		~TETHYSBase();	
 
+
 		H5File* hdf5file ; // se tirar o namespace nao esquecer usar o H5::
 		Group* grp_dat ;
 		Group* grp_den ;
@@ -56,8 +57,10 @@ class TETHYSBase {
 		
 		std::string GetInfix();
 		void CreateHDF5File();
-		void BannerDisplay(void);
+		void BannerDisplay();
 		void WellcomeScreen(float vel_snd, float vel_fer,float col_freq,float viscosity, float dt, float dx, float Tmax);
+		
+		
 };  
 
 
