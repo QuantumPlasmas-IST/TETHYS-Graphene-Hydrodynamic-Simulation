@@ -170,12 +170,16 @@ void Fluid2D::Richtmyer(){
 		int NE,NW,SE,SW;
 		float n_N, n_S ,n_E ,n_W, px_N, px_S, px_E, px_W, py_N, py_S, py_E, py_W; 
 		//k=i+j*Nx
-		for(int k=0; k<=Nx*Ny-Nx-2; k++){
-//			if(k%Nx<=Nx-2){
-				NE=k+1+Nx;
-				NW=k+Nx;
-				SE=k+1;
-				SW=k;
+		for(int ks=0; ks<=Nx*Ny-Nx-Ny; ks++){ //correr todos os pontos da grelha secundaria de den_mid
+            div_t divresult;
+            divresult = div (ks,Nx-1);
+            int j=divresult.quot;
+            int i=divresult.rem;
+
+				NE=i+1+(j+1)*Nx; //mal  ->i+1,j+1 Prin  kPrin = i+j*Nx
+				NW=i+(j+1)*Nx;   //mal  ->i,j+1   Prin
+				SE=i+1+j*Nx;    //mal  ->i+1,j   Prin
+				SW=i+j*Nx;      //mal  ->i,j     Prin
 		
 				n_N = 0.5*(den[NE]+den[NW]); 
 				n_S = 0.5*(den[SE]+den[SW]); 
@@ -192,21 +196,21 @@ void Fluid2D::Richtmyer(){
 				py_E = 0.5*(flxY[NE]+flxY[SE]); 
 				py_W = 0.5*(flxY[NW]+flxY[SW]); 
 				
-				den_mid[k] = 0.25*(den[SW] + den[SE] + den[NW] + den[NE]) // How shall we include vel_snd_arr ?
+				den_mid[ks] = 0.25*(den[SW] + den[SE] + den[NW] + den[NE]) // How shall we include vel_snd_arr ?
 								-0.5*(dt/dx)*(
 									DensityFluxX(n_E, px_E, py_E,vel_snd)-
 									DensityFluxX(n_W, px_W, py_W,vel_snd))
 								-0.5*(dt/dy)*(
 									DensityFluxY(n_N, px_N, py_N,vel_snd)-
 									DensityFluxY(n_S, px_S, py_S,vel_snd));
-				flxX_mid[k] = 0.25*(flxX[SW] + flxX[SE] + flxX[NW] + flxX[NE])
+				flxX_mid[ks] = 0.25*(flxX[SW] + flxX[SE] + flxX[NW] + flxX[NE])
 								-0.5*(dt/dx)*(
 									MassFluxXFluxX(n_E, px_E, py_E,vel_snd)-
 									MassFluxXFluxX(n_W, px_W, py_W,vel_snd))
 								-0.5*(dt/dy)*(
 									MassFluxXFluxY(n_N, px_N, py_N,vel_snd)-
 									MassFluxXFluxY(n_S, px_S, py_S,vel_snd));
-				flxY_mid[k] = 0.25*(flxY[SW] + flxY[SE] + flxY[NW] + flxY[NE])
+				flxY_mid[ks] = 0.25*(flxY[SW] + flxY[SE] + flxY[NW] + flxY[NE])
 								-0.5*(dt/dx)*(
 									MassFluxYFluxX(n_E, px_E, py_E,vel_snd)-
 									MassFluxYFluxX(n_W, px_W, py_W,vel_snd))
@@ -215,13 +219,19 @@ void Fluid2D::Richtmyer(){
 									MassFluxYFluxY(n_S, px_S, py_S,vel_snd));
 	//		}						
 		}
-		for(int k=1+Nx; k<=Nx*Ny-Nx-2; k++){
-			if( k%Nx<Nx-1 && k%Nx!=0){				
+		for(int kp=1+Nx; kp<=Nx*Ny-Nx-2; kp++){ //correr a grelha principal evitando as fronteiras
+            div_t divresult;
+            divresult = div (kp,Nx);
+            int j=divresult.quot;
+            int i=divresult.rem;
+
+
+			if( kp%Nx!=Nx-1 && kp%Nx!=0){
 				
-				NE=k;
-				NW=k-1;
-				SE=k-Nx;
-				SW=k-1-Nx;
+				NE=i+j*(Nx-1);     //mal  ->i,j Sec  kSec = i+j*(Nx-1)
+				NW=i-1+j*(Nx-1);   //mal  ->i-1,j Sec
+				SE=i+(j-1)*(Nx-1);  //mal  ->i,j-1 Sec
+				SW=i-1+(j-1)*(Nx-1); //mal ->i-1,j-1 Sec
 				
 				n_N = 0.5*(den_mid[NE]+den_mid[NW]); 
 				n_S = 0.5*(den_mid[SE]+den_mid[SW]); 
@@ -238,21 +248,21 @@ void Fluid2D::Richtmyer(){
 				py_E = 0.5*(flxY_mid[NE]+flxY_mid[SE]); 
 				py_W = 0.5*(flxY_mid[NW]+flxY_mid[SW]); 
 								
-				den[k] = den[k]
+				den[kp] = den[kp]
 								-(dt/dx)*(
 									DensityFluxX(n_E, px_E, py_E,vel_snd)-
 									DensityFluxX(n_W, px_W, py_W,vel_snd))
 								-(dt/dy)*(
 									DensityFluxY(n_N, px_N, py_N,vel_snd)-
 									DensityFluxY(n_S, px_S, py_S,vel_snd));
-				flxX[k] = flxX[k]
+				flxX[kp] = flxX[kp]
 								-(dt/dx)*(
 									MassFluxXFluxX(n_E, px_E, py_E,vel_snd)-
 									MassFluxXFluxX(n_W, px_W, py_W,vel_snd))
 								-(dt/dy)*(
 									MassFluxXFluxY(n_N, px_N, py_N,vel_snd)-
 									MassFluxXFluxY(n_S, px_S, py_S,vel_snd));
-				flxY[k] = flxY[k]
+				flxY[kp] = flxY[kp]
 								-(dt/dx)*(
 									MassFluxYFluxX(n_E, px_E, py_E,vel_snd)-
 									MassFluxYFluxX(n_W, px_W, py_W,vel_snd))
@@ -437,13 +447,13 @@ float  GrapheneFluid2D::MassFluxYSource(float n,float flxX, float flxY, float S)
 void GrapheneFluid2D::MagneticSource(){
 	float px0,py0,sqrtn0;
 	float Wc=10.0;
-	for(int k=1+Nx; k<=Nx*Ny-Nx-2; k++){
-		if(k%Nx<=Nx-2){	
-			sqrtn0=sqrt(den[k]);
-			px0=flxX[k];
-			py0=flxY[k];
-			flxX[k]=px0*cos(Wc*dt/sqrtn0)-py0*sin(Wc*dt/sqrtn0); 
-			flxY[k]=px0*sin(Wc*dt/sqrtn0)+py0*cos(Wc*dt/sqrtn0);
+    for(int kp=1+Nx; kp<=Nx*Ny-Nx-2; kp++){ //correr a grelha principal evitando as fronteiras
+        if( kp%Nx!=Nx-1 && kp%Nx!=0){
+			sqrtn0=sqrt(den[kp]);
+			px0=flxX[kp];
+			py0=flxY[kp];
+			flxX[kp]=px0*cos(Wc*dt/sqrtn0)-py0*sin(Wc*dt/sqrtn0);
+			flxY[kp]=px0*sin(Wc*dt/sqrtn0)+py0*cos(Wc*dt/sqrtn0);
 		}
 	}		
 }

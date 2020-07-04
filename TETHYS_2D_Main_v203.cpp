@@ -86,8 +86,8 @@ int main(int argc, char **argv){
 	int snapshot_step = points_per_Period/snapshot_per_Period; 
 
 	
-	while(t<=T_max && isfinite(graph.velX[Npoints/2])) // throw exception para nan / inf 
-//	while(time_step<=10000 && isfinite(graph.velX[Npoints/2])) // throw exception para nan / inf 
+	//while(t<=T_max && isfinite(graph.velX[Npoints/2])) // throw exception para nan / inf
+	while(time_step<=2000 && isfinite(graph.velX[Npoints/2])) // throw exception para nan / inf
 	{	
 
 		++time_step;
