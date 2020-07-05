@@ -45,7 +45,7 @@ class Fluid2D : public TETHYSBase
 		float GetDt();
 		void SetDt(float x);
 
-		void SetSimulationTime();
+    virtual void SetSimulationTime();
 
 		void InitialCondRand();
 		void InitialCondTEST();
@@ -84,7 +84,7 @@ class GrapheneFluid2D : public Fluid2D{
 		float GetColFreq();
 		void CFLCondition() override;
 	    
-	    void SetSimulationTime();
+	    void SetSimulationTime() override ;
 	    
 	    void MassFluxToVelocity() override;	    
 		float DensityFluxX(float n, float flxX, float flxY, float S) override;

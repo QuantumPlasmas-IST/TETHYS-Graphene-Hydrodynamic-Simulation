@@ -149,7 +149,7 @@ void Fluid1D::Richtmyer(){
 		{
 			grad_vel[i] = (-0.5*vel[i-1]+0.5*vel[i+1])/dx;
 		}
-		grad_vel[0] = (-1.5*vel[0]+2.0*vel[1]-0.5*vel[2])/dx;;
+		grad_vel[0] = (-1.5*vel[0]+2.0*vel[1]-0.5*vel[2])/dx;
 		grad_vel[Nx-1] =  ( 0.5*vel[Nx-1-2]-2.0*vel[Nx-1-1]+1.5*vel[Nx-1])/dx;
 
     	//
@@ -207,7 +207,7 @@ float GrapheneFluid1D::DensitySource(float n,float v,float S){
 	return Q1;				
 }
 float GrapheneFluid1D::VelocitySource(float n,float v,float S){
-	float Q2=0.0;
+	float Q2;
 	Q2=-1.0*col_freq*(v-1);
 	return Q2;			
 }

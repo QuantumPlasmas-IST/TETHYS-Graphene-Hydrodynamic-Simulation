@@ -30,7 +30,7 @@ void AverageFilter(float * vec_in, float * vec_out, int size , int width );
 class TETHYSBase {
 	protected:
 		int   Nx ;                    // dataset dimensions
-		int   Ny ;           
+		int   Ny ;
 		int   RANK;
 		std::string file_infix = "BaseFluid1D" ;
 		float Tmax=10;

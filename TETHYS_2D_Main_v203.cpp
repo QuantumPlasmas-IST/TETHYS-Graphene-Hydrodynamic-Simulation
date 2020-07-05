@@ -87,14 +87,14 @@ int main(int argc, char **argv){
 
 	
 	//while(t<=T_max && isfinite(graph.velX[Npoints/2])) // throw exception para nan / inf
-	while(time_step<=2000 && isfinite(graph.velX[Npoints/2])) // throw exception para nan / inf
+	while(time_step<=200 && isfinite(graph.velX[Npoints/2])) // throw exception para nan / inf
 	{	
 
 		++time_step;
 		t += dt;
 		
 		graph.Richtmyer();
-//		graph.MagneticSource();
+		//graph.MagneticSource();
 		graph.MassFluxToVelocity();
 		// Impose boundary conditions
 		BC.X(graph);

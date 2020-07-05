@@ -1,5 +1,5 @@
 CC = g++
-CFLAGS = -Wall -Wextra -Wno-unused-parameter -O2 
+CFLAGS = -Wall -Wextra -Wno-unused-parameter -O2
 FFTLIBS  = -lfftw3 
 CLIBS  = -lm 
 LIBS        = -lsz -lz -lm
