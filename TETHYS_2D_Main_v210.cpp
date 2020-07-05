@@ -95,7 +95,8 @@ int main(int argc, char **argv){
 		
 		graph.Richtmyer();
 		//graph.MagneticSource();
-		graph.MassFluxToVelocity();
+        graph.MassFluxToVelocity();
+
 		// Impose boundary conditions
 		BC.X(graph);
 		BC.YFree(graph);		
@@ -105,6 +106,7 @@ int main(int argc, char **argv){
 		
 		if(data_save_mode && time_step % snapshot_step  == 0 ){
 		//Record full data
+        //  graph.MassFluxToVelocity(); if placed here the profiling percentage drops from 7.7% to <1%
 			string str_time = to_string(time_step/snapshot_step );
 			string name_dataset = "snapshot_"+str_time;
 			

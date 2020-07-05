@@ -122,53 +122,53 @@ void Fluid2D::MassFluxToVelocity(){
 	}
 }
 
-void Fluid2D::DimensionalSplittingMethod(){
-// x-sweeps runing all lines from 0<y<W i.e. excluding the boundaries
-	for(int j=1;j<Ny-1;j++){
-		//  Half step calculate density and velocity at time k+0.5 at the spatial midpoints
-		for ( int i = 0; i < Nx - 1; i++ )
-		{
-			den_mid[i+j*Nx] = 0.5*( den[i+j*Nx] + den[i+1+j*Nx] )
-				- ( 0.5*dt/dx ) * ( DensityFluxX(den[i+1+j*Nx],flxX[i+1+j*Nx],flxY[i+1+j*Nx],vel_snd) - DensityFluxX(den[i+j*Nx],flxX[i+j*Nx],flxY[i+j*Nx],vel_snd) );
-			flxX_mid[i+j*Nx] = 0.5*( flxX[i+j*Nx] + flxX[i+1+j*Nx] )
-				- ( 0.5*dt/dx ) * ( MassFluxXFluxX(den[i+1+j*Nx],flxX[i+1+j*Nx],flxY[i+1+j*Nx],vel_snd) - MassFluxXFluxX(den[i+j*Nx],flxX[i+j*Nx],flxY[i+j*Nx],vel_snd) );
-			flxY_mid[i+j*Nx] = 0.5*( flxY[i+j*Nx] + flxY[i+1+j*Nx] )
-				- ( 0.5*dt/dx ) * ( MassFluxYFluxX(den[i+1+j*Nx],flxX[i+1+j*Nx],flxY[i+1+j*Nx],vel_snd) - MassFluxYFluxX(den[i+j*Nx],flxX[i+j*Nx],flxY[i+j*Nx],vel_snd) );	
-		}
-		// Remaining step 
-		for ( int i = 1; i < Nx - 1; i++ )
-		{
-			den[i+j*Nx] =  den[i+j*Nx]  - (dt/dx) * ( DensityFluxX(den_mid[i+j*Nx],flxX_mid[i+j*Nx],flxY_mid[i+j*Nx],vel_snd) - DensityFluxX(den_mid[i-1+j*Nx],flxX_mid[i-1+j*Nx],flxY_mid[i-1+j*Nx],vel_snd) );
-			flxX[i+j*Nx] = flxX[i+j*Nx] - (dt/dx) * ( MassFluxXFluxX(den_mid[i+j*Nx],flxX_mid[i+j*Nx],flxY_mid[i+j*Nx],vel_snd) - MassFluxXFluxX(den_mid[i-1+j*Nx],flxX_mid[i-1+j*Nx],flxY_mid[i-1+j*Nx],vel_snd) );
-			flxY[i+j*Nx] = flxY[i+j*Nx] - (dt/dx) * ( MassFluxYFluxX(den_mid[i+j*Nx],flxX_mid[i+j*Nx],flxY_mid[i+j*Nx],vel_snd) - MassFluxYFluxX(den_mid[i-1+j*Nx],flxX_mid[i-1+j*Nx],flxY_mid[i-1+j*Nx],vel_snd) );
-		}
-	}
-// y-sweeps	
-	for(int i=1;i<Nx-1;i++){
-		//  Half step calculate density and velocity at time k+0.5 at the spatial midpoints
-		for ( int j = 0; j < Ny - 1; j++ )
-		{
-			den_mid[i+j*Nx] = 0.5*( den[i+j*Nx] + den[i+1+j*Nx] )
-				- ( 0.5*dt/dx ) * ( DensityFluxY(den[i+1+j*Nx],flxX[i+1+j*Nx],flxY[i+1+j*Nx],vel_snd) - DensityFluxY(den[i+j*Nx],flxX[i+j*Nx],flxY[i+j*Nx],vel_snd) );
-			flxX_mid[i+j*Nx] = 0.5*( flxX[i+j*Nx] + flxX[i+1+j*Nx] )
-				- ( 0.5*dt/dx ) * ( MassFluxXFluxY(den[i+1+j*Nx],flxX[i+1+j*Nx],flxY[i+1+j*Nx],vel_snd) - MassFluxXFluxY(den[i+j*Nx],flxX[i+j*Nx],flxY[i+j*Nx],vel_snd) );
-			flxY_mid[i+j*Nx] = 0.5*( flxY[i+j*Nx] + flxY[i+1+j*Nx] )
-				- ( 0.5*dt/dx ) * ( MassFluxYFluxY(den[i+1+j*Nx],flxX[i+1+j*Nx],flxY[i+1+j*Nx],vel_snd) - MassFluxYFluxY(den[i+j*Nx],flxX[i+j*Nx],flxY[i+j*Nx],vel_snd) );	
-		}
-		// Remaining step 
-		for ( int j = 1; j < Ny - 1; j++ )
-		{
-			den[i+j*Nx] =  den[i+j*Nx]  - (dt/dx) * ( DensityFluxY(den_mid[i+j*Nx],flxX_mid[i+j*Nx],flxY_mid[i+j*Nx],vel_snd) - DensityFluxY(den_mid[i-1+j*Nx],flxX_mid[i-1+j*Nx],flxY_mid[i-1+j*Nx],vel_snd) );
-			flxX[i+j*Nx] = flxX[i+j*Nx] - (dt/dx) * ( MassFluxXFluxY(den_mid[i+j*Nx],flxX_mid[i+j*Nx],flxY_mid[i+j*Nx],vel_snd) - MassFluxXFluxY(den_mid[i-1+j*Nx],flxX_mid[i-1+j*Nx],flxY_mid[i-1+j*Nx],vel_snd) );
-			flxY[i+j*Nx] = flxY[i+j*Nx] - (dt/dx) * ( MassFluxYFluxY(den_mid[i+j*Nx],flxX_mid[i+j*Nx],flxY_mid[i+j*Nx],vel_snd) - MassFluxYFluxY(den_mid[i-1+j*Nx],flxX_mid[i-1+j*Nx],flxY_mid[i-1+j*Nx],vel_snd) );
-		}		
-	}
-}
+//void Fluid2D::DimensionalSplittingMethod(){
+//// x-sweeps runing all lines from 0<y<W i.e. excluding the boundaries
+//	for(int j=1;j<Ny-1;j++){
+//		//  Half step calculate density and velocity at time k+0.5 at the spatial midpoints
+//		for ( int i = 0; i < Nx - 1; i++ )
+//		{
+//			den_mid[i+j*Nx] = 0.5*( den[i+j*Nx] + den[i+1+j*Nx] )
+//				- ( 0.5*dt/dx ) * ( DensityFluxX(den[i+1+j*Nx],flxX[i+1+j*Nx],flxY[i+1+j*Nx],vel_snd) - DensityFluxX(den[i+j*Nx],flxX[i+j*Nx],flxY[i+j*Nx],vel_snd) );
+//			flxX_mid[i+j*Nx] = 0.5*( flxX[i+j*Nx] + flxX[i+1+j*Nx] )
+//				- ( 0.5*dt/dx ) * ( MassFluxXFluxX(den[i+1+j*Nx],flxX[i+1+j*Nx],flxY[i+1+j*Nx],vel_snd) - MassFluxXFluxX(den[i+j*Nx],flxX[i+j*Nx],flxY[i+j*Nx],vel_snd) );
+//			flxY_mid[i+j*Nx] = 0.5*( flxY[i+j*Nx] + flxY[i+1+j*Nx] )
+//				- ( 0.5*dt/dx ) * ( MassFluxYFluxX(den[i+1+j*Nx],flxX[i+1+j*Nx],flxY[i+1+j*Nx],vel_snd) - MassFluxYFluxX(den[i+j*Nx],flxX[i+j*Nx],flxY[i+j*Nx],vel_snd) );
+//		}
+//		// Remaining step
+//		for ( int i = 1; i < Nx - 1; i++ )
+//		{
+//			den[i+j*Nx] =  den[i+j*Nx]  - (dt/dx) * ( DensityFluxX(den_mid[i+j*Nx],flxX_mid[i+j*Nx],flxY_mid[i+j*Nx],vel_snd) - DensityFluxX(den_mid[i-1+j*Nx],flxX_mid[i-1+j*Nx],flxY_mid[i-1+j*Nx],vel_snd) );
+//			flxX[i+j*Nx] = flxX[i+j*Nx] - (dt/dx) * ( MassFluxXFluxX(den_mid[i+j*Nx],flxX_mid[i+j*Nx],flxY_mid[i+j*Nx],vel_snd) - MassFluxXFluxX(den_mid[i-1+j*Nx],flxX_mid[i-1+j*Nx],flxY_mid[i-1+j*Nx],vel_snd) );
+//			flxY[i+j*Nx] = flxY[i+j*Nx] - (dt/dx) * ( MassFluxYFluxX(den_mid[i+j*Nx],flxX_mid[i+j*Nx],flxY_mid[i+j*Nx],vel_snd) - MassFluxYFluxX(den_mid[i-1+j*Nx],flxX_mid[i-1+j*Nx],flxY_mid[i-1+j*Nx],vel_snd) );
+//		}
+//	}
+//// y-sweeps
+//	for(int i=1;i<Nx-1;i++){
+//		//  Half step calculate density and velocity at time k+0.5 at the spatial midpoints
+//		for ( int j = 0; j < Ny - 1; j++ )
+//		{
+//			den_mid[i+j*Nx] = 0.5*( den[i+j*Nx] + den[i+1+j*Nx] )
+//				- ( 0.5*dt/dx ) * ( DensityFluxY(den[i+1+j*Nx],flxX[i+1+j*Nx],flxY[i+1+j*Nx],vel_snd) - DensityFluxY(den[i+j*Nx],flxX[i+j*Nx],flxY[i+j*Nx],vel_snd) );
+//			flxX_mid[i+j*Nx] = 0.5*( flxX[i+j*Nx] + flxX[i+1+j*Nx] )
+//				- ( 0.5*dt/dx ) * ( MassFluxXFluxY(den[i+1+j*Nx],flxX[i+1+j*Nx],flxY[i+1+j*Nx],vel_snd) - MassFluxXFluxY(den[i+j*Nx],flxX[i+j*Nx],flxY[i+j*Nx],vel_snd) );
+//			flxY_mid[i+j*Nx] = 0.5*( flxY[i+j*Nx] + flxY[i+1+j*Nx] )
+//				- ( 0.5*dt/dx ) * ( MassFluxYFluxY(den[i+1+j*Nx],flxX[i+1+j*Nx],flxY[i+1+j*Nx],vel_snd) - MassFluxYFluxY(den[i+j*Nx],flxX[i+j*Nx],flxY[i+j*Nx],vel_snd) );
+//		}
+//		// Remaining step
+//		for ( int j = 1; j < Ny - 1; j++ )
+//		{
+//			den[i+j*Nx] =  den[i+j*Nx]  - (dt/dx) * ( DensityFluxY(den_mid[i+j*Nx],flxX_mid[i+j*Nx],flxY_mid[i+j*Nx],vel_snd) - DensityFluxY(den_mid[i-1+j*Nx],flxX_mid[i-1+j*Nx],flxY_mid[i-1+j*Nx],vel_snd) );
+//			flxX[i+j*Nx] = flxX[i+j*Nx] - (dt/dx) * ( MassFluxXFluxY(den_mid[i+j*Nx],flxX_mid[i+j*Nx],flxY_mid[i+j*Nx],vel_snd) - MassFluxXFluxY(den_mid[i-1+j*Nx],flxX_mid[i-1+j*Nx],flxY_mid[i-1+j*Nx],vel_snd) );
+//			flxY[i+j*Nx] = flxY[i+j*Nx] - (dt/dx) * ( MassFluxYFluxY(den_mid[i+j*Nx],flxX_mid[i+j*Nx],flxY_mid[i+j*Nx],vel_snd) - MassFluxYFluxY(den_mid[i-1+j*Nx],flxX_mid[i-1+j*Nx],flxY_mid[i-1+j*Nx],vel_snd) );
+//		}
+//	}
+//}
 
 
 void Fluid2D::Richtmyer(){
 		int NE,NW,SE,SW;
-		float n_N, n_S ,n_E ,n_W, px_N, px_S, px_E, px_W, py_N, py_S, py_E, py_W; 
+		float n_N, n_S ,n_E ,n_W, px_N, px_S, px_E, px_W, py_N, py_S, py_E, py_W,m_E,m_W,m_N,m_S;
 		//k=i+j*Nx
 		for(int ks=0; ks<=Nx*Ny-Nx-Ny; ks++){ //correr todos os pontos da grelha secundaria de den_mid
             div_t divresult;
@@ -195,28 +195,33 @@ void Fluid2D::Richtmyer(){
 				py_S = 0.5*(flxY[SE]+flxY[SW]); 
 				py_E = 0.5*(flxY[NE]+flxY[SE]); 
 				py_W = 0.5*(flxY[NW]+flxY[SW]); 
-				
+
+				//posso definir aqui a "massa" nos 4 ponto s cardeais
+				 m_E=pow(n_E,1.5); // e assim sucessivamente m_W m_N m_S que depois sao reutilizadeas nos 12 fluxos
+				 m_W=pow(n_W,1.5);
+                 m_N=pow(n_N,1.5);
+                 m_S=pow(n_S,1.5);
 				den_mid[ks] = 0.25*(den[SW] + den[SE] + den[NW] + den[NE]) // How shall we include vel_snd_arr ?
 								-0.5*(dt/dx)*(
-									DensityFluxX(n_E, px_E, py_E,vel_snd)-
-									DensityFluxX(n_W, px_W, py_W,vel_snd))
+									DensityFluxX(n_E, px_E, py_E,m_E,vel_snd)-
+									DensityFluxX(n_W, px_W, py_W,m_W,vel_snd))
 								-0.5*(dt/dy)*(
-									DensityFluxY(n_N, px_N, py_N,vel_snd)-
-									DensityFluxY(n_S, px_S, py_S,vel_snd));
+									DensityFluxY(n_N, px_N, py_N,m_N,vel_snd)-
+									DensityFluxY(n_S, px_S, py_S,m_S,vel_snd));
 				flxX_mid[ks] = 0.25*(flxX[SW] + flxX[SE] + flxX[NW] + flxX[NE])
 								-0.5*(dt/dx)*(
-									MassFluxXFluxX(n_E, px_E, py_E,vel_snd)-
-									MassFluxXFluxX(n_W, px_W, py_W,vel_snd))
+									MassFluxXFluxX(n_E, px_E, py_E,m_E,vel_snd)-
+									MassFluxXFluxX(n_W, px_W, py_W,m_W,vel_snd))
 								-0.5*(dt/dy)*(
-									MassFluxXFluxY(n_N, px_N, py_N,vel_snd)-
-									MassFluxXFluxY(n_S, px_S, py_S,vel_snd));
+									MassFluxXFluxY(n_N, px_N, py_N,m_N,vel_snd)-
+									MassFluxXFluxY(n_S, px_S, py_S,m_S,vel_snd));
 				flxY_mid[ks] = 0.25*(flxY[SW] + flxY[SE] + flxY[NW] + flxY[NE])
 								-0.5*(dt/dx)*(
-									MassFluxYFluxX(n_E, px_E, py_E,vel_snd)-
-									MassFluxYFluxX(n_W, px_W, py_W,vel_snd))
+									MassFluxYFluxX(n_E, px_E, py_E,m_E,vel_snd)-
+									MassFluxYFluxX(n_W, px_W, py_W,m_W,vel_snd))
 								-0.5*(dt/dy)*(
-									MassFluxYFluxY(n_N, px_N, py_N,vel_snd)-
-									MassFluxYFluxY(n_S, px_S, py_S,vel_snd));
+									MassFluxYFluxY(n_N, px_N, py_N,m_N,vel_snd)-
+									MassFluxYFluxY(n_S, px_S, py_S,m_S,vel_snd));
 	//		}						
 		}
 		for(int kp=1+Nx; kp<=Nx*Ny-Nx-2; kp++){ //correr a grelha principal evitando as fronteiras
@@ -246,29 +251,35 @@ void Fluid2D::Richtmyer(){
 				py_N = 0.5*(flxY_mid[NE]+flxY_mid[NW]); 
 				py_S = 0.5*(flxY_mid[SE]+flxY_mid[SW]); 
 				py_E = 0.5*(flxY_mid[NE]+flxY_mid[SE]); 
-				py_W = 0.5*(flxY_mid[NW]+flxY_mid[SW]); 
-								
+				py_W = 0.5*(flxY_mid[NW]+flxY_mid[SW]);
+
+                //posso definir aqui a "massa" nos 4 ponto s cardeais
+                 m_E=pow(n_E,1.5); // e assim sucessivamente m_W m_N m_S que depois sao reutilizadeas nos 12 fluxos
+                 m_W=pow(n_W,1.5);
+                 m_N=pow(n_N,1.5);
+                 m_S=pow(n_S,1.5);
+
 				den[kp] = den[kp]
 								-(dt/dx)*(
-									DensityFluxX(n_E, px_E, py_E,vel_snd)-
-									DensityFluxX(n_W, px_W, py_W,vel_snd))
+									DensityFluxX(n_E, px_E, py_E,m_E,vel_snd)-
+									DensityFluxX(n_W, px_W, py_W,m_W,vel_snd))
 								-(dt/dy)*(
-									DensityFluxY(n_N, px_N, py_N,vel_snd)-
-									DensityFluxY(n_S, px_S, py_S,vel_snd));
+									DensityFluxY(n_N, px_N, py_N,m_N,vel_snd)-
+									DensityFluxY(n_S, px_S, py_S,m_S,vel_snd));
 				flxX[kp] = flxX[kp]
 								-(dt/dx)*(
-									MassFluxXFluxX(n_E, px_E, py_E,vel_snd)-
-									MassFluxXFluxX(n_W, px_W, py_W,vel_snd))
+									MassFluxXFluxX(n_E, px_E, py_E,m_E,vel_snd)-
+									MassFluxXFluxX(n_W, px_W, py_W,m_W,vel_snd))
 								-(dt/dy)*(
-									MassFluxXFluxY(n_N, px_N, py_N,vel_snd)-
-									MassFluxXFluxY(n_S, px_S, py_S,vel_snd));
+									MassFluxXFluxY(n_N, px_N, py_N,m_N,vel_snd)-
+									MassFluxXFluxY(n_S, px_S, py_S,m_S,vel_snd));
 				flxY[kp] = flxY[kp]
 								-(dt/dx)*(
-									MassFluxYFluxX(n_E, px_E, py_E,vel_snd)-
-									MassFluxYFluxX(n_W, px_W, py_W,vel_snd))
+									MassFluxYFluxX(n_E, px_E, py_E,m_E,vel_snd)-
+									MassFluxYFluxX(n_W, px_W, py_W,m_W,vel_snd))
 								-(dt/dy)*(
-									MassFluxYFluxY(n_N, px_N, py_N,vel_snd)-
-									MassFluxYFluxY(n_S, px_S, py_S,vel_snd));
+									MassFluxYFluxY(n_N, px_N, py_N,m_N,vel_snd)-
+									MassFluxYFluxY(n_S, px_S, py_S,m_S,vel_snd));
 			}
 		}	
 	
@@ -284,12 +295,12 @@ void Fluid2D::CFLCondition(){
 
 
 
-float  Fluid2D::DensityFluxX(float n,float flxX, float flxY, float S){ 
+float  Fluid2D::DensityFluxX(float n,float flxX, float flxY,float mass, float S){
 	float f1;
 	f1 = flxX;
 	return f1;		
 }
-float  Fluid2D::DensityFluxY(float n,float flxX, float flxY, float S){ 
+float  Fluid2D::DensityFluxY(float n,float flxX, float flxY,float mass, float S){
 	float f1;
 	f1 = flxY;
 	return f1;		
@@ -298,22 +309,22 @@ float  Fluid2D::DensitySource(float n,float velX, float velY, float S){
 	float Q1 =0;
 	return Q1;
 }
-float  Fluid2D::MassFluxXFluxX(float n,float flxX, float flxY, float S){
+float  Fluid2D::MassFluxXFluxX(float n,float flxX, float flxY,float mass, float S){
 	float f2;
 	f2 = flxX*flxX/n +n; 
 	return f2;
 }
-float  Fluid2D::MassFluxXFluxY(float n,float flxX, float flxY, float S){
+float  Fluid2D::MassFluxXFluxY(float n,float flxX, float flxY,float mass, float S){
 	float f2; 
 	f2 = flxX*flxY/n;
 	return f2;
 }
-float  Fluid2D::MassFluxYFluxX(float n,float flxX, float flxY, float S){
+float  Fluid2D::MassFluxYFluxX(float n,float flxX, float flxY,float mass, float S){
 	float f3;
 	f3 = flxX*flxY/n;
 	return f3;
 }
-float  Fluid2D::MassFluxYFluxY(float n,float flxX, float flxY, float S){
+float  Fluid2D::MassFluxYFluxY(float n,float flxX, float flxY,float mass, float S){
 	float f3;
 	f3 = flxY*flxY/n + n;
 	return f3;
@@ -395,34 +406,35 @@ void GrapheneFluid2D::CFLCondition(){ // Eventual redefinition
 	dt = dx/lambda;				
 }	
 
-float  GrapheneFluid2D::DensityFluxX(float n,float flxX, float flxY, float S){ // Double Please Review this João 
+float  GrapheneFluid2D::DensityFluxX(float n,float flxX, float flxY,float mass, float S){ // Double Please Review this João
 	float f1;
 	f1 = flxX/sqrt(n);
 	return f1;		
 }
-float  GrapheneFluid2D::DensityFluxY(float n,float flxX, float flxY, float S){ 
+float  GrapheneFluid2D::DensityFluxY(float n,float flxX, float flxY,float mass, float S){
 	float f1;
 	f1 = flxY/sqrt(n);
 	return f1;		
 }
-float  GrapheneFluid2D::MassFluxXFluxX(float n,float flxX, float flxY, float S){
+// 27% of cpu usage of them 22.6% are int the pow function
+float  GrapheneFluid2D::MassFluxXFluxX(float n,float flxX, float flxY,float mass, float S){
 	float f2;
-	f2 = flxX*flxX*pow(n,-1.5) +vel_fer*vel_fer*pow(n,1.5)/3.0+0.5*S*S*n*n; 
+	f2 = flxX*flxX/mass +vel_fer*vel_fer*mass/3.0+0.5*S*S*n*n;
 	return f2;
 }
-float  GrapheneFluid2D::MassFluxXFluxY(float n,float flxX, float flxY, float S){
+float  GrapheneFluid2D::MassFluxXFluxY(float n,float flxX, float flxY,float mass, float S){
 	float f2; 
-	f2 = flxX*flxY*pow(n,-1.5);
+	f2 = flxX*flxY/mass;
 	return f2;
 }
-float  GrapheneFluid2D::MassFluxYFluxX(float n,float flxX, float flxY, float S){
+float  GrapheneFluid2D::MassFluxYFluxX(float n,float flxX, float flxY,float mass, float S){
 	float f3;
-	f3 = flxX*flxY*pow(n,-1.5);
+	f3 = flxX*flxY/mass;
 	return f3;
 }
-float  GrapheneFluid2D::MassFluxYFluxY(float n,float flxX, float flxY, float S){
+float  GrapheneFluid2D::MassFluxYFluxY(float n,float flxX, float flxY,float mass, float S){
 	float f3;
-	f3 = flxY*flxY*pow(n,-1.5) + vel_fer*vel_fer*pow(n,1.5)/3.0+0.5*S*S*n*n;
+	f3 = flxY*flxY/mass + vel_fer*vel_fer*mass/3.0+0.5*S*S*n*n;
 	return f3;
 }
 

@@ -50,15 +50,15 @@ class Fluid2D : public TETHYSBase
 		void InitialCondRand();
 		void InitialCondTEST();
 		void Richtmyer();	
-		void DimensionalSplittingMethod();	
+		//void DimensionalSplittingMethod();
 		virtual void CFLCondition();
 
-		virtual float DensityFluxX(float n, float velX, float velY, float S);
-		virtual float DensityFluxY(float n, float velX, float velY, float S);
-		virtual float MassFluxXFluxX(float n, float flxX, float flxY, float S);
-		virtual float MassFluxXFluxY(float n, float flxX, float flxY, float S);
-		virtual float MassFluxYFluxX(float n, float flxX, float flxY, float S);
-		virtual float MassFluxYFluxY(float n, float flxX, float flxY, float S);
+		virtual float DensityFluxX(float n, float velX, float velY,float mass, float S);
+		virtual float DensityFluxY(float n, float velX, float velY,float mass, float S);
+		virtual float MassFluxXFluxX(float n, float flxX, float flxY,float mass, float S);
+		virtual float MassFluxXFluxY(float n, float flxX, float flxY,float mass, float S);
+		virtual float MassFluxYFluxX(float n, float flxX, float flxY,float mass, float S);
+		virtual float MassFluxYFluxY(float n, float flxX, float flxY,float mass, float S);
 		virtual float DensitySource(float n, float flxX, float flxY, float S);
 		virtual float MassFluxXSource(float n, float flxX, float flxY, float S);
 		virtual float MassFluxYSource(float n, float flxX, float flxY, float S);
@@ -87,12 +87,12 @@ class GrapheneFluid2D : public Fluid2D{
 	    void SetSimulationTime() override ;
 	    
 	    void MassFluxToVelocity() override;	    
-		float DensityFluxX(float n, float flxX, float flxY, float S) override;
-		float DensityFluxY(float n, float flxX, float flxY, float S) override;
-		float MassFluxXFluxX(float n, float flxX, float flxY, float S) override;
-		float MassFluxXFluxY(float n, float flxX, float flxY, float S) override;
-		float MassFluxYFluxX(float n, float flxX, float flxY, float S) override;
-		float MassFluxYFluxY(float n, float flxX, float flxY, float S) override;
+		float DensityFluxX(float n, float flxX, float flxY,float mass, float S) override;
+		float DensityFluxY(float n, float flxX, float flxY,float mass, float S) override;
+		float MassFluxXFluxX(float n, float flxX, float flxY,float mass, float S) override;
+		float MassFluxXFluxY(float n, float flxX, float flxY,float mass, float S) override;
+		float MassFluxYFluxX(float n, float flxX, float flxY,float mass, float S) override;
+		float MassFluxYFluxY(float n, float flxX, float flxY,float mass, float S) override;
 		float DensitySource(float n, float flxX, float flxY, float S) override;
 		float MassFluxXSource(float n, float flxX, float flxY, float S)  override;
 		float MassFluxYSource(float n, float flxX, float flxY, float S) override;
