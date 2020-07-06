@@ -353,7 +353,7 @@ void Fluid2D::CreateFluidFile(){
 
 void Fluid2D::WriteFluidFile(float t){
 int j=Ny/2;
-data_preview <<t<<"\t"<< den[Nx-1+j*Nx] <<"\t"<< velX[Nx-1+j*Nx] <<"\t"<< den[0+j*Nx] <<"\t" << velX[0+j*Nx] <<"\n";
+data_preview <<t<<"\t"<< den[Nx-1+j*Nx] <<"\t"<< flxX[Nx-1+j*Nx] <<"\t"<< den[0+j*Nx] <<"\t" << flxX[0+j*Nx] <<"\n";
 }
 
 

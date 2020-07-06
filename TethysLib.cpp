@@ -127,13 +127,20 @@ void TETHYSBase::CloseHDF5File(){
 	 hdf5file->close();
 }
 
-//TETHYSBase::~TETHYSBase(){
-//	 grp_dat->close();
-//	 grp_den->close();
-//	 grp_velX->close();
-//	 grp_velY->close();
-//	 hdf5file->close();
-//}
+
+TETHYSBase::~TETHYSBase(){
+    delete grp_dat;
+    delete grp_den;
+    delete grp_velX;
+    delete grp_velY;
+    delete dataspace_den;
+    delete dataspace_velX;
+    if(Rank()==2){
+        delete dataspace_velY;
+    }
+    delete hdf5file;
+}
+
 
 
 

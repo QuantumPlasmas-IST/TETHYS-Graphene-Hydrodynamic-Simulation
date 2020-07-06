@@ -90,18 +90,17 @@ int main(int argc, char **argv){
 
 	
 	//while(t<=T_max && isfinite(graph.velX[Npoints/2])) // throw exception para nan / inf
-	while(time_step<=10 && isfinite(graph.velX[Npoints/2])) // throw exception para nan / inf
+	while(time_step<=1000 && isfinite(graph.velX[Npoints/2])) // throw exception para nan / inf
 	{	
 // TODO
 //  1) try to implement strang splittind instead of godunov splitting
-//  2) move the mass flux to velocity conversion only to the complete save
-//  3) accordingly to 2) the WriteFluidFile() should record flux instead of velocity
+
 		++time_step;
 		t += dt;
 		
 		graph.Richtmyer();
 		//graph.MagneticSource();
-        graph.MassFluxToVelocity();
+
 
 
 
@@ -114,7 +113,7 @@ int main(int argc, char **argv){
 		
 		if(data_save_mode && time_step % snapshot_step  == 0 ){
 		//Record full data
-        //  graph.MassFluxToVelocity(); if placed here the profiling percentage drops from 7.7% to <1%
+            graph.MassFluxToVelocity(); //if placed here the profiling percentage drops from 7.7% to <1%
 			string str_time = to_string(time_step/snapshot_step );
 			string name_dataset = "snapshot_"+str_time;
 			

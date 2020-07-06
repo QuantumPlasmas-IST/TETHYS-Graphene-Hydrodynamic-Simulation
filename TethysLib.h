@@ -37,7 +37,7 @@ class TETHYSBase {
 		
 	public:
 		TETHYSBase(int sizeNX,int sizeNY,int dimensions); // acho que pelo menos para já nao vai precisar de construtor ou entao ponho o banner mesmo no constrturos 
-		//~TETHYSBase();
+		~TETHYSBase();
 
 
 		H5File* hdf5file ; // se tirar o namespace nao esquecer usar o H5::
