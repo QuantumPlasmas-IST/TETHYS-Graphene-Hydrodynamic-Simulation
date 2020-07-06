@@ -138,28 +138,28 @@ void BoundaryCondition::Dirichlet::Density(GrapheneFluid2D& graphene, float L, f
 	}
 } 
 
-void BoundaryCondition::Dirichlet::VelocityX(GrapheneFluid2D& graphene, float L, float R, float T, float B){
+void BoundaryCondition::Dirichlet::MassFluxX(GrapheneFluid2D& graphene, float L, float R, float T, float B){
 	int Nx=graphene.SizeX();
 	int Ny=graphene.SizeY();
 	for (int j=0; j<Ny; j++){
-		graphene.velX[0+j*Nx] = L;
-		graphene.velX[Nx-1+j*Nx] = R;
+		graphene.flxX[0+j*Nx] = L;
+		graphene.flxX[Nx-1+j*Nx] = R;
 	}
 	for (int i=0; i<Nx; i++){
-		graphene.velX[i+(Ny-1)*Nx] = T;		
-		graphene.velX[i+0*Nx] = B;
+		graphene.flxX[i+(Ny-1)*Nx] = T;
+		graphene.flxX[i+0*Nx] = B;
 	}
 } 
-void BoundaryCondition::Dirichlet::VelocityY(GrapheneFluid2D& graphene, float L, float R, float T, float B){
+void BoundaryCondition::Dirichlet::MassFluxY(GrapheneFluid2D& graphene, float L, float R, float T, float B){
 	int Nx=graphene.SizeX();
 	int Ny=graphene.SizeY();
 	for (int j=0; j<Ny; j++){
-		graphene.velY[0+j*Nx] = L;
-		graphene.velY[Nx-1+j*Nx] = R;
+		graphene.flxY[0+j*Nx] = L;
+		graphene.flxY[Nx-1+j*Nx] = R;
 	}
 	for (int i=0; i<Nx; i++){
-		graphene.velY[i+(Ny-1)*Nx] = T;		
-		graphene.velY[i+0*Nx] = B;
+		graphene.flxY[i+(Ny-1)*Nx] = T;
+		graphene.flxY[i+0*Nx] = B;
 	}
 } 
 

@@ -33,8 +33,8 @@ class  BoundaryCondition::Dirichlet {
 	void Density(GrapheneFluid1D& graphene, float L, float R);
 	void Density(GrapheneFluid2D& graphene, float L, float R, float T, float B);
 	void VelocityX(GrapheneFluid1D& graphene, float L, float R);
-	void VelocityX(GrapheneFluid2D& graphene, float L, float R, float T, float B);
-	void VelocityY(GrapheneFluid2D& graphene, float L, float R, float T, float B);
+	void MassFluxX(GrapheneFluid2D& graphene, float L, float R, float T, float B);
+	void MassFluxY(GrapheneFluid2D& graphene, float L, float R, float T, float B);
 };
 
 #endif

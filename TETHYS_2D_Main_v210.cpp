@@ -31,8 +31,8 @@ const IntType        hdf5_int(PredType::NATIVE_INT);
 
 int main(int argc, char **argv){
     float T_max=6;
-	int NpointsX = 201;
-	int NpointsY = 201;
+	int NpointsX = 101;
+	int NpointsY = 101;
 	int Npoints = NpointsX*NpointsY;
 	
 	float t=0.0;
@@ -89,17 +89,18 @@ int main(int argc, char **argv){
 	int snapshot_step = points_per_Period/snapshot_per_Period; 
 
 	
-	//while(t<=T_max && isfinite(graph.velX[Npoints/2])) // throw exception para nan / inf
-	while(time_step<=1000 && isfinite(graph.velX[Npoints/2])) // throw exception para nan / inf
+	while(t<=T_max && isfinite(graph.velX[Npoints/2])) // throw exception para nan / inf
+	//while(time_step<=10000 && isfinite(graph.velX[Npoints/2])) // throw exception para nan / inf
 	{	
 // TODO
 //  1) try to implement strang splittind instead of godunov splitting
 
 		++time_step;
 		t += dt;
-		
+
+
 		graph.Richtmyer();
-		//graph.MagneticSource();
+		graph.MagneticSource();
 
 
 
