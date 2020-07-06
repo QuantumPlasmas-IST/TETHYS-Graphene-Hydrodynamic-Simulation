@@ -72,6 +72,8 @@ Fluid1D::~Fluid1D(){
 	delete [] vel_cor ;
 	delete [] cur_cor ;
 	delete [] vel_snd_arr ;
+    delete [] grad_vel ;
+    delete [] grad_vel_mid ;
 }
 
 float  Fluid1D::DensityFlux(float n,float v,float S){
@@ -81,7 +83,7 @@ float  Fluid1D::DensityFlux(float n,float v,float S){
 }
 float  Fluid1D::VelocityFlux(float n,float v,float dv,float S){
 	float f2;
-	f2 = 0.5*v*v + n - kin_vis*dv; 
+	f2 = 0.5f*v*v + n - kin_vis*dv;
 	return f2;
 }
 float  Fluid1D::DensitySource(float n,float v,float S){
@@ -93,11 +95,11 @@ float  Fluid1D::VelocitySource(float n,float v,float S){
 
 void Fluid1D::CFLCondition(){
 		dx = leng / ( float ) ( Nx - 1 );
-		dt = dx/10.0;
+		dt = dx/10.0f;
 }
 
 void Fluid1D::SetSimulationTime(){
-	Tmax=5+0.02*vel_snd+20.0/vel_snd;
+	Tmax=5.0f+0.02f*vel_snd+20.0f/vel_snd;
 }
 		
 void Fluid1D::SetSound(){
@@ -107,11 +109,11 @@ void Fluid1D::SetSound(){
 }
 		
 void Fluid1D::InitialCondRand(){
-  srand (time(NULL));   
+  srand (static_cast<unsigned int>(time(NULL)));
   for (int i = 0; i < Nx; i++ )
   {
 		float noise = (float) rand()/ (float) RAND_MAX ;
-		den[i] = 1.0 + 0.005*(noise-0.5);
+		den[i] = 1.0f + 0.005f*(noise-0.5f);
   }	
 }
 
@@ -147,42 +149,41 @@ void Fluid1D::Richtmyer(){
 		//
 		for ( int i = 1; i <= Nx-2 ; i++ )
 		{
-			grad_vel[i] = (-0.5*vel[i-1]+0.5*vel[i+1])/dx;
+			grad_vel[i] = (-0.5f*vel[i-1]+0.5f*vel[i+1])/dx;
 		}
-		grad_vel[0] = (-1.5*vel[0]+2.0*vel[1]-0.5*vel[2])/dx;
-		grad_vel[Nx-1] =  ( 0.5*vel[Nx-1-2]-2.0*vel[Nx-1-1]+1.5*vel[Nx-1])/dx;
-
+		grad_vel[0] = (-1.5f*vel[0]+2.0f*vel[1]-0.5f*vel[2])/dx;
+		grad_vel[Nx-1] =  ( 0.5f*vel[Nx-1-2]-2.0f*vel[Nx-1-1]+1.5f*vel[Nx-1])/dx;
     	//
 		//  Half step calculate density and velocity at time k+0.5 at the spatial midpoints
 		//
-		for ( int i = 0; i < Nx - 1; i++ )
+		for ( int i = 0; i <= Nx - 2; i++ )
 		{
-			den_mid[i] = 0.5*( den[i] + den[i+1] )
-				- ( 0.5*dt/dx ) * ( DensityFlux(den[i+1],vel[i+1],vel_snd_arr[i]) - DensityFlux(den[i],vel[i],vel_snd_arr[i]) ) 
-				+ ( 0.5*dt    ) * DensitySource(0.5*(den[i]+den[i+1]),0.5*(vel[i]+vel[i+1]),vel_snd_arr[i]) ;
-			vel_mid[i] = 0.5*( vel[i] + vel[i+1] )
-				- ( 0.5*dt/dx ) * ( VelocityFlux(den[i+1],vel[i+1],grad_vel[i+1],vel_snd_arr[i]) - VelocityFlux(den[i],vel[i],grad_vel[i],vel_snd_arr[i]) ) 
-				+ ( 0.5*dt    ) * VelocitySource(0.5*(den[i]+den[i+1]),0.5*(vel[i]+vel[i+1]),vel_snd_arr[i]) ;
+			den_mid[i] = 0.5f*( den[i] + den[i+1] )
+				- ( 0.5f*dt/dx ) * ( DensityFlux(den[i+1],vel[i+1],vel_snd_arr[i]) - DensityFlux(den[i],vel[i],vel_snd_arr[i]) )
+				+ ( 0.5f*dt    ) * DensitySource(0.5f*(den[i]+den[i+1]),0.5f*(vel[i]+vel[i+1]),vel_snd_arr[i]) ;
+			vel_mid[i] = 0.5f*( vel[i] + vel[i+1] )
+				- ( 0.5f*dt/dx ) * ( VelocityFlux(den[i+1],vel[i+1],grad_vel[i+1],vel_snd_arr[i]) - VelocityFlux(den[i],vel[i],grad_vel[i],vel_snd) )
+				+ ( 0.5f*dt    ) * VelocitySource(0.5f*(den[i]+den[i+1]),0.5f*(vel[i]+vel[i+1]),vel_snd_arr[i]) ;
 		}
         //
         //  Calculating the velocity gradient at k+1/2 time
         //
         for ( int i = 1; i <= Nx-3 ; i++ )
         {
-            grad_vel_mid[i] =(-0.5*vel_mid[i-1]+0.5*vel_mid[i+1])/dx;
+            grad_vel_mid[i] =(-0.5f*vel_mid[i-1]+0.5f*vel_mid[i+1])/dx;
         }
-        grad_vel_mid[0] = (-1.5*vel_mid[0]+2.0*vel_mid[1]-0.5*vel_mid[2])/dx;
-        grad_vel_mid[(Nx-1)-1] = ( 0.5*vel[(Nx-1)-3]-2.0*vel[(Nx-1)-2]+1.5*vel[(Nx-1)-1])/dx;
+        grad_vel_mid[0] = (-1.5f*vel_mid[0]+2.0f*vel_mid[1]-0.5f*vel_mid[2])/dx;
+        grad_vel_mid[(Nx-1)-1] = ( 0.5f*vel_mid[(Nx-1)-3]-2.0f*vel_mid[(Nx-1)-2]+1.5f*vel_mid[(Nx-1)-1])/dx;
 		//
 		// Remaining step 
 		//
-		for ( int i = 1; i < Nx - 1; i++ )
+		for ( int i = 1; i <= Nx - 2; i++ )
 		{
 			float den_old = den[i];
 			float vel_old = vel[i];
-			den[i] = den[i] - (dt/dx) * ( DensityFlux(den_mid[i],vel_mid[i],vel_snd_arr[i]) - DensityFlux(den_mid[i-1],vel_mid[i-1],vel_snd_arr[i]) )
+			den[i] = den[i] - (dt/dx) * ( DensityFlux(den_mid[i],vel_mid[i],vel_snd_arr[i]) - DensityFlux(den_mid[i-1],vel_mid[i-1],vel_snd) )
 							+  dt * DensitySource(den_old,vel_old,vel_snd_arr[i]);
-			vel[i] = vel[i] - (dt/dx) * ( VelocityFlux(den_mid[i],vel_mid[i],grad_vel_mid[i],vel_snd_arr[i]) - VelocityFlux(den_mid[i-1],vel_mid[i-1],grad_vel_mid[i-1],vel_snd_arr[i]) )
+			vel[i] = vel[i] - (dt/dx) * ( VelocityFlux(den_mid[i],vel_mid[i],grad_vel_mid[i],vel_snd_arr[i]) - VelocityFlux(den_mid[i-1],vel_mid[i-1],grad_vel_mid[i-1],vel_snd) )
 							+  dt * VelocitySource(den_old,vel_old,vel_snd_arr[i]);
 			cur[i] = vel[i]*den[i];
 		}
@@ -199,16 +200,16 @@ float GrapheneFluid1D::DensityFlux(float n,float v,float S){
 }
 float GrapheneFluid1D::VelocityFlux(float n,float v,float dv,float S){
 	float f2;
-	f2 = 0.25*v*v + vel_fer*vel_fer*0.5*log(n) + 2*S*S*sqrt(n) - kin_vis*dv; 
+	f2 = 0.25f*v*v + vel_fer*vel_fer*0.5f*log(n) + 2.0f*S*S*sqrt(n) - kin_vis*dv;
 	return f2;			
 }
 float GrapheneFluid1D::DensitySource(float n,float v,float S){
-	float Q1=0.0;
+	float Q1=0.0f;
 	return Q1;				
 }
 float GrapheneFluid1D::VelocitySource(float n,float v,float S){
 	float Q2;
-	Q2=-1.0*col_freq*(v-1);
+	Q2=-1.0f*col_freq*(v-1);
 	return Q2;			
 }
 
@@ -223,7 +224,7 @@ float GrapheneFluid1D::GetColFreq(){ return col_freq; }
 void GrapheneFluid1D::WriteAtributes(){
 	const FloatType      hdf5_float(PredType::NATIVE_FLOAT);
 	const IntType        hdf5_int(PredType::NATIVE_INT);
-	int total_steps=Tmax/dt;
+	int total_steps= static_cast<int>(Tmax / dt);
 	//Create the data space for the attribute.
 	hsize_t dim_atr[1] = { 1 };
 	DataSpace atr_dataspace = DataSpace (1, dim_atr );
@@ -265,10 +266,10 @@ void GrapheneFluid1D::WriteAtributes(){
 void GrapheneFluid1D::CFLCondition(){
 	dx = leng / ( float ) ( Nx - 1 );	
 	float lambda;
-	if(vel_snd<0.36*vel_fer){
-		lambda=1.2*vel_fer;
+	if(vel_snd<0.36f*vel_fer){
+		lambda=1.2f*vel_fer;
 	}else{
-		lambda=1.97*vel_snd + 0.5*vel_fer;
+		lambda=1.97f*vel_snd + 0.5f*vel_fer;
 	}
 	dt = dx/lambda;				
 }	
@@ -312,7 +313,7 @@ float ElectroAnalysis::ElectricDipole(GrapheneFluid1D& graphene){
 	for(int j=1;j<graphene.SizeX()/2;j++){	
 		p += dx*(2*j-2)*graphene.den_cor[2*j-2] + 4*dx*(2*j-1)*graphene.den_cor[2*j-1] + dx*(2*j)*graphene.den_cor[2*j];
 	}
-	p = p*graphene.GetDx()/3.0;
+	p = p*graphene.GetDx()/3.0f;
 	return p;
 }
 
@@ -321,7 +322,7 @@ float ElectroAnalysis::OhmPower(GrapheneFluid1D& graphene){
 	for(int j=1;j<graphene.SizeX()/2;j++){
 		itg += graphene.cur_cor[2*j-2]*graphene.vel_cor[2*j-2] + 4*graphene.cur_cor[2*j-1]*graphene.vel_cor[2*j-1] + graphene.cur_cor[2*j]*graphene.vel_cor[2*j];
 	}
-	itg = itg*graphene.GetDx()/3.0;
+	itg = itg*graphene.GetDx()/3.0f;
 	return itg;	
 }
 

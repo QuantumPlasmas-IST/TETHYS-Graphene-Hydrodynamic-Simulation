@@ -87,11 +87,11 @@ float Fluid2D::GetDt(){return dt;}
 void Fluid2D::SetDt(float x){ dt=x;}
 
 void Fluid2D::InitialCondRand(){
-  	srand (time(NULL));   
+  	srand (static_cast<unsigned int>(time(NULL)));
   	for (int i = 0; i < Nx; i++ ){
   		for (int j=0; j<Ny; j++){
   			float noise = (float) rand()/ (float) RAND_MAX ;
-			den[i+j*Nx] = 1.0 + 0.005*(noise-0.5);
+			den[i+j*Nx] = 1.0f + 0.005f*(noise-0.5f);
   		}
   	}	
 }
@@ -101,13 +101,13 @@ void Fluid2D::InitialCondTEST(){
   		for (int j=0; j<Ny; j++){
 			float densi;
 			if(i>=80&&i<=120&&j>=80&&j<=120){
-			densi=0.2;	
+			densi=0.2f;
 			}
 			else{
-			densi=0.0;	
+			densi=0.0f;
 			}
-			den[i+j*Nx] = 1.0 + densi;
-			velX[i+j*Nx] = 0.1;
+			den[i+j*Nx] = 1.0f + densi;
+			velX[i+j*Nx] = 0.1f;
   		}
   	}	
 }
@@ -181,45 +181,45 @@ void Fluid2D::Richtmyer(){
 				SE=i+1+j*Nx;    //mal  ->i+1,j   Prin
 				SW=i+j*Nx;      //mal  ->i,j     Prin
 		
-				n_N = 0.5*(den[NE]+den[NW]); 
-				n_S = 0.5*(den[SE]+den[SW]); 
-				n_E = 0.5*(den[NE]+den[SE]); 
-				n_W = 0.5*(den[NW]+den[SW]);
+				n_N = 0.5f*(den[NE]+den[NW]);
+				n_S = 0.5f*(den[SE]+den[SW]);
+				n_E = 0.5f*(den[NE]+den[SE]);
+				n_W = 0.5f*(den[NW]+den[SW]);
 
-				px_N = 0.5*(flxX[NE]+flxX[NW]); 
-				px_S = 0.5*(flxX[SE]+flxX[SW]); 
-				px_E = 0.5*(flxX[NE]+flxX[SE]); 
-				px_W = 0.5*(flxX[NW]+flxX[SW]); 
+				px_N = 0.5f*(flxX[NE]+flxX[NW]);
+				px_S = 0.5f*(flxX[SE]+flxX[SW]);
+				px_E = 0.5f*(flxX[NE]+flxX[SE]);
+				px_W = 0.5f*(flxX[NW]+flxX[SW]);
 				
-				py_N = 0.5*(flxY[NE]+flxY[NW]); 
-				py_S = 0.5*(flxY[SE]+flxY[SW]); 
-				py_E = 0.5*(flxY[NE]+flxY[SE]); 
-				py_W = 0.5*(flxY[NW]+flxY[SW]); 
+				py_N = 0.5f*(flxY[NE]+flxY[NW]);
+				py_S = 0.5f*(flxY[SE]+flxY[SW]);
+				py_E = 0.5f*(flxY[NE]+flxY[SE]);
+				py_W = 0.5f*(flxY[NW]+flxY[SW]);
 
 				//posso definir aqui a "massa" nos 4 ponto s cardeais
-				 m_E=pow(n_E,1.5); // e assim sucessivamente m_W m_N m_S que depois sao reutilizadeas nos 12 fluxos
-				 m_W=pow(n_W,1.5);
-                 m_N=pow(n_N,1.5);
-                 m_S=pow(n_S,1.5);
-				den_mid[ks] = 0.25*(den[SW] + den[SE] + den[NW] + den[NE]) // How shall we include vel_snd_arr ?
-								-0.5*(dt/dx)*(
+				 m_E=pow(n_E,1.5f); // e assim sucessivamente m_W m_N m_S que depois sao reutilizadeas nos 12 fluxos
+				 m_W=pow(n_W,1.5f);
+                 m_N=pow(n_N,1.5f);
+                 m_S=pow(n_S,1.5f);
+				den_mid[ks] = 0.25f*(den[SW] + den[SE] + den[NW] + den[NE]) // How shall we include vel_snd_arr ?
+								-0.5f*(dt/dx)*(
 									DensityFluxX(n_E, px_E, py_E,m_E,vel_snd)-
 									DensityFluxX(n_W, px_W, py_W,m_W,vel_snd))
-								-0.5*(dt/dy)*(
+								-0.5f*(dt/dy)*(
 									DensityFluxY(n_N, px_N, py_N,m_N,vel_snd)-
 									DensityFluxY(n_S, px_S, py_S,m_S,vel_snd));
-				flxX_mid[ks] = 0.25*(flxX[SW] + flxX[SE] + flxX[NW] + flxX[NE])
-								-0.5*(dt/dx)*(
+				flxX_mid[ks] = 0.25f*(flxX[SW] + flxX[SE] + flxX[NW] + flxX[NE])
+								-0.5f*(dt/dx)*(
 									MassFluxXFluxX(n_E, px_E, py_E,m_E,vel_snd)-
 									MassFluxXFluxX(n_W, px_W, py_W,m_W,vel_snd))
-								-0.5*(dt/dy)*(
+								-0.5f*(dt/dy)*(
 									MassFluxXFluxY(n_N, px_N, py_N,m_N,vel_snd)-
 									MassFluxXFluxY(n_S, px_S, py_S,m_S,vel_snd));
-				flxY_mid[ks] = 0.25*(flxY[SW] + flxY[SE] + flxY[NW] + flxY[NE])
-								-0.5*(dt/dx)*(
+				flxY_mid[ks] = 0.25f*(flxY[SW] + flxY[SE] + flxY[NW] + flxY[NE])
+								-0.5f*(dt/dx)*(
 									MassFluxYFluxX(n_E, px_E, py_E,m_E,vel_snd)-
 									MassFluxYFluxX(n_W, px_W, py_W,m_W,vel_snd))
-								-0.5*(dt/dy)*(
+								-0.5f*(dt/dy)*(
 									MassFluxYFluxY(n_N, px_N, py_N,m_N,vel_snd)-
 									MassFluxYFluxY(n_S, px_S, py_S,m_S,vel_snd));
 	//		}						
@@ -238,26 +238,26 @@ void Fluid2D::Richtmyer(){
 				SE=i+(j-1)*(Nx-1);  //mal  ->i,j-1 Sec
 				SW=i-1+(j-1)*(Nx-1); //mal ->i-1,j-1 Sec
 				
-				n_N = 0.5*(den_mid[NE]+den_mid[NW]); 
-				n_S = 0.5*(den_mid[SE]+den_mid[SW]); 
-				n_E = 0.5*(den_mid[NE]+den_mid[SE]); 
-				n_W = 0.5*(den_mid[NW]+den_mid[SW]);
+				n_N = 0.5f*(den_mid[NE]+den_mid[NW]);
+				n_S = 0.5f*(den_mid[SE]+den_mid[SW]);
+				n_E = 0.5f*(den_mid[NE]+den_mid[SE]);
+				n_W = 0.5f*(den_mid[NW]+den_mid[SW]);
 
-				px_N = 0.5*(flxX_mid[NE]+flxX_mid[NW]); 
-				px_S = 0.5*(flxX_mid[SE]+flxX_mid[SW]); 
-				px_E = 0.5*(flxX_mid[NE]+flxX_mid[SE]); 
-				px_W = 0.5*(flxX_mid[NW]+flxX_mid[SW]); 
+				px_N = 0.5f*(flxX_mid[NE]+flxX_mid[NW]);
+				px_S = 0.5f*(flxX_mid[SE]+flxX_mid[SW]);
+				px_E = 0.5f*(flxX_mid[NE]+flxX_mid[SE]);
+				px_W = 0.5f*(flxX_mid[NW]+flxX_mid[SW]);
 				
-				py_N = 0.5*(flxY_mid[NE]+flxY_mid[NW]); 
-				py_S = 0.5*(flxY_mid[SE]+flxY_mid[SW]); 
-				py_E = 0.5*(flxY_mid[NE]+flxY_mid[SE]); 
-				py_W = 0.5*(flxY_mid[NW]+flxY_mid[SW]);
+				py_N = 0.5f*(flxY_mid[NE]+flxY_mid[NW]);
+				py_S = 0.5f*(flxY_mid[SE]+flxY_mid[SW]);
+				py_E = 0.5f*(flxY_mid[NE]+flxY_mid[SE]);
+				py_W = 0.5f*(flxY_mid[NW]+flxY_mid[SW]);
 
                 //posso definir aqui a "massa" nos 4 ponto s cardeais
-                 m_E=pow(n_E,1.5); // e assim sucessivamente m_W m_N m_S que depois sao reutilizadeas nos 12 fluxos
-                 m_W=pow(n_W,1.5);
-                 m_N=pow(n_N,1.5);
-                 m_S=pow(n_S,1.5);
+                 m_E=pow(n_E,1.5f); // e assim sucessivamente m_W m_N m_S que depois sao reutilizadeas nos 12 fluxos
+                 m_W=pow(n_W,1.5f);
+                 m_N=pow(n_N,1.5f);
+                 m_S=pow(n_S,1.5f);
 
 				den[kp] = den[kp]
 								-(dt/dx)*(
@@ -290,7 +290,7 @@ void Fluid2D::Richtmyer(){
 void Fluid2D::CFLCondition(){ 
 		dx = lengX / ( float ) ( Nx - 1 );
 		dy = lengY / ( float ) ( Ny - 1 );
-		dt = dx/10.0;
+		dt = dx/10.0f;
 }
 
 
@@ -306,7 +306,7 @@ float  Fluid2D::DensityFluxY(float n,float flxX, float flxY,float mass, float S)
 	return f1;		
 }
 float  Fluid2D::DensitySource(float n,float velX, float velY, float S){
-	float Q1 =0;
+	float Q1 =0.0f;
 	return Q1;
 }
 float  Fluid2D::MassFluxXFluxX(float n,float flxX, float flxY,float mass, float S){
@@ -330,11 +330,11 @@ float  Fluid2D::MassFluxYFluxY(float n,float flxX, float flxY,float mass, float 
 	return f3;
 }
 float  Fluid2D::MassFluxXSource(float n,float flxX, float flxY, float S){
-	float Q2 =0;
+	float Q2 =0.0f;
 	return Q2;
 }
 float  Fluid2D::MassFluxYSource(float n,float flxX, float flxY, float S){
-	float Q3 =0;
+	float Q3 =0.0f;
 	return Q3;
 }	
 
@@ -359,7 +359,7 @@ data_preview <<t<<"\t"<< den[Nx-1+j*Nx] <<"\t"<< velX[Nx-1+j*Nx] <<"\t"<< den[0+
 
 
 void Fluid2D::SetSimulationTime(){
-	Tmax=5+0.02*vel_snd+20.0/vel_snd;
+	Tmax=5.0f+0.02f*vel_snd+20.0f/vel_snd;
 }
 
 GrapheneFluid2D::GrapheneFluid2D(int sizeNx,int sizeNy,float VELSND, float FERMI,float VISCO,float COL): Fluid2D(sizeNx,sizeNy, VELSND, VISCO){
@@ -374,13 +374,13 @@ GrapheneFluid2D::GrapheneFluid2D(int sizeNx,int sizeNy,float VELSND, float FERMI
 void GrapheneFluid2D::SetSimulationTime(){
 	float s;
 	s=this->GetVelSnd();
-	this->SetTmax(5.0+0.02*s+20.0/s);
+	this->SetTmax(5.0f+0.02f*s+20.0f/s);
 }
 
 void GrapheneFluid2D::MassFluxToVelocity(){
 	for(int C=0;C<=Nx*Ny-1;C++){
-		velX[C]=flxX[C]*pow(den[C],-1.5);
-		velY[C]=flxY[C]*pow(den[C],-1.5);
+		velX[C]=flxX[C]*pow(den[C],-1.5f);
+		velY[C]=flxY[C]*pow(den[C],-1.5f);
 		curX[C] = velX[C]*den[C];
 		curY[C] = velY[C]*den[C];			
 	}
@@ -398,10 +398,10 @@ void GrapheneFluid2D::CFLCondition(){ // Eventual redefinition
 	dy = lengY / ( float ) ( Ny - 1 );					
 	//dt = 2.4/(vel_snd*sqrt(25.0/(dx*dx)+16.0/(dy*dy)));
 	float lambda;
-	if(vel_snd<0.36*vel_fer){
-		lambda=1.2*vel_fer;
+	if(vel_snd<0.36f*vel_fer){
+		lambda=1.2f*vel_fer;
 	}else{
-		lambda=1.97*vel_snd + 0.5*vel_fer;
+		lambda=1.97f*vel_snd + 0.5f*vel_fer;
 	}
 	dt = dx/lambda;				
 }	
@@ -419,7 +419,7 @@ float  GrapheneFluid2D::DensityFluxY(float n,float flxX, float flxY,float mass, 
 // 27% of cpu usage of them 22.6% are int the pow function
 float  GrapheneFluid2D::MassFluxXFluxX(float n,float flxX, float flxY,float mass, float S){
 	float f2;
-	f2 = flxX*flxX/mass +vel_fer*vel_fer*mass/3.0+0.5*S*S*n*n;
+	f2 = flxX*flxX/mass +vel_fer*vel_fer*mass/3.0f+0.5f*S*S*n*n;
 	return f2;
 }
 float  GrapheneFluid2D::MassFluxXFluxY(float n,float flxX, float flxY,float mass, float S){
@@ -434,7 +434,7 @@ float  GrapheneFluid2D::MassFluxYFluxX(float n,float flxX, float flxY,float mass
 }
 float  GrapheneFluid2D::MassFluxYFluxY(float n,float flxX, float flxY,float mass, float S){
 	float f3;
-	f3 = flxY*flxY/mass + vel_fer*vel_fer*mass/3.0+0.5*S*S*n*n;
+	f3 = flxY*flxY/mass + vel_fer*vel_fer*mass/3.0f+0.5f*S*S*n*n;
 	return f3;
 }
 
@@ -474,7 +474,7 @@ void GrapheneFluid2D::MagneticSource(){
 void GrapheneFluid2D::WriteAtributes(){
 	const FloatType      hdf5_float(PredType::NATIVE_FLOAT);
 	const IntType        hdf5_int(PredType::NATIVE_INT);
-	int total_steps=Tmax/dt;
+	int total_steps= static_cast<int>(Tmax / dt);
 	//Create the data space for the attribute.
 	hsize_t dim_atr[1] = { 1 };
 	DataSpace atr_dataspace = DataSpace (1, dim_atr );

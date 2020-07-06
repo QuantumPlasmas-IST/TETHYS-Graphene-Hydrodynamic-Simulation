@@ -49,7 +49,8 @@ int main(int argc, char **argv){
     BoundaryCondition::DyakonovShur BC;
 
 	
-	/*......CFL routine to determine dt...............................*/	
+	/*......CFL routine to determine dt...............................*/
+// TODO Check CFL in order to have different space discretizations
 	graph.CFLCondition();
 	dx=graph.GetDx();
 	dy=graph.GetDy();
@@ -57,6 +58,7 @@ int main(int argc, char **argv){
 	/*................................................................*/
 	
 	/*.........Fixed or variable vel_snd value........................*/
+// TODO review the set sound and set max time processes
 	graph.SetSound();
 	//graph.SetSimulationTime();
 	//float T_max=graph.GetTmax();
@@ -82,20 +84,26 @@ int main(int argc, char **argv){
 	
 	int time_step=0;
 	int snapshot_per_Period = 10;   
-	int points_per_Period = (2.0*MAT_PI/RealFreq(graph.GetVelSnd(), graph.GetVelFer(), graph.GetColFreq(),1))/dt;
+	int points_per_Period = static_cast<int>(
+            (2.0 * MAT_PI / RealFreq(graph.GetVelSnd(), graph.GetVelFer(), graph.GetColFreq(), 1)) / dt);
 	int snapshot_step = points_per_Period/snapshot_per_Period; 
 
 	
 	//while(t<=T_max && isfinite(graph.velX[Npoints/2])) // throw exception para nan / inf
-	while(time_step<=200 && isfinite(graph.velX[Npoints/2])) // throw exception para nan / inf
+	while(time_step<=10 && isfinite(graph.velX[Npoints/2])) // throw exception para nan / inf
 	{	
-
+// TODO
+//  1) try to implement strang splittind instead of godunov splitting
+//  2) move the mass flux to velocity conversion only to the complete save
+//  3) accordingly to 2) the WriteFluidFile() should record flux instead of velocity
 		++time_step;
 		t += dt;
 		
 		graph.Richtmyer();
 		//graph.MagneticSource();
         graph.MassFluxToVelocity();
+
+
 
 		// Impose boundary conditions
 		BC.X(graph);
@@ -131,7 +139,7 @@ int main(int argc, char **argv){
 	
 	
 	graph.WriteAtributes();
-	
+    graph.CloseHDF5File();
 	cout << "\033[1A\033[2K\033[1;32mDONE!\033[0m\n";
 	cout<<"═══════════════════════════════════════════════════════════════════════════" <<endl;
 
