@@ -167,6 +167,7 @@ void Fluid2D::MassFluxToVelocity(){
 
 
 void Fluid2D::Richtmyer(){
+    // TODO throw exception to cath NAN or INF values
 		int NE,NW,SE,SW;
 		float n_N, n_S ,n_E ,n_W, px_N, px_S, px_E, px_W, py_N, py_S, py_E, py_W,m_E,m_W,m_N,m_S;
 		//k=i+j*Nx
@@ -470,6 +471,20 @@ void GrapheneFluid2D::MagneticSource(){
 	}		
 }
 
+
+void GrapheneFluid2D::SourceFTCS(){
+    float px0,py0,sqrtn0;
+    float Wc=10.0;
+    for(int kp=1+Nx; kp<=Nx*Ny-Nx-2; kp++){ //correr a grelha principal evitando as fronteiras
+        if( kp%Nx!=Nx-1 && kp%Nx!=0){
+            sqrtn0=sqrt(den[kp]);
+            px0=flxX[kp];
+            py0=flxY[kp];
+            flxX[kp]=  px0 - dt*Wc*py0/sqrtn0;
+            flxY[kp]=  py0 + dt*Wc*px0/sqrtn0;
+        }
+    }
+}
 
 void GrapheneFluid2D::WriteAtributes(){
 	const FloatType      hdf5_float(PredType::NATIVE_FLOAT);

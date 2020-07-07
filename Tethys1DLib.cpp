@@ -143,7 +143,10 @@ void Fluid1D::WriteFluidFile(float t){
 data_preview <<t<<"\t"<< den_cor[Nx-1] <<"\t"<< vel_cor[Nx-1] <<"\t"<< den_cor[0] <<"\t" << vel_cor[0] <<"\n";
 }
 
+
+
 void Fluid1D::Richtmyer(){
+    // TODO throw exception to cath NAN or INF values
 		//
 		//  Calculating the velocity gradient at k time
 		//

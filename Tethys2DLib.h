@@ -98,7 +98,7 @@ class GrapheneFluid2D : public Fluid2D{
 		float MassFluxYSource(float n, float flxX, float flxY, float S) override;
 		
 		void MagneticSource();
-		
+        void SourceFTCS();
 		void WriteAtributes();
 };
 #endif

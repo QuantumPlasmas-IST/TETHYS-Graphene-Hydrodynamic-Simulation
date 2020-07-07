@@ -47,7 +47,8 @@ int main(int argc, char **argv){
 	GrapheneFluid2D	graph(NpointsX,NpointsY,input_vel_snd, input_vel_fer, input_kin_vis,input_col_freq);
 	graph.BannerDisplay();
     BoundaryCondition::DyakonovShur BC;
-
+    //BoundaryCondition::Dirichlet BCD;
+    //BoundaryCondition BC;
 	
 	/*......CFL routine to determine dt...............................*/
 // TODO Check CFL in order to have different space discretizations
@@ -100,14 +101,18 @@ int main(int argc, char **argv){
 
 
 		graph.Richtmyer();
-		graph.MagneticSource();
-
+		//graph.MagneticSource();
+        graph.SourceFTCS();
 
 
 
 		// Impose boundary conditions
 		BC.X(graph);
-		BC.YFree(graph);		
+		BC.YFree(graph);
+//		BCD.Density(graph,1.0f,2.0f,1.0f,1.0f);
+//		BCD.MassFluxX(graph,-1.0f,1.0f,0.0f,0.0f);
+
+//		BC.YFree(graph);
 		// Applying average filters for smoothing 	
 		//graph.Smooth(2);
 
