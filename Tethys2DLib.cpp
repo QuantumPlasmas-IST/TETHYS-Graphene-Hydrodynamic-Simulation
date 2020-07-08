@@ -480,8 +480,8 @@ void GrapheneFluid2D::SourceFTCS(){
             sqrtn0=sqrt(den[kp]);
             px0=flxX[kp];
             py0=flxY[kp];
-            flxX[kp]=  px0 - dt*Wc*py0/sqrtn0;
-            flxY[kp]=  py0 + dt*Wc*px0/sqrtn0;
+            flxX[kp]=  px0 - 0.5f*dt*Wc*py0/sqrtn0;
+            flxY[kp]=  py0 + 0.5f*dt*Wc*px0/sqrtn0;
         }
     }
 }

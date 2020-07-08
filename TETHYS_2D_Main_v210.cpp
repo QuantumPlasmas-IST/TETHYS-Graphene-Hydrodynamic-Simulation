@@ -99,16 +99,24 @@ int main(int argc, char **argv){
 		++time_step;
 		t += dt;
 
+        graph.SourceFTCS();
+        // Impose boundary conditions
+        BC.X(graph);
+        BC.YFree(graph);
+
 
 		graph.Richtmyer();
+        // Impose boundary conditions
+        BC.X(graph);
+        BC.YFree(graph);
+
 		//graph.MagneticSource();
         graph.SourceFTCS();
-
-
-
-		// Impose boundary conditions
+        // Impose boundary conditions
 		BC.X(graph);
 		BC.YFree(graph);
+
+
 //		BCD.Density(graph,1.0f,2.0f,1.0f,1.0f);
 //		BCD.MassFluxX(graph,-1.0f,1.0f,0.0f,0.0f);
 
