@@ -16,7 +16,7 @@
 #images
 *.png
 
-USING_HDF5_CMake.txt
+
 
 #CMAke and Clion stuff
 .idea/

@@ -497,10 +497,10 @@ void GrapheneFluid2D::ViscosityFTCS() {
             mass_den_E = pow(den[E], 1.5f);
             mass_den_W = pow(den[W], 1.5f);
             lap_flxX[kp] =
-                    (-4.0 * flxX[kp] / mass_den_C + flxX[N] / mass_den_N + flxX[S] / mass_den_S + flxX[E] / mass_den_E +
+                    (-4.0f * flxX[kp] / mass_den_C + flxX[N] / mass_den_N + flxX[S] / mass_den_S + flxX[E] / mass_den_E +
                      flxX[W] / mass_den_W) / (dx * dx);
             lap_flxY[kp] =
-                    (-4.0 * flxY[kp] / mass_den_C + flxY[N] / mass_den_N + flxY[S] / mass_den_S + flxY[E] / mass_den_E +
+                    (-4.0f * flxY[kp] / mass_den_C + flxY[N] / mass_den_N + flxY[S] / mass_den_S + flxY[E] / mass_den_E +
                      flxY[W] / mass_den_W) / (dx * dx);
         }
     }

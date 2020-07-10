@@ -17,12 +17,12 @@ using namespace std;
 
 
 #ifndef MAT_PI
-#    define MAT_PI 3.14159265358979323846
+#    define MAT_PI 3.14159265358979323846f
 #endif
 
 
 #ifndef MAT_EULER
-#    define MAT_EULER 2.71828182845905
+#    define MAT_EULER 2.71828182845905f
 #endif
 
 
@@ -256,7 +256,7 @@ float GaussKernelDerivative(int position , float t){
 }
 
 
-void ConvolveGauss(int type, float M, float t, float * in, float * out, int size){
+void ConvolveGauss(int type, int M, float t, float * in, float * out, int size){
 	if(type==0){	
 		for(int i=0;i<size;i++){
 			if(i>=M && i<size-M){
@@ -317,7 +317,7 @@ void ExtremaFinding(float *vec_in, int N, float sound, float dt,float & sat, flo
 	
 	int W = floor( 1.2f*2.0f*MAT_PI/(RealFreq(sound, 1.0f, 1.0f, 1)*dt));
 	int k = 0;
-	int M = ceil(0.5f*dt*N*RealFreq(sound, 1.0f, 1.0f, 1)/MAT_PI);
+	int M = static_cast<int>(ceil(0.5f * dt * N * RealFreq(sound, 1.0f, 1.0f, 1) / MAT_PI));
 	float *vec_max;			
 	vec_max =(float*) calloc (M,sizeof(float));
 	float *vec_pos;			
@@ -325,7 +325,7 @@ void ExtremaFinding(float *vec_in, int N, float sound, float dt,float & sat, flo
 	
 	for(int shift=0; shift < N-W ; shift += W){
 		float maximum =  *max_element( vec_in + shift ,vec_in + shift + W );
-		int pos_max =   max_element( vec_in + shift ,vec_in + shift + W ) - vec_in; 
+		int pos_max = static_cast<int>(max_element(vec_in + shift, vec_in + shift + W) - vec_in);
 		
 		float minimum =  *min_element( vec_in + shift ,vec_in + shift + W );
 		int pos_min = static_cast<int>(min_element(vec_in + shift, vec_in + shift + W) - vec_in);
