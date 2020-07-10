@@ -40,8 +40,12 @@ Fluid2D::Fluid2D(int sizeNx, int sizeNy, float VELSND, float VISCO) : TETHYSBase
 	flxX 		= new float[Nx*Ny](); 
 	flxY 		= new float[Nx*Ny](); 
 	curX 		= new float[Nx*Ny](); 
-	curY 		= new float[Nx*Ny](); 
-	vel_snd_arr	= new float[Nx*Ny](); 
+	curY 		= new float[Nx*Ny]();
+	vel_snd_arr	= new float[Nx*Ny]();
+
+    lap_flxX    = new float[Nx*Ny](); //new grids for the laplacians
+    lap_flxY    = new float[Nx*Ny](); //in fact they could be smaller but thiw way they are just 0 at the borders who do not evolve
+
 	// 1st Aux. Grid variables (Nx-1)*(Ny-1)
 	den_mid		= new float[(Nx-1)*(Ny-1)]();  
 	flxX_mid	= new float[(Nx-1)*(Ny-1)]();
@@ -59,8 +63,10 @@ Fluid2D::~Fluid2D(){
 	delete [] curY;
 	delete [] den_mid;
 	delete [] flxX_mid;
-	delete [] flxY_mid;		
-	delete [] vel_snd_arr;
+	delete [] flxY_mid;
+    delete [] lap_flxX;
+    delete [] lap_flxY;
+    delete [] vel_snd_arr;
 }
 
 

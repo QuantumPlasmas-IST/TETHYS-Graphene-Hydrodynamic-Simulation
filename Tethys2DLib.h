@@ -18,7 +18,10 @@ class Fluid2D : public TETHYSBase
 		float * vel_snd_arr;	
 		float * den_mid ; // 1st Aux. Grid (Nx-1)*(Ny-1)
 		float * flxX_mid ;
-		float * flxY_mid ;		
+		float * flxY_mid ;
+
+        float * lap_flxX ; //new grids for the laplacians
+        float * lap_flxY ;
 
 		std::ofstream data_preview;
 		virtual void SetFileName();
