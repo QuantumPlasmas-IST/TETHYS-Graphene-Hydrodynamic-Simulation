@@ -111,7 +111,9 @@ int main(int argc, char **argv){
         BC.YFree(graph);
 
 		//graph.MagneticSource();
-        graph.SourceFTCS();
+        //graph.SourceFTCS();
+
+        graph.ViscosityFTCS();
         // Impose boundary conditions
 		BC.X(graph);
 		BC.YFree(graph);

@@ -477,7 +477,45 @@ void GrapheneFluid2D::MagneticSource(){
 	}		
 }
 
+void GrapheneFluid2D::ViscosityFTCS() {
+    int N, S, E, W;
+    float mass_den_C, mass_den_N, mass_den_S, mass_den_E, mass_den_W;
+    //calculate laplacians
+    for (int kp = 1 + Nx; kp <= Nx * Ny - Nx - 2; kp++) { //correr a grelha principal evitando as fronteiras
+        div_t divresult;
+        divresult = div(kp, Nx);
+        int j = divresult.quot;
+        int i = divresult.rem;
+        if (kp % Nx != Nx - 1 && kp % Nx != 0) {
+            N = i + (j + 1) * Nx;
+            S = i + (j - 1) * Nx;
+            E = i + 1 + j * Nx;
+            W = i - 1 + j * Nx;
+            mass_den_C = pow(den[kp], 1.5f);
+            mass_den_N = pow(den[N], 1.5f);
+            mass_den_S = pow(den[S], 1.5f);
+            mass_den_E = pow(den[E], 1.5f);
+            mass_den_W = pow(den[W], 1.5f);
+            lap_flxX[kp] =
+                    (-4.0 * flxX[kp] / mass_den_C + flxX[N] / mass_den_N + flxX[S] / mass_den_S + flxX[E] / mass_den_E +
+                     flxX[W] / mass_den_W) / (dx * dx);
+            lap_flxY[kp] =
+                    (-4.0 * flxY[kp] / mass_den_C + flxY[N] / mass_den_N + flxY[S] / mass_den_S + flxY[E] / mass_den_E +
+                     flxY[W] / mass_den_W) / (dx * dx);
+        }
+    }
 
+    //FTCS algorithm
+    float old_px,old_py;
+    for (int kp = 1 + Nx; kp <= Nx * Ny - Nx - 2; kp++) { //correr a grelha principal evitando as fronteiras
+        if (kp % Nx != Nx - 1 && kp % Nx != 0) {
+            old_px=flxX[kp];
+            old_py=flxY[kp];
+            flxX[kp] = old_px + dt*( kin_vis*lap_flxX[kp] );
+            flxY[kp] = old_py + dt*( kin_vis*lap_flxY[kp] );
+        }
+    }
+}
 void GrapheneFluid2D::SourceFTCS(){
     float px0,py0,sqrtn0;
     float Wc=10.0;

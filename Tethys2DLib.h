@@ -102,6 +102,7 @@ class GrapheneFluid2D : public Fluid2D{
 		
 		void MagneticSource();
         void SourceFTCS();
+        void ViscosityFTCS();
 		void WriteAtributes();
 };
 #endif
