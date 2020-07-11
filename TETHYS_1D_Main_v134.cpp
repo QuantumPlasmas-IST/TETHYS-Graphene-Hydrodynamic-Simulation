@@ -16,7 +16,7 @@
 #include "BoundaryLib.h"
 
 #ifndef MAT_PI
-#    define MAT_PI 3.14159265358979323846
+#	define MAT_PI 3.14159265358979323846
 #endif
 
 using namespace H5;
@@ -33,7 +33,7 @@ int main(int argc, char **argv){
 	float dx;								// spatial discretisation
 	float dt;								// time step
 
- 	int data_save_mode=0;
+	int data_save_mode=0;
 	float input_vel_snd,input_vel_fer,input_col_freq,input_kin_vis;
 	ParameterInitalization(argc,argv,data_save_mode,input_vel_snd,input_vel_fer,input_col_freq,input_kin_vis);
 	
@@ -75,8 +75,7 @@ int main(int argc, char **argv){
 	////////////////////////////////////////////////////////////////////
 	int time_step=0;
 	int snapshot_per_Period = 10;   
-	int points_per_Period = static_cast<int>(
-            (2 * MAT_PI / RealFreq(graph.GetVelSnd(), graph.GetVelFer(), graph.GetColFreq(), 1)) / dt);
+	int points_per_Period = static_cast<int>((2 * MAT_PI / RealFreq(graph.GetVelSnd(), graph.GetVelFer(), graph.GetColFreq(), 1)) / dt);
 	int snapshot_step = points_per_Period/snapshot_per_Period; 
 
 	cout << "\033[1;7;5;33m Program Running \033[0m"<<endl;
@@ -110,7 +109,7 @@ int main(int argc, char **argv){
 	}
 	
 	graph.WriteAtributes();
-    graph.CloseHDF5File();
+	graph.CloseHDF5File();
 
 	cout << "\033[1A\033[2K\033[1;32mDONE!\033[0m\n";
 	cout<<"═══════════════════════════════════════════════════════════════════════════" <<endl;

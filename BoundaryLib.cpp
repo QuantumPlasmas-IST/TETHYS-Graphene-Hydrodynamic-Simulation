@@ -44,24 +44,24 @@ void BoundaryCondition::XFree(GrapheneFluid1D& graphene){
 	graphene.den[0] = graphene.den[1];
 	graphene.den[Nx-1] =  graphene.den[Nx-2];
 	graphene.vel[0] = graphene.vel[1];
-	graphene.vel[Nx-1] = graphene.vel[Nx-2];	
+	graphene.vel[Nx-1] = graphene.vel[Nx-2];
 }
 void BoundaryCondition::XPeriodic(GrapheneFluid1D& graphene){
 	int Nx=graphene.SizeX();
 	graphene.den[0] = graphene.den[Nx-2];
 	graphene.den[Nx-1] = graphene.den[1];
 	graphene.vel[0] = graphene.vel[Nx-2];
-	graphene.vel[Nx-1] = graphene.vel[1];	
+	graphene.vel[Nx-1] = graphene.vel[1];
 }
 void BoundaryCondition::XFree(GrapheneFluid2D& graphene){
 	int Nx=graphene.SizeX();
 	int Ny=graphene.SizeY();
 	
 	for(int j=0;j<Ny;j++){
-	    int Left=0+j*Nx;
-	    int Right=Nx-1+j*Nx;
+		int Left=0+j*Nx;
+		int Right=Nx-1+j*Nx;
 		graphene.den[Left]=graphene.den[Left+1];
-		graphene.den[Right]=graphene.den[Right-1]; 			//free density at x=L
+		graphene.den[Right]=graphene.den[Right-1];			//free density at x=L
 		graphene.flxY[Left] = 0.0f; 					//flux only on x at x=0
 		graphene.flxY[Right] = 0.0f ;					//idem at x=L
 		graphene.flxX[Left] = graphene.flxX[Left+1]*pow(graphene.den[Left+1],-1.5f);			//free flux at x=0
@@ -73,8 +73,8 @@ void BoundaryCondition::XPeriodic(GrapheneFluid2D& graphene){
 	int Ny=graphene.SizeY();
 	
 	for(int j=0;j<Ny;j++){
-        int Left=0+j*Nx;
-        int Right=Nx-1+j*Nx;
+		int Left=0+j*Nx;
+		int Right=Nx-1+j*Nx;
 		graphene.den[Left]=graphene.den[Right-1];
 		graphene.den[Right]=graphene.den[1+j*Nx];
 		graphene.flxY[Left] = 0.0; 					//flux only on x at x=0
@@ -87,8 +87,8 @@ void BoundaryCondition::YFree(GrapheneFluid2D& graphene){
 	int Nx=graphene.SizeX();
 	int Ny=graphene.SizeY();
 	for (int i=0; i<Nx; i++){
-        int Bottom=i; //i+0*Nx
-        int Top=i+(Ny-1)*Nx;
+		int Bottom=i; //i+0*Nx
+		int Top=i+(Ny-1)*Nx;
 		graphene.den[Bottom] = graphene.den[Bottom+Nx];
 		graphene.flxX[Bottom] = graphene.flxX[Bottom+Nx];
 		graphene.flxY[Bottom] = graphene.flxY[Bottom+Nx];
@@ -102,8 +102,8 @@ void BoundaryCondition::YPeriodic(GrapheneFluid2D& graphene){
 	int Ny=graphene.SizeY();	
 	
 	for (int i=0; i<Nx; i++){
-        int Bottom=i; //i+0*Nx
-        int Top=i+(Ny-1)*Nx;
+		int Bottom=i; //i+0*Nx
+		int Top=i+(Ny-1)*Nx;
 		graphene.den[Bottom] = graphene.den[Top-Nx];
 		graphene.flxX[Bottom] = graphene.flxX[Top-Nx];
 		graphene.flxY[Bottom] = graphene.flxY[Top-Nx];
@@ -176,7 +176,7 @@ void BoundaryCondition::DyakonovShur::X(GrapheneFluid2D& graphene) {
 	int Ny=graphene.SizeY();
 	 
 	for(int j=0;j<Ny;j++){	
-		graphene.den[0+j*Nx]=1.0f;               			//constant density at x=0
+		graphene.den[0+j*Nx]=1.0f;			//constant density at x=0
 		graphene.den[Nx-1+j*Nx]=graphene.den[Nx-2+j*Nx]; 			//free density at x=L
 		graphene.flxX[0+j*Nx] = graphene.flxX[1+j*Nx]*pow(graphene.den[1+j*Nx],-1.5f);			//free flux at x=0
 		graphene.flxX[Nx-1+j*Nx] = sqrt(graphene.den[Nx-1+j*Nx]);	//constant current at x=L (flux equals mass)

@@ -6,7 +6,7 @@
 #include <ctime>
 #include <algorithm>
 #include <string>
-#include <iomanip>   
+#include <iomanip>
 #include <cassert>
 
 #include "TethysLib.h"
@@ -17,12 +17,12 @@ using namespace std;
 
 
 #ifndef MAT_PI
-#    define MAT_PI 3.14159265358979323846f
+#	define MAT_PI 3.14159265358979323846f
 #endif
 
 
 #ifndef MAT_EULER
-#    define MAT_EULER 2.71828182845905f
+#	define MAT_EULER 2.71828182845905f
 #endif
 
 
@@ -58,17 +58,17 @@ float SoundVelocityAnisotropy(float i, float dx,float S){
 
 
 void AverageFilter(float * vec_in, float * vec_out, int size , int width ){
-	for ( int i = 0; i < size; i++ ){		
+	for ( int i = 0; i < size; i++ ){
 		if(i>=width &&i<=size-1-width){
-			for(int k = i-width; k <= i+width;k++){			
+			for(int k = i-width; k <= i+width;k++){
 				vec_out[i] += vec_in[k]; 
-			}	
+			}
 			vec_out[i] = vec_out[i]/(2.0f*(float)width+1.0f);
 			}
 		else{
-			vec_out[i] =	vec_in[i] ;
-		}	
-	}	
+			vec_out[i] = vec_in[i] ;
+		}
+	}
 }
 
 
@@ -88,7 +88,7 @@ cout<<"\n" ;
 	cout<<"║\033[2m     ▆███▆    ▆███▆▆▆██▉     ▆███▆    ▆███▆ ▆███▆    ▆███▆   ▐█▆▆▆▆▆██▘  \033[0m║\n";
 	cout<<"║                                                                         ║\n";
 	cout<<"║ \033[1mTwo-dimensional Emitter of THz, Hydrodynamic Simulation.  Version 2.1.0\033[0m ║\n";
-	cout<<"╚═════════════════════════════════════════════════════════════════════════╝\n";                                                                                                                                                                                          
+	cout<<"╚═════════════════════════════════════════════════════════════════════════╝\n";
 }
 
 void TETHYSBase::WellcomeScreen(float vel_snd, float vel_fer, float col_freq,float viscosity, float dt,float dx, float Tmax){
@@ -120,25 +120,25 @@ int TETHYSBase::SizeY(){ return Ny; }
 
 
 void TETHYSBase::CloseHDF5File(){
-     grp_dat->close();
-	 grp_den->close();
-	 grp_velX->close();
-	 grp_velY->close();
-	 hdf5file->close();
+	grp_dat->close();
+	grp_den->close();
+	grp_velX->close();
+	grp_velY->close();
+	hdf5file->close();
 }
 
 
 TETHYSBase::~TETHYSBase(){
-    delete grp_dat;
-    delete grp_den;
-    delete grp_velX;
-    delete grp_velY;
-    delete dataspace_den;
-    delete dataspace_velX;
-    if(Rank()==2){
-        delete dataspace_velY;
-    }
-    delete hdf5file;
+	delete grp_dat;
+	delete grp_den;
+	delete grp_velX;
+	delete grp_velY;
+	delete dataspace_den;
+	delete dataspace_velX;
+	if(Rank()==2){
+		delete dataspace_velY;
+	}
+	delete hdf5file;
 }
 
 
@@ -153,8 +153,8 @@ TETHYSBase::TETHYSBase(int sizeNX,int sizeNY,int dimension){
 	Nx = sizeNX;
 	Ny = sizeNY;
 	RANK=dimension;
-	const FloatType      hdf5_float(PredType::NATIVE_FLOAT);
-	const IntType        hdf5_int(PredType::NATIVE_INT);	
+	const FloatType hdf5_float(PredType::NATIVE_FLOAT);
+	const IntType hdf5_int(PredType::NATIVE_INT);
 	char buffer [50];
 	sprintf (buffer, "Fluido1D_Nx=%d", Nx);
 	file_infix = buffer;
@@ -163,39 +163,35 @@ TETHYSBase::TETHYSBase(int sizeNX,int sizeNY,int dimension){
 void TETHYSBase::CreateHDF5File(){
 	std::string hdf5name;
 	if(RANK==1){
-		hdf5name = "hdf5_1D_" + this->GetInfix() + ".h5" ;	
+		hdf5name = "hdf5_1D_" + this->GetInfix() + ".h5" ;
 	}
 	if(RANK==2){
-		hdf5name = "hdf5_2D_" + this->GetInfix() + ".h5" ;	
+		hdf5name = "hdf5_2D_" + this->GetInfix() + ".h5" ;
 	}
 	H5std_string  FILE_NAME( hdf5name );
-    hdf5file = new H5File( FILE_NAME, H5F_ACC_TRUNC );
+	hdf5file = new H5File( FILE_NAME, H5F_ACC_TRUNC );
 
 	grp_dat = new Group( hdf5file->createGroup( "/Data" ));
-	grp_den = new Group( hdf5file->createGroup( "/Data/Density" ));		
+	grp_den = new Group( hdf5file->createGroup( "/Data/Density" ));
 	grp_velX = new Group( hdf5file->createGroup( "/Data/VelocityX" ));
 	grp_velY = new Group( hdf5file->createGroup( "/Data/VelocityY" ));
 
 	if(RANK==1){		
-		hsize_t     dimsf[1];              // dataset dimensions
-		dimsf[0] = Nx;		
+		hsize_t dimsf[1];// dataset dimensions
+		dimsf[0] = static_cast<hsize_t>(Nx);
 		dataspace_den = new DataSpace( RANK, dimsf );
 		dataspace_velX = new DataSpace( RANK, dimsf );
 	}
-	if(RANK==2){		
-		hsize_t     dimsf[2];
-		dimsf[0] = Nx;
-		dimsf[1] = Ny;
+	if(RANK==2){
+		hsize_t dimsf[2];
+		dimsf[0] = static_cast<hsize_t>(Nx);
+		dimsf[1] = static_cast<hsize_t>(Ny);
 		dataspace_den = new DataSpace( RANK, dimsf );
 		dataspace_velX = new DataSpace( RANK, dimsf );
 		dataspace_velY = new DataSpace( RANK, dimsf );
-	}		
+	}
 }
 
-
-//======================================================================
-//======================================================================
-//======================================================================
 
 void RecordLogFile(float vel_snd, float vel_fer, float col_freq, float dt, float dx,float dy, float Tmax){
 	ofstream logfile;
@@ -211,13 +207,12 @@ void RecordLogFile(float vel_snd, float vel_fer, float col_freq, float dt, float
 	logfile << "#vel_snd \t vel_fer \t col_freq  \t w' \t w'' \n";
 	logfile << vel_snd <<"\t"<<vel_fer<< "\t"<< col_freq<<"\t"<< RealFreq(vel_snd,vel_fer,col_freq,1) <<"\t"<< ImagFreq(vel_snd,vel_fer,col_freq) <<"\n";
 	logfile << "#discretisation:\n";
-    logfile << "#dt\tdx\tTmax\ttime steps\tspace points\n";
+	logfile << "#dt\tdx\tTmax\ttime steps\tspace points\n";
 	logfile << dt<<"\t"<<dx<<"\t"<<dy<<"\t"<<Tmax<<"\t"<< (int) Tmax/dt <<"\t"<< (int) 1/dx <<endl;
 }
 
 float Integral1D(int N, float ds, float * f){
 	float itg=0.0;
-	
 	for(int j=1;j<N/2;j++){
 		itg += f[2*j-2] + 4*f[2*j-1] + f[2*j];
 	}
@@ -227,44 +222,39 @@ float Integral1D(int N, float ds, float * f){
 
 float SignalAverage(int N, float dt, float * f){
 	float avg=0.0;
-	
 	for(int j=1;j<N/2;j++){
 		avg += f[2*j-2] + 4*f[2*j-1] + f[2*j];
 	}
 	avg = avg*dt/3.0f;
 	avg = avg/(N*dt);
-	return avg;	
+	return avg;
 }
 
 float GaussKernel(int position , float t){
 	float g;
-	
 	g = exp(-0.5f*position*position/t);
 	g = g/(sqrt(2.0f*MAT_PI*t));
-	
-	return g;	
+	return g;
 }
 
 
 float GaussKernelDerivative(int position , float t){
 	float g;
-	
 	g = -position*exp(-0.5f*position*position/t)/t;
 	g = g/(sqrt(2.0f*MAT_PI*t));
-	
-	return g;	
+	return g;
 }
 
 
 void ConvolveGauss(int type, int M, float t, float * in, float * out, int size){
-	if(type==0){	
+	if(type==0){
 		for(int i=0;i<size;i++){
 			if(i>=M && i<size-M){
 			for(int k=-M;k<=M;k++){
-					out[i]  += in[i-k]*GaussKernel(k,t);
+					out[i] += in[i-k]*GaussKernel(k,t);
 				}
 			}
-		}					
+		}
 	}
 	if(type==1){
 		for(int i=0;i<size;i++){
@@ -274,7 +264,7 @@ void ConvolveGauss(int type, int M, float t, float * in, float * out, int size){
 				}
 			}
 			//out[i] = out[i] * size;
-		}							
+		}
 	}
 }
 
@@ -289,53 +279,45 @@ float RealFreq(float sound, float fermi, float col_freq, int mode){
 	float vel_phs_sqr = vel_phs*vel_phs ;
 	if (1 < vel_phs ){
 		mode = 2*mode-1;
-	 }
+	}
 	else{
 		mode = 2*mode;
 		}
 	real =  fabs(vel_phs_sqr - 0.5625f ) * MAT_PI * mode / (2.0f * vel_phs );
 	return real;
 }
-	
-	
 float ImagFreq(float sound, float fermi, float col_freq){
 	float imag;	
 	float vel_phs = PhaseVel(sound,fermi);
 	float vel_phs_sqr = vel_phs*vel_phs ;
 	imag = (vel_phs_sqr - 0.5625f ) * log(fabs( (vel_phs+0.75f)/(vel_phs-0.75f) )) / (2.0f * vel_phs ) - col_freq*(1.0f-0.125f/vel_phs);
 	return imag;
-}	
+}
 
 
 void ExtremaFinding(float *vec_in, int N, float sound, float dt,float & sat, float & tau , float & error, std::string extremafile){
-    //TODO review the entire function
-
+//TODO review the entire function
 	ofstream data_extrema;
 	data_extrema.open(extremafile);
-	
-	data_extrema << "#pos_max" << "\t" << "Max" <<"\t"<< "pos_min" <<"\t"<< "Min"<<endl;	 
-	
-	int W = floor( 1.2f*2.0f*MAT_PI/(RealFreq(sound, 1.0f, 1.0f, 1)*dt));
+	data_extrema << "#pos_max" << "\t" << "Max" <<"\t"<< "pos_min" <<"\t"<< "Min"<<endl;
+	int W = static_cast<int>(floor(1.2f * 2.0f * MAT_PI / (RealFreq(sound, 1.0f, 1.0f, 1) * dt)));
 	int k = 0;
 	int M = static_cast<int>(ceil(0.5f * dt * N * RealFreq(sound, 1.0f, 1.0f, 1) / MAT_PI));
-	float *vec_max;			
-	vec_max =(float*) calloc (M,sizeof(float));
-	float *vec_pos;			
-	vec_pos =(float*) calloc (M,sizeof(float));
-	
+	float *vec_max;
+	vec_max =(float*) calloc (static_cast<size_t>(M), sizeof(float));
+	float *vec_pos;
+	vec_pos =(float*) calloc (static_cast<size_t>(M), sizeof(float));
 	for(int shift=0; shift < N-W ; shift += W){
 		float maximum =  *max_element( vec_in + shift ,vec_in + shift + W );
 		int pos_max = static_cast<int>(max_element(vec_in + shift, vec_in + shift + W) - vec_in);
-		
 		float minimum =  *min_element( vec_in + shift ,vec_in + shift + W );
 		int pos_min = static_cast<int>(min_element(vec_in + shift, vec_in + shift + W) - vec_in);
-		
-		data_extrema << pos_max*dt << "\t" << maximum <<"\t"<< pos_min*dt <<"\t"<< minimum  <<endl;	 	
+		data_extrema << pos_max*dt << "\t" << maximum <<"\t"<< pos_min*dt <<"\t"<< minimum  <<endl;
 		vec_max[k] = maximum;
 		vec_pos[k] = pos_max*dt;
 		k++;
 	}
-	sat =  *max_element( vec_max ,vec_max + M );	
+	sat =  *max_element( vec_max ,vec_max + M );
 	for(int i=1;i<M-1;i++){
 		if( vec_max[i] > 0.99f*sat ){
 			tau  = 	vec_pos[i];
@@ -343,9 +325,5 @@ void ExtremaFinding(float *vec_in, int N, float sound, float dt,float & sat, flo
 			break;
 		}
 	}
-	data_extrema.close();		
+	data_extrema.close();
 }
-
-
-
-

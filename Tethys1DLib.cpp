@@ -19,20 +19,20 @@ using namespace std;
 
 
 #ifndef MAT_PI
-#    define MAT_PI 3.14159265358979323846
+#	define MAT_PI 3.14159265358979323846
 #endif
 
 
 #ifndef MAT_EULER
-#    define MAT_EULER 2.71828182845905
+#	define MAT_EULER 2.71828182845905
 #endif
 
 #ifndef C_SPEED
-#    define C_SPEED 1000.0
+#	define C_SPEED 1000.0
 #endif
 
 GrapheneFluid1D::GrapheneFluid1D(int sizeN,float VELSND, float FERMI,float VISCO,float COL): Fluid1D(sizeN, VELSND, VISCO){
-	vel_fer =FERMI;							
+	vel_fer =FERMI;
 	col_freq =COL; 
 	char buffer [50];
 	sprintf (buffer, "S=%.2fvF=%.2fvis=%.2fl=%.2f", vel_snd, vel_fer, kin_vis, col_freq);
@@ -49,10 +49,10 @@ Fluid1D::Fluid1D(int sizeNX,float VELSND, float VISCO): TETHYSBase{sizeNX,0,1}{
 	char buffer [50];
 	sprintf (buffer, "S=%.2fvis=%.2f", vel_snd, kin_vis);
 	file_infix = buffer;
-	den     = new float[sizeNX]();
-	vel     = new float[sizeNX]();
+	den = new float[sizeNX]();
+	vel = new float[sizeNX]();
 	grad_vel= new float[sizeNX]();
-	cur     = new float[sizeNX]();
+	cur = new float[sizeNX]();
 	den_cor = new float[sizeNX]();
 	vel_cor = new float[sizeNX]();
 	cur_cor = new float[sizeNX]();
@@ -62,7 +62,7 @@ Fluid1D::Fluid1D(int sizeNX,float VELSND, float VISCO): TETHYSBase{sizeNX,0,1}{
 	vel_snd_arr = new float[sizeNX-1]();
 }	
 	
-Fluid1D::~Fluid1D(){			
+Fluid1D::~Fluid1D(){
 	delete [] den;
 	delete [] vel ;
 	delete [] cur ;
@@ -72,14 +72,14 @@ Fluid1D::~Fluid1D(){
 	delete [] vel_cor ;
 	delete [] cur_cor ;
 	delete [] vel_snd_arr ;
-    delete [] grad_vel ;
-    delete [] grad_vel_mid ;
+	delete [] grad_vel ;
+	delete [] grad_vel_mid ;
 }
 
 float  Fluid1D::DensityFlux(float n,float v,float S){
 	float f1;
 	f1 = n*v;
-	return f1;		
+	return f1;
 }
 float  Fluid1D::VelocityFlux(float n,float v,float dv,float S){
 	float f2;
@@ -91,7 +91,7 @@ float  Fluid1D::DensitySource(float n,float v,float S){
 }
 float  Fluid1D::VelocitySource(float n,float v,float S){
 	return 0;
-}	
+}
 
 void Fluid1D::CFLCondition(){
 		dx = leng / ( float ) ( Nx - 1 );
@@ -109,12 +109,11 @@ void Fluid1D::SetSound(){
 }
 		
 void Fluid1D::InitialCondRand(){
-  srand (static_cast<unsigned int>(time(NULL)));
-  for (int i = 0; i < Nx; i++ )
-  {
+	srand (static_cast<unsigned int>(time(NULL)));
+	for (int i = 0; i < Nx; i++ ){
 		float noise = (float) rand()/ (float) RAND_MAX ;
 		den[i] = 1.0f + 0.005f*(noise-0.5f);
-  }	
+	}
 }
 
 void Fluid1D::SetKinVis(float x){ kin_vis=x;}
@@ -126,7 +125,7 @@ float Fluid1D::GetDt(){return dt;}
 
 
 void Fluid1D::Smooth(int width){
-	AverageFilter( den ,den_cor, Nx, width);	
+	AverageFilter( den ,den_cor, Nx, width);
 	AverageFilter( vel ,vel_cor, Nx, width);
 	AverageFilter( cur ,cur_cor, Nx , width);
 }
@@ -146,9 +145,9 @@ data_preview <<t<<"\t"<< den_cor[Nx-1] <<"\t"<< vel_cor[Nx-1] <<"\t"<< den_cor[0
 
 
 void Fluid1D::Richtmyer(){
-    // TODO throw exception to cath NAN or INF values
+		//TODO throw exception to cath NAN or INF values
 		//
-		//  Calculating the velocity gradient at k time
+		//Calculating the velocity gradient at k time
 		//
 		for ( int i = 1; i <= Nx-2 ; i++ )
 		{
@@ -156,8 +155,8 @@ void Fluid1D::Richtmyer(){
 		}
 		grad_vel[0] = (-1.5f*vel[0]+2.0f*vel[1]-0.5f*vel[2])/dx;
 		grad_vel[Nx-1] =  ( 0.5f*vel[Nx-1-2]-2.0f*vel[Nx-1-1]+1.5f*vel[Nx-1])/dx;
-    	//
-		//  Half step calculate density and velocity at time k+0.5 at the spatial midpoints
+		//
+		//Half step calculate density and velocity at time k+0.5 at the spatial midpoints
 		//
 		for ( int i = 0; i <= Nx - 2; i++ )
 		{
@@ -168,15 +167,15 @@ void Fluid1D::Richtmyer(){
 				- ( 0.5f*dt/dx ) * ( VelocityFlux(den[i+1],vel[i+1],grad_vel[i+1],vel_snd_arr[i]) - VelocityFlux(den[i],vel[i],grad_vel[i],vel_snd) )
 				+ ( 0.5f*dt    ) * VelocitySource(0.5f*(den[i]+den[i+1]),0.5f*(vel[i]+vel[i+1]),vel_snd_arr[i]) ;
 		}
-        //
-        //  Calculating the velocity gradient at k+1/2 time
-        //
-        for ( int i = 1; i <= Nx-3 ; i++ )
-        {
-            grad_vel_mid[i] =(-0.5f*vel_mid[i-1]+0.5f*vel_mid[i+1])/dx;
-        }
-        grad_vel_mid[0] = (-1.5f*vel_mid[0]+2.0f*vel_mid[1]-0.5f*vel_mid[2])/dx;
-        grad_vel_mid[(Nx-1)-1] = ( 0.5f*vel_mid[(Nx-1)-3]-2.0f*vel_mid[(Nx-1)-2]+1.5f*vel_mid[(Nx-1)-1])/dx;
+		//
+		//  Calculating the velocity gradient at k+1/2 time
+		//
+		for ( int i = 1; i <= Nx-3 ; i++ )
+		{
+			grad_vel_mid[i] =(-0.5f*vel_mid[i-1]+0.5f*vel_mid[i+1])/dx;
+		}
+		grad_vel_mid[0] = (-1.5f*vel_mid[0]+2.0f*vel_mid[1]-0.5f*vel_mid[2])/dx;
+		grad_vel_mid[(Nx-1)-1] = ( 0.5f*vel_mid[(Nx-1)-3]-2.0f*vel_mid[(Nx-1)-2]+1.5f*vel_mid[(Nx-1)-1])/dx;
 		//
 		// Remaining step 
 		//
@@ -199,21 +198,21 @@ void Fluid1D::Richtmyer(){
 float GrapheneFluid1D::DensityFlux(float n,float v,float S){
 	float f1;
 	f1 = n*v;
-	return f1;			
+	return f1;
 }
 float GrapheneFluid1D::VelocityFlux(float n,float v,float dv,float S){
 	float f2;
 	f2 = 0.25f*v*v + vel_fer*vel_fer*0.5f*log(n) + 2.0f*S*S*sqrt(n) - kin_vis*dv;
-	return f2;			
+	return f2;
 }
 float GrapheneFluid1D::DensitySource(float n,float v,float S){
 	float Q1=0.0f;
-	return Q1;				
+	return Q1;
 }
 float GrapheneFluid1D::VelocitySource(float n,float v,float S){
 	float Q2;
 	Q2=-1.0f*col_freq*(v-1);
-	return Q2;			
+	return Q2;
 }
 
 void GrapheneFluid1D::SetVelFer(float x){ vel_fer=x; }
@@ -274,7 +273,7 @@ void GrapheneFluid1D::CFLCondition(){
 	}else{
 		lambda=1.97f*vel_snd + 0.5f*vel_fer;
 	}
-	dt = dx/lambda;				
+	dt = dx/lambda;
 }	
 
 

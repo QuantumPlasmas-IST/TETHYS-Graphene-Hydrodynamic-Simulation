@@ -7,26 +7,26 @@ using namespace H5;
 
 class Fluid2D : public TETHYSBase
 {
-	protected:	
+	protected:
 		float dx=1.0;
-		float dy=1.0;		
-		float dt=1.0;		
+		float dy=1.0;
+		float dt=1.0;
 		const float lengX=1.0;
 		const float lengY=1.0;
 		float vel_snd =50.0;
 		float kin_vis =0.0;
-		float * vel_snd_arr;	
+		float * vel_snd_arr;
 		float * den_mid ; // 1st Aux. Grid (Nx-1)*(Ny-1)
 		float * flxX_mid ;
 		float * flxY_mid ;
 
-        float * lap_flxX ; //new grids for the laplacians
-        float * lap_flxY ;
+		float * lap_flxX ; //new grids for the laplacians
+		float * lap_flxY ;
 
 		std::ofstream data_preview;
 		virtual void SetFileName();
 
-	public :	
+	public :
 		float * den ;
 		float * velX ;
 		float * velY ;
@@ -37,7 +37,7 @@ class Fluid2D : public TETHYSBase
 		explicit Fluid2D(int sizeNx, int sizeNy,float VELSND, float VISCO);
 		~Fluid2D();
 		void SetVelSnd(float x);
-		void SetSound();	
+		void SetSound();
 		float GetVelSnd();
 		void SetKinVis(float x);
 		float GetKinVis();
@@ -48,7 +48,7 @@ class Fluid2D : public TETHYSBase
 		float GetDt();
 		void SetDt(float x);
 
-    virtual void SetSimulationTime();
+		virtual void SetSimulationTime();
 
 		void InitialCondRand();
 		void InitialCondTEST();
@@ -86,10 +86,8 @@ class GrapheneFluid2D : public Fluid2D{
 		void SetColFreq(float x);
 		float GetColFreq();
 		void CFLCondition() override;
-	    
-	    void SetSimulationTime() override ;
-	    
-	    void MassFluxToVelocity() override;	    
+		void SetSimulationTime() override;
+		void MassFluxToVelocity() override;
 		float DensityFluxX(float n, float flxX, float flxY,float mass, float S) override;
 		float DensityFluxY(float n, float flxX, float flxY,float mass, float S) override;
 		float MassFluxXFluxX(float n, float flxX, float flxY,float mass, float S) override;
@@ -101,8 +99,8 @@ class GrapheneFluid2D : public Fluid2D{
 		float MassFluxYSource(float n, float flxX, float flxY, float S) override;
 		
 		void MagneticSource();
-        void SourceFTCS();
-        void ViscosityFTCS();
+		void SourceFTCS();
+		void ViscosityFTCS();
 		void WriteAtributes();
 };
 #endif

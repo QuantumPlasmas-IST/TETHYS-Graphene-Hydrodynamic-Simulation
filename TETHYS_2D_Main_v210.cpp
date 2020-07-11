@@ -16,7 +16,7 @@
 #include "BoundaryLib.h"
 
 #ifndef MAT_PI
-#    define MAT_PI 3.14159265358979323846
+#	define MAT_PI 3.14159265358979323846
 #endif
 
 
@@ -30,7 +30,7 @@ const IntType        hdf5_int(PredType::NATIVE_INT);
 
 
 int main(int argc, char **argv){
-    float T_max=6;
+	float T_max=6;
 	int NpointsX = 101;
 	int NpointsY = 101;
 	int Npoints = NpointsX*NpointsY;
@@ -39,16 +39,16 @@ int main(int argc, char **argv){
 	float dx,dy;								// spatial discretisation
 	float dt;								// time step
 
- 	int data_save_mode=0;
+	int data_save_mode=0;
 	float input_vel_snd,input_vel_fer,input_col_freq,input_kin_vis;
 	ParameterInitalization(argc,argv,data_save_mode,input_vel_snd,input_vel_fer,input_col_freq,input_kin_vis);
 	
 	
 	GrapheneFluid2D	graph(NpointsX,NpointsY,input_vel_snd, input_vel_fer, input_kin_vis,input_col_freq);
 	graph.BannerDisplay();
-    BoundaryCondition::DyakonovShur BC;
-    //BoundaryCondition::Dirichlet BCD;
-    //BoundaryCondition BC;
+	BoundaryCondition::DyakonovShur BC;
+	//BoundaryCondition::Dirichlet BCD;
+	//BoundaryCondition BC;
 	
 	/*......CFL routine to determine dt...............................*/
 // TODO Check CFL in order to have different space discretizations
@@ -85,8 +85,7 @@ int main(int argc, char **argv){
 	
 	int time_step=0;
 	int snapshot_per_Period = 10;   
-	int points_per_Period = static_cast<int>(
-            (2.0 * MAT_PI / RealFreq(graph.GetVelSnd(), graph.GetVelFer(), graph.GetColFreq(), 1)) / dt);
+	int points_per_Period = static_cast<int>((2.0 * MAT_PI / RealFreq(graph.GetVelSnd(), graph.GetVelFer(), graph.GetColFreq(), 1)) / dt);
 	int snapshot_step = points_per_Period/snapshot_per_Period; 
 
 	
@@ -99,22 +98,22 @@ int main(int argc, char **argv){
 		++time_step;
 		t += dt;
 
-        graph.SourceFTCS();
-        // Impose boundary conditions
-        BC.X(graph);
-        BC.YFree(graph);
+		graph.SourceFTCS();
+		// Impose boundary conditions
+		BC.X(graph);
+		BC.YFree(graph);
 
 
 		graph.Richtmyer();
-        // Impose boundary conditions
-        BC.X(graph);
-        BC.YFree(graph);
+		// Impose boundary conditions
+		BC.X(graph);
+		BC.YFree(graph);
 
 		//graph.MagneticSource();
-        //graph.SourceFTCS();
+		//graph.SourceFTCS();
 
-        graph.ViscosityFTCS();
-        // Impose boundary conditions
+		graph.ViscosityFTCS();
+		// Impose boundary conditions
 		BC.X(graph);
 		BC.YFree(graph);
 
@@ -129,7 +128,7 @@ int main(int argc, char **argv){
 		
 		if(data_save_mode && time_step % snapshot_step  == 0 ){
 		//Record full data
-            graph.MassFluxToVelocity(); //if placed here the profiling percentage drops from 7.7% to <1%
+			graph.MassFluxToVelocity(); //if placed here the profiling percentage drops from 7.7% to <1%
 			string str_time = to_string(time_step/snapshot_step );
 			string name_dataset = "snapshot_"+str_time;
 			
@@ -154,7 +153,7 @@ int main(int argc, char **argv){
 	
 	
 	graph.WriteAtributes();
-    graph.CloseHDF5File();
+	graph.CloseHDF5File();
 	cout << "\033[1A\033[2K\033[1;32mDONE!\033[0m\n";
 	cout<<"═══════════════════════════════════════════════════════════════════════════" <<endl;
 

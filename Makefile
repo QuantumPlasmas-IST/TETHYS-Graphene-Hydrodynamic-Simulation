@@ -1,9 +1,9 @@
 CC = g++
 CFLAGS = -Wall -Wextra -Wno-unused-parameter -O2
-FFTLIBS  = -lfftw3 
-CLIBS  = -lm 
-LIBS        = -lsz -lz -lm
-H5LIBS 	    = -lhdf5_hl_cpp -lhdf5_cpp -lhdf5_hl -lhdf5 	
+FFTLIBS = -lfftw3
+CLIBS = -lm
+LIBS = -lsz -lz -lm
+H5LIBS = -lhdf5_hl_cpp -lhdf5_cpp -lhdf5_hl -lhdf5
 
 
 SIMUL1DSRC = TETHYS_1D_Main_v[0-9][0-9][0-9].cpp TethysLib.cpp BoundaryLib.cpp Tethys1DLib.cpp 
@@ -18,10 +18,10 @@ ANALYSISOBJ = $(ANALYSISSRC:.cpp = .o)
 TIMESERIESSRC = TETHYS_1D_TimeSeries.cpp TethysLib.cpp Tethys1DLib.cpp
 TIMESERIESOBJ = $(TIMESERIESSRC:.cpp = .o)
 
-all: tethys1D \
-     tethys2D \
-     analysis \
-     timeseries \
+all:tethys1D \
+	tethys2D \
+	analysis \
+	timeseries \
 
 tethys1D: $(SIMUL1DOBJ)
 	$(CC) $(CFLAGS) $(LIBS) -o TETHYS_1D $(SIMUL1DOBJ) $(H5LIBS)
