@@ -7,8 +7,8 @@
 #include <ctime>
 #include <algorithm>
 #include <string>
-#include <iomanip>   
-#include <cassert>
+#include <iomanip>
+
 
 #include <H5Cpp.h>
 
@@ -30,10 +30,11 @@ const IntType        hdf5_int(PredType::NATIVE_INT);
 
 
 int main(int argc, char **argv){
-	float T_max=6;
-	int NpointsX = 101;
-	int NpointsY = 101;
-	int Npoints = NpointsX*NpointsY;
+	float t_max;
+	t_max = 6;
+	int npoints_x = 101;
+	int npoints_y = 101;
+	int npoints = npoints_x * npoints_y;
 	
 	float t=0.0;
 	float dx,dy;								// spatial discretisation
@@ -41,17 +42,16 @@ int main(int argc, char **argv){
 
 	int data_save_mode=0;
 	float input_vel_snd,input_vel_fer,input_col_freq,input_kin_vis;
-	ParameterInitalization(argc,argv,data_save_mode,input_vel_snd,input_vel_fer,input_col_freq,input_kin_vis);
+	Parameter_Initalization(argc, argv, data_save_mode, input_vel_snd, input_vel_fer, input_col_freq, input_kin_vis);
 	
 	
-	GrapheneFluid2D	graph(NpointsX,NpointsY,input_vel_snd, input_vel_fer, input_kin_vis,input_col_freq);
+	GrapheneFluid2D	graph(npoints_x, npoints_y, input_vel_snd, input_vel_fer, input_kin_vis, input_col_freq);
 	graph.BannerDisplay();
 	BoundaryCondition::DyakonovShur BC;
 	//BoundaryCondition::Dirichlet BCD;
 	//BoundaryCondition BC;
 	
 	/*......CFL routine to determine dt...............................*/
-// TODO Check CFL in order to have different space discretizations
 	graph.CFLCondition();
 	dx=graph.GetDx();
 	dy=graph.GetDy();
@@ -62,7 +62,7 @@ int main(int argc, char **argv){
 // TODO review the set sound and set max time processes
 	graph.SetSound();
 	//graph.SetSimulationTime();
-	//float T_max=graph.GetTmax();
+	//float t_max=graph.GetTmax();
 	graph.SetTmax(6.0);
 	/*................................................................*/
 
@@ -71,8 +71,8 @@ int main(int argc, char **argv){
 	graph.CreateHDF5File();
 	/*................................................................*/
 	
-	graph.WellcomeScreen(graph.GetVelSnd(), graph.GetVelFer(), graph.GetColFreq(),graph.GetKinVis(), dt, dx, T_max);
-	RecordLogFile(graph.GetVelSnd(), graph.GetVelFer(), graph.GetColFreq(), dt, dx,dy, T_max);
+	graph.WellcomeScreen(graph.GetVelSnd(), graph.GetVelFer(), graph.GetColFreq(), graph.GetKinVis(), dt, dx, t_max);
+	Record_Log_File(graph.GetVelSnd(), graph.GetVelFer(), graph.GetColFreq(), dt, dx, dy, t_max);
 
 		
 	////////////////////////////////////////////////////////////////////
@@ -84,30 +84,33 @@ int main(int argc, char **argv){
 	cout << "\033[1;7;5;33m Program Running \033[0m"<<endl;
 	
 	int time_step=0;
-	int snapshot_per_Period = 10;   
-	int points_per_Period = static_cast<int>((2.0 * MAT_PI / RealFreq(graph.GetVelSnd(), graph.GetVelFer(), graph.GetColFreq(), 1)) / dt);
-	int snapshot_step = points_per_Period/snapshot_per_Period; 
+	int snapshot_per_period = 10;
+	int points_per_period = static_cast<int>((2.0 * MAT_PI /Real_Freq(graph.GetVelSnd(), graph.GetVelFer(), graph.GetColFreq(), 1)) / dt);
+	int snapshot_step = points_per_period / snapshot_per_period;
 
 	
-	while(t<=T_max && isfinite(graph.velX[Npoints/2])) // throw exception para nan / inf
-	//while(time_step<=10000 && isfinite(graph.velX[Npoints/2])) // throw exception para nan / inf
+	while(t <= t_max && isfinite(graph.VelX[npoints / 2])) // throw exception para nan / inf
+	//while(time_step<=10000 && isfinite(graph.velX[npoints/2])) // throw exception para nan / inf
 	{	
-// TODO
-//  1) try to implement strang splittind instead of godunov splitting
-
 		++time_step;
 		t += dt;
 
-		graph.SourceFTCS();
+		//graph.SourceFTCS();
 		// Impose boundary conditions
-		BC.X(graph);
-		BC.YFree(graph);
+		//BC.X(graph);
+		//BC.YFree(graph);
 
 
 		graph.Richtmyer();
 		// Impose boundary conditions
 		BC.X(graph);
 		BC.YFree(graph);
+
+//		graph.SourceFTCS();
+		// Impose boundary conditions
+//		BC.X(graph);
+		//BC.YFree(graph);
+
 
 		//graph.MagneticSource();
 		//graph.SourceFTCS();
@@ -132,17 +135,17 @@ int main(int argc, char **argv){
 			string str_time = to_string(time_step/snapshot_step );
 			string name_dataset = "snapshot_"+str_time;
 			
-			DataSet dataset_den = graph.grp_den->createDataSet( name_dataset , hdf5_float, *graph.dataspace_den );
-			dataset_den.write( graph.den, hdf5_float );
+			DataSet dataset_den = graph.GrpDen->createDataSet(name_dataset , hdf5_float, *graph.DataspaceDen );
+			dataset_den.write(graph.Den, hdf5_float );
 			dataset_den.close();
 			
-			DataSet dataset_velX = graph.grp_velX->createDataSet( name_dataset , hdf5_float, *graph.dataspace_velX );
-			dataset_velX.write( graph.velX, hdf5_float );
-			dataset_velX.close();
+			DataSet dataset_vel_x = graph.GrpVelX->createDataSet(name_dataset , hdf5_float, *graph.DataspaceVelX );
+			dataset_vel_x.write(graph.VelX, hdf5_float );
+			dataset_vel_x.close();
 
-			DataSet dataset_velY = graph.grp_velY->createDataSet( name_dataset , hdf5_float, *graph.dataspace_velY );
-			dataset_velY.write( graph.velY, hdf5_float );
-			dataset_velY.close();	
+			DataSet dataset_vel_y = graph.GrpVelY->createDataSet(name_dataset , hdf5_float, *graph.DataspaceVelY );
+			dataset_vel_y.write(graph.VelY, hdf5_float );
+			dataset_vel_y.close();
 		}
 		graph.WriteFluidFile(t);
 		

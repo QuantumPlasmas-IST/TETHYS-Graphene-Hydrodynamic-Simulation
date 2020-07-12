@@ -181,13 +181,13 @@
         <UML:Attribute xmi.id="uoD4nXcuDvFD8" visibility="protected" isSpecification="false" type="u9eHbPuGqG5vy" name="RANK"/>
         <UML:Attribute xmi.id="u6o3odrix4exe" visibility="protected" isSpecification="false" type="u8Rd17TS3oshN" name="file_infix"/>
         <UML:Attribute xmi.id="ut3oMNxfU1jAA" visibility="public" isSpecification="false" type="uFOZx3NNbAHDm" name="hdf5file" comment="acho que pelo menos para já nao vai precisar de construtor ou entao ponho o banner mesmo no constrturos &#xa;( se tirar o namespace nao esquecer usar o H5::)"/>
-        <UML:Attribute xmi.id="uEk2UOUvJxXDY" visibility="public" isSpecification="false" type="uegp3nkm1ZGXu" name="grp_dat"/>
-        <UML:Attribute xmi.id="u5AQsZPdb4vSW" visibility="public" isSpecification="false" type="uegp3nkm1ZGXu" name="grp_den"/>
-        <UML:Attribute xmi.id="u6XYGQe5rWiOQ" visibility="public" isSpecification="false" type="uegp3nkm1ZGXu" name="grp_velX"/>
-        <UML:Attribute xmi.id="u2FzNsnuyRYHp" visibility="public" isSpecification="false" type="uegp3nkm1ZGXu" name="grp_velY"/>
-        <UML:Attribute xmi.id="u8W9Si9oO5Qps" visibility="public" isSpecification="false" type="uI8FXmyDgLmal" name="dataspace_den"/>
-        <UML:Attribute xmi.id="uZbkSmzaaT2Dg" visibility="public" isSpecification="false" type="uI8FXmyDgLmal" name="dataspace_velX"/>
-        <UML:Attribute xmi.id="uGbFDvfEJWvPV" visibility="public" isSpecification="false" type="uI8FXmyDgLmal" name="dataspace_velY"/>
+        <UML:Attribute xmi.id="uEk2UOUvJxXDY" visibility="public" isSpecification="false" type="uegp3nkm1ZGXu" name="GrpDat"/>
+        <UML:Attribute xmi.id="u5AQsZPdb4vSW" visibility="public" isSpecification="false" type="uegp3nkm1ZGXu" name="GrpDen"/>
+        <UML:Attribute xmi.id="u6XYGQe5rWiOQ" visibility="public" isSpecification="false" type="uegp3nkm1ZGXu" name="GrpVelX"/>
+        <UML:Attribute xmi.id="u2FzNsnuyRYHp" visibility="public" isSpecification="false" type="uegp3nkm1ZGXu" name="GrpVelY"/>
+        <UML:Attribute xmi.id="u8W9Si9oO5Qps" visibility="public" isSpecification="false" type="uI8FXmyDgLmal" name="DataspaceDen"/>
+        <UML:Attribute xmi.id="uZbkSmzaaT2Dg" visibility="public" isSpecification="false" type="uI8FXmyDgLmal" name="DataspaceVelX"/>
+        <UML:Attribute xmi.id="uGbFDvfEJWvPV" visibility="public" isSpecification="false" type="uI8FXmyDgLmal" name="DataspaceVelY"/>
         <UML:Operation xmi.id="uQSL0nmkVn4iF" visibility="public" isSpecification="false" isRoot="false" isQuery="false" isVirtual="false" isInline="false" isAbstract="false" stereotype="constructor" isLeaf="false" name="TETHYSBase" isOverride="false">
          <UML:BehavioralFeature.parameter>
           <UML:Parameter xmi.id="ugVxNqlTyP8fi" visibility="private" isSpecification="false" value="" type="u9eHbPuGqG5vy" name="sizeNX"/>
@@ -372,7 +372,7 @@
         <UML:Attribute xmi.id="u2lsZqYaWo01i" visibility="public" isSpecification="false" type="uRryAeDwioRnQ" name="flxX"/>
         <UML:Attribute xmi.id="uWjqiYT0utsvV" visibility="public" isSpecification="false" type="uRryAeDwioRnQ" name="flxY"/>
         <UML:Attribute xmi.id="uQ8klrgxrnJJn" visibility="public" isSpecification="false" type="uRryAeDwioRnQ" name="curX"/>
-        <UML:Attribute xmi.id="uNRnf6l8oEmFU" visibility="public" isSpecification="false" type="uRryAeDwioRnQ" name="curY"/>
+        <UML:Attribute xmi.id="uNRnf6l8oEmFU" visibility="public" isSpecification="false" type="uRryAeDwioRnQ" name="CurY"/>
         <UML:Operation xmi.id="ulXJc1gjsDUZq" visibility="protected" isSpecification="false" isRoot="false" isQuery="false" isVirtual="true" isInline="false" isAbstract="false" isLeaf="false" name="SetFileName" isOverride="false"/>
         <UML:Operation xmi.id="uUkdYzvo4HQDD" visibility="public" isSpecification="false" isRoot="false" isQuery="false" isVirtual="false" isInline="false" isAbstract="false" stereotype="explicit constructor" isLeaf="false" name="Fluid2D" isOverride="false">
          <UML:BehavioralFeature.parameter>
@@ -456,7 +456,7 @@
          </UML:BehavioralFeature.parameter>
         </UML:Operation>
         <UML:Operation xmi.id="uZD7P5cEYTByO" visibility="public" isSpecification="false" isRoot="false" isQuery="false" isVirtual="false" isInline="false" isAbstract="false" isLeaf="false" name="InitialCondRand" isOverride="false"/>
-        <UML:Operation xmi.id="uyt2ybkL9U0d1" visibility="public" isSpecification="false" isRoot="false" isQuery="false" isVirtual="false" isInline="false" isAbstract="false" isLeaf="false" name="InitialCondTEST" isOverride="false"/>
+        <UML:Operation xmi.id="uyt2ybkL9U0d1" visibility="public" isSpecification="false" isRoot="false" isQuery="false" isVirtual="false" isInline="false" isAbstract="false" isLeaf="false" name="InitialCondTest" isOverride="false"/>
         <UML:Operation xmi.id="u5qM0TUHCVyWB" visibility="public" isSpecification="false" isRoot="false" isQuery="false" isVirtual="false" isInline="false" isAbstract="false" isLeaf="false" name="Richtmyer" isOverride="false"/>
         <UML:Operation xmi.id="uHSOiNtO1unvG" visibility="public" isSpecification="false" isRoot="false" isQuery="false" isVirtual="true" isInline="false" isAbstract="false" isLeaf="false" name="CFLCondition" isOverride="false"/>
         <UML:Operation xmi.id="uJGGF79hCU1du" visibility="public" isSpecification="false" isRoot="false" isQuery="false" isVirtual="false" isInline="false" isAbstract="false" isLeaf="false" name="BoundaryCond" isOverride="false">

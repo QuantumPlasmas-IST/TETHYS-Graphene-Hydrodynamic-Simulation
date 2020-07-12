@@ -7,25 +7,25 @@ using namespace H5;
 
 
 //REVER A NECESSIDADES DESTAS FUNCOES 
-void ConvolveGauss(int type, float M, float t, float * in, float * out, int size);
-float GaussKernel(int position , float t); //
-float GaussKernelDerivative(int position , float t); //
-void RecordLogFile(float vel_snd, float vel_fer, float col_freq, float dt, float dx,float dy, float Tmax);
+void Convolve_Gauss(int type, float m, float t, float * in, float * out, int size);
+constexpr float Gauss_Kernel(int position , float t); //
+constexpr float Gauss_Kernel_Derivative(int position , float t); //
+void Record_Log_File(float vel_snd, float vel_fer, float col_freq, float dt, float dx, float dy, float tmax);
 
-float SignalAverage(int N, float dt, float * f);
-float Integral1D(int N, float ds, float * f);
+float Signal_Average(int n, float dt, float * f);
+float Integral_1_D(int n, float ds, float * f);
 
-void ExtremaFinding(float * vec_in, int N, float sound, float dt,float & sat, float  & tau, float & error, std::string extremafile);
-float ImagFreq(float sound, float fermi, float col_freq);                  //
-float PhaseVel(float sound, float fermi);
-float RealFreq(float sound, float fermi, float col_freq, int mode);  //
+void Extrema_Finding(float * vec_in, int n, float sound, float dt, float & sat, float  & tau, float & error, std::string extremafile);
+float Imag_Freq(float sound, float fermi, float col_freq);                  //
+float Phase_Vel(float sound, float fermi);
+float Real_Freq(float sound, float fermi, float col_freq, int mode);  //
 
-void ParameterInitalization(int argc,char ** argv,int &data_save_mode, float &input_vel_snd,float &input_vel_fer,float &input_col_freq,float &input_kin_vis);
+void Parameter_Initalization(int argc, char ** argv, int &data_save_mode, float &input_vel_snd, float &input_vel_fer, float &input_col_freq, float &input_kin_vis);
 
 //-----------------------------------
 
-float SoundVelocityAnisotropy(float i, float dx,float S);
-void AverageFilter(float * vec_in, float * vec_out, int size , int width );
+float Sound_Velocity_Anisotropy(float i, float dx, float s);
+void Average_Filter(float * vec_in, float * vec_out, int size , int width );
 
 class TETHYSBase {
 	protected:
@@ -36,19 +36,19 @@ class TETHYSBase {
 		float Tmax=10;
 		
 	public:
-		TETHYSBase(int sizeNX,int sizeNY,int dimensions); // acho que pelo menos para já nao vai precisar de construtor ou entao ponho o banner mesmo no constrturos 
+		TETHYSBase(int size_nx, int size_ny, int dimensions); // acho que pelo menos para já nao vai precisar de construtor ou entao ponho o banner mesmo no constrturos
 		~TETHYSBase();
 
 
 		H5File* hdf5file ; // se tirar o namespace nao esquecer usar o H5::
-		Group* grp_dat ;
-		Group* grp_den ;
-		Group* grp_velX ;
-		Group* grp_velY ;
-		DataSpace* dataspace_den;
-		DataSpace* dataspace_velX;
-		DataSpace* dataspace_velY;
-		
+		Group* GrpDat ;
+		Group* GrpDen ;
+		Group* GrpVelX ;
+		Group* GrpVelY ;
+		DataSpace* DataspaceDen;
+		DataSpace* DataspaceVelX;
+		DataSpace* DataspaceVelY;
+
 		float GetTmax();
 		void SetTmax(float x);
 		int SizeX();
@@ -59,7 +59,7 @@ class TETHYSBase {
 		void CreateHDF5File();
 		void CloseHDF5File();
 		void BannerDisplay();
-		void WellcomeScreen(float vel_snd, float vel_fer,float col_freq,float viscosity, float dt, float dx, float Tmax);
+		void WellcomeScreen(float vel_snd, float vel_fer,float col_freq,float viscosity, float dt, float dx, float tmax);
 		
 		
 };  

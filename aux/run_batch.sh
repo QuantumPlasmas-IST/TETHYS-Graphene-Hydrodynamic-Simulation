@@ -1,9 +1,9 @@
 #!/bin/bash
 
-DIRNAME=$(date +"DataFiles_VISCOSITY_TRIAL_BATCH_%F_%H:%M")
+DIRNAME=$(date +"DataFiles_VISCOSITY_TRIAL_BATCH_FTCS_with_Goduov_splitting_%F_%H:%M")
 mkdir -p "$DIRNAME"
-mkdir -p "$DIRNAME/extrema"
-mkdir -p "$DIRNAME/electronics"
+#mkdir -p "$DIRNAME/extrema"
+#mkdir -p "$DIRNAME/electronics"
 
 v=10
 l=0.0
@@ -16,19 +16,20 @@ do
 		echo "calculating S="$s
 		echo "calculating Vf="$v
 		echo "calculating Vc="$l
-		./RichtmyerHDF5 $s $v $l $vis 0 
-		FILENAME1=$(find preview*.dat)
-		WORDCOUNT1=$(wc -l preview*.dat)
-		LINENUMBER1=${WORDCOUNT1% *}
-		./TimeSeries "$LINENUMBER1" "$FILENAME1" "$s" 	
-		FILENAME2=$(find electro_*.dat)
-		WORDCOUNT2=$(wc -l electro_*.dat)
-		LINENUMBER2=${WORDCOUNT2% *}
-		./ElectronicAnalysis "$LINENUMBER2" "$FILENAME2" "$s" 
+		./TETHYS_2D $s $v $l $vis 1 
+#		FILENAME1=$(find preview*.dat)
+#		WORDCOUNT1=$(wc -l preview*.dat)
+#		LINENUMBER1=${WORDCOUNT1% *}
+#		./TimeSeries "$LINENUMBER1" "$FILENAME1" "$s" 	
+#		FILENAME2=$(find electro_*.dat)
+#		WORDCOUNT2=$(wc -l electro_*.dat)
+#		LINENUMBER2=${WORDCOUNT2% *}
+#		./ElectronicAnalysis "$LINENUMBER2" "$FILENAME2" "$s" 
 #		mv -- electro_S=*vF=*vis=*l=*.dat "./$DIRNAME/electronics"
-		mv -- *electro_*.dat "./$DIRNAME/electronics"
-		mv -- extrema_* "./$DIRNAME/extrema"
+#		mv -- *electro_*.dat "./$DIRNAME/electronics"
+#		mv -- extrema_* "./$DIRNAME/extrema"
 		mv -- *.dat "./$DIRNAME"
+		mv -- *.h5 "./$DIRNAME"
 	done
 done 
 

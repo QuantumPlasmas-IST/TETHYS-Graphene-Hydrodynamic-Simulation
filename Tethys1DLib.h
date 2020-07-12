@@ -19,14 +19,14 @@ class Fluid1D : public TETHYSBase{
 		std::ofstream data_preview;
 	public :
 		using TETHYSBase::TETHYSBase;
-		float * den ;
-		float * vel ;
-		float * grad_vel;
-		float * cur ;
-		float * den_cor;
-		float * vel_cor ;
-		float * cur_cor ;
-		Fluid1D(int sizeN,float VELSND, float VISCO);
+		float * Den ;
+		float * Vel ;
+		float * GradVel;
+		float * Cur ;
+		float * DenCor;
+		float * VelCor ;
+		float * CurCor ;
+		Fluid1D(int size_nx, float sound_velocity, float shear_viscosity);
 		~Fluid1D();
 		void Smooth(int width);
 		void SetVelSnd(float x);
@@ -40,10 +40,10 @@ class Fluid1D : public TETHYSBase{
 		void Richtmyer();
 		void SetSound();
 		virtual void CFLCondition();
-		virtual float DensityFlux(float n,float v,float S);
-		virtual float VelocityFlux(float n,float v,float dv,float S);
-		virtual float DensitySource(float n,float v,float S);
-		virtual float VelocitySource(float n,float v,float S);
+		virtual float DensityFlux(float n,float v,float s);
+		virtual float VelocityFlux(float n,float v,float dv,float s);
+		virtual float DensitySource(float n,float v,float s);
+		virtual float VelocitySource(float n,float v,float s);
 		void CreateFluidFile();
 		void WriteFluidFile(float t) ;
 };
@@ -53,17 +53,17 @@ class GrapheneFluid1D : public Fluid1D{
 		float col_freq =0.0;
 	public : 
 		using Fluid1D::Fluid1D;
-		GrapheneFluid1D(int sizeN,float VELSND, float FERMI,float VISCO,float COL);
+		GrapheneFluid1D(int size_n, float sound_velocity, float fermi_velocity, float shear_viscosity, float collision_frequency);
 		void CFLCondition() override;
 		//void BoundaryCond(int type);
 		void SetVelFer(float x);
 		float GetVelFer();
 		void SetColFreq(float x);
 		float GetColFreq();
-		float DensityFlux(float n,float v,float S) override;
-		float VelocityFlux(float n,float v,float dv,float S) override;
-		float DensitySource(float n,float v,float S) override; 
-		float VelocitySource(float n,float v,float S) override;
+		float DensityFlux(float n,float v,float s) override;
+		float VelocityFlux(float n,float v,float dv,float s) override;
+		float DensitySource(float n,float v,float s) override;
+		float VelocitySource(float n,float v,float s) override;
 		void WriteAtributes();
 };
 class ElectroAnalysis {

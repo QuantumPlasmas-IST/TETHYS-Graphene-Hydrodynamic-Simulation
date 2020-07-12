@@ -30,11 +30,11 @@ class  BoundaryCondition::DyakonovShur {
 
 class  BoundaryCondition::Dirichlet { 
 	public: 	
-	void Density(GrapheneFluid1D& graphene, float L, float R);
-	void Density(GrapheneFluid2D& graphene, float L, float R, float T, float B);
-	void VelocityX(GrapheneFluid1D& graphene, float L, float R);
-	void MassFluxX(GrapheneFluid2D& graphene, float L, float R, float T, float B);
-	void MassFluxY(GrapheneFluid2D& graphene, float L, float R, float T, float B);
+	void Density(GrapheneFluid1D& graphene, float left, float right);
+	void Density(GrapheneFluid2D& graphene, float left, float right, float top, float bottom);
+	void VelocityX(GrapheneFluid1D& graphene, float left, float right);
+	void MassFluxX(GrapheneFluid2D& graphene, float left, float right, float top, float bottom);
+	void MassFluxY(GrapheneFluid2D& graphene, float left, float right, float top, float bottom);
 };
 
 #endif
