@@ -23,10 +23,7 @@
 using namespace H5;
 using namespace std;
 
-const FloatType      hdf5_float(PredType::NATIVE_FLOAT);
-const IntType        hdf5_int(PredType::NATIVE_INT);
-
-
+const FloatType      HDF5FLOAT(PredType::NATIVE_FLOAT);
 
 
 int main(int argc, char **argv){
@@ -59,16 +56,16 @@ int main(int argc, char **argv){
 	/*................................................................*/
 	
 	/*.........Fixed or variable vel_snd value........................*/
-// TODO review the set sound and set max time processes
+
 	graph.SetSound();
 	//graph.SetSimulationTime();
-	//float t_max=graph.GetTmax();
 	graph.SetTmax(6.0);
 	/*................................................................*/
 
 	/*.........Output files and streams...............................*/
 	graph.CreateFluidFile();
 	graph.CreateHDF5File();
+
 	/*................................................................*/
 	
 	graph.WellcomeScreen(graph.GetVelSnd(), graph.GetVelFer(), graph.GetColFreq(), graph.GetKinVis(), dt, dx, t_max);
@@ -135,16 +132,16 @@ int main(int argc, char **argv){
 			string str_time = to_string(time_step/snapshot_step );
 			string name_dataset = "snapshot_"+str_time;
 			
-			DataSet dataset_den = graph.GrpDen->createDataSet(name_dataset , hdf5_float, *graph.DataspaceDen );
-			dataset_den.write(graph.Den, hdf5_float );
+			DataSet dataset_den = graph.GrpDen->createDataSet(name_dataset , HDF5FLOAT, *graph.DataspaceDen );
+			dataset_den.write(graph.Den, HDF5FLOAT );
 			dataset_den.close();
 			
-			DataSet dataset_vel_x = graph.GrpVelX->createDataSet(name_dataset , hdf5_float, *graph.DataspaceVelX );
-			dataset_vel_x.write(graph.VelX, hdf5_float );
+			DataSet dataset_vel_x = graph.GrpVelX->createDataSet(name_dataset , HDF5FLOAT, *graph.DataspaceVelX );
+			dataset_vel_x.write(graph.VelX, HDF5FLOAT );
 			dataset_vel_x.close();
 
-			DataSet dataset_vel_y = graph.GrpVelY->createDataSet(name_dataset , hdf5_float, *graph.DataspaceVelY );
-			dataset_vel_y.write(graph.VelY, hdf5_float );
+			DataSet dataset_vel_y = graph.GrpVelY->createDataSet(name_dataset , HDF5FLOAT, *graph.DataspaceVelY );
+			dataset_vel_y.write(graph.VelY, HDF5FLOAT );
 			dataset_vel_y.close();
 		}
 		graph.WriteFluidFile(t);
@@ -154,9 +151,14 @@ int main(int argc, char **argv){
 		
 	}
 	
-	
-	graph.WriteAtributes();
+
+	if(data_save_mode ) {
+		graph.WriteAtributes();
+	}
 	graph.CloseHDF5File();
+	if(!data_save_mode ) {
+		system("rm hdf5_1D*");
+	}
 	cout << "\033[1A\033[2K\033[1;32mDONE!\033[0m\n";
 	cout<<"═══════════════════════════════════════════════════════════════════════════" <<endl;
 

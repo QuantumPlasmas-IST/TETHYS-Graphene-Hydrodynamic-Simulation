@@ -56,15 +56,15 @@ class Fluid2D : public TETHYSBase
 		//void DimensionalSplittingMethod();
 		virtual void CFLCondition();
 
-		virtual float DensityFluxX(float n, float flx_x, float vel_y, float mass, float s);
-		virtual float DensityFluxY(float n, float vel_x, float vel_y,float mass, float s);
+		virtual float DensityFluxX(__attribute__((unused)) float n, float flx_x, __attribute__((unused)) float vel_y, __attribute__((unused)) float mass, __attribute__((unused)) float s);
+		virtual float DensityFluxY(__attribute__((unused)) float n, __attribute__((unused)) float vel_x, float vel_y, __attribute__((unused)) float mass, __attribute__((unused)) float s);
 		virtual float MassFluxXFluxX(float n, float flx_x, float flx_y,float mass, float s);
 		virtual float MassFluxXFluxY(float n, float flx_x, float flx_y,float mass, float s);
 		virtual float MassFluxYFluxX(float n, float flx_x, float flx_y,float mass, float s);
 		virtual float MassFluxYFluxY(float n, float flx_x, float flx_y,float mass, float s);
-		virtual float DensitySource(float n, float vel_x, float vel_y, float s);
-		virtual float MassFluxXSource(float n, float flx_x, float flx_y, float s);
-		virtual float MassFluxYSource(float n, float flx_x, float flx_y, float s);
+		//virtual float DensitySource(float n, float vel_x, float vel_y, float s);
+		//virtual float MassFluxXSource(float n, float flx_x, float flx_y, float s);
+		//virtual float MassFluxYSource(float n, float flx_x, float flx_y, float s);
 		virtual void MassFluxToVelocity();
 		
 		void CreateFluidFile();
@@ -94,9 +94,9 @@ class GrapheneFluid2D : public Fluid2D{
 		float MassFluxXFluxY(float n, float flx_x, float flx_y,float mass, float s) override;
 		float MassFluxYFluxX(float n, float flx_x, float flx_y,float mass, float s) override;
 		float MassFluxYFluxY(float n, float flx_x, float flx_y,float mass, float s) override;
-		float DensitySource(float n, float flx_x, float flx_y, float s) override;
-		float MassFluxXSource(float n, float flx_x, float flx_y, float s)  override;
-		float MassFluxYSource(float n, float flx_x, float flx_y, float s) override;
+		//float DensitySource(float n, float flx_x, float flx_y, float s) override;
+		//float MassFluxXSource(float n, float flx_x, float flx_y, float s)  override;
+		//float MassFluxYSource(float n, float flx_x, float flx_y, float s) override;
 		
 		void MagneticSource();
 		void SourceFTCS();

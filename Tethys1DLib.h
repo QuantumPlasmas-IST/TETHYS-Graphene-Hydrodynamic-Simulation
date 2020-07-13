@@ -40,10 +40,10 @@ class Fluid1D : public TETHYSBase{
 		void Richtmyer();
 		void SetSound();
 		virtual void CFLCondition();
-		virtual float DensityFlux(float n,float v,float s);
-		virtual float VelocityFlux(float n,float v,float dv,float s);
-		virtual float DensitySource(float n,float v,float s);
-		virtual float VelocitySource(float n,float v,float s);
+		virtual float DensityFlux(float n,float v, __attribute__((unused)) float s);
+		virtual float VelocityFlux(float n,float v,float dv, __attribute__((unused)) float s);
+		virtual float DensitySource( __attribute__((unused)) float n,  __attribute__((unused)) float v, __attribute__((unused)) float s);
+		virtual float VelocitySource( __attribute__((unused)) float n, __attribute__((unused)) float v, __attribute__((unused)) float s);
 		void CreateFluidFile();
 		void WriteFluidFile(float t) ;
 };
@@ -60,7 +60,7 @@ class GrapheneFluid1D : public Fluid1D{
 		float GetVelFer();
 		void SetColFreq(float x);
 		float GetColFreq();
-		float DensityFlux(float n,float v,float s) override;
+		float DensityFlux(float n,float v,__attribute__((unused)) float s) override;
 		float VelocityFlux(float n,float v,float dv,float s) override;
 		float DensitySource(float n,float v,float s) override;
 		float VelocitySource(float n,float v,float s) override;

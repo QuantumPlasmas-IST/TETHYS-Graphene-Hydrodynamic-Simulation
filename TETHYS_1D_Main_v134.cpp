@@ -21,8 +21,8 @@
 
 using namespace H5;
 using namespace std;
-const FloatType      hdf5_float(PredType::NATIVE_FLOAT);
-const IntType        hdf5_int(PredType::NATIVE_INT);
+const FloatType      HDF5FLOAT(PredType::NATIVE_FLOAT);
+
 
 
 
@@ -61,8 +61,9 @@ int main(int argc, char **argv){
 	ElectroAnalysis elec;
 	elec.CreateElectroFile(graph);
 	graph.CreateFluidFile();
+
 	graph.CreateHDF5File();
-	
+
 	/*................................................................*/
 	
 	graph.WellcomeScreen(graph.GetVelSnd(), graph.GetVelFer(), graph.GetColFreq(), graph.GetKinVis(), dt, dx, t_max);
@@ -97,21 +98,24 @@ int main(int argc, char **argv){
 			string str_time = to_string(time_step/snapshot_step);
 			string name_dataset = "snapshot_"+str_time;
 			
-			DataSet dataset_den = graph.GrpDen->createDataSet(name_dataset , hdf5_float, *graph.DataspaceDen );
-			dataset_den.write(graph.DenCor, hdf5_float );
+			DataSet dataset_den = graph.GrpDen->createDataSet(name_dataset , HDF5FLOAT, *graph.DataspaceDen );
+			dataset_den.write(graph.DenCor, HDF5FLOAT );
 			dataset_den.close();
 			
-			DataSet dataset_vel = graph.GrpVelX->createDataSet(name_dataset , hdf5_float, *graph.DataspaceVelX );
-			dataset_vel.write(graph.VelCor, hdf5_float );
+			DataSet dataset_vel = graph.GrpVelX->createDataSet(name_dataset , HDF5FLOAT, *graph.DataspaceVelX );
+			dataset_vel.write(graph.VelCor, HDF5FLOAT );
 			dataset_vel.close();	
 		}
 		graph.WriteFluidFile(t);
 		elec.WriteElectroFile(t,graph);
 	}
-	
-	graph.WriteAtributes();
+	if(data_save_mode ) {
+		graph.WriteAtributes();
+	}
 	graph.CloseHDF5File();
-
+	if(!data_save_mode ) {
+		system("rm hdf5_1D*");
+	}
 	cout << "\033[1A\033[2K\033[1;32mDONE!\033[0m\n";
 	cout<<"═══════════════════════════════════════════════════════════════════════════" <<endl;
 

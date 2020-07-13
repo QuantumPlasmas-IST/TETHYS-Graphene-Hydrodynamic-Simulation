@@ -255,20 +255,20 @@ void Fluid2D::CFLCondition(){
 
 
 
-float  Fluid2D::DensityFluxX(float n, float flx_x, float flx_y, float mass, float s){
+float  Fluid2D::DensityFluxX(__attribute__((unused)) float n, float flx_x, __attribute__((unused)) float flx_y, __attribute__((unused)) float mass, __attribute__((unused)) float s){
 	float f_1;
 	f_1 = flx_x;
 	return f_1;
 }
-float  Fluid2D::DensityFluxY(float n,float flx_x, float flx_y,float mass, float s){
+float  Fluid2D::DensityFluxY(__attribute__((unused)) float n, __attribute__((unused)) float flx_x, float flx_y, __attribute__((unused)) float mass, __attribute__((unused)) float s){
 	float f_1;
 	f_1 = flx_y;
 	return f_1;
 }
-float  Fluid2D::DensitySource(float n, float vel_x, float vel_y, float s){
-	float q_1 =0.0f;
-	return q_1;
-}
+//float  Fluid2D::DensitySource( float n,  float vel_x, float vel_y, float s){
+//	float q_1 =0.0f;
+//	return q_1;
+//}
 float  Fluid2D::MassFluxXFluxX(float n,float flx_x, float flx_y,float mass, float s){
 	float f_2;
 	f_2 = flx_x * flx_x / n + n;
@@ -289,14 +289,14 @@ float  Fluid2D::MassFluxYFluxY(float n,float flx_x, float flx_y,float mass, floa
 	f_3 = flx_y * flx_y / n + n;
 	return f_3;
 }
-float  Fluid2D::MassFluxXSource(float n,float flx_x, float flx_y, float s){
-	float q_2 =0.0f;
-	return q_2;
-}
-float  Fluid2D::MassFluxYSource(float n,float flx_x, float flx_y, float s){
-	float q_3 =0.0f;
-	return q_3;
-}	
+//float  Fluid2D::MassFluxXSource(float n,float flx_x, float flx_y, float s){
+//	float q_2 =0.0f;
+//	return q_2;
+//}
+//float  Fluid2D::MassFluxYSource(float n,float flx_x, float flx_y, float s){
+//	float q_3 =0.0f;
+//	return q_3;
+//}
 
 void Fluid2D::SetFileName(){
 	char buffer [50];
@@ -379,7 +379,7 @@ float  GrapheneFluid2D::DensityFluxY(float n,float flx_x, float flx_y,float mass
 // 27% of cpu usage of them 22.6% are int the pow function
 float  GrapheneFluid2D::MassFluxXFluxX(float n,float flx_x, float flx_y,float mass, float s){
 	float f_2;
-	f_2 = flx_x * flx_x / mass + vel_fer * vel_fer * mass / 3.0f + 0.5f * s * s * n * n;
+	f_2 = flx_x * flx_x / mass + vel_fer * vel_fer * mass / 3.0f + 0.5f * vel_snd * vel_snd * n * n;
 	return f_2;
 }
 float  GrapheneFluid2D::MassFluxXFluxY(float n,float flx_x, float flx_y,float mass, float s){
@@ -394,7 +394,7 @@ float  GrapheneFluid2D::MassFluxYFluxX(float n,float flx_x, float flx_y,float ma
 }
 float  GrapheneFluid2D::MassFluxYFluxY(float n,float flx_x, float flx_y,float mass, float s){
 	float f_3;
-	f_3 = flx_y * flx_y / mass + vel_fer * vel_fer * mass / 3.0f + 0.5f * s * s * n * n;
+	f_3 = flx_y * flx_y / mass + vel_fer * vel_fer * mass / 3.0f + 0.5f * vel_snd * vel_snd * n * n;
 	return f_3;
 }
 
@@ -402,18 +402,18 @@ float  GrapheneFluid2D::MassFluxYFluxY(float n,float flx_x, float flx_y,float ma
 
 
 // Pedro: para ja nao vamos incluir sources 
-float  GrapheneFluid2D::DensitySource(float n,float flx_x, float flx_y, float s){
-	float q_1 =0;
-	return q_1;
-}
-float  GrapheneFluid2D::MassFluxXSource(float n,float flx_x, float flx_y, float s){
-	float q_2 =0;
-	return q_2;
-}
-float  GrapheneFluid2D::MassFluxYSource(float n,float flx_x, float flx_y, float s){
-	float q_3 =0;
-	return q_3;
-}	
+//float  GrapheneFluid2D::DensitySource(float n,float flx_x, float flx_y, float s){
+//	float q_1 =0;
+//	return q_1;
+//}
+//float  GrapheneFluid2D::MassFluxXSource(float n,float flx_x, float flx_y, float s){
+//	float q_2 =0;
+//	return q_2;
+//}
+//float  GrapheneFluid2D::MassFluxYSource(float n,float flx_x, float flx_y, float s){
+//	float q_3 =0;
+//	return q_3;
+//}
 
 
 void GrapheneFluid2D::MagneticSource(){
