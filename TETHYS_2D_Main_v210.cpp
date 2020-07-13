@@ -97,6 +97,10 @@ int main(int argc, char **argv){
 		//BC.X(graph);
 		//BC.YFree(graph);
 
+		graph.ViscosityFTCS();
+		BC.X(graph);
+		BC.YFree(graph);
+
 
 		graph.Richtmyer();
 		// Impose boundary conditions
@@ -113,7 +117,6 @@ int main(int argc, char **argv){
 		//graph.SourceFTCS();
 
 		graph.ViscosityFTCS();
-		// Impose boundary conditions
 		BC.X(graph);
 		BC.YFree(graph);
 
@@ -157,7 +160,7 @@ int main(int argc, char **argv){
 	}
 	graph.CloseHDF5File();
 	if(!data_save_mode ) {
-		system("rm hdf5_1D*");
+		system("rm hdf5_2D*");
 	}
 	cout << "\033[1A\033[2K\033[1;32mDONE!\033[0m\n";
 	cout<<"═══════════════════════════════════════════════════════════════════════════" <<endl;

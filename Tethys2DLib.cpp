@@ -269,22 +269,22 @@ float  Fluid2D::DensityFluxY(__attribute__((unused)) float n, __attribute__((unu
 //	float q_1 =0.0f;
 //	return q_1;
 //}
-float  Fluid2D::MassFluxXFluxX(float n,float flx_x, float flx_y,float mass, float s){
+float  Fluid2D::MassFluxXFluxX(float n,float flx_x, float flx_y,__attribute__((unused)) float mass, float s){
 	float f_2;
 	f_2 = flx_x * flx_x / n + n;
 	return f_2;
 }
-float  Fluid2D::MassFluxXFluxY(float n,float flx_x, float flx_y,float mass, float s){
+float  Fluid2D::MassFluxXFluxY(float n,float flx_x, float flx_y,__attribute__((unused)) float mass, float s){
 	float f_2;
 	f_2 = flx_x * flx_y / n;
 	return f_2;
 }
-float  Fluid2D::MassFluxYFluxX(float n,float flx_x, float flx_y,float mass, float s){
+float  Fluid2D::MassFluxYFluxX(float n,float flx_x, float flx_y,__attribute__((unused)) float mass, float s){
 	float f_3;
 	f_3 = flx_x * flx_y / n;
 	return f_3;
 }
-float  Fluid2D::MassFluxYFluxY(float n,float flx_x, float flx_y,float mass, float s){
+float  Fluid2D::MassFluxYFluxY(float n,float flx_x, float flx_y,__attribute__((unused)) float mass, float s){
 	float f_3;
 	f_3 = flx_y * flx_y / n + n;
 	return f_3;
@@ -464,8 +464,8 @@ float mass_den_center, mass_den_north, mass_den_south, mass_den_east, mass_den_w
 		if (kp % Nx != Nx - 1 && kp % Nx != 0) {
 			old_px=FlxX[kp];
 			old_py=FlxY[kp];
-			FlxX[kp] = old_px + dt * (kin_vis * lap_flxX[kp] );
-			FlxY[kp] = old_py + dt * (kin_vis * lap_flxY[kp] );
+			FlxX[kp] = old_px + 0.5f*dt * (kin_vis * lap_flxX[kp] );
+			FlxY[kp] = old_py + 0.5f*dt * (kin_vis * lap_flxY[kp] );
 		}
 	}
 }
