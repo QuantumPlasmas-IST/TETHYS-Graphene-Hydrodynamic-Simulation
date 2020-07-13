@@ -100,7 +100,6 @@ void BoundaryCondition::YFree(GrapheneFluid2D& graphene){
 void BoundaryCondition::YPeriodic(GrapheneFluid2D& graphene){
 	int nx=graphene.SizeX();
 	int ny=graphene.SizeY();
-	
 	for (int i=0; i < nx; i++){
 		int bottom=i; //i+0*nx
 		int top= i + (ny - 1) * nx;
@@ -113,7 +112,34 @@ void BoundaryCondition::YPeriodic(GrapheneFluid2D& graphene){
 	}
 }
 
-
+void BoundaryCondition::YClosedFreeSlip(GrapheneFluid2D& graphene){
+	int nx=graphene.SizeX();
+	int ny=graphene.SizeY();
+	for (int i=0; i < nx; i++){
+		int bottom=i; //i+0*nx
+		int top= i + (ny - 1) * nx;
+		graphene.Den[bottom] = graphene.Den[top - nx];
+		graphene.FlxX[bottom] = graphene.FlxX[top - nx];
+		graphene.FlxY[bottom] = 0.0f;
+		graphene.Den[top] = graphene.Den[bottom + nx];
+		graphene.FlxX[top] = graphene.FlxX[bottom + nx];
+		graphene.FlxY[top] =  0.0f;
+	}
+}
+void BoundaryCondition::YClosedNoSlip(GrapheneFluid2D& graphene){
+	int nx=graphene.SizeX();
+	int ny=graphene.SizeY();
+	for (int i=0; i < nx; i++){
+		int bottom=i; //i+0*nx
+		int top= i + (ny - 1) * nx;
+		graphene.Den[bottom] = graphene.Den[top - nx];
+		graphene.FlxX[bottom] =  0.0f;
+		graphene.FlxY[bottom] =  0.0f;
+		graphene.Den[top] = graphene.Den[bottom + nx];
+		graphene.FlxX[top] =  0.0f;
+		graphene.FlxY[top] =  0.0f;
+	}
+}
 
 void BoundaryCondition::Dirichlet::Density(GrapheneFluid1D& graphene, float left, float right){
 	int nx=graphene.SizeX();

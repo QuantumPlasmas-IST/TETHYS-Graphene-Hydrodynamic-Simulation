@@ -15,6 +15,8 @@ class BoundaryCondition {
 	void XPeriodic(GrapheneFluid2D& graphene);
 	void YFree(GrapheneFluid2D& graphene);
 	void YPeriodic(GrapheneFluid2D& graphene);
+	void YClosedFreeSlip(GrapheneFluid2D& graphene);
+	void YClosedNoSlip(GrapheneFluid2D& graphene);
 
 	class DyakonovShur;
 	class Dirichlet; 

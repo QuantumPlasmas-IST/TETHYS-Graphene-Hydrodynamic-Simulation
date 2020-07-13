@@ -125,8 +125,7 @@ int main(int argc, char **argv){
 //		BCD.MassFluxX(graph,-1.0f,1.0f,0.0f,0.0f);
 
 //		BC.YFree(graph);
-		// Applying average filters for smoothing 	
-		//graph.Smooth(2);
+
 
 		
 		if(data_save_mode && time_step % snapshot_step  == 0 ){
