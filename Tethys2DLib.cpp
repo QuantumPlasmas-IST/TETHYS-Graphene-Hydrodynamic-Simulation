@@ -440,10 +440,13 @@ float mass_den_center, mass_den_north, mass_den_south, mass_den_east, mass_den_w
 	}
 	//FTCS algorithm
 	float old_px,old_py;
+	//float odd_vis=0.0f;
 	for (int kp = 1 + Nx; kp <= Nx * Ny - Nx - 2; kp++) { //correr a grelha principal evitando as fronteiras
 		if (kp % Nx != Nx - 1 && kp % Nx != 0) {
 			old_px=FlxX[kp];
 			old_py=FlxY[kp];
+			//FlxX[kp] = old_px + dt * (kin_vis * lap_flxX[kp] - odd_vis*lap_flxY[kp]);
+			//FlxY[kp] = old_py + dt * (kin_vis * lap_flxY[kp] + odd_vis*lap_flxX[kp]);
 			FlxX[kp] = old_px + dt * (kin_vis * lap_flxX[kp] );
 			FlxY[kp] = old_py + dt * (kin_vis * lap_flxY[kp] );
 		}

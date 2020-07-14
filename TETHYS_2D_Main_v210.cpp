@@ -89,9 +89,10 @@ int main(int argc, char **argv){
 		BC.YFree(graph);
 
 		//graph.SourceFTCS();
-		//BC.X(graph);
+		graph.ViscosityFTCS();
+		BC.X(graph);
 		//BC.YClosedNoSlip(graph);
-		//BC.YFree(graph);
+		BC.YFree(graph);
 
 
 //		BCD.Density(graph,1.0f,2.0f,1.0f,1.0f);
