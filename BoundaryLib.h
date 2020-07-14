@@ -1,5 +1,5 @@
-#ifndef BONDLIB_H
-#define BONDLIB_H
+#ifndef BOUNDARYLIB_H
+#define BOUNDARYLIB_H
 
 #include <H5Cpp.h>
 #include "TethysLib.h"

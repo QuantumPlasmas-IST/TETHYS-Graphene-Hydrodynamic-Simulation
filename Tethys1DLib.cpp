@@ -145,7 +145,6 @@ data_preview << t << "\t" << DenCor[Nx - 1] << "\t" << VelCor[Nx - 1] << "\t" <<
 
 
 void Fluid1D::Richtmyer(){
-		//TODO throw exception to cath NAN or INF values
 		//
 		//Calculating the velocity gradient at k time
 		//

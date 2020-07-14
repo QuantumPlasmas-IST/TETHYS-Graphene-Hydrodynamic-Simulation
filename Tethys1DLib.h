@@ -1,5 +1,5 @@
-#ifndef TETHYSLIB_1D_H
-#define TETHYSLIB_1D_H
+#ifndef TETHYS1DLIB_H
+#define TETHYS1DLIB_H
 
 #include <H5Cpp.h>
 #include "TethysLib.h"

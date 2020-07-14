@@ -32,7 +32,7 @@ int main(int argc, char **argv){
 	t_max = 6;
 	int npoints_x = 101;
 	int npoints_y = 101;
-	int npoints = npoints_x * npoints_y;
+	//int npoints = npoints_x * npoints_y;
 	
 	float t=0.0;
 	float dx,dy;	// spatial discretisation
@@ -80,42 +80,29 @@ int main(int argc, char **argv){
 	int snapshot_step = points_per_period / snapshot_per_period;
 
 	while (t <= t_max ){
-			++time_step;
-			t += dt;
-			graph.Richtmyer();
-			BC.X(graph);
-			BC.YClosedNoSlip(graph);
-			//BC.YFree(graph);
+		++time_step;
+		t += dt;
 
-			graph.SourceFTCS();
-			BC.X(graph);
-			BC.YClosedNoSlip(graph);
-			//BC.YFree(graph);
+		graph.Richtmyer();
+		BC.X(graph);
+		//BC.YClosedNoSlip(graph);
+		BC.YFree(graph);
+
+		//graph.SourceFTCS();
+		//BC.X(graph);
+		//BC.YClosedNoSlip(graph);
+		//BC.YFree(graph);
 
 
 //		BCD.Density(graph,1.0f,2.0f,1.0f,1.0f);
 //		BCD.MassFluxX(graph,-1.0f,1.0f,0.0f,0.0f);
 //		BC.YFree(graph);
 
-			if (data_save_mode && time_step % snapshot_step == 0) {
-				//Record full data
-				graph.MassFluxToVelocity(); //if placed here the profiling percentage drops from 7.7% to <1%
-				string str_time = to_string(time_step / snapshot_step);
-				string name_dataset = "snapshot_" + str_time;
-
-				DataSet dataset_den = graph.GrpDen->createDataSet(name_dataset, HDF5FLOAT, *graph.DataspaceDen);
-				dataset_den.write(graph.Den, HDF5FLOAT);
-				dataset_den.close();
-
-				DataSet dataset_vel_x = graph.GrpVelX->createDataSet(name_dataset, HDF5FLOAT, *graph.DataspaceVelX);
-				dataset_vel_x.write(graph.VelX, HDF5FLOAT);
-				dataset_vel_x.close();
-
-				DataSet dataset_vel_y = graph.GrpVelY->createDataSet(name_dataset, HDF5FLOAT, *graph.DataspaceVelY);
-				dataset_vel_y.write(graph.VelY, HDF5FLOAT);
-				dataset_vel_y.close();
-			}
-			graph.WriteFluidFile(t);
+		if (data_save_mode && time_step % snapshot_step == 0) {
+			//Record full data
+			graph.SaveSnapShot(time_step,snapshot_step);
+		}
+		graph.WriteFluidFile(t);
 	}
 	if(data_save_mode ) {
 		graph.WriteAtributes();

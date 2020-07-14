@@ -1,5 +1,5 @@
-#ifndef TETHYSLIB_2D_H
-#define TETHYSLIB_2D_H
+#ifndef TETHYS2DLIB_H
+#define TETHYS2DLIB_H
 
 #include <H5Cpp.h>
 #include "TethysLib.h"
@@ -105,5 +105,6 @@ class GrapheneFluid2D : public Fluid2D{
 		void SourceFTCS();
 		void ViscosityFTCS();
 		void WriteAtributes();
+		void SaveSnapShot(int time_step,int snapshot_step);
 };
 #endif
