@@ -6,7 +6,7 @@
 #include "Tethys1DLib.h"
 #include "Tethys2DLib.h"
 
-
+//TODO override the boundary conditions functions to Fluid1D and Fluid2D objects
 class BoundaryCondition {
 	public : 
 	void XFree(GrapheneFluid1D& graphene);
@@ -28,6 +28,8 @@ class  BoundaryCondition::DyakonovShur {
 	void X(GrapheneFluid2D& graphene);
 	void YFree(GrapheneFluid2D& graphene);
 	void YPeriodic(GrapheneFluid2D& graphene);
+	void YClosedFreeSlip(GrapheneFluid2D& graphene);
+	void YClosedNoSlip(GrapheneFluid2D& graphene);
 };
 
 class  BoundaryCondition::Dirichlet { 

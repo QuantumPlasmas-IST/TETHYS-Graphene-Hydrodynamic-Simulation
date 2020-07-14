@@ -220,3 +220,15 @@ void BoundaryCondition::DyakonovShur::YPeriodic(GrapheneFluid2D& graphene) {
 	BoundaryCondition enclosing;
 	enclosing.YPeriodic(graphene);
 }
+
+
+void BoundaryCondition::DyakonovShur::YClosedFreeSlip(GrapheneFluid2D &graphene){
+	BoundaryCondition enclosing;
+	enclosing.YClosedFreeSlip(graphene);
+}
+
+
+void BoundaryCondition::DyakonovShur::YClosedNoSlip(GrapheneFluid2D &graphene){
+	BoundaryCondition enclosing;
+	enclosing.YClosedNoSlip(graphene);
+}

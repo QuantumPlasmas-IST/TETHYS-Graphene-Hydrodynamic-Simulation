@@ -21,7 +21,7 @@ float Phase_Vel(float sound, float fermi);
 float Real_Freq(float sound, float fermi, float col_freq, int mode);  //
 
 void Parameter_Initalization(int argc, char ** argv, int &data_save_mode, float &input_vel_snd, float &input_vel_fer, float &input_col_freq, float &input_kin_vis);
-
+void Parameter_Exeptions_Checking(int &data_save_mode, float &input_vel_snd, float &input_vel_fer, float &input_col_freq, float &input_kin_vis);
 //-----------------------------------
 
 float Sound_Velocity_Anisotropy(float i, float dx, float s);

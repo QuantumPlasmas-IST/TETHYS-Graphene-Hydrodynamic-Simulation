@@ -3,6 +3,7 @@
 
 #include <H5Cpp.h>
 #include "TethysLib.h"
+
 using namespace H5;
 
 class Fluid2D : public TETHYSBase
@@ -97,7 +98,9 @@ class GrapheneFluid2D : public Fluid2D{
 		//float DensitySource(float n, float flx_x, float flx_y, float s) override;
 		//float MassFluxXSource(float n, float flx_x, float flx_y, float s)  override;
 		//float MassFluxYSource(float n, float flx_x, float flx_y, float s) override;
-		
+
+
+
 		void MagneticSource();
 		void SourceFTCS();
 		void ViscosityFTCS();

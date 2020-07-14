@@ -1,5 +1,4 @@
 // 2D version
-
 #include <cstdio>
 #include <cmath>
 #include <cstdlib>
@@ -7,13 +6,10 @@
 #include <iostream>
 #include <fstream>
 #include <ctime>
-
 #include <string>
 
-
-
-
 #include "TethysLib.h"
+
 #include "Tethys2DLib.h"
 #include <H5Cpp.h>
 
@@ -144,48 +140,48 @@ void Fluid2D::Richtmyer(){
 			southeast=i+1+j*Nx;    //mal  ->i+1,j   Prin
 			southwest=i+j*Nx;      //mal  ->i,j     Prin
 		
-				den_north = 0.5f*(Den[northeast] + Den[northwest]);
-				den_south = 0.5f*(Den[southeast] + Den[southwest]);
-				den_east = 0.5f*(Den[northeast] + Den[southeast]);
-				den_west = 0.5f*(Den[northwest] + Den[southwest]);
+			den_north = 0.5f*(Den[northeast] + Den[northwest]);
+			den_south = 0.5f*(Den[southeast] + Den[southwest]);
+			den_east = 0.5f*(Den[northeast] + Den[southeast]);
+			den_west = 0.5f*(Den[northwest] + Den[southwest]);
 
-				px_north = 0.5f*(FlxX[northeast] + FlxX[northwest]);
-				px_south = 0.5f*(FlxX[southeast] + FlxX[southwest]);
-				px_east = 0.5f*(FlxX[northeast] + FlxX[southeast]);
-				px_west = 0.5f*(FlxX[northwest] + FlxX[southwest]);
-				
-				py_north = 0.5f*(FlxY[northeast] + FlxY[northwest]);
-				py_south = 0.5f*(FlxY[southeast] + FlxY[southwest]);
-				py_east = 0.5f*(FlxY[northeast] + FlxY[southeast]);
-				py_west = 0.5f*(FlxY[northwest] + FlxY[southwest]);
+			px_north = 0.5f*(FlxX[northeast] + FlxX[northwest]);
+			px_south = 0.5f*(FlxX[southeast] + FlxX[southwest]);
+			px_east = 0.5f*(FlxX[northeast] + FlxX[southeast]);
+			px_west = 0.5f*(FlxX[northwest] + FlxX[southwest]);
 
-				//posso definir aqui a "massa" nos 4 ponto s cardeais
-				m_east=pow(den_east,1.5f); // e assim sucessivamente m_west m_north m_south que depois sao reutilizadeas nos 12 fluxos
-				m_west=pow(den_west,1.5f);
-				m_north=pow(den_north,1.5f);
-				m_south=pow(den_south,1.5f);
-				den_mid[ks] = 0.25f*(Den[southwest] + Den[southeast] + Den[northwest] + Den[northeast]) // How shall we include vel_snd_arr ?
-								-0.5f*(dt/dx)*(
-									DensityFluxX(den_east, px_east, py_east,m_east,vel_snd)-
-									DensityFluxX(den_west, px_west, py_west,m_west,vel_snd))
-									-0.5f*(dt/dy)*(
-									DensityFluxY(den_north, px_north, py_north,m_north,vel_snd)-
-									DensityFluxY(den_south, px_south, py_south,m_south,vel_snd));
-				flxX_mid[ks] = 0.25f*(FlxX[southwest] + FlxX[southeast] + FlxX[northwest] + FlxX[northeast])
-								-0.5f*(dt/dx)*(
-									MassFluxXFluxX(den_east, px_east, py_east,m_east,vel_snd)-
-									MassFluxXFluxX(den_west, px_west, py_west,m_west,vel_snd))
+			py_north = 0.5f*(FlxY[northeast] + FlxY[northwest]);
+			py_south = 0.5f*(FlxY[southeast] + FlxY[southwest]);
+			py_east = 0.5f*(FlxY[northeast] + FlxY[southeast]);
+			py_west = 0.5f*(FlxY[northwest] + FlxY[southwest]);
+
+			//posso definir aqui a "massa" nos 4 ponto s cardeais
+			m_east=pow(den_east,1.5f); // e assim sucessivamente m_west m_north m_south que depois sao reutilizadeas nos 12 fluxos
+			m_west=pow(den_west,1.5f);
+			m_north=pow(den_north,1.5f);
+			m_south=pow(den_south,1.5f);
+			den_mid[ks] = 0.25f*(Den[southwest] + Den[southeast] + Den[northwest] + Den[northeast]) // How shall we include vel_snd_arr ?
+							-0.5f*(dt/dx)*(
+								DensityFluxX(den_east, px_east, py_east,m_east,vel_snd)-
+								DensityFluxX(den_west, px_west, py_west,m_west,vel_snd))
 								-0.5f*(dt/dy)*(
-									MassFluxXFluxY(den_north, px_north, py_north,m_north,vel_snd)-
-									MassFluxXFluxY(den_south, px_south, py_south,m_south,vel_snd));
-				flxY_mid[ks] = 0.25f*(FlxY[southwest] + FlxY[southeast] + FlxY[northwest] + FlxY[northeast])
-								-0.5f*(dt/dx)*(
-									MassFluxYFluxX(den_east, px_east, py_east,m_east,vel_snd)-
-									MassFluxYFluxX(den_west, px_west, py_west,m_west,vel_snd))
-								-0.5f*(dt/dy)*(
-									MassFluxYFluxY(den_north, px_north, py_north,m_north,vel_snd)-
-									MassFluxYFluxY(den_south, px_south, py_south,m_south,vel_snd));
-	//		}						
+								DensityFluxY(den_north, px_north, py_north,m_north,vel_snd)-
+								DensityFluxY(den_south, px_south, py_south,m_south,vel_snd));
+			flxX_mid[ks] = 0.25f*(FlxX[southwest] + FlxX[southeast] + FlxX[northwest] + FlxX[northeast])
+							-0.5f*(dt/dx)*(
+								MassFluxXFluxX(den_east, px_east, py_east,m_east,vel_snd)-
+								MassFluxXFluxX(den_west, px_west, py_west,m_west,vel_snd))
+							-0.5f*(dt/dy)*(
+								MassFluxXFluxY(den_north, px_north, py_north,m_north,vel_snd)-
+								MassFluxXFluxY(den_south, px_south, py_south,m_south,vel_snd));
+			flxY_mid[ks] = 0.25f*(FlxY[southwest] + FlxY[southeast] + FlxY[northwest] + FlxY[northeast])
+							-0.5f*(dt/dx)*(
+								MassFluxYFluxX(den_east, px_east, py_east,m_east,vel_snd)-
+								MassFluxYFluxX(den_west, px_west, py_west,m_west,vel_snd))
+							-0.5f*(dt/dy)*(
+								MassFluxYFluxY(den_north, px_north, py_north,m_north,vel_snd)-
+								MassFluxYFluxY(den_south, px_south, py_south,m_south,vel_snd));
+
 		}
 		for(int kp=1+Nx; kp<=Nx*Ny-Nx-2; kp++){ //correr a grelha principal evitando as fronteiras
 			div_t divresult;
@@ -312,9 +308,24 @@ void Fluid2D::CreateFluidFile(){
 }
 
 void Fluid2D::WriteFluidFile(float t){
-int j=Ny/2;
-data_preview << t << "\t" << Den[Nx - 1 + j * Nx] << "\t" << FlxX[Nx - 1 + j * Nx] << "\t" << Den[0 + j * Nx] << "\t" << FlxX[0 + j * Nx] << "\n";
+	int pos_end = Nx - 1 + Nx * Ny/2;
+	int pos_ini = Nx * Ny/2;
+	try {
+		if(!isfinite(Den[pos_end]) || !isfinite(Den[pos_ini]) || !isfinite(FlxX[pos_end]) || !isfinite(FlxX[pos_ini])){
+			throw "ERROR: numerical method failed to converge";
+		}
+		data_preview << t << "\t"
+		<< Den[pos_end]  << "\t"
+		<< FlxX[pos_end] << "\t"
+		<< Den[pos_ini]  << "\t"
+		<< FlxX[pos_ini] << "\n";
+	}catch (const char* msg) {
+		cerr << msg << endl;
+		exit(EXIT_FAILURE);
+	}
 }
+
+
 
 
 
@@ -464,8 +475,8 @@ float mass_den_center, mass_den_north, mass_den_south, mass_den_east, mass_den_w
 		if (kp % Nx != Nx - 1 && kp % Nx != 0) {
 			old_px=FlxX[kp];
 			old_py=FlxY[kp];
-			FlxX[kp] = old_px + 0.5f*dt * (kin_vis * lap_flxX[kp] );
-			FlxY[kp] = old_py + 0.5f*dt * (kin_vis * lap_flxY[kp] );
+			FlxX[kp] = old_px + dt * (kin_vis * lap_flxX[kp] );
+			FlxY[kp] = old_py + dt * (kin_vis * lap_flxY[kp] );
 		}
 	}
 }
@@ -478,8 +489,8 @@ void GrapheneFluid2D::SourceFTCS(){
 			sqrtn_0=sqrt(Den[kp]);
 			px_0=FlxX[kp];
 			py_0=FlxY[kp];
-			FlxX[kp]= px_0 - 0.5f * dt * wc * py_0 / sqrtn_0;
-			FlxY[kp]= py_0 + 0.5f * dt * wc * px_0 / sqrtn_0;
+			FlxX[kp]= px_0 -  dt * wc * py_0 / sqrtn_0;
+			FlxY[kp]= py_0 +  dt * wc * px_0 / sqrtn_0;
 		}
 	}
 }
@@ -522,3 +533,4 @@ void GrapheneFluid2D::WriteAtributes(){
 	atr_total_time.close();
 	atr_num_space_points.close();
 }
+
