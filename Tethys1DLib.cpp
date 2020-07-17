@@ -116,6 +116,15 @@ void Fluid1D::InitialCondRand(){
 	}
 }
 
+void Fluid1D::InitialCondTest(){
+	float mean=dx*Nx/2.0f;
+	float sigma=dx*Nx/10.0f;
+	for (int i = 0; i < Nx; i++ ){
+		//Vel[i] = 0.4f*exp(-0.5f*((i*dx-mean)*(i*dx-mean)/(sigma*sigma)))/sigma;
+		Vel[i] = 1.0f+tanh(10.0f*(dx*i-0.5));
+	}
+}
+
 void Fluid1D::SetKinVis(float x){ kin_vis=x;}
 void Fluid1D::SetVelSnd(float x){ vel_snd=x; }
 float Fluid1D::GetVelSnd(){ return vel_snd; }
@@ -139,7 +148,19 @@ void Fluid1D::CreateFluidFile(){
 }
 
 void Fluid1D::WriteFluidFile(float t){
-data_preview << t << "\t" << DenCor[Nx - 1] << "\t" << VelCor[Nx - 1] << "\t" << DenCor[0] << "\t" << VelCor[0] << "\n";
+	int pos_end = Nx - 1 ;
+	int pos_ini = 0;
+	try {
+		if (!isfinite(Den[pos_end]) || !isfinite(Den[pos_ini]) || !isfinite(Vel[pos_end]) ||
+		    !isfinite(Vel[pos_ini])) {
+			throw "ERROR: numerical method failed to converge";
+		}
+//data_preview << t << "\t" << DenCor[Nx - 1] << "\t" << VelCor[Nx - 1] << "\t" << DenCor[0] << "\t" << VelCor[0] << "\n";
+		data_preview << t << "\t" << Den[pos_end] << "\t" << Vel[pos_end] << "\t" << Den[pos_ini] << "\t" << Vel[pos_ini] << "\n";
+	}catch (const char* msg) {
+		cerr << msg << endl;
+		exit(EXIT_FAILURE);
+	}
 }
 
 
@@ -161,10 +182,10 @@ void Fluid1D::Richtmyer(){
 		{
 			den_mid[i] = 0.5f*(Den[i] + Den[i + 1] )
 				- ( 0.5f*dt/dx ) * (DensityFlux(Den[i + 1], Vel[i + 1], vel_snd_arr[i]) - DensityFlux(Den[i], Vel[i], vel_snd_arr[i]) )
-				+ ( 0.5f*dt    ) ;//* DensitySource(0.5f*(Den[i] + Den[i + 1]), 0.5f * (Vel[i] + Vel[i + 1]), vel_snd_arr[i]) ;
+					;//+ ( 0.5f*dt    ) * DensitySource(0.5f*(Den[i] + Den[i + 1]), 0.5f * (Vel[i] + Vel[i + 1]), vel_snd_arr[i]) ;
 			vel_mid[i] = 0.5f*(Vel[i] + Vel[i + 1] )
 				- ( 0.5f*dt/dx ) * (VelocityFlux(Den[i + 1], Vel[i + 1], GradVel[i + 1], vel_snd_arr[i]) - VelocityFlux(Den[i], Vel[i], GradVel[i], vel_snd) )
-				+ ( 0.5f*dt    ) ;//* VelocitySource(0.5f*(Den[i] + Den[i + 1]), 0.5f * (Vel[i] + Vel[i + 1]), vel_snd_arr[i]) ;
+					;//+ ( 0.5f*dt    ) * VelocitySource(0.5f*(Den[i] + Den[i + 1]), 0.5f * (Vel[i] + Vel[i + 1]), vel_snd_arr[i]) ;
 		}
 		//
 		//  Calculating the velocity gradient at k+1/2 time
@@ -183,9 +204,9 @@ void Fluid1D::Richtmyer(){
 			float den_old = Den[i];
 			float vel_old = Vel[i];
 			Den[i] = Den[i] - (dt / dx) * (DensityFlux(den_mid[i], vel_mid[i], vel_snd_arr[i]) - DensityFlux(den_mid[i - 1], vel_mid[i - 1], vel_snd) )
-			         +  dt * DensitySource(den_old,vel_old,vel_snd_arr[i]);
+			        ;// +  dt * DensitySource(den_old,vel_old,vel_snd_arr[i]);
 			Vel[i] = Vel[i] - (dt / dx) * (VelocityFlux(den_mid[i], vel_mid[i], grad_vel_mid[i], vel_snd_arr[i]) - VelocityFlux(den_mid[i - 1], vel_mid[i - 1], grad_vel_mid[i - 1], vel_snd) )
-			         +  dt * VelocitySource(den_old,vel_old,vel_snd_arr[i]);
+			        ;// +  dt * VelocitySource(den_old,vel_old,vel_snd_arr[i]);
 			Cur[i] = Vel[i] * Den[i];
 		}
 } 
@@ -201,7 +222,15 @@ float GrapheneFluid1D::DensityFlux(float n,float v,float __attribute__((unused))
 }
 float GrapheneFluid1D::VelocityFlux(float n,float v,float dv,float s){
 	float f_2;
-	f_2 = 0.25f * v * v + vel_fer * vel_fer * 0.5f * log(n) + 2.0f * s * s * sqrt(n) - kin_vis * dv;
+	try {
+		if(n<0 || !isfinite(n)){
+			throw "ERROR: negative density";
+		}
+		f_2 = 0.25f * v * v + vel_fer * vel_fer * 0.5f * log(n) + 2.0f * s * s * sqrt(n);//- kin_vis * dv;
+	} catch (const char * msg) {
+		cerr << msg <<endl;
+		exit(EXIT_FAILURE);
+	}
 	return f_2;
 }
 float GrapheneFluid1D::DensitySource(float n,float v,float s){
@@ -219,7 +248,22 @@ float GrapheneFluid1D::GetVelFer(){ return vel_fer; }
 void GrapheneFluid1D::SetColFreq(float x){ col_freq=x; }
 float GrapheneFluid1D::GetColFreq(){ return col_freq; }
 
+void Fluid1D::SaveSnapShot(int time_step,int snapshot_step){
+	const FloatType      hdf5_float(PredType::NATIVE_FLOAT);
+	const IntType        hdf5_int(PredType::NATIVE_INT);
 
+	string str_time = to_string(time_step / snapshot_step);
+	string name_dataset = "snapshot_" + str_time;
+
+	DataSet dataset_den = GrpDen->createDataSet(name_dataset, hdf5_float, *DataspaceDen);
+	dataset_den.write(Den, hdf5_float);
+	dataset_den.close();
+
+	DataSet dataset_vel_x = GrpVelX->createDataSet(name_dataset, hdf5_float, *DataspaceVelX);
+	dataset_vel_x.write(Vel, hdf5_float);
+	dataset_vel_x.close();
+
+}
 
 
 void GrapheneFluid1D::WriteAtributes(){

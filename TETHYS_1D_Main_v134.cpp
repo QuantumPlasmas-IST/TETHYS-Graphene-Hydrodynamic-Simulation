@@ -28,7 +28,7 @@ const FloatType      HDF5FLOAT(PredType::NATIVE_FLOAT);
 
 
 int main(int argc, char **argv){
-	const int npoints=201; 							// number of spatial points
+	const int npoints=101; 							// number of spatial points
 	float t=0.0;
 	float dx;								// spatial discretisation
 	float dt;								// time step
@@ -83,8 +83,7 @@ int main(int argc, char **argv){
 	cout << "\033[1;7;5;33m Program Running \033[0m"<<endl;
 	
 	//Main cycle
-	while(t <= t_max && isfinite(graph.Vel[(graph.SizeX() - 1) / 2])) // throw exception para nan / in
-	{	
+	while(t <= t_max ) {
 		++time_step;
 		t += dt;
 		// Main algorithm		
@@ -95,16 +94,7 @@ int main(int argc, char **argv){
 		graph.Smooth(2);
 		//Record full data
 		if(data_save_mode && time_step % snapshot_step == 0 ){
-			string str_time = to_string(time_step/snapshot_step);
-			string name_dataset = "snapshot_"+str_time;
-			
-			DataSet dataset_den = graph.GrpDen->createDataSet(name_dataset , HDF5FLOAT, *graph.DataspaceDen );
-			dataset_den.write(graph.DenCor, HDF5FLOAT );
-			dataset_den.close();
-			
-			DataSet dataset_vel = graph.GrpVelX->createDataSet(name_dataset , HDF5FLOAT, *graph.DataspaceVelX );
-			dataset_vel.write(graph.VelCor, HDF5FLOAT );
-			dataset_vel.close();	
+			graph.SaveSnapShot(time_step,snapshot_step);
 		}
 		graph.WriteFluidFile(t);
 		elec.WriteElectroFile(t,graph);

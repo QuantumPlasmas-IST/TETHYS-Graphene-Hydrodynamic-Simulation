@@ -37,6 +37,7 @@ class Fluid1D : public TETHYSBase{
 		float GetDt();
 		void SetSimulationTime();
 		void InitialCondRand();
+		void InitialCondTest();
 		void Richtmyer();
 		void SetSound();
 		virtual void CFLCondition();
@@ -45,6 +46,7 @@ class Fluid1D : public TETHYSBase{
 		virtual float DensitySource( __attribute__((unused)) float n,  __attribute__((unused)) float v, __attribute__((unused)) float s);
 		virtual float VelocitySource( __attribute__((unused)) float n, __attribute__((unused)) float v, __attribute__((unused)) float s);
 		void CreateFluidFile();
+		void SaveSnapShot(int time_step,int snapshot_step);
 		void WriteFluidFile(float t) ;
 };
 class GrapheneFluid1D : public Fluid1D{

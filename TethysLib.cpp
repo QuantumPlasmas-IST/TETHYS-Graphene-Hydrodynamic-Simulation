@@ -152,22 +152,26 @@ void TETHYSBase::CloseHDF5File(){
 	GrpDat->close();
 	GrpDen->close();
 	GrpVelX->close();
-	GrpVelY->close();
+	if (RANK == 2) {
+		GrpVelY->close();
+	}
 	hdf5file->close();
 }
 
 
 TETHYSBase::~TETHYSBase(){
-	delete GrpDat;
-	delete GrpDen;
-	delete GrpVelX;
-	delete GrpVelY;
-	delete DataspaceDen;
-	delete DataspaceVelX;
-	if(Rank()==2){
-		delete DataspaceVelY;
+	if(HDF5fileCreated) {
+		delete GrpDat;
+		delete GrpDen;
+		delete GrpVelX;
+		delete DataspaceDen;
+		delete DataspaceVelX;
+		if (RANK == 2) {
+			delete GrpVelY;
+			delete DataspaceVelY;
+		}
+		delete hdf5file;
 	}
-	delete hdf5file;
 }
 
 
@@ -191,6 +195,7 @@ TETHYSBase::TETHYSBase(int size_nx, int size_ny, int dimension){
 
 void TETHYSBase::CreateHDF5File(){
 	std::string hdf5name;
+	HDF5fileCreated=true;
 	if(RANK==1){
 		hdf5name = "hdf5_1D_" + this->GetInfix() + ".h5" ;
 	}
@@ -203,8 +208,9 @@ void TETHYSBase::CreateHDF5File(){
 	GrpDat = new Group(hdf5file->createGroup("/Data" ));
 	GrpDen = new Group(hdf5file->createGroup("/Data/Density" ));
 	GrpVelX = new Group(hdf5file->createGroup("/Data/VelocityX" ));
-	GrpVelY = new Group(hdf5file->createGroup("/Data/VelocityY" ));
-
+	if(RANK==2) {
+		GrpVelY = new Group(hdf5file->createGroup("/Data/VelocityY"));
+	}
 	if(RANK==1){		
 		hsize_t dimsf[1];// dataset dimensions
 		dimsf[0] = static_cast<hsize_t>(Nx);
