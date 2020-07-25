@@ -62,7 +62,7 @@ int main(int argc, char **argv){
 	float sigma=dx*npoints/10.0f;
 	for (int i = 0; i < npoints; i++ ){
 		//v_test[i] = 0.4f*exp(-0.5f*((i*dx-mean)*(i*dx-mean)/(sigma*sigma)))/sigma;
-		v_test[i] = 1.0f+tanh(20.0f*(dx*i-0.5));
+		v_test[i] = 1.0f+tanh(20.0f*(dx*i-0.5f));
 		graph.Den[i]=1.0f;
 	}
 
@@ -144,7 +144,7 @@ int main(int argc, char **argv){
 		cout<<"um"<<graph.Vel[0]<<endl;
 		graph.Richtmyer();
 graph.Smooth(2);
-		cout<<"dois"<<graph.Vel[0]<<endl;;
+		cout<<"dois"<<graph.Vel[0]<<endl;
 		BC.XFree(graph);
 		cout<<"tres"<<graph.Vel[0]<<endl;
 //////////////////////////////////////////////////////////////////////////////////////////////////////////

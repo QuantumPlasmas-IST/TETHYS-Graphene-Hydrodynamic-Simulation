@@ -18,6 +18,9 @@ class BoundaryCondition {
 	void YClosedFreeSlip(Fluid2D& fluid_class);
 	void YClosedNoSlip(Fluid2D& fluid_class);
 
+
+
+
 	class DyakonovShur;
 	class Dirichlet; 
 };	
@@ -39,6 +42,7 @@ class  BoundaryCondition::Dirichlet {
 	void VelocityX(Fluid1D& fluid_class, float left, float right);
 	void MassFluxX(Fluid2D& fluid_class, float left, float right, float top, float bottom);
 	void MassFluxY(Fluid2D& fluid_class, float left, float right, float top, float bottom);
+	void Jet(Fluid2D& fluid_class, float left, float left_width, float right, float right_width);
 };
 
 #endif

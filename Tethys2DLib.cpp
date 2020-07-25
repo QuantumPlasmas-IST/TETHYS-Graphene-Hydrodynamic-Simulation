@@ -453,7 +453,7 @@ float mass_den_center, mass_den_north, mass_den_south, mass_den_east, mass_den_w
 	}
 }
 
-void GrapheneFluid2D::SourceFTCS(){
+void GrapheneFluid2D::MagneticSourceFTCS(){
 	float px_0,py_0,sqrtn_0;
 	float wc=10.0;
 	for(int kp=1+Nx; kp<=Nx*Ny-Nx-2; kp++){ //correr a grelha principal evitando as fronteiras

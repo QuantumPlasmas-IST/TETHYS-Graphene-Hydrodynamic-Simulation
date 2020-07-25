@@ -44,9 +44,9 @@ int main(int argc, char **argv){
 
 	GrapheneFluid2D	graph(npoints_x, npoints_y, input_vel_snd, input_vel_fer, input_kin_vis, input_col_freq);
 	graph.BannerDisplay();
-	BoundaryCondition::DyakonovShur BC;
-	//BoundaryCondition::Dirichlet BCD;
-	//BoundaryCondition BC;
+	BoundaryCondition::DyakonovShur boundary_condition;
+	BoundaryCondition::Dirichlet boundary_condition_Dirichelet;
+	//BoundaryCondition boundary_condition;
 	
 	/*......CFL routine to determine dt...............................*/
 	graph.CFLCondition();
@@ -58,7 +58,7 @@ int main(int argc, char **argv){
 	/*.........Fixed or variable vel_snd value........................*/
 	graph.SetSound();
 	//graph.SetSimulationTime();
-	graph.SetTmax(6.0);
+	graph.SetTmax(7.0);
 	/*................................................................*/
 
 	/*.........Output files and streams...............................*/
@@ -73,7 +73,6 @@ int main(int argc, char **argv){
 	graph.InitialCondRand();
 	////////////////////////////////////////////////////////////////////
 	cout << "\033[1;7;5;33m Program Running \033[0m"<<endl;
-	
 	int time_step=0;
 	int snapshot_per_period = 10;
 	int points_per_period = static_cast<int>((2.0 * MAT_PI /Real_Freq(graph.GetVelSnd(), graph.GetVelFer(), graph.GetColFreq(), 1)) / dt);
@@ -82,41 +81,39 @@ int main(int argc, char **argv){
 	while (t <= t_max ){
 		++time_step;
 		t += dt;
-
 		graph.Richtmyer();
-		BC.X(graph);
-		//BC.YClosedNoSlip(graph);
-		BC.YFree(graph);
+		//boundary_condition.X(graph);
+		//boundary_condition.YFree(graph);
+		boundary_condition_Dirichelet.Density(graph,1.0f,1.0f,1.0f,1.0f);
+		//boundary_condition_Dirichelet.MassFluxX(graph,-1.0f,-1.0f,0.0f,0.0f);
+		boundary_condition_Dirichelet.Jet(graph, -1.0f, 0.8f, -1.0f, 0.8f);
+		//boundary_condition.YFree(graph);
+		boundary_condition.YClosedFreeSlip(graph);
 
-		//graph.SourceFTCS();
-		graph.ViscosityFTCS();
-		BC.X(graph);
-		//BC.YClosedNoSlip(graph);
-		BC.YFree(graph);
+//		graph.MagneticSourceFTCS();
+//		boundary_condition.X(graph);
+//		boundary_condition.YFree(graph);
+//		boundary_condition_Dirichelet.Density(graph,1.0f,1.0f,1.0f,1.0f);
+//      boundary_condition_Dirichelet.MassFluxX(graph,-1.0f,-1.0f,0.0f,0.0f);
+//	    boundary_condition_Dirichelet.Jet(graph, 0.0, 0.0, -1.0f, 0.3);
+//		boundary_condition.YFree(graph);
 
-
-//		BCD.Density(graph,1.0f,2.0f,1.0f,1.0f);
-//		BCD.MassFluxX(graph,-1.0f,1.0f,0.0f,0.0f);
-//		BC.YFree(graph);
-
+		//Record full hdf5 data
 		if (data_save_mode && time_step % snapshot_step == 0) {
-			//Record full data
 			graph.SaveSnapShot(time_step,snapshot_step);
 		}
 		graph.WriteFluidFile(t);
 	}
+	//Record atributes on hdf5 file
 	if(data_save_mode ) {
 		graph.WriteAtributes();
 	}
 	graph.CloseHDF5File();
 	if(!data_save_mode ) {
+		//Remove the empty hdf5 file if unused
 		system("rm hdf5_2D*");
 	}
 	cout << "\033[1A\033[2K\033[1;32mDONE!\033[0m\n";
 	cout<<"═══════════════════════════════════════════════════════════════════════════" <<endl;
 	return 0;
 }
-
-
-
-

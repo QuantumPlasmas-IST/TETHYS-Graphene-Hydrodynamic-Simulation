@@ -121,7 +121,7 @@ void Fluid1D::InitialCondTest(){
 	float sigma=dx*Nx/10.0f;
 	for (int i = 0; i < Nx; i++ ){
 		//Vel[i] = 0.4f*exp(-0.5f*((i*dx-mean)*(i*dx-mean)/(sigma*sigma)))/sigma;
-		Vel[i] = 1.0f+tanh(10.0f*(dx*i-0.5));
+		Vel[i] = 1.0f+tanh(10.0f*(dx*i-0.5f));
 	}
 }
 

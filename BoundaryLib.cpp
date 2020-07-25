@@ -181,7 +181,26 @@ void BoundaryCondition::Dirichlet::MassFluxY(Fluid2D& fluid_class, float left, f
 		fluid_class.FlxY[i + (ny - 1) * nx] = top;
 		fluid_class.FlxY[i + 0 * nx] = bottom;
 	}
-} 
+}
+
+void BoundaryCondition::Dirichlet::Jet(Fluid2D &fluid_class, float left, float left_width, float right, float right_width) {
+	int nx=fluid_class.SizeX();
+	int ny=fluid_class.SizeY();
+	int n_width_left= static_cast<int>(ny * left_width);
+	int n_width_right= static_cast<int>(ny * right_width);
+	for (int j=0; j < ny; j++){
+		if( j>=(ny-n_width_left)/2 && j<= (ny+n_width_left)/2){
+			fluid_class.FlxX[0 + j * nx] = left;
+		} else{
+			fluid_class.FlxX[0 + j * nx] = 0.0f;
+		}
+		if( j>=(ny-n_width_right)/2 && j<= (ny+n_width_right)/2){
+			fluid_class.FlxX[nx - 1 + j * nx] = right;
+		} else{
+			fluid_class.FlxX[nx - 1 + j * nx] = 0.0f;
+		}
+	}
+}
 
 void BoundaryCondition::DyakonovShur::X(GrapheneFluid1D& fluid_class) {
 	int nx=fluid_class.SizeX();
