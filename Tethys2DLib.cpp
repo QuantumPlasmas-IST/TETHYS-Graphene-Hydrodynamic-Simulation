@@ -27,7 +27,7 @@ Fluid2D::Fluid2D(int size_nx, int size_ny, float sound_velocity, float shear_vis
 	vel_snd =sound_velocity;
 	kin_vis =shear_viscosity;
 	char buffer [50];
-	sprintf (buffer, "south=%.2fvis=%.2f", vel_snd, kin_vis);
+	sprintf (buffer, "S=%.2fvis=%.2f", vel_snd, kin_vis);
 	file_infix = buffer;
 	// main grid variables Nx*Ny
 	Den 		= new float[Nx * Ny]();
@@ -289,7 +289,7 @@ void Fluid2D::SetFileName(){
 }
 
 void Fluid2D::CreateFluidFile(){
-	this->SetFileName();
+	//this->SetFileName();
 	std::string previewfile = "preview_2D_" + file_infix + ".dat" ;
 	data_preview.open (previewfile);
 	data_preview << scientific; 
@@ -321,11 +321,12 @@ void Fluid2D::SetSimulationTime(){
 
 
 
-GrapheneFluid2D::GrapheneFluid2D(int size_nx, int size_ny, float sound_velocity, float fermi_velocity, float shear_viscosity, float collision_frequency): Fluid2D(size_nx, size_ny, sound_velocity,  shear_viscosity){
+GrapheneFluid2D::GrapheneFluid2D(int size_nx, int size_ny, float sound_velocity, float fermi_velocity, float shear_viscosity, float collision_frequency,float cyclotron_frequency): Fluid2D(size_nx, size_ny, sound_velocity,  shear_viscosity){
 	vel_fer =fermi_velocity;
-	col_freq =collision_frequency;
+	col_freq = collision_frequency;
+	cyc_freq = cyclotron_frequency;
 	char buffer [50];
-	sprintf (buffer, "south=%.2fvF=%.2fvis=%.2fl=%.2f", vel_snd, vel_fer, kin_vis, col_freq);
+	sprintf (buffer, "S=%.2fvF=%.2fvis=%.2fl=%.2fwc=%.2f", vel_snd, vel_fer, kin_vis, col_freq,cyc_freq);
 	file_infix = buffer;
 }
 
@@ -350,7 +351,7 @@ void GrapheneFluid2D::SetVelFer(float x){ vel_fer=x;}
 float GrapheneFluid2D::GetVelFer(){ return vel_fer;  }
 void GrapheneFluid2D::SetColFreq(float x){ col_freq=x; }
 float GrapheneFluid2D::GetColFreq(){ return col_freq; }
-
+float GrapheneFluid2D::GetCycFreq(){ return cyc_freq; }
 
 void GrapheneFluid2D::CFLCondition(){ // Eventual redefinition 
 	dx = lengX / ( float ) ( Nx - 1 );
@@ -461,8 +462,8 @@ void GrapheneFluid2D::MagneticSourceFTCS(){
 			sqrtn_0=sqrt(Den[kp]);
 			px_0=FlxX[kp];
 			py_0=FlxY[kp];
-			FlxX[kp]= px_0 -  dt * wc * py_0 / sqrtn_0;
-			FlxY[kp]= py_0 +  dt * wc * px_0 / sqrtn_0;
+			FlxX[kp]= px_0 -  dt * cyc_freq * py_0 / sqrtn_0;
+			FlxY[kp]= py_0 +  dt * cyc_freq * px_0 / sqrtn_0;
 		}
 	}
 }

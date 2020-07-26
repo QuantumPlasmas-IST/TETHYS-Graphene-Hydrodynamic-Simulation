@@ -74,18 +74,20 @@ class Fluid2D : public TETHYSBase
 
 class GrapheneFluid2D : public Fluid2D{
 	protected : 
-		float vel_fer =10.0;							
-		float col_freq =0.0; 						
+		float vel_fer =10.0f;
+		float col_freq =0.0f;
+		float cyc_freq =0.0f;
 	public : 
 		using Fluid2D::Fluid2D;
 		
-		GrapheneFluid2D(int size_nx, int size_ny, float sound_velocity, float fermi_velocity, float shear_viscosity, float collision_frequency);
+		GrapheneFluid2D(int size_nx, int size_ny, float sound_velocity, float fermi_velocity, float shear_viscosity, float collision_frequency, float cyclotron_frequency);
 
 		
 		void SetVelFer(float x);
 		float GetVelFer();
 		void SetColFreq(float x);
 		float GetColFreq();
+		float GetCycFreq();
 		void CFLCondition() override;
 		void SetSimulationTime() override;
 		void MassFluxToVelocity() override;

@@ -39,10 +39,10 @@ int main(int argc, char **argv){
 	float dt;		// time step
 
 	int data_save_mode=0;
-	float input_vel_snd,input_vel_fer,input_col_freq,input_kin_vis;
-	Parameter_Initalization(argc, argv, data_save_mode, input_vel_snd, input_vel_fer, input_col_freq, input_kin_vis);
+	float input_vel_snd,input_vel_fer,input_col_freq,input_kin_vis,input_cyc_freq;
+	Parameter_Initalization(argc, argv, data_save_mode, input_vel_snd, input_vel_fer, input_col_freq, input_kin_vis,input_cyc_freq);
 
-	GrapheneFluid2D	graph(npoints_x, npoints_y, input_vel_snd, input_vel_fer, input_kin_vis, input_col_freq);
+	GrapheneFluid2D	graph(npoints_x, npoints_y, input_vel_snd, input_vel_fer, input_kin_vis, input_col_freq, input_cyc_freq);
 	graph.BannerDisplay();
 	BoundaryCondition::DyakonovShur boundary_condition;
 	BoundaryCondition::Dirichlet boundary_condition_Dirichelet;
@@ -82,13 +82,13 @@ int main(int argc, char **argv){
 		++time_step;
 		t += dt;
 		graph.Richtmyer();
-		//boundary_condition.X(graph);
+		boundary_condition.X(graph);
 		//boundary_condition.YFree(graph);
-		boundary_condition_Dirichelet.Density(graph,1.0f,1.0f,1.0f,1.0f);
+//		boundary_condition_Dirichelet.Density(graph,1.0f,1.0f,1.0f,1.0f);
 		//boundary_condition_Dirichelet.MassFluxX(graph,-1.0f,-1.0f,0.0f,0.0f);
-		boundary_condition_Dirichelet.Jet(graph, -1.0f, 0.8f, -1.0f, 0.8f);
+		//boundary_condition_Dirichelet.Jet(graph, -1.0f, 0.8f, -1.0f, 0.8f);
 		//boundary_condition.YFree(graph);
-		boundary_condition.YClosedFreeSlip(graph);
+		boundary_condition.YFree(graph);
 
 //		graph.MagneticSourceFTCS();
 //		boundary_condition.X(graph);
@@ -97,6 +97,12 @@ int main(int argc, char **argv){
 //      boundary_condition_Dirichelet.MassFluxX(graph,-1.0f,-1.0f,0.0f,0.0f);
 //	    boundary_condition_Dirichelet.Jet(graph, 0.0, 0.0, -1.0f, 0.3);
 //		boundary_condition.YFree(graph);
+		if(graph.GetCycFreq()!=0.0f){
+			graph.MagneticSourceFTCS();
+			boundary_condition.X(graph);
+			boundary_condition.YFree(graph);
+		}
+
 
 		//Record full hdf5 data
 		if (data_save_mode && time_step % snapshot_step == 0) {

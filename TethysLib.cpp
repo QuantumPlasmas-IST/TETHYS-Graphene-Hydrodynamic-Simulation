@@ -24,7 +24,7 @@ using namespace std;
 #	define MAT_EULER 2.71828182845905f
 #endif
 
-void Parameter_Exeptions_Checking(int &data_save_mode, float &input_vel_snd, float &input_vel_fer, float &input_col_freq, float &input_kin_vis){
+void Parameter_Exeptions_Checking(int &data_save_mode, float &input_vel_snd, float &input_vel_fer, float &input_col_freq, float &input_kin_vis, float &input_cyc_freq){
 	if(input_vel_snd<=0.0f){
 		throw "Unphysical Sound Velocity";
 	}
@@ -37,20 +37,24 @@ void Parameter_Exeptions_Checking(int &data_save_mode, float &input_vel_snd, flo
 	if(input_col_freq<0.0f){
 		throw "Unphysical Collision Frequency";
 	}
+	if(input_cyc_freq<0.0f){
+		throw "Unphysical Cyclotron Frequency";
+	}
 	if( data_save_mode != 0 && data_save_mode != 1  ) {
 		throw "Unknown save mode option";
 	}
 }
 
-void Parameter_Initalization(int argc, char ** argv, int &data_save_mode, float &input_vel_snd, float &input_vel_fer, float &input_col_freq, float &input_kin_vis){
+void Parameter_Initalization(int argc, char ** argv, int &data_save_mode, float &input_vel_snd, float &input_vel_fer, float &input_col_freq, float &input_kin_vis,float &input_cyc_freq){
 	if(argc==6){
 		try {
 			input_vel_snd = static_cast<float>(atof(argv[1]));
 			input_vel_fer = static_cast<float>(atof(argv[2]));
 			input_col_freq = static_cast<float>(atof(argv[3]));
 			input_kin_vis = static_cast<float>(atof(argv[4]));
-			data_save_mode = atoi(argv[5]);    // full data or light save option
-			Parameter_Exeptions_Checking(data_save_mode, input_vel_snd, input_vel_fer, input_col_freq, input_kin_vis);
+			input_cyc_freq = static_cast<float>(atof(argv[5]));
+			data_save_mode = atoi(argv[6]);    // full data or light save option
+			Parameter_Exeptions_Checking(data_save_mode, input_vel_snd, input_vel_fer, input_col_freq, input_kin_vis,input_cyc_freq);
 		}catch (const char* msg) {
 			cerr << msg << endl;
 			exit(EXIT_FAILURE);
@@ -66,9 +70,11 @@ void Parameter_Initalization(int argc, char ** argv, int &data_save_mode, float 
 			cin >> input_kin_vis;
 			cout << "Define collision frequency: ";
 			cin >> input_col_freq;
+			cout << "Define cyclotron frequency: ";
+			cin >> input_cyc_freq;
 			cout << "Define data_save_mode value (0-> light save | 1-> full data): ";
 			cin >> data_save_mode;
-			Parameter_Exeptions_Checking(data_save_mode, input_vel_snd, input_vel_fer, input_col_freq, input_kin_vis);
+			Parameter_Exeptions_Checking(data_save_mode, input_vel_snd, input_vel_fer, input_col_freq, input_kin_vis, input_cyc_freq);
 		}catch (const char* msg) {
 			cerr << msg << endl;
 			exit(EXIT_FAILURE);
