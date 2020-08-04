@@ -1,24 +1,12 @@
-#include <cstdio>
-#include <cmath>
-#include <cstdlib>
-#include <iostream>
-#include <fstream>
-#include <ctime>
-#include <algorithm>
-#include <string>
-#include <cassert>
-
 #include "TethysLib.h"
-#include <H5Cpp.h>
+
 
 using namespace H5;
 using namespace std;
 
-
 #ifndef MAT_PI
 #	define MAT_PI 3.14159265358979323846f
 #endif
-
 
 #ifndef MAT_EULER
 #	define MAT_EULER 2.71828182845905f

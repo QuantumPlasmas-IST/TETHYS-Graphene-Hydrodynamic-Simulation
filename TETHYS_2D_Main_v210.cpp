@@ -1,30 +1,12 @@
-#include <cstdio>
-#include <cmath>
-#include <cstdlib>
-
-#include <iostream>
-#include <fstream>
-#include <ctime>
-#include <algorithm>
-#include <string>
-#include <iomanip>
-
-
-#include <H5Cpp.h>
-
 #include "Tethys2DLib.h"
 #include "BoundaryLib.h"
-
 
 #ifndef MAT_PI
 #	define MAT_PI 3.14159265358979323846
 #endif
 
 
-using namespace H5;
 using namespace std;
-
-const FloatType HDF5FLOAT(PredType::NATIVE_FLOAT);
 
 
 int main(int argc, char **argv){
@@ -120,6 +102,6 @@ int main(int argc, char **argv){
 		system("rm hdf5_2D*");
 	}
 	cout << "\033[1A\033[2K\033[1;32mDONE!\033[0m\n";
-	cout<<"═══════════════════════════════════════════════════════════════════════════" <<endl;
+	cout << "═══════════════════════════════════════════════════════════════════════════" <<endl;
 	return 0;
 }

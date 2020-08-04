@@ -6,7 +6,6 @@
 #include "Tethys1DLib.h"
 #include "Tethys2DLib.h"
 
-
 class BoundaryCondition {
 	public :
 	void XFree(Fluid1D& fluid_class);

@@ -1,6 +1,18 @@
 #ifndef TESTLIB_H
 #define TESTLIB_H
 
+
+#include <fstream>
+#include <cstdio>
+#include <cmath>
+#include <cstdlib>
+#include <iostream>
+#include <fstream>
+#include <ctime>
+#include <algorithm>
+#include <string>
+
+
 #include <H5Cpp.h>
 using namespace std;
 using namespace H5;

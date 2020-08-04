@@ -1,28 +1,8 @@
-#include <cstdio>
-#include <cmath>
-#include <cstdlib>
-#include <iostream>
-#include <fstream>
-#include <ctime>
-#include <algorithm>
-#include <string>
-#include <iomanip>   
-#include <cassert>
-
-#include "TethysLib.h"
-#include "Tethys1DLib.h"
-#include "Tethys2DLib.h"
 #include "BoundaryLib.h"
-#include <H5Cpp.h>
-
-using namespace H5;
-using namespace std;
-
 
 #ifndef MAT_PI
 #    define MAT_PI 3.14159265358979323846
 #endif
-
 
 #ifndef MAT_EULER
 #    define MAT_EULER 2.71828182845905
@@ -31,6 +11,9 @@ using namespace std;
 #ifndef C_SPEED
 #    define C_SPEED 1000.0
 #endif
+
+using namespace H5;
+using namespace std;
 
 
 void BoundaryCondition::XFree(Fluid1D& fluid_class){

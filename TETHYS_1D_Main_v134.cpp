@@ -1,17 +1,3 @@
-#include <cstdio>
-#include <cmath>
-#include <cstdlib>
-
-#include <iostream>
-#include <fstream>
-#include <ctime>
-#include <algorithm>
-#include <string>
-#include <iomanip>
-#include <cassert>
-
-#include <H5Cpp.h>
-
 #include "Tethys1DLib.h"
 #include "BoundaryLib.h"
 
@@ -19,9 +5,9 @@
 #	define MAT_PI 3.14159265358979323846
 #endif
 
-using namespace H5;
+
 using namespace std;
-const FloatType      HDF5FLOAT(PredType::NATIVE_FLOAT);
+
 
 
 
@@ -34,9 +20,9 @@ int main(int argc, char **argv){
 	float dt;								// time step
 
 	int data_save_mode=0;
-	float input_vel_snd,input_vel_fer,input_col_freq,input_kin_vis;
-	Parameter_Initalization(argc, argv, data_save_mode, input_vel_snd, input_vel_fer, input_col_freq, input_kin_vis);
-	
+	float input_vel_snd,input_vel_fer,input_col_freq,input_kin_vis,input_cyc_freq=0.0;
+	Parameter_Initalization(argc, argv, data_save_mode, input_vel_snd, input_vel_fer, input_col_freq, input_kin_vis, input_cyc_freq);
+
 	
 	GrapheneFluid1D	graph(npoints, input_vel_snd, input_vel_fer, input_kin_vis, input_col_freq);
 	BoundaryCondition::DyakonovShur BC;

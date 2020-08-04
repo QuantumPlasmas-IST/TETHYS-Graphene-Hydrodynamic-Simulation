@@ -1,35 +1,16 @@
-#include <cstdio>
-#include <cmath>
-#include <cstdlib>
-#include <iostream>
-#include <fstream>
-#include <ctime>
-#include <algorithm>
-#include <string>
-
-
-
-
-#include "TethysLib.h"
 #include "Tethys1DLib.h"
-#include <H5Cpp.h>
-
-using namespace H5;
-using namespace std;
-
 
 #ifndef MAT_PI
 #	define MAT_PI 3.14159265358979323846
 #endif
 
-
 #ifndef MAT_EULER
 #	define MAT_EULER 2.71828182845905
 #endif
 
-#ifndef C_SPEED
-#	define C_SPEED 1000.0
-#endif
+using namespace H5;
+using namespace std;
+
 
 GrapheneFluid1D::GrapheneFluid1D(int size_n, float sound_velocity, float fermi_velocity, float shear_viscosity, float collision_frequency): Fluid1D(size_n, sound_velocity, shear_viscosity){
 	vel_fer =fermi_velocity;

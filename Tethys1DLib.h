@@ -4,6 +4,7 @@
 #include <H5Cpp.h>
 #include "TethysLib.h"
 using namespace H5;
+using namespace std;
 
 class Fluid1D : public TETHYSBase{
 	protected:

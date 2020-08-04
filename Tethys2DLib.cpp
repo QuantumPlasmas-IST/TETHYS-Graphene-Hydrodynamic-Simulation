@@ -1,17 +1,9 @@
 // 2D version
-#include <cstdio>
-#include <cmath>
-#include <cstdlib>
-#include <vector>
-#include <iostream>
-#include <fstream>
-#include <ctime>
-#include <string>
 
-#include "TethysLib.h"
+
 
 #include "Tethys2DLib.h"
-#include <H5Cpp.h>
+
 
 using namespace H5;
 using namespace std;
@@ -456,7 +448,6 @@ float mass_den_center, mass_den_north, mass_den_south, mass_den_east, mass_den_w
 
 void GrapheneFluid2D::MagneticSourceFTCS(){
 	float px_0,py_0,sqrtn_0;
-	float wc=10.0;
 	for(int kp=1+Nx; kp<=Nx*Ny-Nx-2; kp++){ //correr a grelha principal evitando as fronteiras
 		if( kp%Nx!=Nx-1 && kp%Nx!=0){
 			sqrtn_0=sqrt(Den[kp]);
