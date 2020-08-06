@@ -19,7 +19,7 @@ class Fluid1D : public TETHYSBase{
 		float * grad_vel_mid;
 		std::ofstream data_preview;
 	public :
-		using TETHYSBase::TETHYSBase;
+		//using TETHYSBase::TETHYSBase;
 		float * Den ;
 		float * Vel ;
 		float * GradVel;
@@ -55,7 +55,7 @@ class GrapheneFluid1D : public Fluid1D{
 		float vel_fer =10.0;
 		float col_freq =0.0;
 	public : 
-		using Fluid1D::Fluid1D;
+		//using Fluid1D::Fluid1D;
 		GrapheneFluid1D(int size_n, float sound_velocity, float fermi_velocity, float shear_viscosity, float collision_frequency);
 		void CFLCondition() override;
 		//void BoundaryCond(int type);

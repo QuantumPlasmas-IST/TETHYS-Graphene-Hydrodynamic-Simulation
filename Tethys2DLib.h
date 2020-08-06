@@ -36,7 +36,7 @@ class Fluid2D : public TETHYSBase
 		float * FlxY ;
 		float * CurX ;
 		float * CurY ;
-		explicit Fluid2D(int size_nx, int size_ny, float sound_velocity, float shear_viscosity);
+		Fluid2D(int size_nx, int size_ny, float sound_velocity, float shear_viscosity);
 		~Fluid2D();
 		void SetVelSnd(float x);
 		void SetSound();
@@ -79,7 +79,7 @@ class GrapheneFluid2D : public Fluid2D{
 		float col_freq =0.0f;
 		float cyc_freq =0.0f;
 	public : 
-		using Fluid2D::Fluid2D;
+		//using Fluid2D::Fluid2D;
 		
 		GrapheneFluid2D(int size_nx, int size_ny, float sound_velocity, float fermi_velocity, float shear_viscosity, float collision_frequency, float cyclotron_frequency);
 
