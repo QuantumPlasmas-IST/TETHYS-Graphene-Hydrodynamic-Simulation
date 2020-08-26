@@ -37,6 +37,7 @@ void Parameter_Exeptions_Checking(int &data_save_mode, float &input_vel_snd, flo
 //-----------------------------------
 
 float Sound_Velocity_Anisotropy(float i, float dx, float s);
+float Sound_Velocity_Anisotropy(float i,float dx, float j,float dy, float s);
 void Average_Filter(float * vec_in, float * vec_out, int size , int width );
 
 class TETHYSBase {

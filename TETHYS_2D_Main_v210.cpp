@@ -12,7 +12,7 @@ using namespace std;
 int main(int argc, char **argv){
 	float t_max;
 	t_max = 6;
-	int npoints_x = 101;
+	int npoints_x = 151;
 	int npoints_y = 101;
 	//int npoints = npoints_x * npoints_y;
 	
@@ -60,25 +60,20 @@ int main(int argc, char **argv){
 	int points_per_period = static_cast<int>((2.0 * MAT_PI /Real_Freq(graph.GetVelSnd(), graph.GetVelFer(), graph.GetColFreq(), 1)) / dt);
 	int snapshot_step = points_per_period / snapshot_per_period;
 
+t_max=3.0f;
+
 	while (t <= t_max ){
 		++time_step;
 		t += dt;
 		graph.Richtmyer();
 		boundary_condition.X(graph);
-		//boundary_condition.YFree(graph);
-//		boundary_condition_Dirichelet.Density(graph,1.0f,1.0f,1.0f,1.0f);
+		boundary_condition.YFree(graph);
+		//boundary_condition_Dirichelet.Density(graph,1.0f,2.0f,1.4f,1.6f);
 		//boundary_condition_Dirichelet.MassFluxX(graph,-1.0f,-1.0f,0.0f,0.0f);
 		//boundary_condition_Dirichelet.Jet(graph, -1.0f, 0.8f, -1.0f, 0.8f);
 		//boundary_condition.YFree(graph);
-		boundary_condition.YFree(graph);
 
-//		graph.MagneticSourceFTCS();
-//		boundary_condition.X(graph);
-//		boundary_condition.YFree(graph);
-//		boundary_condition_Dirichelet.Density(graph,1.0f,1.0f,1.0f,1.0f);
-//      boundary_condition_Dirichelet.MassFluxX(graph,-1.0f,-1.0f,0.0f,0.0f);
-//	    boundary_condition_Dirichelet.Jet(graph, 0.0, 0.0, -1.0f, 0.3);
-//		boundary_condition.YFree(graph);
+
 		if(graph.GetCycFreq()!=0.0f){
 			graph.MagneticSourceFTCS();
 			boundary_condition.X(graph);

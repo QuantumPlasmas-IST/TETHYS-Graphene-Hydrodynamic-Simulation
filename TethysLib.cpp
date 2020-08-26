@@ -75,7 +75,9 @@ void Parameter_Initalization(int argc, char ** argv, int &data_save_mode, float 
 float Sound_Velocity_Anisotropy(float i, float dx, float s){
 	return s;
 }
-
+float Sound_Velocity_Anisotropy(float i,float dx, float j,float dy, float s){
+	return s;
+}
 
 
 void Average_Filter(float * vec_in, float * vec_out, int size , int width ){
@@ -213,8 +215,8 @@ void TETHYSBase::CreateHDF5File(){
 	}
 	if(RANK==2){
 		hsize_t dimsf[2];
-		dimsf[0] = static_cast<hsize_t>(Nx);
-		dimsf[1] = static_cast<hsize_t>(Ny);
+		dimsf[0] = static_cast<hsize_t>(Ny);
+		dimsf[1] = static_cast<hsize_t>(Nx);  //troquei !
 		DataspaceDen = new DataSpace(RANK, dimsf );
 		DataspaceVelX = new DataSpace(RANK, dimsf );
 		DataspaceVelY = new DataSpace(RANK, dimsf );
