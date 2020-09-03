@@ -390,9 +390,9 @@ float  GrapheneFluid2D::MassFluxYFluxY(float n,float flx_x, float flx_y,float ma
 	return f_3;
 }
 
-void GrapheneFluid2D::MagneticSource(){
+void GrapheneFluid2D::MagneticSourceSemiAnalytic(){
 	float px_0,py_0,sqrtn_0;
-	float wc=10.0;
+	float wc=cyc_freq;
 	for(int kp=1+Nx; kp<=Nx*Ny-Nx-2; kp++){ //correr a grelha principal evitando as fronteiras
 		if( kp%Nx!=Nx-1 && kp%Nx!=0){
 			sqrtn_0=sqrt(Den[kp]);
@@ -407,6 +407,8 @@ void GrapheneFluid2D::MagneticSource(){
 void GrapheneFluid2D::ViscosityFTCS() {
 int north, south, east, west;
 float mass_den_center, mass_den_north, mass_den_south, mass_den_east, mass_den_west;
+
+
 //calculate laplacians
 	for (int kp = 1 + Nx; kp <= Nx * Ny - Nx - 2; kp++) { //correr a grelha principal evitando as fronteiras
 		div_t divresult;
@@ -432,19 +434,23 @@ float mass_den_center, mass_den_north, mass_den_south, mass_den_east, mass_den_w
 		}
 	}
 	//FTCS algorithm
-	float old_px,old_py;
-	//float odd_vis=0.0f;
+	float old_px,old_py,sqrtn_0;
+	//float	odd_vis=;
+	float	odd_vis=0.0f;
 	for (int kp = 1 + Nx; kp <= Nx * Ny - Nx - 2; kp++) { //correr a grelha principal evitando as fronteiras
 		if (kp % Nx != Nx - 1 && kp % Nx != 0) {
 			old_px=FlxX[kp];
 			old_py=FlxY[kp];
+			sqrtn_0=sqrt(Den[kp]);
 			//FlxX[kp] = old_px + dt * (kin_vis * lap_flxX[kp] - odd_vis*lap_flxY[kp]);
 			//FlxY[kp] = old_py + dt * (kin_vis * lap_flxY[kp] + odd_vis*lap_flxX[kp]);
-			FlxX[kp] = old_px + dt * (kin_vis * lap_flxX[kp] );
-			FlxY[kp] = old_py + dt * (kin_vis * lap_flxY[kp] );
+			FlxX[kp] = old_px + dt * (kin_vis * lap_flxX[kp] -cyc_freq * old_py / sqrtn_0);
+			FlxY[kp] = old_py + dt * (kin_vis * lap_flxY[kp] +cyc_freq * old_px / sqrtn_0);
 		}
 	}
 }
+
+
 
 void GrapheneFluid2D::MagneticSourceFTCS(){
 	float px_0,py_0,sqrtn_0;

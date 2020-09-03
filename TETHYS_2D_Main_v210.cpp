@@ -12,7 +12,7 @@ using namespace std;
 int main(int argc, char **argv){
 	float t_max;
 	t_max = 6;
-	int npoints_x = 151;
+	int npoints_x = 101;
 	int npoints_y = 101;
 	//int npoints = npoints_x * npoints_y;
 	
@@ -25,10 +25,10 @@ int main(int argc, char **argv){
 	Parameter_Initalization(argc, argv, data_save_mode, input_vel_snd, input_vel_fer, input_col_freq, input_kin_vis,input_cyc_freq);
 
 	GrapheneFluid2D	graph(npoints_x, npoints_y, input_vel_snd, input_vel_fer, input_kin_vis, input_col_freq, input_cyc_freq);
-	graph.BannerDisplay();
+
 	BoundaryCondition::DyakonovShur boundary_condition;
 	BoundaryCondition::Dirichlet boundary_condition_Dirichelet;
-	//BoundaryCondition boundary_condition;
+
 	
 	/*......CFL routine to determine dt...............................*/
 	graph.CFLCondition();
@@ -47,7 +47,10 @@ int main(int argc, char **argv){
 	graph.CreateFluidFile();
 	graph.CreateHDF5File();
 	/*................................................................*/
-	
+
+	//t_max=3.0f; //encurtar o tempo para testes
+
+	graph.BannerDisplay();
 	graph.WellcomeScreen(graph.GetVelSnd(), graph.GetVelFer(), graph.GetColFreq(), graph.GetKinVis(), dt, dx, t_max);
 	Record_Log_File(graph.GetVelSnd(), graph.GetVelFer(), graph.GetColFreq(), dt, dx, dy, t_max);
 	////////////////////////////////////////////////////////////////////
@@ -60,26 +63,35 @@ int main(int argc, char **argv){
 	int points_per_period = static_cast<int>((2.0 * MAT_PI /Real_Freq(graph.GetVelSnd(), graph.GetVelFer(), graph.GetColFreq(), 1)) / dt);
 	int snapshot_step = points_per_period / snapshot_per_period;
 
-t_max=3.0f;
 
 	while (t <= t_max ){
 		++time_step;
 		t += dt;
 		graph.Richtmyer();
 		boundary_condition.X(graph);
+		//boundary_condition_Dirichelet.MassFluxX(graph,1.0f,1.0f,0.0f,0.0f);
+		//boundary_condition_Dirichelet.MassFluxY(graph,0.0f,0.0f,0.0f,0.0f);
 		boundary_condition.YFree(graph);
-		//boundary_condition_Dirichelet.Density(graph,1.0f,2.0f,1.4f,1.6f);
-		//boundary_condition_Dirichelet.MassFluxX(graph,-1.0f,-1.0f,0.0f,0.0f);
-		//boundary_condition_Dirichelet.Jet(graph, -1.0f, 0.8f, -1.0f, 0.8f);
-		//boundary_condition.YFree(graph);
+		//boundary_condition.YClosedNoSlip(graph);
 
 
-		if(graph.GetCycFreq()!=0.0f){
+		/*if(graph.GetCycFreq()!=0.0f){
 			graph.MagneticSourceFTCS();
 			boundary_condition.X(graph);
+			//boundary_condition_Dirichelet.MassFluxX(graph,1.0f,1.0f,0.0f,0.0f);
+			//boundary_condition_Dirichelet.MassFluxY(graph,0.0f,0.0f,0.0f,0.0f);
 			boundary_condition.YFree(graph);
-		}
+			//boundary_condition.YClosedNoSlip(graph);
 
+		}*/
+//		if(graph.GetKinVis()!=0.0f) {
+			graph.ViscosityFTCS();
+			boundary_condition.X(graph);
+			//boundary_condition_Dirichelet.MassFluxX(graph,1.0f,1.0f,0.0f,0.0f);
+			//boundary_condition_Dirichelet.MassFluxY(graph,0.0f,0.0f,0.0f,0.0f);
+			boundary_condition.YFree(graph);
+			//boundary_condition.YClosedNoSlip(graph);
+//		}
 
 		//Record full hdf5 data
 		if (data_save_mode && time_step % snapshot_step == 0) {
