@@ -8,9 +8,6 @@
 #    define MAT_EULER 2.71828182845905
 #endif
 
-#ifndef C_SPEED
-#    define C_SPEED 1000.0
-#endif
 
 using namespace H5;
 using namespace std;

@@ -252,6 +252,31 @@ float Integral_1_D(int n, float ds, float * f){
 	return itg;	
 }
 
+float Integral_2_D(int N,int M, float Dx,float Dy, float * f){
+	float itg=0.0;
+	float interior=0.0;
+	float edges=0.0;
+	float vertices=0.0;
+
+	vertices = f[0] + f[N-1] + f[N*M-N] + f[N*M-1];
+
+	for(int i=1;i<=N-2;i++){
+		edges += f[i] + f[i+(M-1)*N];
+	}
+	for(int j=1;j<=M-2;j++){
+		edges += f[j*N] + f[N-1+j*N];
+	}
+	for(int k=1+N; k<=N*M-N-2; k++) { //correr a grelha principal evitando as fronteiras
+		if (k % N != N - 1 && k % N != 0) {
+			interior += f[k];
+		}
+	}
+
+	itg = Dx*Dy*(0.25*vertices +  0.5*edges + interior);
+	return itg;
+}
+
+
 float Signal_Average(int n, float dt, float * f){
 	float avg=0.0;
 	for(int j=1; j < n / 2; j++){

@@ -296,7 +296,7 @@
        </UML:Classifier.feature>
       </UML:Class>
       <UML:Generalization xmi.id="uihsCpbvezqSB" visibility="public" isSpecification="false" discriminator="" child="uraH0EN68fOCQ" name="" namespace="Logical_View" parent="uG39De3sXxBFe"/>
-      <UML:Class xmi.id="uwV51dSjvayvc" visibility="public" isSpecification="false" isRoot="false" isAbstract="false" isLeaf="false" name="ElectroAnalysis" namespace="Logical_View">
+      <UML:Class xmi.id="uwV51dSjvayvc" visibility="public" isSpecification="false" isRoot="false" isAbstract="false" isLeaf="false" name="ElectroAnalysis1D" namespace="Logical_View">
        <UML:Classifier.feature>
         <UML:Attribute xmi.id="u7VVrSapLbL08" visibility="private" isSpecification="false" type="u8Rd17TS3oshN" name="data_electro"/>
         <UML:Operation xmi.id="uzbuz54PG6U3e" visibility="public" isSpecification="false" isRoot="false" isQuery="false" isVirtual="false" isInline="false" isAbstract="false" isLeaf="false" name="CreateElectroFile" isOverride="false">

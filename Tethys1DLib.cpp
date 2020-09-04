@@ -302,9 +302,8 @@ void GrapheneFluid1D::CFLCondition(){
 
 
 
-/*....................................................................*/
-
-void ElectroAnalysis::CreateElectroFile(GrapheneFluid1D& graphene){
+/*....................................................................
+void ElectroAnalysis1D::CreateElectroFile(GrapheneFluid1D& graphene){
 	//graphene.SetFileName();
 	std::string infix = graphene.GetInfix();
 	std::string electrofile = "electro_" + infix + ".dat" ;
@@ -312,7 +311,7 @@ void ElectroAnalysis::CreateElectroFile(GrapheneFluid1D& graphene){
 	data_electro << scientific; 	
 }
 
-void ElectroAnalysis::WriteElectroFile(float t,GrapheneFluid1D& graphene){
+void ElectroAnalysis1D::WriteElectroFile(float t, GrapheneFluid1D& graphene){
 		float q_net = this->NetCharge(graphene);
 		float i_avg = this->AverageCurrent(graphene);
 		float p_ohm = this->OhmPower(graphene);
@@ -321,19 +320,19 @@ void ElectroAnalysis::WriteElectroFile(float t,GrapheneFluid1D& graphene){
 		data_electro << t << "\t" << q_net << "\t" << i_avg << "\t" << q_net * q_net * 0.5 << "\t" << p_ohm << "\t" << dipole << "\t" << dipole_var << "\n";
 }
 
-float ElectroAnalysis::NetCharge(GrapheneFluid1D& graphene){
+float ElectroAnalysis1D::NetCharge(GrapheneFluid1D& graphene){
 	return Integral_1_D(graphene.SizeX(), graphene.GetDx(), graphene.DenCor);
 }
 
-float ElectroAnalysis::AverageCurrent(GrapheneFluid1D& graphene){
+float ElectroAnalysis1D::AverageCurrent(GrapheneFluid1D& graphene){
 	return Integral_1_D(graphene.SizeX(), graphene.GetDx(), graphene.CurCor);
 }
 
-float ElectroAnalysis::ElectricDipoleVariation(GrapheneFluid1D& graphene){
+float ElectroAnalysis1D::ElectricDipoleVariation(GrapheneFluid1D& graphene){
 	return Integral_1_D(graphene.SizeX(), graphene.GetDx(), graphene.CurCor);
 }
 
-float ElectroAnalysis::ElectricDipole(GrapheneFluid1D& graphene){
+float ElectroAnalysis1D::ElectricDipole(GrapheneFluid1D& graphene){
 	float p=0.0;
 	float dx=graphene.GetDx();
 	for(int j=1;j<graphene.SizeX()/2;j++){	
@@ -343,7 +342,7 @@ float ElectroAnalysis::ElectricDipole(GrapheneFluid1D& graphene){
 	return p;
 }
 
-float ElectroAnalysis::OhmPower(GrapheneFluid1D& graphene){
+float ElectroAnalysis1D::OhmPower(GrapheneFluid1D& graphene){
 	float itg=0.0;
 	for(int j=1;j<graphene.SizeX()/2;j++){
 		itg += graphene.CurCor[2 * j - 2] * graphene.VelCor[2 * j - 2] + 4 * graphene.CurCor[2 * j - 1] * graphene.VelCor[2 * j - 1] + graphene.CurCor[2 * j] * graphene.VelCor[2 * j];
@@ -351,4 +350,4 @@ float ElectroAnalysis::OhmPower(GrapheneFluid1D& graphene){
 	itg = itg*graphene.GetDx()/3.0f;
 	return itg;	
 }
-
+*/

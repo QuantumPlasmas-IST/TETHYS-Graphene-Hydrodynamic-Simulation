@@ -110,4 +110,6 @@ class GrapheneFluid2D : public Fluid2D{
 		void WriteAtributes();
 		void SaveSnapShot(int time_step,int snapshot_step);
 };
+
+
 #endif

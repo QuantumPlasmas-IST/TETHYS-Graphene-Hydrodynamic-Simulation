@@ -17,9 +17,6 @@ class BoundaryCondition {
 	void YClosedFreeSlip(Fluid2D& fluid_class);
 	void YClosedNoSlip(Fluid2D& fluid_class);
 
-
-
-
 	class DyakonovShur;
 	class Dirichlet; 
 };	

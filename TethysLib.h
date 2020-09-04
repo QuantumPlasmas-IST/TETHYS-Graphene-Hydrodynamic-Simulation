@@ -26,6 +26,7 @@ void Record_Log_File(float vel_snd, float vel_fer, float col_freq, float dt, flo
 
 float Signal_Average(int n, float dt, float * f);
 float Integral_1_D(int n, float ds, float * f);
+float Integral_2_D(int n,int m, float Dx,float Dy, float * f);
 
 void Extrema_Finding(float * vec_in, int n, float sound, float dt, float & sat, float  & tau, float & error, std::string extremafile);
 float Imag_Freq(float sound, float fermi, float col_freq);                  //

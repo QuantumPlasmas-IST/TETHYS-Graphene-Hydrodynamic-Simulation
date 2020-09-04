@@ -1,5 +1,6 @@
 #include "Tethys2DLib.h"
 #include "BoundaryLib.h"
+#include "ElectricLib.h"
 
 #ifndef MAT_PI
 #	define MAT_PI 3.14159265358979323846
@@ -44,6 +45,8 @@ int main(int argc, char **argv){
 	/*................................................................*/
 
 	/*.........Output files and streams...............................*/
+	ElectroAnalysis elec;
+	elec.CreateElectroFile(graph);
 	graph.CreateFluidFile();
 	graph.CreateHDF5File();
 	/*................................................................*/

@@ -19,7 +19,7 @@ class Fluid1D : public TETHYSBase{
 		float * grad_vel_mid;
 		std::ofstream data_preview;
 	public :
-		//using TETHYSBase::TETHYSBase;
+		using TETHYSBase::TETHYSBase;
 		float * Den ;
 		float * Vel ;
 		float * GradVel;
@@ -69,7 +69,7 @@ class GrapheneFluid1D : public Fluid1D{
 		float VelocitySource(float n,float v,float s) override;
 		void WriteAtributes();
 };
-class ElectroAnalysis {
+/*class ElectroAnalysis1D {
 	private:
 			std::ofstream data_electro;	
 	public:
@@ -80,6 +80,6 @@ class ElectroAnalysis {
 		float AverageCurrent(GrapheneFluid1D& graphene);
 		float ElectricDipole(GrapheneFluid1D& graphene);
 		float ElectricDipoleVariation(GrapheneFluid1D& graphene);
-};
+};*/
 #endif
 
