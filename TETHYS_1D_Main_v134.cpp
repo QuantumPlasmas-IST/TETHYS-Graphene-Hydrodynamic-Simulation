@@ -50,7 +50,7 @@ int main(int argc, char **argv){
 	graph.CreateHDF5File();
 	/*................................................................*/
 	
-	graph.WellcomeScreen(graph.GetVelSnd(), graph.GetVelFer(), graph.GetColFreq(), graph.GetKinVis(), dt, dx, t_max);
+	graph.WellcomeScreen(graph.GetVelSnd(), graph.GetVelFer(), graph.GetColFreq(), graph.GetKinVis(), dt, dx,dx, t_max);
 	Record_Log_File(graph.GetVelSnd(), graph.GetVelFer(), graph.GetColFreq(), dt, dx, 0.0, t_max);
 	
 	////////////////////////////////////////////////////////////////////

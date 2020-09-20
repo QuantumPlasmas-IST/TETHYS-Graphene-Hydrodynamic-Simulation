@@ -109,9 +109,9 @@ void Fluid1D::InitialCondTest(){
 void Fluid1D::SetKinVis(float x){ kin_vis=x;}
 void Fluid1D::SetVelSnd(float x){ vel_snd=x; }
 float Fluid1D::GetVelSnd(){ return vel_snd; }
-float Fluid1D::GetKinVis(){ return kin_vis; }
-float Fluid1D::GetDx(){return dx;}
-float Fluid1D::GetDt(){return dt;}
+float Fluid1D::GetKinVis() const{ return kin_vis; }
+float Fluid1D::GetDx() const{return dx;}
+float Fluid1D::GetDt() const{return dt;}
 
 
 void Fluid1D::Smooth(int width){
@@ -225,9 +225,9 @@ float GrapheneFluid1D::VelocitySource(float n,float v,float s){
 }
 
 void GrapheneFluid1D::SetVelFer(float x){ vel_fer=x; }
-float GrapheneFluid1D::GetVelFer(){ return vel_fer; }
+float GrapheneFluid1D::GetVelFer() const{ return vel_fer; }
 void GrapheneFluid1D::SetColFreq(float x){ col_freq=x; }
-float GrapheneFluid1D::GetColFreq(){ return col_freq; }
+float GrapheneFluid1D::GetColFreq() const{ return col_freq; }
 
 void Fluid1D::SaveSnapShot(int time_step,int snapshot_step){
 	const FloatType      hdf5_float(PredType::NATIVE_FLOAT);

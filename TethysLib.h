@@ -63,11 +63,11 @@ class TETHYSBase {
 		DataSpace* DataspaceVelX;
 		DataSpace* DataspaceVelY;
 
-		float GetTmax();
+		float GetTmax() const;
 		void SetTmax(float x);
-		int SizeX();
-		int SizeY();
-		int Rank();
+		int SizeX() const;
+		int SizeY() const;
+		int Rank() const;
 		
 		std::string GetInfix();
 		void CreateHDF5File();

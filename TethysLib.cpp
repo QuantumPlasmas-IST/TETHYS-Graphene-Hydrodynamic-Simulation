@@ -72,10 +72,10 @@ void Parameter_Initalization(int argc, char ** argv, int &data_save_mode, float 
 
 
 
-float Sound_Velocity_Anisotropy(float i, float dx, float s){
+float Sound_Velocity_Anisotropy(int i, float dx, float s){
 	return s;
 }
-float Sound_Velocity_Anisotropy(float i,float dx, float j,float dy, float s){
+float Sound_Velocity_Anisotropy(int i,float dx, int j,float dy, float s){
 	return s;
 }
 
@@ -143,11 +143,11 @@ void TETHYSBase::WellcomeScreen(float vel_snd, float vel_fer, float col_freq,flo
 std::string TETHYSBase::GetInfix(){return file_infix;}
 
 
-float TETHYSBase::GetTmax(){return Tmax;}
+float TETHYSBase::GetTmax() const{return Tmax;}
 void TETHYSBase::SetTmax(float x){ Tmax=x;}
-int TETHYSBase::Rank(){ return RANK; }
-int TETHYSBase::SizeX(){ return Nx; }
-int TETHYSBase::SizeY(){ return Ny; }
+int TETHYSBase::Rank() const{ return RANK; }
+int TETHYSBase::SizeX() const{ return Nx; }
+int TETHYSBase::SizeY() const{ return Ny; }
 
 
 void TETHYSBase::CloseHDF5File(){
@@ -246,7 +246,7 @@ void Record_Log_File(float vel_snd, float vel_fer, float col_freq, float dt, flo
 			vel_snd, vel_fer, col_freq) << "\n";
 	logfile << "#discretisation:\n";
 	logfile << "#dt\tdx\ttmax\ttime steps\tspace points\n";
-	logfile << dt << "\t" << dx << "\t" << dy << "\t" << tmax << "\t" << (int) tmax / dt << "\t" << (int) 1 / dx << endl;
+	logfile << dt << "\t" << dx << "\t" << dy << "\t" << tmax << "\t" << (int) (tmax / dt) << "\t" << (int) 1 / dx << endl;
 }
 
 float Integral_1_D(int n, float ds, float * f){
@@ -259,10 +259,10 @@ float Integral_1_D(int n, float ds, float * f){
 }
 
 float Integral_2_D(int N,int M, float Dx,float Dy, float * f){
-	float itg=0.0;
-	float interior=0.0;
-	float edges=0.0;
-	float vertices=0.0;
+	float itg=0.0f;
+	float interior=0.0f;
+	float edges=0.0f;
+	float vertices=0.0f;
 
 	vertices = f[0] + f[N-1] + f[N*M-N] + f[N*M-1];
 
@@ -278,7 +278,7 @@ float Integral_2_D(int N,int M, float Dx,float Dy, float * f){
 		}
 	}
 
-	itg = Dx*Dy*(0.25*vertices +  0.5*edges + interior);
+	itg = Dx*Dy*(0.25f*vertices +  0.5f*edges + interior);
 	return itg;
 }
 

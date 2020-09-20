@@ -40,18 +40,18 @@ class Fluid2D : public TETHYSBase
 		~Fluid2D();
 		void SetVelSnd(float x);
 		void SetSound();
-		float GetVelSnd();
+		float GetVelSnd() const;
 		void SetKinVis(float x);
-		float GetKinVis();
+		float GetKinVis() const;
 		void SetLengthX(float x);
 		void SetLengthY(float x);
-		float GetLengthX();
-		float GetLengthY();
-		float GetDx();
+		float GetLengthX() const;
+		float GetLengthY() const;
+		float GetDx() const;
 		void SetDx(float x);
-		float GetDy();
+		float GetDy() const;
 		void SetDy(float x);
-		float GetDt();
+		float GetDt() const;
 		void SetDt(float x);
 
 		virtual void SetSimulationTime();
@@ -89,10 +89,10 @@ class GrapheneFluid2D : public Fluid2D{
 
 		
 		void SetVelFer(float x);
-		float GetVelFer();
+		float GetVelFer() const;
 		void SetColFreq(float x);
-		float GetColFreq();
-		float GetCycFreq();
+		float GetColFreq() const;
+		float GetCycFreq() const;
 		void CFLCondition() override;
 		void SetSimulationTime() override;
 		void MassFluxToVelocity() override;

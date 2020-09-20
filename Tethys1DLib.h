@@ -33,9 +33,9 @@ class Fluid1D : public TETHYSBase{
 		void SetVelSnd(float x);
 		void SetKinVis(float x);
 		float GetVelSnd();
-		float GetKinVis();
-		float GetDx();
-		float GetDt();
+		float GetKinVis() const;
+		float GetDx() const;
+		float GetDt() const;
 		void SetSimulationTime();
 		void InitialCondRand();
 		void InitialCondTest();
@@ -60,9 +60,9 @@ class GrapheneFluid1D : public Fluid1D{
 		void CFLCondition() override;
 		//void BoundaryCond(int type);
 		void SetVelFer(float x);
-		float GetVelFer();
+		float GetVelFer() const;
 		void SetColFreq(float x);
-		float GetColFreq();
+		float GetColFreq() const;
 		float DensityFlux(float n,float v,__attribute__((unused)) float s) override;
 		float VelocityFlux(float n,float v,float dv,float s) override;
 		float DensitySource(float n,float v,float s) override;
