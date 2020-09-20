@@ -1,20 +1,21 @@
-#ifndef BONDLIB_H
-#define BONDLIB_H
+#ifndef BOUNDARYLIB_H
+#define BOUNDARYLIB_H
 
 #include <H5Cpp.h>
 #include "TethysLib.h"
 #include "Tethys1DLib.h"
 #include "Tethys2DLib.h"
 
-
 class BoundaryCondition {
-	public : 
-	void XFree(GrapheneFluid1D& graphene);
-	void XPeriodic(GrapheneFluid1D& graphene);
-	void XFree(GrapheneFluid2D& graphene);
-	void XPeriodic(GrapheneFluid2D& graphene);
-	void YFree(GrapheneFluid2D& graphene);
-	void YPeriodic(GrapheneFluid2D& graphene);
+	public :
+	void XFree(Fluid1D& fluid_class);
+	void XFree(Fluid2D& fluid_class);
+	void XPeriodic(Fluid1D& fluid_class);
+	void XPeriodic(Fluid2D& fluid_class);
+	void YFree(Fluid2D& fluid_class);
+	void YPeriodic(Fluid2D& fluid_class);
+	void YClosedFreeSlip(Fluid2D& fluid_class);
+	void YClosedNoSlip(Fluid2D& fluid_class);
 
 	class DyakonovShur;
 	class Dirichlet; 
@@ -22,19 +23,22 @@ class BoundaryCondition {
 
 class  BoundaryCondition::DyakonovShur { 
 	public:
-	void X(GrapheneFluid1D& graphene);
-	void X(GrapheneFluid2D& graphene);
-	void YFree(GrapheneFluid2D& graphene);
-	void YPeriodic(GrapheneFluid2D& graphene);
+	void X(GrapheneFluid1D& fluid_class);
+	void X(GrapheneFluid2D& fluid_class);
+	void YFree(GrapheneFluid2D& fluid_class);
+	void YPeriodic(GrapheneFluid2D& fluid_class);
+	void YClosedFreeSlip(GrapheneFluid2D& fluid_class);
+	void YClosedNoSlip(GrapheneFluid2D& fluid_class);
 };
 
 class  BoundaryCondition::Dirichlet { 
 	public: 	
-	void Density(GrapheneFluid1D& graphene, float L, float R);
-	void Density(GrapheneFluid2D& graphene, float L, float R, float T, float B);
-	void VelocityX(GrapheneFluid1D& graphene, float L, float R);
-	void MassFluxX(GrapheneFluid2D& graphene, float L, float R, float T, float B);
-	void MassFluxY(GrapheneFluid2D& graphene, float L, float R, float T, float B);
+	void Density(Fluid1D& fluid_class, float left, float right);
+	void Density(Fluid2D& fluid_class, float left, float right, float top, float bottom);
+	void VelocityX(Fluid1D& fluid_class, float left, float right);
+	void MassFluxX(Fluid2D& fluid_class, float left, float right, float top, float bottom);
+	void MassFluxY(Fluid2D& fluid_class, float left, float right, float top, float bottom);
+	void Jet(Fluid2D& fluid_class, float left, float left_width, float right, float right_width);
 };
 
 #endif

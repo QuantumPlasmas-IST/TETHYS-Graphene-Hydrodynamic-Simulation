@@ -1,57 +1,42 @@
-#include <cstdio>
-#include <cmath>
-#include <cstdlib>
-
-#include <iostream>
-#include <fstream>
-#include <ctime>
-#include <algorithm>
-#include <string>
-#include <iomanip>   
-#include <cassert>
-
-#include <H5Cpp.h>
-
 #include "Tethys2DLib.h"
 #include "BoundaryLib.h"
+#include "ElectricLib.h"
 
 #ifndef MAT_PI
-#    define MAT_PI 3.14159265358979323846
+#	define MAT_PI 3.14159265358979323846
 #endif
 
 
-using namespace H5;
 using namespace std;
-
-const FloatType      hdf5_float(PredType::NATIVE_FLOAT);
-const IntType        hdf5_int(PredType::NATIVE_INT);
-
-
 
 
 int main(int argc, char **argv){
-    float T_max=6;
-	int NpointsX = 101;
-	int NpointsY = 101;
-	int Npoints = NpointsX*NpointsY;
+	float t_max;
+	t_max = 6;
+	int npoints_x = 101;
+	int npoints_y = 201;
+	//int npoints = npoints_x * npoints_y;
 	
 	float t=0.0;
-	float dx,dy;								// spatial discretisation
-	float dt;								// time step
+	float dx,dy;	// spatial discretisation
+	float dt;		// time step
 
- 	int data_save_mode=0;
-	float input_vel_snd,input_vel_fer,input_col_freq,input_kin_vis;
-	ParameterInitalization(argc,argv,data_save_mode,input_vel_snd,input_vel_fer,input_col_freq,input_kin_vis);
-	
-	
-	GrapheneFluid2D	graph(NpointsX,NpointsY,input_vel_snd, input_vel_fer, input_kin_vis,input_col_freq);
-	graph.BannerDisplay();
-    BoundaryCondition::DyakonovShur BC;
-    //BoundaryCondition::Dirichlet BCD;
-    //BoundaryCondition BC;
+
+
+	int data_save_mode=0;
+	float input_vel_snd,input_vel_fer,input_col_freq,input_kin_vis,input_cyc_freq;
+	Parameter_Initialization(argc, argv, data_save_mode, input_vel_snd, input_vel_fer, input_col_freq, input_kin_vis,
+	                         input_cyc_freq);
+
+	GrapheneFluid2D	graph(npoints_x, npoints_y, input_vel_snd, input_vel_fer, input_kin_vis, input_col_freq, input_cyc_freq);
+
+	BoundaryCondition::DyakonovShur boundary_condition;
+	BoundaryCondition::Dirichlet boundary_condition_Dirichelet;
+
 	
 	/*......CFL routine to determine dt...............................*/
-// TODO Check CFL in order to have different space discretizations
+	graph.SetLengthX(1.0f);
+	graph.SetLengthY(2.0f);
 	graph.CFLCondition();
 	dx=graph.GetDx();
 	dy=graph.GetDy();
@@ -59,108 +44,79 @@ int main(int argc, char **argv){
 	/*................................................................*/
 	
 	/*.........Fixed or variable vel_snd value........................*/
-// TODO review the set sound and set max time processes
 	graph.SetSound();
 	//graph.SetSimulationTime();
-	//float T_max=graph.GetTmax();
-	graph.SetTmax(6.0);
+	graph.SetTmax(7.0);
 	/*................................................................*/
 
 	/*.........Output files and streams...............................*/
+	ElectroAnalysis elec;
+	elec.CreateElectroFile(graph);
 	graph.CreateFluidFile();
 	graph.CreateHDF5File();
 	/*................................................................*/
-	
-	graph.WellcomeScreen(graph.GetVelSnd(), graph.GetVelFer(), graph.GetColFreq(),graph.GetKinVis(), dt, dx, T_max);
-	RecordLogFile(graph.GetVelSnd(), graph.GetVelFer(), graph.GetColFreq(), dt, dx,dy, T_max);
 
-		
+	//t_max=3.0f; //encurtar o tempo para testes
+
+	graph.BannerDisplay();
+	graph.WellcomeScreen(graph.GetVelSnd(), graph.GetVelFer(), graph.GetColFreq(), graph.GetKinVis(), dt, dx,dy, t_max);
+	Record_Log_File(graph.GetVelSnd(), graph.GetVelFer(), graph.GetColFreq(), dt, dx, dy, t_max);
 	////////////////////////////////////////////////////////////////////
 	// Initialization	
 	graph.InitialCondRand();
 	////////////////////////////////////////////////////////////////////
-	
-	
 	cout << "\033[1;7;5;33m Program Running \033[0m"<<endl;
-	
 	int time_step=0;
-	int snapshot_per_Period = 10;   
-	int points_per_Period = static_cast<int>(
-            (2.0 * MAT_PI / RealFreq(graph.GetVelSnd(), graph.GetVelFer(), graph.GetColFreq(), 1)) / dt);
-	int snapshot_step = points_per_Period/snapshot_per_Period; 
+	int snapshot_per_period = 10;
+	int points_per_period = static_cast<int>((2.0 * MAT_PI /Real_Freq(graph.GetVelSnd(), graph.GetVelFer(), graph.GetColFreq(), 1)) / dt);
+	int snapshot_step = points_per_period / snapshot_per_period;
 
-	
-	while(t<=T_max && isfinite(graph.velX[Npoints/2])) // throw exception para nan / inf
-	//while(time_step<=10000 && isfinite(graph.velX[Npoints/2])) // throw exception para nan / inf
-	{	
-// TODO
-//  1) try to implement strang splittind instead of godunov splitting
 
+	while (t <= t_max ){
 		++time_step;
 		t += dt;
-
-        graph.SourceFTCS();
-        // Impose boundary conditions
-        BC.X(graph);
-        BC.YFree(graph);
-
-
 		graph.Richtmyer();
-        // Impose boundary conditions
-        BC.X(graph);
-        BC.YFree(graph);
-
-		//graph.MagneticSource();
-        graph.SourceFTCS();
-        // Impose boundary conditions
-		BC.X(graph);
-		BC.YFree(graph);
+		boundary_condition.X(graph);
+		//boundary_condition_Dirichelet.MassFluxX(graph,1.0f,1.0f,0.0f,0.0f);
+		//boundary_condition_Dirichelet.MassFluxY(graph,0.0f,0.0f,0.0f,0.0f);
+		boundary_condition.YFree(graph);
+		//boundary_condition.YClosedNoSlip(graph);
 
 
-//		BCD.Density(graph,1.0f,2.0f,1.0f,1.0f);
-//		BCD.MassFluxX(graph,-1.0f,1.0f,0.0f,0.0f);
+		/*if(graph.GetCycFreq()!=0.0f){
+			graph.MagneticSourceFTCS();
+			boundary_condition.X(graph);
+			//boundary_condition_Dirichelet.MassFluxX(graph,1.0f,1.0f,0.0f,0.0f);
+			//boundary_condition_Dirichelet.MassFluxY(graph,0.0f,0.0f,0.0f,0.0f);
+			boundary_condition.YFree(graph);
+			//boundary_condition.YClosedNoSlip(graph);
 
-//		BC.YFree(graph);
-		// Applying average filters for smoothing 	
-		//graph.Smooth(2);
+		}*/
+		if(graph.GetKinVis()!=0.0f) {
+			graph.ViscosityFTCS();
+			boundary_condition.X(graph);
+			//boundary_condition_Dirichelet.MassFluxX(graph,1.0f,1.0f,0.0f,0.0f);
+			//boundary_condition_Dirichelet.MassFluxY(graph,0.0f,0.0f,0.0f,0.0f);
+			boundary_condition.YFree(graph);
+			//boundary_condition.YClosedNoSlip(graph);
+		}
 
-		
-		if(data_save_mode && time_step % snapshot_step  == 0 ){
-		//Record full data
-            graph.MassFluxToVelocity(); //if placed here the profiling percentage drops from 7.7% to <1%
-			string str_time = to_string(time_step/snapshot_step );
-			string name_dataset = "snapshot_"+str_time;
-			
-			DataSet dataset_den = graph.grp_den->createDataSet( name_dataset , hdf5_float, *graph.dataspace_den );
-			dataset_den.write( graph.den, hdf5_float );
-			dataset_den.close();
-			
-			DataSet dataset_velX = graph.grp_velX->createDataSet( name_dataset , hdf5_float, *graph.dataspace_velX );
-			dataset_velX.write( graph.velX, hdf5_float );
-			dataset_velX.close();
-
-			DataSet dataset_velY = graph.grp_velY->createDataSet( name_dataset , hdf5_float, *graph.dataspace_velY );
-			dataset_velY.write( graph.velY, hdf5_float );
-			dataset_velY.close();	
+		//Record full hdf5 data
+		if (data_save_mode && time_step % snapshot_step == 0) {
+			graph.SaveSnapShot(time_step,snapshot_step);
 		}
 		graph.WriteFluidFile(t);
-		
-		
-	
-		
 	}
-	
-	
-	graph.WriteAtributes();
-    graph.CloseHDF5File();
+	//Record atributes on hdf5 file
+	if(data_save_mode ) {
+		graph.WriteAtributes();
+	}
+	graph.CloseHDF5File();
+	if(!data_save_mode ) {
+		//Remove the empty hdf5 file if unused
+		system("rm hdf5_2D*");
+	}
 	cout << "\033[1A\033[2K\033[1;32mDONE!\033[0m\n";
-	cout<<"═══════════════════════════════════════════════════════════════════════════" <<endl;
-
-
-	
+	cout << "═══════════════════════════════════════════════════════════════════════════" <<endl;
 	return 0;
 }
-
-
-
-
