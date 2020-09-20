@@ -13,8 +13,8 @@ class Fluid2D : public TETHYSBase
 		float dx=1.0;
 		float dy=1.0;
 		float dt=1.0;
-		const float lengX=1.0;
-		const float lengY=1.0;
+		float lengX=1.0;
+		float lengY=1.0;
 		float vel_snd =50.0;
 		float kin_vis =0.0;
 		float * vel_snd_arr;
@@ -43,6 +43,10 @@ class Fluid2D : public TETHYSBase
 		float GetVelSnd();
 		void SetKinVis(float x);
 		float GetKinVis();
+		void SetLengthX(float x);
+		void SetLengthY(float x);
+		float GetLengthX();
+		float GetLengthY();
 		float GetDx();
 		void SetDx(float x);
 		float GetDy();

@@ -73,7 +73,7 @@ class TETHYSBase {
 		void CreateHDF5File();
 		void CloseHDF5File();
 		void BannerDisplay();
-		void WellcomeScreen(float vel_snd, float vel_fer,float col_freq,float viscosity, float dt, float dx, float tmax);
+		void WellcomeScreen(float vel_snd, float vel_fer,float col_freq,float viscosity, float dt, float dx,float dy, float tmax);
 		
 		
 };  

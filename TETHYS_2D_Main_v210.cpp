@@ -14,12 +14,14 @@ int main(int argc, char **argv){
 	float t_max;
 	t_max = 6;
 	int npoints_x = 101;
-	int npoints_y = 101;
+	int npoints_y = 201;
 	//int npoints = npoints_x * npoints_y;
 	
 	float t=0.0;
 	float dx,dy;	// spatial discretisation
 	float dt;		// time step
+
+
 
 	int data_save_mode=0;
 	float input_vel_snd,input_vel_fer,input_col_freq,input_kin_vis,input_cyc_freq;
@@ -32,6 +34,8 @@ int main(int argc, char **argv){
 
 	
 	/*......CFL routine to determine dt...............................*/
+	graph.SetLengthX(1.0f);
+	graph.SetLengthY(2.0f);
 	graph.CFLCondition();
 	dx=graph.GetDx();
 	dy=graph.GetDy();
@@ -54,7 +58,7 @@ int main(int argc, char **argv){
 	//t_max=3.0f; //encurtar o tempo para testes
 
 	graph.BannerDisplay();
-	graph.WellcomeScreen(graph.GetVelSnd(), graph.GetVelFer(), graph.GetColFreq(), graph.GetKinVis(), dt, dx, t_max);
+	graph.WellcomeScreen(graph.GetVelSnd(), graph.GetVelFer(), graph.GetColFreq(), graph.GetKinVis(), dt, dx,dy, t_max);
 	Record_Log_File(graph.GetVelSnd(), graph.GetVelFer(), graph.GetColFreq(), dt, dx, dy, t_max);
 	////////////////////////////////////////////////////////////////////
 	// Initialization	
@@ -71,11 +75,11 @@ int main(int argc, char **argv){
 		++time_step;
 		t += dt;
 		graph.Richtmyer();
-		boundary_condition.X(graph);
-		//boundary_condition_Dirichelet.MassFluxX(graph,1.0f,1.0f,0.0f,0.0f);
-		//boundary_condition_Dirichelet.MassFluxY(graph,0.0f,0.0f,0.0f,0.0f);
-		boundary_condition.YFree(graph);
-		//boundary_condition.YClosedNoSlip(graph);
+		//boundary_condition.X(graph);
+		boundary_condition_Dirichelet.MassFluxX(graph,1.0f,1.0f,0.0f,0.0f);
+		boundary_condition_Dirichelet.MassFluxY(graph,0.0f,0.0f,0.0f,0.0f);
+		//boundary_condition.YFree(graph);
+		boundary_condition.YClosedNoSlip(graph);
 
 
 		/*if(graph.GetCycFreq()!=0.0f){
@@ -87,14 +91,14 @@ int main(int argc, char **argv){
 			//boundary_condition.YClosedNoSlip(graph);
 
 		}*/
-//		if(graph.GetKinVis()!=0.0f) {
+		if(graph.GetKinVis()!=0.0f) {
 			graph.ViscosityFTCS();
-			boundary_condition.X(graph);
-			//boundary_condition_Dirichelet.MassFluxX(graph,1.0f,1.0f,0.0f,0.0f);
-			//boundary_condition_Dirichelet.MassFluxY(graph,0.0f,0.0f,0.0f,0.0f);
-			boundary_condition.YFree(graph);
-			//boundary_condition.YClosedNoSlip(graph);
-//		}
+			//boundary_condition.X(graph);
+			boundary_condition_Dirichelet.MassFluxX(graph,1.0f,1.0f,0.0f,0.0f);
+			boundary_condition_Dirichelet.MassFluxY(graph,0.0f,0.0f,0.0f,0.0f);
+			//boundary_condition.YFree(graph);
+			boundary_condition.YClosedNoSlip(graph);
+		}
 
 		//Record full hdf5 data
 		if (data_save_mode && time_step % snapshot_step == 0) {

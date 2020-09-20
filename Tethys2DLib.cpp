@@ -74,11 +74,17 @@ void Fluid2D::SetVelSnd(float x){ vel_snd=x; }
 float Fluid2D::GetKinVis(){ return kin_vis; }
 void Fluid2D::SetKinVis(float x){ kin_vis=x;}
 float Fluid2D::GetDx(){return dx;}
-void Fluid2D::SetDx(float x){ dx=x;} 
+void Fluid2D::SetDx(float x){ dx=x;}
 float Fluid2D::GetDy(){return dy;}
 void Fluid2D::SetDy(float x){ dy=x;}
 float Fluid2D::GetDt(){return dt;}
 void Fluid2D::SetDt(float x){ dt=x;}
+
+void Fluid2D::SetLengthX(float x){lengX=x;}
+void Fluid2D::SetLengthY(float x){lengY=x;}
+float Fluid2D::GetLengthX(){return lengX;}
+float Fluid2D::GetLengthY(){return lengX;}
+
 
 void Fluid2D::InitialCondRand(){
 	srand (static_cast<unsigned int>(time(NULL)));
