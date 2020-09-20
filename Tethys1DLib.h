@@ -32,7 +32,7 @@ class Fluid1D : public TETHYSBase{
 		void Smooth(int width);
 		void SetVelSnd(float x);
 		void SetKinVis(float x);
-		float GetVelSnd();
+		float GetVelSnd() const;
 		float GetKinVis() const;
 		float GetDx() const;
 		float GetDt() const;

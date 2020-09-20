@@ -87,10 +87,15 @@ float Fluid2D::GetLengthY() const{return lengX;}
 
 
 void Fluid2D::InitialCondRand(){
-	srand (static_cast<unsigned int>(time(NULL)));
+
+	random_device rd;
+	float maxrand;
+	maxrand = (float) rd.max();
+	//srand (static_cast<unsigned int>(time(NULL)));
+
 	for (int i = 0; i < Nx; i++ ){
 		for (int j=0; j<Ny; j++){
-		float noise = (float) rand()/ (float) RAND_MAX ;
+		float noise =  (float) rd()/maxrand ; //(float) rand()/ (float) RAND_MAX ;
 			Den[i + j * Nx] = 1.0f + 0.005f * (noise - 0.5f);
 		}
 	}
@@ -442,7 +447,7 @@ float mass_den_center, mass_den_north, mass_den_south, mass_den_east, mass_den_w
 	//FTCS algorithm
 	float old_px,old_py,sqrtn_0;
 	//float	odd_vis=;
-	float	odd_vis=0.0f;
+	//float	odd_vis=0.0f;
 	for (int kp = 1 + Nx; kp <= Nx * Ny - Nx - 2; kp++) { //correr a grelha principal evitando as fronteiras
 		if (kp % Nx != Nx - 1 && kp % Nx != 0) {
 			old_px=FlxX[kp];

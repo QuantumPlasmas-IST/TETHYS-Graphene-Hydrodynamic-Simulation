@@ -1,5 +1,5 @@
-#ifndef TESTLIB_H
-#define TESTLIB_H
+#ifndef TETHYSLIB_H
+#define TETHYSLIB_H
 
 
 #include <fstream>
@@ -11,7 +11,7 @@
 #include <ctime>
 #include <algorithm>
 #include <string>
-
+#include <random>
 
 #include <H5Cpp.h>
 using namespace std;
@@ -24,11 +24,11 @@ constexpr float Gauss_Kernel(int position , float t); //
 constexpr float Gauss_Kernel_Derivative(int position , float t); //
 void Record_Log_File(float vel_snd, float vel_fer, float col_freq, float dt, float dx, float dy, float tmax);
 
-float Signal_Average(int n, float dt, float * f);
-float Integral_1_D(int n, float ds, float * f);
-float Integral_2_D(int n,int m, float Dx,float Dy, float * f);
+float Signal_Average(int n, float dt, const float * f);
+float Integral_1_D(int n, float ds, const float * f);
+float Integral_2_D(int n, int m, float dx, float dy, const float * f);
 
-void Extrema_Finding(float * vec_in, int n, float sound, float dt, float & sat, float  & tau, float & error, std::string extremafile);
+void Extrema_Finding(float * vec_in, int n, float sound, float dt, float & sat, float  & tau, float & error, const std::string& extremafile);
 float Imag_Freq(float sound, float fermi, float col_freq);                  //
 float Phase_Vel(float sound, float fermi);
 float Real_Freq(float sound, float fermi, float col_freq, int mode);  //
@@ -37,9 +37,9 @@ void Parameter_Initalization(int argc, char ** argv, int &data_save_mode, float 
 void Parameter_Exeptions_Checking(int &data_save_mode, float &input_vel_snd, float &input_vel_fer, float &input_col_freq, float &input_kin_vis, float &input_cyc_freq);
 //-----------------------------------
 
-float Sound_Velocity_Anisotropy(float i, float dx, float s);
-float Sound_Velocity_Anisotropy(float i,float dx, float j,float dy, float s);
-void Average_Filter(float * vec_in, float * vec_out, int size , int width );
+float Sound_Velocity_Anisotropy(int i, float dx, float s);
+float Sound_Velocity_Anisotropy(int  i,float dx, int j,float dy, float s);
+void Average_Filter(const float * vec_in, float * vec_out, int size , int width );
 
 class TETHYSBase {
 	protected:

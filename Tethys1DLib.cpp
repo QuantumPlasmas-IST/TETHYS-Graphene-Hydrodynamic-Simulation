@@ -90,16 +90,20 @@ void Fluid1D::SetSound(){
 }
 		
 void Fluid1D::InitialCondRand(){
-	srand (static_cast<unsigned int>(time(NULL)));
+
+	random_device rd;
+	float maxrand;
+	maxrand = (float) rd.max();
+
 	for (int i = 0; i < Nx; i++ ){
-		float noise = (float) rand()/ (float) RAND_MAX ;
+		float noise = (float) rd()/ maxrand ;
 		Den[i] = 1.0f + 0.005f * (noise - 0.5f);
 	}
 }
 
 void Fluid1D::InitialCondTest(){
-	float mean=dx*Nx/2.0f;
-	float sigma=dx*Nx/10.0f;
+	//float mean=dx*Nx/2.0f;
+	//float sigma=dx*Nx/10.0f;
 	for (int i = 0; i < Nx; i++ ){
 		//Vel[i] = 0.4f*exp(-0.5f*((i*dx-mean)*(i*dx-mean)/(sigma*sigma)))/sigma;
 		Vel[i] = 1.0f+tanh(10.0f*(dx*i-0.5f));
@@ -108,7 +112,7 @@ void Fluid1D::InitialCondTest(){
 
 void Fluid1D::SetKinVis(float x){ kin_vis=x;}
 void Fluid1D::SetVelSnd(float x){ vel_snd=x; }
-float Fluid1D::GetVelSnd(){ return vel_snd; }
+float Fluid1D::GetVelSnd() const{ return vel_snd; }
 float Fluid1D::GetKinVis() const{ return kin_vis; }
 float Fluid1D::GetDx() const{return dx;}
 float Fluid1D::GetDt() const{return dt;}
@@ -182,8 +186,8 @@ void Fluid1D::Richtmyer(){
 		//
 		for ( int i = 1; i <= Nx - 2; i++ )
 		{
-			float den_old = Den[i];
-			float vel_old = Vel[i];
+			//float den_old = Den[i];
+			//float vel_old = Vel[i];
 			Den[i] = Den[i] - (dt / dx) * (DensityFlux(den_mid[i], vel_mid[i], vel_snd_arr[i]) - DensityFlux(den_mid[i - 1], vel_mid[i - 1], vel_snd_arr[i] ) )
 			        ;// +  dt * DensitySource(den_old,vel_old,vel_snd_arr[i]);
 			Vel[i] = Vel[i] - (dt / dx) * (VelocityFlux(den_mid[i], vel_mid[i], grad_vel_mid[i], vel_snd_arr[i]) - VelocityFlux(den_mid[i - 1], vel_mid[i - 1], grad_vel_mid[i - 1], vel_snd_arr[i] ) )

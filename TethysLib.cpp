@@ -36,12 +36,13 @@ void Parameter_Exeptions_Checking(int &data_save_mode, float &input_vel_snd, flo
 void Parameter_Initalization(int argc, char ** argv, int &data_save_mode, float &input_vel_snd, float &input_vel_fer, float &input_col_freq, float &input_kin_vis,float &input_cyc_freq){
 	if(argc==7){
 		try {
-			input_vel_snd = static_cast<float>(atof(argv[1]));
-			input_vel_fer = static_cast<float>(atof(argv[2]));
-			input_col_freq = static_cast<float>(atof(argv[3]));
-			input_kin_vis = static_cast<float>(atof(argv[4]));
-			input_cyc_freq = static_cast<float>(atof(argv[5]));
-			data_save_mode = atoi(argv[6]);    // full data or light save option
+			input_vel_snd = strtof(argv[1], nullptr);
+			input_vel_fer = strtof(argv[2], nullptr);
+			input_col_freq = strtof(argv[3], nullptr);
+			input_kin_vis = strtof(argv[4], nullptr);
+			input_cyc_freq = strtof(argv[5], nullptr);
+			data_save_mode = (int) strtol(argv[6],nullptr,10);    // full data or light save option
+			//data_save_mode = atoi(argv[6]);    // full data or light save option
 			Parameter_Exeptions_Checking(data_save_mode, input_vel_snd, input_vel_fer, input_col_freq, input_kin_vis,input_cyc_freq);
 		}catch (const char* msg) {
 			cerr << msg << endl;
@@ -80,7 +81,7 @@ float Sound_Velocity_Anisotropy(int i,float dx, int j,float dy, float s){
 }
 
 
-void Average_Filter(float * vec_in, float * vec_out, int size , int width ){
+void Average_Filter(const float * vec_in, float * vec_out, int size , int width ){
 	for ( int i = 0; i < size; i++ ){
 		if(i>=width &&i<=size-1-width){
 			for(int k = i-width; k <= i+width;k++){
@@ -249,7 +250,7 @@ void Record_Log_File(float vel_snd, float vel_fer, float col_freq, float dt, flo
 	logfile << dt << "\t" << dx << "\t" << dy << "\t" << tmax << "\t" << (int) (tmax / dt) << "\t" << (int) 1 / dx << endl;
 }
 
-float Integral_1_D(int n, float ds, float * f){
+float Integral_1_D(int n, float ds, const float * f){
 	float itg=0.0;
 	for(int j=1; j < n / 2; j++){
 		itg += f[2*j-2] + 4*f[2*j-1] + f[2*j];
@@ -258,11 +259,11 @@ float Integral_1_D(int n, float ds, float * f){
 	return itg;	
 }
 
-float Integral_2_D(int N,int M, float Dx,float Dy, float * f){
-	float itg=0.0f;
+float Integral_2_D(int N, int M, float dx, float dy, const float * f){
+	float itg;
 	float interior=0.0f;
 	float edges=0.0f;
-	float vertices=0.0f;
+	float vertices;
 
 	vertices = f[0] + f[N-1] + f[N*M-N] + f[N*M-1];
 
@@ -278,12 +279,12 @@ float Integral_2_D(int N,int M, float Dx,float Dy, float * f){
 		}
 	}
 
-	itg = Dx*Dy*(0.25f*vertices +  0.5f*edges + interior);
+	itg = dx * dy * (0.25f * vertices + 0.5f * edges + interior);
 	return itg;
 }
 
 
-float Signal_Average(int n, float dt, float * f){
+float Signal_Average(int n, float dt, const float * f){
 	float avg=0.0;
 	for(int j=1; j < n / 2; j++){
 		avg += f[2*j-2] + 4*f[2*j-1] + f[2*j];
@@ -303,7 +304,7 @@ constexpr float Gauss_Kernel_Derivative(int position , float t){
 }
 
 
-void Convolve_Gauss(int type, int m, float t, float * in, float * out, int size){
+void Convolve_Gauss(int type, int m, float t, const float * in, float * out, int size){
 	if(type==0){
 		for(int i=0;i<size;i++){
 			if(i >= m && i < size - m){
@@ -348,7 +349,7 @@ float Imag_Freq(float sound, float fermi, float col_freq){
 }
 
 
-void Extrema_Finding(float *vec_in, int n, float sound, float dt, float & sat, float & tau , float & error, std::string extremafile){
+void Extrema_Finding(float *vec_in, int n, float sound, float dt, float & sat, float & tau , float & error, const std::string& extremafile){
 //TODO review the entire function
 	ofstream data_extrema;
 	data_extrema.open(extremafile);
