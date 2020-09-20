@@ -25,7 +25,8 @@ int main(int argc, char **argv){
 
 	int data_save_mode=0;
 	float input_vel_snd,input_vel_fer,input_col_freq,input_kin_vis,input_cyc_freq;
-	Parameter_Initalization(argc, argv, data_save_mode, input_vel_snd, input_vel_fer, input_col_freq, input_kin_vis,input_cyc_freq);
+	Parameter_Initialization(argc, argv, data_save_mode, input_vel_snd, input_vel_fer, input_col_freq, input_kin_vis,
+	                         input_cyc_freq);
 
 	GrapheneFluid2D	graph(npoints_x, npoints_y, input_vel_snd, input_vel_fer, input_kin_vis, input_col_freq, input_cyc_freq);
 

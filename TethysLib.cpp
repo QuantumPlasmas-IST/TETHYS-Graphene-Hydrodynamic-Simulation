@@ -33,7 +33,7 @@ void Parameter_Exeptions_Checking(int &data_save_mode, float &input_vel_snd, flo
 	}
 }
 
-void Parameter_Initalization(int argc, char ** argv, int &data_save_mode, float &input_vel_snd, float &input_vel_fer, float &input_col_freq, float &input_kin_vis,float &input_cyc_freq){
+void Parameter_Initialization(int argc, char ** argv, int &data_save_mode, float &input_vel_snd, float &input_vel_fer, float &input_col_freq, float &input_kin_vis, float &input_cyc_freq){
 	if(argc==7){
 		try {
 			input_vel_snd = strtof(argv[1], nullptr);
