@@ -38,7 +38,6 @@ Fluid2D::Fluid2D(int size_nx, int size_ny, float sound_velocity, float shear_vis
 	den_mid		= new float[(Nx-1)*(Ny-1)]();  
 	flxX_mid	= new float[(Nx-1)*(Ny-1)]();
 	flxY_mid	= new float[(Nx-1)*(Ny-1)]();
-
 }
 	
 Fluid2D::~Fluid2D(){
@@ -87,7 +86,6 @@ float Fluid2D::GetLengthY() const{return lengX;}
 
 
 void Fluid2D::InitialCondRand(){
-
 	random_device rd;
 	float maxrand;
 	maxrand = (float) rd.max();
@@ -193,7 +191,6 @@ void Fluid2D::Richtmyer(){
 
 
 			if( kp%Nx!=Nx-1 && kp%Nx!=0){
-
 				northeast=i+j*(Nx-1);
 				northwest=i-1+j*(Nx-1);
 				southeast=i+(j-1)*(Nx-1);
@@ -239,8 +236,7 @@ void Fluid2D::Richtmyer(){
 									MassFluxYFluxY(den_north, px_north, py_north,m_north,vel_snd_arr[kp])-
 									MassFluxYFluxY(den_south, px_south, py_south,m_south,vel_snd_arr[kp]));
 			}
-		}	
-	
+		}
 }
 		
 
@@ -533,5 +529,4 @@ void GrapheneFluid2D::SaveSnapShot(int time_step,int snapshot_step){
 	DataSet dataset_vel_y = GrpVelY->createDataSet(name_dataset, hdf5_float, *DataspaceVelY);
 	dataset_vel_y.write(VelY, hdf5_float);
 	dataset_vel_y.close();
-
 }

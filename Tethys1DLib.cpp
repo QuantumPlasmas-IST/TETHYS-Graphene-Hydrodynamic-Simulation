@@ -90,7 +90,6 @@ void Fluid1D::SetSound(){
 }
 		
 void Fluid1D::InitialCondRand(){
-
 	random_device rd;
 	float maxrand;
 	maxrand = (float) rd.max();
@@ -247,7 +246,6 @@ void Fluid1D::SaveSnapShot(int time_step,int snapshot_step){
 	DataSet dataset_vel_x = GrpVelX->createDataSet(name_dataset, hdf5_float, *DataspaceVelX);
 	dataset_vel_x.write(Vel, hdf5_float);
 	dataset_vel_x.close();
-
 }
 
 
