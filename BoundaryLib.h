@@ -10,9 +10,13 @@ class BoundaryCondition {
 	public :
 	void XFree(Fluid1D& fluid_class);
 	void XFree(Fluid2D& fluid_class);
+	void XFreeLeft(Fluid2D& fluid_class);
+	void XFreeRight(Fluid2D& fluid_class);
 	void XPeriodic(Fluid1D& fluid_class);
 	void XPeriodic(Fluid2D& fluid_class);
 	void YFree(Fluid2D& fluid_class);
+	void YFreeTop(Fluid2D& fluid_class);
+	void YFreeBottom(Fluid2D& fluid_class);
 	void YPeriodic(Fluid2D& fluid_class);
 	void YClosedFreeSlip(Fluid2D& fluid_class);
 	void YClosedNoSlip(Fluid2D& fluid_class);
@@ -39,6 +43,24 @@ class  BoundaryCondition::Dirichlet {
 	void MassFluxX(Fluid2D& fluid_class, float left, float right, float top, float bottom);
 	void MassFluxY(Fluid2D& fluid_class, float left, float right, float top, float bottom);
 	void Jet(Fluid2D& fluid_class, float left, float left_width, float right, float right_width);
+
+
+	void DensityRigth(Fluid2D& fluid_class, float right);
+	void MassFluxXRight(Fluid2D& fluid_class, float right);
+	void MassFluxYRight(Fluid2D& fluid_class, float right);
+
+	void DensityLeft(Fluid2D& fluid_class, float left);
+	void MassFluxXLeft(Fluid2D& fluid_class, float left);
+	void MassFluxYLeft(Fluid2D& fluid_class, float left);
+
+	void DensityTop(Fluid2D& fluid_class, float top);
+	void MassFluxXTop(Fluid2D& fluid_class, float top);
+	void MassFluxYTop(Fluid2D& fluid_class, float top);
+
+	void DensityBottom(Fluid2D& fluid_class, float bottom);
+	void MassFluxXBottom(Fluid2D& fluid_class, float bottom);
+	void MassFluxYBottom(Fluid2D& fluid_class, float bottom);
+
 };
 
 #endif

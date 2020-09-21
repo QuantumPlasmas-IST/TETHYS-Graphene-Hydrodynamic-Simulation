@@ -42,6 +42,28 @@ void BoundaryCondition::XFree(Fluid2D& fluid_class){
 		fluid_class.FlxX[right] =  fluid_class.FlxX[right - 1];
 	}	
 }
+void BoundaryCondition::XFreeLeft(Fluid2D &fluid_class) {
+	int nx=fluid_class.SizeX();
+	int ny=fluid_class.SizeY();
+	for(int j=0; j < ny; j++){
+		int left= 0 + j * nx;
+		fluid_class.Den[left]=fluid_class.Den[left + 1];
+		fluid_class.FlxY[left] = 0.0f; 					//flux only on x at x=0
+		fluid_class.FlxX[left] = fluid_class.FlxX[left + 1] * pow(fluid_class.Den[left + 1], -1.5f);			//free flux at x=0
+	}
+}
+void BoundaryCondition::XFreeRight(Fluid2D &fluid_class) {
+	int nx=fluid_class.SizeX();
+	int ny=fluid_class.SizeY();
+	for(int j=0; j < ny; j++){
+		int right= nx - 1 + j * nx;
+		fluid_class.Den[right]=fluid_class.Den[right - 1];			//free density at x=L
+		fluid_class.FlxY[right] = 0.0f ;					//idem at x=L
+		fluid_class.FlxX[right] =  fluid_class.FlxX[right - 1];
+	}
+}
+
+
 void BoundaryCondition::XPeriodic(Fluid2D& fluid_class){
 	int nx=fluid_class.SizeX();
 	int ny=fluid_class.SizeY();
@@ -70,6 +92,26 @@ void BoundaryCondition::YFree(Fluid2D& fluid_class){
 		fluid_class.FlxX[top] = fluid_class.FlxX[top - nx];
 		fluid_class.FlxY[top] = fluid_class.FlxY[top - nx];
 	}	 	
+}
+void BoundaryCondition::YFreeTop(Fluid2D &fluid_class) {
+	int nx=fluid_class.SizeX();
+	int ny=fluid_class.SizeY();
+	for (int i=0; i < nx; i++){
+		int top= i + (ny - 1) * nx;
+		fluid_class.Den[top] = fluid_class.Den[top - nx];
+		fluid_class.FlxX[top] = fluid_class.FlxX[top - nx];
+		fluid_class.FlxY[top] = fluid_class.FlxY[top - nx];
+	}
+}
+void BoundaryCondition::YFreeBottom(Fluid2D &fluid_class) {
+	int nx=fluid_class.SizeX();
+	int ny=fluid_class.SizeY();
+	for (int i=0; i < nx; i++){
+		int bottom=i; //i+0*nx
+		fluid_class.Den[bottom] = fluid_class.Den[bottom + nx];
+		fluid_class.FlxX[bottom] = fluid_class.FlxX[bottom + nx];
+		fluid_class.FlxY[bottom] = fluid_class.FlxY[bottom + nx];
+	}
 }
 void BoundaryCondition::YPeriodic(Fluid2D& fluid_class){
 	int nx=fluid_class.SizeX();
@@ -114,6 +156,9 @@ void BoundaryCondition::YClosedNoSlip(Fluid2D& fluid_class){
 		fluid_class.FlxY[top] =  0.0f;
 	}
 }
+
+
+
 
 void BoundaryCondition::Dirichlet::Density(Fluid1D& fluid_class, float left, float right){
 	int nx=fluid_class.SizeX();
@@ -179,6 +224,102 @@ void BoundaryCondition::Dirichlet::Jet(Fluid2D &fluid_class, float left, float l
 		} else{
 			fluid_class.FlxX[nx - 1 + j * nx] = 0.0f;
 		}
+	}
+}
+
+void BoundaryCondition::Dirichlet::DensityRigth(Fluid2D &fluid_class, float right) {
+	int nx=fluid_class.SizeX();
+	int ny=fluid_class.SizeY();
+	for (int j=0; j < ny; j++){
+		fluid_class.Den[nx - 1 + j * nx] = right;
+	}
+}
+
+void BoundaryCondition::Dirichlet::MassFluxXRight(Fluid2D &fluid_class, float right) {
+	int nx=fluid_class.SizeX();
+	int ny=fluid_class.SizeY();
+	for (int j=0; j < ny; j++){
+		fluid_class.FlxX[nx - 1 + j * nx] = right;
+	}
+}
+
+void BoundaryCondition::Dirichlet::MassFluxYRight(Fluid2D &fluid_class, float right) {
+	int nx=fluid_class.SizeX();
+	int ny=fluid_class.SizeY();
+	for (int j=0; j < ny; j++){
+		fluid_class.FlxY[nx - 1 + j * nx] = right;
+	}
+}
+
+void BoundaryCondition::Dirichlet::DensityLeft(Fluid2D &fluid_class, float left) {
+	int nx=fluid_class.SizeX();
+	int ny=fluid_class.SizeY();
+	for (int j=0; j < ny; j++){
+		fluid_class.Den[0 + j * nx] = left;
+	}
+}
+
+void BoundaryCondition::Dirichlet::MassFluxXLeft(Fluid2D &fluid_class, float left) {
+	int nx=fluid_class.SizeX();
+	int ny=fluid_class.SizeY();
+	for (int j=0; j < ny; j++){
+		fluid_class.FlxX[0 + j * nx] = left;
+	}
+}
+
+void BoundaryCondition::Dirichlet::MassFluxYLeft(Fluid2D &fluid_class, float left) {
+	int nx=fluid_class.SizeX();
+	int ny=fluid_class.SizeY();
+	for (int j=0; j < ny; j++){
+		fluid_class.FlxY[0 + j * nx] = left;
+	}
+}
+
+void BoundaryCondition::Dirichlet::DensityTop(Fluid2D &fluid_class, float top) {
+	int nx=fluid_class.SizeX();
+	int ny=fluid_class.SizeY();
+	for (int i=0; i < nx; i++){
+		fluid_class.Den[i + (ny - 1) * nx] = top;
+	}
+}
+
+void BoundaryCondition::Dirichlet::MassFluxXTop(Fluid2D &fluid_class, float top) {
+	int nx=fluid_class.SizeX();
+	int ny=fluid_class.SizeY();
+	for (int i=0; i < nx; i++){
+		fluid_class.FlxX[i + (ny - 1) * nx] = top;
+	}
+}
+
+void BoundaryCondition::Dirichlet::MassFluxYTop(Fluid2D &fluid_class, float top) {
+	int nx=fluid_class.SizeX();
+	int ny=fluid_class.SizeY();
+	for (int i=0; i < nx; i++){
+		fluid_class.FlxY[i + (ny - 1) * nx] = top;
+	}
+}
+
+void BoundaryCondition::Dirichlet::DensityBottom(Fluid2D &fluid_class, float bottom) {
+	int nx=fluid_class.SizeX();
+	int ny=fluid_class.SizeY();
+	for (int i=0; i < nx; i++){
+		fluid_class.Den[i + 0 * nx] = bottom;
+	}
+}
+
+void BoundaryCondition::Dirichlet::MassFluxXBottom(Fluid2D &fluid_class, float bottom) {
+	int nx=fluid_class.SizeX();
+	int ny=fluid_class.SizeY();
+	for (int i=0; i < nx; i++){
+		fluid_class.FlxX[i + 0 * nx] = bottom;
+	}
+}
+
+void BoundaryCondition::Dirichlet::MassFluxYBottom(Fluid2D &fluid_class, float bottom) {
+	int nx=fluid_class.SizeX();
+	int ny=fluid_class.SizeY();
+	for (int i=0; i < nx; i++){
+		fluid_class.FlxY[i + 0 * nx] = bottom;
 	}
 }
 
