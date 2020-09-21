@@ -12,7 +12,7 @@ using namespace std;
 #	define MAT_EULER 2.71828182845905f
 #endif
 
-void Parameter_Exeptions_Checking(int &data_save_mode, float &input_vel_snd, float &input_vel_fer, float &input_col_freq, float &input_kin_vis, float &input_cyc_freq){
+void Parameter_Exeptions_Checking(const int &data_save_mode,const  float &input_vel_snd,const  float &input_vel_fer,const  float &input_col_freq,const  float &input_kin_vis,const  float &input_cyc_freq){
 	if(input_vel_snd<=0.0f){
 		throw "Unphysical Sound Velocity";
 	}

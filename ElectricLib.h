@@ -15,15 +15,15 @@ public:
 	void CreateElectroFile(GrapheneFluid2D& graphene);
 	void WriteElectroFile(float t,GrapheneFluid1D& graphene);
 	void WriteElectroFile(float t,GrapheneFluid2D& graphene);
-	float NetCharge(GrapheneFluid1D& graphene);
-	float NetCharge(GrapheneFluid2D& graphene);
-	float OhmPower(GrapheneFluid1D& graphene);
+	float NetCharge(const GrapheneFluid1D& graphene);
+	float NetCharge(const GrapheneFluid2D& graphene);
+	float OhmPower(const GrapheneFluid1D& graphene);
 	//float OhmPower(GrapheneFluid2D& graphene);
-	float AverageCurrent(GrapheneFluid1D& graphene);
-	float AverageCurrent(GrapheneFluid2D& graphene);
-	float ElectricDipole(GrapheneFluid1D& graphene);
+	float AverageCurrent(const GrapheneFluid1D& graphene);
+	float AverageCurrent(const GrapheneFluid2D& graphene);
+	float ElectricDipole(const GrapheneFluid1D& graphene);
 	//float ElectricDipole(GrapheneFluid2D& graphene);
-	float ElectricDipoleVariation(GrapheneFluid1D& graphene);
+	float ElectricDipoleVariation(const GrapheneFluid1D& graphene);
 	//float ElectricDipoleVariation(GrapheneFluid2D& graphene);
 };
 

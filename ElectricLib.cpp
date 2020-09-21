@@ -28,7 +28,6 @@ void ElectroAnalysis::CreateElectroFile(GrapheneFluid2D& graphene){
 	data_electro << scientific;
 }
 
-
 void ElectroAnalysis::WriteElectroFile(float t, GrapheneFluid1D& graphene){
 	float q_net = this->NetCharge(graphene);
 	float i_avg = this->AverageCurrent(graphene);
@@ -42,28 +41,26 @@ void ElectroAnalysis::WriteElectroFile(float t, GrapheneFluid2D& graphene){
 	data_electro << t << "\t" << "\n";
 }
 
-float ElectroAnalysis::NetCharge(GrapheneFluid1D& graphene){
+float ElectroAnalysis::NetCharge(const GrapheneFluid1D& graphene){
 	return Integral_1_D(graphene.SizeX(), graphene.GetDx(), graphene.DenCor);
 }
-float ElectroAnalysis::NetCharge(GrapheneFluid2D& graphene){
+float ElectroAnalysis::NetCharge(const GrapheneFluid2D& graphene){
 	return Integral_2_D(graphene.SizeX(),graphene.SizeY(), graphene.GetDx(),graphene.GetDy(), graphene.Den);
 }
 
-float ElectroAnalysis::AverageCurrent(GrapheneFluid1D& graphene){
+float ElectroAnalysis::AverageCurrent(const GrapheneFluid1D& graphene){
 	return Integral_1_D(graphene.SizeX(), graphene.GetDx(), graphene.CurCor);
 }
 
-float ElectroAnalysis::AverageCurrent(GrapheneFluid2D& graphene){
+float ElectroAnalysis::AverageCurrent(const GrapheneFluid2D& graphene){
 	return Integral_2_D(graphene.SizeX(),graphene.SizeY(), graphene.GetDx(),graphene.GetDy(), graphene.CurX);
 }
 
-
-
-float ElectroAnalysis::ElectricDipoleVariation(GrapheneFluid1D& graphene){
+float ElectroAnalysis::ElectricDipoleVariation(const GrapheneFluid1D& graphene){
 	return Integral_1_D(graphene.SizeX(), graphene.GetDx(), graphene.CurCor);
 }
 
-float ElectroAnalysis::ElectricDipole(GrapheneFluid1D& graphene){
+float ElectroAnalysis::ElectricDipole(const GrapheneFluid1D& graphene){
 	float p=0.0;
 	float dx=graphene.GetDx();
 	for(int j=1;j<graphene.SizeX()/2;j++){
@@ -73,7 +70,7 @@ float ElectroAnalysis::ElectricDipole(GrapheneFluid1D& graphene){
 	return p;
 }
 
-float ElectroAnalysis::OhmPower(GrapheneFluid1D& graphene){
+float ElectroAnalysis::OhmPower(const GrapheneFluid1D& graphene){
 	float itg=0.0;
 	for(int j=1;j<graphene.SizeX()/2;j++){
 		itg += graphene.CurCor[2 * j - 2] * graphene.VelCor[2 * j - 2] + 4 * graphene.CurCor[2 * j - 1] * graphene.VelCor[2 * j - 1] + graphene.CurCor[2 * j] * graphene.VelCor[2 * j];
