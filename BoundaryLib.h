@@ -60,7 +60,6 @@ class  BoundaryCondition::Dirichlet {
 	void DensityBottom(Fluid2D& fluid_class, float bottom);
 	void MassFluxXBottom(Fluid2D& fluid_class, float bottom);
 	void MassFluxYBottom(Fluid2D& fluid_class, float bottom);
-
 };
 
 #endif
