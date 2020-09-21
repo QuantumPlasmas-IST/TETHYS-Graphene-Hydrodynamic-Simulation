@@ -11,8 +11,6 @@ using namespace std;
 
 
 int main(int argc, char **argv){
-
-
 	float t_max;
 	t_max = 6;
 	int npoints_x = 101;
@@ -22,8 +20,6 @@ int main(int argc, char **argv){
 	float t=0.0;
 	float dx,dy;	// spatial discretisation
 	float dt;		// time step
-
-
 
 	int data_save_mode=0;
 	float input_vel_snd,input_vel_fer,input_col_freq,input_kin_vis,input_cyc_freq;

@@ -75,7 +75,7 @@ float  Fluid1D::VelocitySource(float n,float v,float s){
 }
 
 void Fluid1D::CFLCondition(){
-		dx = leng / ( float ) ( Nx - 1 );
+		dx = lengX / ( float ) ( Nx - 1 );
 		dt = dx/10.0f;
 }
 
@@ -248,51 +248,12 @@ void Fluid1D::SaveSnapShot(int time_step,int snapshot_step){
 	dataset_vel_x.close();
 }
 
-
-void GrapheneFluid1D::WriteAtributes(){
-	const FloatType      hdf5_float(PredType::NATIVE_FLOAT);
-	const IntType        hdf5_int(PredType::NATIVE_INT);
-	int total_steps= static_cast<int>(Tmax / dt);
-	//Create the data space for the attribute.
-	hsize_t dim_atr[1] = { 1 };
-	DataSpace atr_dataspace = DataSpace (1, dim_atr );
-	// Create a group attribute. 
-	Attribute atr_vel_snd  = GrpDat->createAttribute("S parameter", hdf5_float, atr_dataspace);
-	Attribute atr_vel_fer  = GrpDat->createAttribute("Fermi velocity", hdf5_float, atr_dataspace);
-	Attribute atr_kin_vis = GrpDat->createAttribute("Kinetic viscosity", hdf5_float, atr_dataspace);
-	Attribute atr_col_freq = GrpDat->createAttribute("Collision frequency", hdf5_float, atr_dataspace);
-	Attribute atr_dx = GrpDat->createAttribute("Space discretisation step", hdf5_float, atr_dataspace);
-	Attribute atr_dt = GrpDat->createAttribute("Time discretisation step", hdf5_float, atr_dataspace);
-	Attribute atr_total_time = GrpDat->createAttribute("Total simulation time", hdf5_float, atr_dataspace);
-	Attribute atr_num_space_points = GrpDat->createAttribute("Number of spatial points", hdf5_int, atr_dataspace);
-	Attribute atr_num_time_steps = GrpDat->createAttribute("Number of time steps", hdf5_int, atr_dataspace);
-	// Write the attribute data.
-	atr_vel_snd.write( hdf5_float, &vel_snd);
-	atr_vel_fer.write( hdf5_float, &vel_fer);
-	atr_col_freq.write(hdf5_float, &col_freq);
-	atr_kin_vis.write(hdf5_float, &kin_vis); 
-	atr_dx.write(hdf5_float, &dx);
-	atr_dt.write( hdf5_float, &dt);
-	atr_num_space_points.write( hdf5_int, &Nx);
-	atr_total_time.write( hdf5_float, &Tmax);
-	atr_num_time_steps.write(hdf5_int, &total_steps);
-	// Close the attributes.
-	atr_num_time_steps.close();
-	atr_col_freq.close();
-	atr_vel_fer.close();
-	atr_vel_snd.close();
-	atr_kin_vis.close();
-	atr_dx.close();
-	atr_dt.close();
-	atr_total_time.close();
-	atr_num_space_points.close();
-}
-
+//TODO criar uma nova pequena funcao de escrita de atributos para as particularidades do grafeno velocidade de fermi e cyc freq
 
 
 
 void GrapheneFluid1D::CFLCondition(){
-	dx = leng / ( float ) ( Nx - 1 );	
+	dx = lengX / ( float ) ( Nx - 1 );
 	float lambda;
 	if(vel_snd<0.36f*vel_fer){
 		lambda=1.2f*vel_fer;
@@ -301,55 +262,3 @@ void GrapheneFluid1D::CFLCondition(){
 	}
 	dt = dx/lambda;
 }	
-
-
-
-/*....................................................................
-void ElectroAnalysis1D::CreateElectroFile(GrapheneFluid1D& graphene){
-	//graphene.SetFileName();
-	std::string infix = graphene.GetInfix();
-	std::string electrofile = "electro_" + infix + ".dat" ;
-	data_electro.open (electrofile);
-	data_electro << scientific; 	
-}
-
-void ElectroAnalysis1D::WriteElectroFile(float t, GrapheneFluid1D& graphene){
-		float q_net = this->NetCharge(graphene);
-		float i_avg = this->AverageCurrent(graphene);
-		float p_ohm = this->OhmPower(graphene);
-		float dipole_var=this->ElectricDipoleVariation(graphene);
-		float dipole=this->ElectricDipole(graphene);
-		data_electro << t << "\t" << q_net << "\t" << i_avg << "\t" << q_net * q_net * 0.5 << "\t" << p_ohm << "\t" << dipole << "\t" << dipole_var << "\n";
-}
-
-float ElectroAnalysis1D::NetCharge(GrapheneFluid1D& graphene){
-	return Integral_1_D(graphene.SizeX(), graphene.GetDx(), graphene.DenCor);
-}
-
-float ElectroAnalysis1D::AverageCurrent(GrapheneFluid1D& graphene){
-	return Integral_1_D(graphene.SizeX(), graphene.GetDx(), graphene.CurCor);
-}
-
-float ElectroAnalysis1D::ElectricDipoleVariation(GrapheneFluid1D& graphene){
-	return Integral_1_D(graphene.SizeX(), graphene.GetDx(), graphene.CurCor);
-}
-
-float ElectroAnalysis1D::ElectricDipole(GrapheneFluid1D& graphene){
-	float p=0.0;
-	float dx=graphene.GetDx();
-	for(int j=1;j<graphene.SizeX()/2;j++){	
-		p += dx*(2*j-2)*graphene.DenCor[2 * j - 2] + 4 * dx * (2 * j - 1) * graphene.DenCor[2 * j - 1] + dx * (2 * j) * graphene.DenCor[2 * j];
-	}
-	p = p*graphene.GetDx()/3.0f;
-	return p;
-}
-
-float ElectroAnalysis1D::OhmPower(GrapheneFluid1D& graphene){
-	float itg=0.0;
-	for(int j=1;j<graphene.SizeX()/2;j++){
-		itg += graphene.CurCor[2 * j - 2] * graphene.VelCor[2 * j - 2] + 4 * graphene.CurCor[2 * j - 1] * graphene.VelCor[2 * j - 1] + graphene.CurCor[2 * j] * graphene.VelCor[2 * j];
-	}
-	itg = itg*graphene.GetDx()/3.0f;
-	return itg;	
-}
-*/

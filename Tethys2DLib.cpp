@@ -473,44 +473,10 @@ void GrapheneFluid2D::MagneticSourceFTCS(){
 	}
 }
 
-void GrapheneFluid2D::WriteAtributes(){
-	const FloatType      hdf5_float(PredType::NATIVE_FLOAT);
-	const IntType        hdf5_int(PredType::NATIVE_INT);
-	int total_steps= static_cast<int>(Tmax / dt);
-	//Create the data space for the attribute.
-	hsize_t dim_atr[1] = { 1 };
-	DataSpace atr_dataspace = DataSpace (1, dim_atr );
-	// Create a group attribute. 
-	Attribute atr_vel_snd  = GrpDat->createAttribute("south parameter", hdf5_float, atr_dataspace);
-	Attribute atr_vel_fer  = GrpDat->createAttribute("Fermi velocity", hdf5_float, atr_dataspace);
-	Attribute atr_kin_vis = GrpDat->createAttribute("Kinetic viscosity", hdf5_float, atr_dataspace);
-	Attribute atr_col_freq = GrpDat->createAttribute("Collision frequency", hdf5_float, atr_dataspace);
-	Attribute atr_dx = GrpDat->createAttribute("Space discretisation step", hdf5_float, atr_dataspace);
-	Attribute atr_dt = GrpDat->createAttribute("Time discretisation step", hdf5_float, atr_dataspace);
-	Attribute atr_total_time = GrpDat->createAttribute("Total simulation time", hdf5_float, atr_dataspace);
-	Attribute atr_num_space_points = GrpDat->createAttribute("Number of spatial points", hdf5_int, atr_dataspace);
-	Attribute atr_num_time_steps = GrpDat->createAttribute("Number of time steps", hdf5_int, atr_dataspace);
-	// Write the attribute data.
-	atr_vel_snd.write( hdf5_float, &vel_snd);
-	atr_vel_fer.write( hdf5_float, &vel_fer);
-	atr_col_freq.write(hdf5_float, &col_freq);
-	atr_kin_vis.write(hdf5_float, &kin_vis); 
-	atr_dx.write(hdf5_float, &dx);
-	atr_dt.write( hdf5_float, &dt);
-	atr_num_space_points.write( hdf5_int, &Nx);
-	atr_total_time.write( hdf5_float, &Tmax);
-	atr_num_time_steps.write(hdf5_int, &total_steps);
-	// Close the attributes.
-	atr_num_time_steps.close();
-	atr_col_freq.close();
-	atr_vel_fer.close();
-	atr_vel_snd.close();
-	atr_kin_vis.close();
-	atr_dx.close();
-	atr_dt.close();
-	atr_total_time.close();
-	atr_num_space_points.close();
-}
+
+//TODO criar uma nova pequena funcao de escrita de atributos para as particularidades do grafeno velocidade de fermi e cyc freq
+
+
 
 void GrapheneFluid2D::SaveSnapShot(int time_step,int snapshot_step){
 	const FloatType      hdf5_float(PredType::NATIVE_FLOAT);

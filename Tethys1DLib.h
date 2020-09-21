@@ -8,11 +8,6 @@ using namespace std;
 
 class Fluid1D : public TETHYSBase{
 	protected:
-		float dx=1.0;
-		float dt=1.0;
-		const float leng=1.0;
-		float vel_snd =50.0;
-		float kin_vis =0.0;
 		float * vel_snd_arr;
 		float * den_mid ;
 		float * vel_mid ;
@@ -53,12 +48,9 @@ class Fluid1D : public TETHYSBase{
 class GrapheneFluid1D : public Fluid1D{
 	protected : 
 		float vel_fer =10.0;
-		float col_freq =0.0;
-	public : 
-		//using Fluid1D::Fluid1D;
+	public :
 		GrapheneFluid1D(int size_n, float sound_velocity, float fermi_velocity, float shear_viscosity, float collision_frequency);
 		void CFLCondition() override;
-		//void BoundaryCond(int type);
 		void SetVelFer(float x);
 		float GetVelFer() const;
 		void SetColFreq(float x);
@@ -67,19 +59,6 @@ class GrapheneFluid1D : public Fluid1D{
 		float VelocityFlux(float n,float v,float dv,float s) override;
 		float DensitySource(float n,float v,float s) override;
 		float VelocitySource(float n,float v,float s) override;
-		void WriteAtributes();
 };
-/*class ElectroAnalysis1D {
-	private:
-			std::ofstream data_electro;	
-	public:
-		void CreateElectroFile(GrapheneFluid1D& graphene);
-		void WriteElectroFile(float t,GrapheneFluid1D& graphene);
-		float NetCharge(GrapheneFluid1D& graphene);
-		float OhmPower(GrapheneFluid1D& graphene);
-		float AverageCurrent(GrapheneFluid1D& graphene);
-		float ElectricDipole(GrapheneFluid1D& graphene);
-		float ElectricDipoleVariation(GrapheneFluid1D& graphene);
-};*/
 #endif
 

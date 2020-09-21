@@ -8,7 +8,7 @@
 
 class BoundaryCondition {
 	public :
-	void XFree(Fluid1D& fluid_class);
+	static void XFree(Fluid1D& fluid_class);
 	void XFree(Fluid2D& fluid_class);
 	void XFreeLeft(Fluid2D& fluid_class);
 	void XFreeRight(Fluid2D& fluid_class);

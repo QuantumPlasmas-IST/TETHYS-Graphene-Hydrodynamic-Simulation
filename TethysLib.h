@@ -47,6 +47,16 @@ class TETHYSBase {
 		int   Nx ;                    // dataset dimensions
 		int   Ny ;
 		int   RANK;
+
+	float dx=1.0f;
+	float dy=1.0f;
+	float dt=1.0f;
+	float lengX=1.0f;
+	float lengY=1.0f;
+	float vel_snd =50.0f;
+	float kin_vis =0.0f;
+	float col_freq =0.0f;
+
 		std::string file_infix = "BaseFluid1D" ;
 		float Tmax=10;
 		bool HDF5fileCreated = false;
@@ -74,6 +84,9 @@ class TETHYSBase {
 		std::string GetInfix() const ;
 		void CreateHDF5File();
 		void CloseHDF5File();
+
+		void WriteAtributes();
+
 		void BannerDisplay();
 		void WellcomeScreen(float vel_snd, float vel_fer,float col_freq,float viscosity, float dt, float dx,float dy, float tmax);
 };
