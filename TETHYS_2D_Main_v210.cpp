@@ -11,6 +11,8 @@ using namespace std;
 
 
 int main(int argc, char **argv){
+
+
 	float t_max;
 	t_max = 6;
 	int npoints_x = 101;
@@ -87,6 +89,7 @@ int main(int argc, char **argv){
 		boundary_condition.MassFluxXLeft(graph, 1.0f);
 		boundary_condition.MassFluxYLeft(graph, 0.0f);
 */
+
 
 		/*if(graph.GetCycFreq()!=0.0f){
 			graph.MagneticSourceFTCS();

@@ -308,7 +308,8 @@ void Fluid2D::WriteFluidFile(float t){
 		<< Den[pos_ini]  << "\t"
 		<< FlxX[pos_ini] << "\n";
 	}catch (const char* msg) {
-		cerr << msg << endl;
+		cerr << msg  <<"\nExiting"<< endl;
+		this->CloseHDF5File();
 		exit(EXIT_FAILURE);
 	}
 }
