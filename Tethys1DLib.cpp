@@ -132,9 +132,9 @@ void Fluid1D::CreateFluidFile(){
 }
 
 void Fluid1D::WriteFluidFile(float t){
-	int pos_end = Nx - 1 ;
-	int pos_ini = 0;
 	try {
+		int pos_end = Nx - 1 ;
+		int pos_ini = 0;
 		if (!isfinite(Den[pos_end]) || !isfinite(Den[pos_ini]) || !isfinite(Vel[pos_end]) ||
 		    !isfinite(Vel[pos_ini])) {
 			throw "ERROR: numerical method failed to converge";
