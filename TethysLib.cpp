@@ -14,22 +14,22 @@ using namespace std;
 
 void Parameter_Exeptions_Checking(const int &data_save_mode,const  float &input_vel_snd,const  float &input_vel_fer,const  float &input_col_freq,const  float &input_kin_vis,const  float &input_cyc_freq){
 	if(input_vel_snd<=0.0f){
-		throw "Unphysical Sound Velocity";
+		throw PhysicalException();//throw "Unphysical Sound Velocity";
 	}
 	if(input_vel_fer<=0.0f){
-		throw "Unphysical Fermi Velocity";
+		throw PhysicalException();//throw "Unphysical Fermi Velocity";
 	}
 	if(input_kin_vis<0.0f){
-		throw "Unphysical Shear Viscosity";
+		throw PhysicalException();//throw "Unphysical Shear Viscosity";
 	}
 	if(input_col_freq<0.0f){
-		throw "Unphysical Collision Frequency";
+		throw PhysicalException();//throw "Unphysical Collision Frequency";
 	}
 	if(input_cyc_freq<0.0f){
-		throw "Unphysical Cyclotron Frequency";
+		throw PhysicalException();//throw "Unphysical Cyclotron Frequency";
 	}
 	if( data_save_mode != 0 && data_save_mode != 1  ) {
-		throw "Unknown save mode option";
+		throw PhysicalException();//throw "Unknown save mode option";
 	}
 }
 
@@ -44,8 +44,9 @@ void Parameter_Initialization(int argc, char ** argv, int &data_save_mode, float
 			data_save_mode = (int) strtol(argv[6],nullptr,10);    // full data or light save option
 			//data_save_mode = atoi(argv[6]);    // full data or light save option
 			Parameter_Exeptions_Checking(data_save_mode, input_vel_snd, input_vel_fer, input_col_freq, input_kin_vis,input_cyc_freq);
-		}catch (const char* msg) {
-			cerr << msg << endl;
+		}catch(exception& e){//catch (const char* msg) {
+			//cerr << msg << endl;
+			cerr << e.what() <<endl;
 			exit(EXIT_FAILURE);
 		}
 	}

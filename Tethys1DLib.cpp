@@ -137,12 +137,14 @@ void Fluid1D::WriteFluidFile(float t){
 		int pos_ini = 0;
 		if (!isfinite(Den[pos_end]) || !isfinite(Den[pos_ini]) || !isfinite(Vel[pos_end]) ||
 		    !isfinite(Vel[pos_ini])) {
-			throw "ERROR: numerical method failed to converge";
+			//throw "ERROR: numerical method failed to converge";
+			throw TethysException();
 		}
 //data_preview << t << "\t" << DenCor[Nx - 1] << "\t" << VelCor[Nx - 1] << "\t" << DenCor[0] << "\t" << VelCor[0] << "\n";
 		data_preview << t << "\t" << Den[pos_end] << "\t" << Vel[pos_end] << "\t" << Den[pos_ini] << "\t" << Vel[pos_ini] << "\n";
-	}catch (const char* msg) {
-		cerr << msg << endl;
+	}catch (exception& e){//catch (const char* msg) {
+		//cerr << msg << endl;
+		cerr << e.what() << endl;
 		exit(EXIT_FAILURE);
 	}
 }
@@ -208,11 +210,13 @@ float GrapheneFluid1D::VelocityFlux(float n,float v,float dv,float s){
 	float f_2;
 	try {
 		if(n<0 || !isfinite(n)){
-			throw "ERROR: negative density";
+			//throw "ERROR: negative density";
+			throw PhysicalException();
 		}
 		f_2 = 0.25f * v * v + vel_fer * vel_fer * 0.5f * log(n) + 2.0f * s * s * sqrt(n);//- kin_vis * dv;
-	} catch (const char * msg) {
-		cerr << msg <<endl;
+	}catch(exception& e){// catch (const char * msg) {
+		//cerr << msg <<endl;
+		cerr << e.what() <<endl;
 		exit(EXIT_FAILURE);
 	}
 	return f_2;

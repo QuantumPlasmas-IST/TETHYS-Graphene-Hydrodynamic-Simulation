@@ -12,6 +12,7 @@
 #include <algorithm>
 #include <string>
 #include <random>
+#include <exception>
 
 #include <H5Cpp.h>
 using namespace std;
@@ -75,9 +76,42 @@ class TETHYSBase {
 		void CloseHDF5File();
 		void BannerDisplay();
 		void WellcomeScreen(float vel_snd, float vel_fer,float col_freq,float viscosity, float dt, float dx,float dy, float tmax);
-};  
+};
+
+class TethysException : public exception
+{
+public:
+	virtual const char* what() const noexcept { return "ERROR: numerical method failed to converge";}
+};
+
+class PhysicalException : public exception
+{
+public:
+	virtual const char* what() const noexcept { return "ERROR: Unphysical situation reached";}
+};
+
+class ParameterException : public exception
+{
+public:
+	virtual const char* what() const noexcept { return "ERROR: Unphysical parameter";}
+};
 
 
+/*
+ *
+class My_Exception : public std::exception
+{
+public:
+virtual char const * what() const noexcept { return "Something bad happend."; }
+};
 
+ try {
+    ComplexOperationThatCouldFailABunchOfWays();
+} catch (std::exception& e) {
+    cerr << e.what() << endl;
+}
+
+
+*/
 #endif
 

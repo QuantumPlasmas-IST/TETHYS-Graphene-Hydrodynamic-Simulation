@@ -75,18 +75,18 @@ int main(int argc, char **argv){
 		++time_step;
 		t += dt;
 		graph.Richtmyer();
-		//boundary_condition.DyakonovShurBC(graph);
-		//boundary_condition.YFree(graph);
+		boundary_condition.DyakonovShurBC(graph);
+		boundary_condition.YFree(graph);
 //		boundary_condition.MassFluxX(graph,1.0f,1.0f,0.0f,0.0f);
 //		boundary_condition.MassFluxY(graph,0.0f,0.0f,0.0f,0.0f);
 //		boundary_condition.YClosedNoSlip(graph);
-		boundary_condition.YFree(graph); //para menter a densidade free em y=0
+/*		boundary_condition.YFree(graph); //para menter a densidade free em y=0
 		boundary_condition.XFreeRight(graph);
 		boundary_condition.MassFluxXBottom(graph, 0.0f);
 		boundary_condition.MassFluxYBottom(graph, 0.0f);
 		boundary_condition.MassFluxXLeft(graph, 1.0f);
 		boundary_condition.MassFluxYLeft(graph, 0.0f);
-
+*/
 
 		/*if(graph.GetCycFreq()!=0.0f){
 			graph.MagneticSourceFTCS();
@@ -99,17 +99,18 @@ int main(int argc, char **argv){
 		}*/
 		if(graph.GetKinVis()!=0.0f) {
 			graph.ViscosityFTCS();
-			//boundary_condition.DyakonovShurBC(graph);
-			//boundary_condition.YFree(graph);
+			boundary_condition.DyakonovShurBC(graph);
+			boundary_condition.YFree(graph);
 //			boundary_condition.MassFluxX(graph,1.0f,1.0f,0.0f,0.0f);
 //			boundary_condition.MassFluxY(graph,0.0f,0.0f,0.0f,0.0f);
 //			boundary_condition.YClosedNoSlip(graph);
-			boundary_condition.YFree(graph); //para menter a densidade free em y=0
+/*			boundary_condition.YFree(graph); //para menter a densidade free em y=0
 			boundary_condition.XFreeRight(graph);
 			boundary_condition.MassFluxXBottom(graph, 0.0f);
 			boundary_condition.MassFluxYBottom(graph, 0.0f);
 			boundary_condition.MassFluxXLeft(graph, 1.0f);
 			boundary_condition.MassFluxYLeft(graph, 0.0f);
+			*/
 		}
 
 		//Record full hdf5 data
