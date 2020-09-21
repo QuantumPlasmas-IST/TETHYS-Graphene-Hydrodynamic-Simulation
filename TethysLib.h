@@ -70,7 +70,7 @@ class TETHYSBase {
 		int SizeY() const;
 		int Rank() const;
 		
-		std::string GetInfix();
+		std::string GetInfix() const ;
 		void CreateHDF5File();
 		void CloseHDF5File();
 		void BannerDisplay();

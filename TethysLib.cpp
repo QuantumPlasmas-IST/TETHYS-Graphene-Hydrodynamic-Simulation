@@ -71,15 +71,12 @@ void Parameter_Initialization(int argc, char ** argv, int &data_save_mode, float
 	}
 }
 
-
-
 float Sound_Velocity_Anisotropy(int i, float dx, float s){
 	return s;
 }
 float Sound_Velocity_Anisotropy(int i,float dx, int j,float dy, float s){
 	return s;
 }
-
 
 void Average_Filter(const float * vec_in, float * vec_out, int size , int width ){
 	for ( int i = 0; i < size; i++ ){
@@ -94,10 +91,6 @@ void Average_Filter(const float * vec_in, float * vec_out, int size , int width 
 		}
 	}
 }
-
-
-
-
 
 /*....................................................................*/
 /*........ General Functions .........................................*/
@@ -141,9 +134,7 @@ void TETHYSBase::WellcomeScreen(float vel_snd, float vel_fer, float col_freq,flo
 	cout <<"\033[1m\316\224t\t"<<dt<<" L/v\342\202\200\t\316\224x\t"<<dx<<" L\033[0m\n"<<endl;
 }
 
-std::string TETHYSBase::GetInfix(){return file_infix;}
-
-
+std::string TETHYSBase::GetInfix() const {return file_infix;}
 float TETHYSBase::GetTmax() const{return Tmax;}
 void TETHYSBase::SetTmax(float x){ Tmax=x;}
 int TETHYSBase::Rank() const{ return RANK; }
@@ -283,7 +274,6 @@ float Integral_2_D(int N, int M, float dx, float dy, const float * f){
 	return itg;
 }
 
-
 float Signal_Average(int n, float dt, const float * f){
 	float avg=0.0;
 	for(int j=1; j < n / 2; j++){
@@ -297,7 +287,6 @@ float Signal_Average(int n, float dt, const float * f){
 constexpr float Gauss_Kernel(int position , float t){
 	return exp(-0.5f*position*position/t)/(sqrt(2.0f*MAT_PI*t));
 }
-
 
 constexpr float Gauss_Kernel_Derivative(int position , float t){
 	return (-position*exp(-0.5f*position*position/t)/t)/(sqrt(2.0f*MAT_PI*t));

@@ -6,7 +6,6 @@
 #include "Tethys1DLib.h"
 #include "Tethys2DLib.h"
 
-
 class ElectroAnalysis{
 private:
 	std::ofstream data_electro;

@@ -21,21 +21,14 @@ class BoundaryCondition {
 	void YClosedFreeSlip(Fluid2D& fluid_class);
 	void YClosedNoSlip(Fluid2D& fluid_class);
 
-	class DyakonovShur;
-	class Dirichlet; 
+	//class DyakonovShur;
+	//class Dirichlet;
 };	
 
-class  BoundaryCondition::DyakonovShur { 
-	public:
-	void X(GrapheneFluid1D& fluid_class);
-	void X(GrapheneFluid2D& fluid_class);
-	void YFree(GrapheneFluid2D& fluid_class);
-	void YPeriodic(GrapheneFluid2D& fluid_class);
-	void YClosedFreeSlip(GrapheneFluid2D& fluid_class);
-	void YClosedNoSlip(GrapheneFluid2D& fluid_class);
-};
 
-class  BoundaryCondition::Dirichlet { 
+
+class  DirichletBoundaryCondition : public BoundaryCondition
+{
 	public: 	
 	void Density(Fluid1D& fluid_class, float left, float right);
 	void Density(Fluid2D& fluid_class, float left, float right, float top, float bottom);
@@ -61,6 +54,14 @@ class  BoundaryCondition::Dirichlet {
 	void MassFluxXBottom(Fluid2D& fluid_class, float bottom);
 	void MassFluxYBottom(Fluid2D& fluid_class, float bottom);
 };
+
+class  DyakonovShurBoundaryCondition : public DirichletBoundaryCondition
+{
+public:
+	void DyakonovShurBC(GrapheneFluid1D& fluid_class);
+	void DyakonovShurBC(GrapheneFluid2D& fluid_class);
+};
+
 
 #endif
 

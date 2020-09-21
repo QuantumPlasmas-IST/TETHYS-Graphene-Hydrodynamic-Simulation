@@ -26,7 +26,7 @@ int main(int argc, char **argv){
 
 	
 	GrapheneFluid1D	graph(npoints, input_vel_snd, input_vel_fer, input_kin_vis, input_col_freq);
-	BoundaryCondition::DyakonovShur BC;
+	DyakonovShurBoundaryCondition BC;
 	
 
 
@@ -57,7 +57,7 @@ int main(int argc, char **argv){
 	////////////////////////////////////////////////////////////////////
 	// Initialization	
 	graph.InitialCondRand();
-	BC.X(graph);
+	BC.DyakonovShurBC(graph);
 	////////////////////////////////////////////////////////////////////
 	int time_step=0;
 	int snapshot_per_period = 10;
@@ -74,7 +74,7 @@ int main(int argc, char **argv){
 		// Main algorithm		
 		graph.Richtmyer();
 		// Impose boundary conditions
-		BC.X(graph);
+		BC.DyakonovShurBC(graph);
 		// Applying average filters for smoothing 	
 		graph.Smooth(2);
 		//Record full data
