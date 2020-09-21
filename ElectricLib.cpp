@@ -12,7 +12,7 @@ using namespace H5;
 using namespace std;
 
 
-void ElectroAnalysis::CreateElectroFile(GrapheneFluid1D& graphene){
+void ElectroAnalysis::CreateElectroFile(const GrapheneFluid1D& graphene){
 	std::string infix = graphene.GetInfix();
 	std::string electrofile;
 	electrofile = "electro_1D_" + infix + ".dat" ;
@@ -20,7 +20,7 @@ void ElectroAnalysis::CreateElectroFile(GrapheneFluid1D& graphene){
 	data_electro << scientific;
 }
 
-void ElectroAnalysis::CreateElectroFile(GrapheneFluid2D& graphene){
+void ElectroAnalysis::CreateElectroFile(const GrapheneFluid2D& graphene){
 	std::string infix = graphene.GetInfix();
 	std::string electrofile;
 	electrofile = "electro_2D_" + infix + ".dat" ;
@@ -28,7 +28,7 @@ void ElectroAnalysis::CreateElectroFile(GrapheneFluid2D& graphene){
 	data_electro << scientific;
 }
 
-void ElectroAnalysis::WriteElectroFile(float t, GrapheneFluid1D& graphene){
+void ElectroAnalysis::WriteElectroFile(float t,const GrapheneFluid1D& graphene){
 	float q_net = this->NetCharge(graphene);
 	float i_avg = this->AverageCurrent(graphene);
 	float p_ohm = this->OhmPower(graphene);
@@ -37,7 +37,7 @@ void ElectroAnalysis::WriteElectroFile(float t, GrapheneFluid1D& graphene){
 	data_electro << t << "\t" << q_net << "\t" << i_avg << "\t" << q_net * q_net * 0.5 << "\t" << p_ohm << "\t" << dipole << "\t" << dipole_var << "\n";
 }
 
-void ElectroAnalysis::WriteElectroFile(float t, GrapheneFluid2D& graphene){
+void ElectroAnalysis::WriteElectroFile(float t,const GrapheneFluid2D& graphene){
 	data_electro << t << "\t" << "\n";
 }
 

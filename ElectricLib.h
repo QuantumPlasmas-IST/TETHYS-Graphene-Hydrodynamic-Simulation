@@ -11,10 +11,10 @@ class ElectroAnalysis{
 private:
 	std::ofstream data_electro;
 public:
-	void CreateElectroFile(GrapheneFluid1D& graphene);
-	void CreateElectroFile(GrapheneFluid2D& graphene);
-	void WriteElectroFile(float t,GrapheneFluid1D& graphene);
-	void WriteElectroFile(float t,GrapheneFluid2D& graphene);
+	void CreateElectroFile(const GrapheneFluid1D& graphene);
+	void CreateElectroFile(const GrapheneFluid2D& graphene);
+	void WriteElectroFile(float t,const GrapheneFluid1D& graphene);
+	void WriteElectroFile(float t,const GrapheneFluid2D& graphene);
 	float NetCharge(const GrapheneFluid1D& graphene);
 	float NetCharge(const GrapheneFluid2D& graphene);
 	float OhmPower(const GrapheneFluid1D& graphene);
