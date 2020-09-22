@@ -63,5 +63,13 @@ public:
 };
 
 
+class  RobinBoundaryCondition : public DirichletBoundaryCondition
+{
+public:
+	void SlipLength(Fluid2D& fluid_class,float slip_length);
+	void SlipLengthTop(Fluid2D& fluid_class,float slip_length);
+	void SlipLengthBottom(Fluid2D& fluid_class,float slip_length);
+};
+
 #endif
 

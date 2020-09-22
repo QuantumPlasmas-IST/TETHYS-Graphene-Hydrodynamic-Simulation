@@ -28,7 +28,8 @@ int main(int argc, char **argv){
 
 	GrapheneFluid2D	graph(npoints_x, npoints_y, input_vel_snd, input_vel_fer, input_kin_vis, input_col_freq, input_cyc_freq);
 
-	DyakonovShurBoundaryCondition boundary_condition;
+	//DyakonovShurBoundaryCondition boundary_condition;
+	RobinBoundaryCondition boundary_condition;
 	//DirichletBoundaryCondition boundary_condition_Dirichelet;
 
 	/*......CFL routine to determine dt...............................*/
@@ -73,42 +74,40 @@ int main(int argc, char **argv){
 		++time_step;
 		t += dt;
 		graph.Richtmyer();
-		boundary_condition.DyakonovShurBC(graph);
-		boundary_condition.YFree(graph);
-//		boundary_condition.MassFluxX(graph,1.0f,1.0f,0.0f,0.0f);
-//		boundary_condition.MassFluxY(graph,0.0f,0.0f,0.0f,0.0f);
-//		boundary_condition.YClosedNoSlip(graph);
-/*		boundary_condition.YFree(graph); //para menter a densidade free em y=0
+		//boundary_condition.DyakonovShurBC(graph);
+		//boundary_condition.YFree(graph);
+		boundary_condition.YFree(graph); //para menter a densidade free em y=0
 		boundary_condition.XFreeRight(graph);
 		boundary_condition.MassFluxXBottom(graph, 0.0f);
 		boundary_condition.MassFluxYBottom(graph, 0.0f);
 		boundary_condition.MassFluxXLeft(graph, 1.0f);
 		boundary_condition.MassFluxYLeft(graph, 0.0f);
+/*
+		boundary_condition.XFreeRight(graph);
+		boundary_condition.MassFluxXLeft(graph, 1.0f);
+		boundary_condition.MassFluxYLeft(graph, 0.0f);
+		boundary_condition.SlipLength(graph,0.3f);
 */
-
 
 		/*if(graph.GetCycFreq()!=0.0f){
 			graph.MagneticSourceFTCS();
-			boundary_condition.DyakonovShurBC(graph);
-			boundary_condition.YFree(graph);
-			boundary_condition.MassFluxX(graph,1.0f,1.0f,0.0f,0.0f);
-			boundary_condition.MassFluxY(graph,0.0f,0.0f,0.0f,0.0f);
-			boundary_condition.YClosedNoSlip(graph);
-
+(....)
 		}*/
 		if(graph.GetKinVis()!=0.0f) {
 			graph.ViscosityFTCS();
-			boundary_condition.DyakonovShurBC(graph);
-			boundary_condition.YFree(graph);
-//			boundary_condition.MassFluxX(graph,1.0f,1.0f,0.0f,0.0f);
-//			boundary_condition.MassFluxY(graph,0.0f,0.0f,0.0f,0.0f);
-//			boundary_condition.YClosedNoSlip(graph);
-/*			boundary_condition.YFree(graph); //para menter a densidade free em y=0
+			//boundary_condition.DyakonovShurBC(graph);
+			//boundary_condition.YFree(graph);
+			boundary_condition.YFree(graph); //para menter a densidade free em y=0
 			boundary_condition.XFreeRight(graph);
 			boundary_condition.MassFluxXBottom(graph, 0.0f);
 			boundary_condition.MassFluxYBottom(graph, 0.0f);
 			boundary_condition.MassFluxXLeft(graph, 1.0f);
 			boundary_condition.MassFluxYLeft(graph, 0.0f);
+			/*
+			boundary_condition.XFreeRight(graph);
+			boundary_condition.MassFluxXLeft(graph, 1.0f);
+			boundary_condition.MassFluxYLeft(graph, 0.0f);
+			boundary_condition.SlipLength(graph,0.3f);
 			*/
 		}
 
@@ -123,10 +122,10 @@ int main(int argc, char **argv){
 		graph.WriteAtributes();
 	}
 	graph.CloseHDF5File();
-	if(!data_save_mode ) {
+	/*if(!data_save_mode ) {
 		//Remove the empty hdf5 file if unused
 		system("rm hdf5_2D*");
-	}
+	}*/
 	cout << "\033[1A\033[2K\033[1;32mDONE!\033[0m\n";
 	cout << "═══════════════════════════════════════════════════════════════════════════" <<endl;
 	return 0;
