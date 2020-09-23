@@ -31,6 +31,7 @@ class Fluid2D : public TETHYSBase
 		float * CurY ;
 		Fluid2D(int size_nx, int size_ny, float sound_velocity, float shear_viscosity);
 		~Fluid2D();
+		// TODO move to base
 		void SetVelSnd(float x);
 		void SetSound();
 		float GetVelSnd() const;

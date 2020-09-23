@@ -243,7 +243,12 @@ TETHYSBase::TETHYSBase(int size_nx, int size_ny, int dimension){
 	const FloatType hdf5_float(PredType::NATIVE_FLOAT);
 	const IntType hdf5_int(PredType::NATIVE_INT);
 	char buffer [50];
-	sprintf (buffer, "Fluido1D_Nx=%d", Nx);
+	if(RANK==1) {
+		sprintf(buffer, "Fluido1D_Nx=%d", Nx);
+	}
+	if(RANK==2) {
+		sprintf(buffer, "Fluido2D_Nx=%d_Ny=%d", Nx, Ny);
+	}
 	file_infix = buffer;
 }
 

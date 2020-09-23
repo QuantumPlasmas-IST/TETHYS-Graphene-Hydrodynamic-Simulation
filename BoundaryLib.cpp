@@ -348,8 +348,8 @@ void RobinBoundaryCondition::SlipLength(Fluid2D &fluid_class, float slip_length)
 	int nx=fluid_class.SizeX();
 	int ny=fluid_class.SizeY();
 	float dy=fluid_class.GetDy();
-	float aux_top,aux_bot, dn_top,dn_bot,l_top,l_bot;
 	for (int i=0; i < nx; i++){
+		float aux_top,aux_bot, dn_top,dn_bot,l_top,l_bot;
 		int bottom=i; //i+0*nx
 		int top= i + (ny - 1) * nx;
 		dn_bot = (-3.0f*fluid_class.Den[i+0*nx]+4.0f*fluid_class.Den[i+1*nx]-1.0f*fluid_class.Den[i+2*nx])/(2.0f*dy);
@@ -373,8 +373,8 @@ void RobinBoundaryCondition::SlipLengthTop(Fluid2D &fluid_class, float slip_leng
 	int nx=fluid_class.SizeX();
 	int ny=fluid_class.SizeY();
 	float dy=fluid_class.GetDy();
-	float aux_top, dn_top,l_top;
 	for (int i=0; i < nx; i++){
+		float aux_top, dn_top,l_top;
 		int top= i + (ny - 1) * nx;
 		dn_top = (-3.0f*fluid_class.Den[i+(ny - 1)*nx]+4.0f*fluid_class.Den[i+(ny - 2)*nx]-1.0f*fluid_class.Den[i+(ny - 3)*nx])/(2.0f*dy);
 		dn_top = dn_top/sqrt(fluid_class.Den[top]);
@@ -389,8 +389,8 @@ void RobinBoundaryCondition::SlipLengthTop(Fluid2D &fluid_class, float slip_leng
 void RobinBoundaryCondition::SlipLengthBottom(Fluid2D &fluid_class, float slip_length) {
 	int nx=fluid_class.SizeX();
 	float dy=fluid_class.GetDy();
-	float aux_bot, dn_bot, l_bot;
 	for (int i=0; i < nx; i++){
+		float aux_bot, dn_bot, l_bot;
 		int bottom=i; //i+0*nx
 		dn_bot = (-3.0f*fluid_class.Den[i+0*nx]+4.0f*fluid_class.Den[i+1*nx]-1.0f*fluid_class.Den[i+2*nx])/(2.0f*dy);
 		dn_bot = dn_bot/sqrt(fluid_class.Den[bottom]);
