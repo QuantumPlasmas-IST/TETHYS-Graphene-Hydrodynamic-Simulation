@@ -24,8 +24,6 @@ class Fluid1D : public TethysBase{
 		Fluid1D(int size_nx, float sound_velocity, float shear_viscosity);
 		~Fluid1D();
 		void Smooth(int width);     // smoothing moving average filter to obtain the "Cor" version of the quantities
-
-
 		void SetSimulationTime();   // Finds and set the appropriate simulation time that is 1) Longer than the saturation time 2) Contains enough oscillation periods in the saturated region
 		void InitialCondRand();     // Initial condition, zero velocity and constant density with 0.5% white noise
 		void InitialCondTest();     // Initial condition for testing and debugging
@@ -49,7 +47,6 @@ class GrapheneFluid1D : public Fluid1D{
 		void CflCondition() override;
 		void SetVelFer(float x);    // setter method for Fermi velocity
 		float GetVelFer() const;    // getter method for Fermi velocity
-
 		/*Override fluxes and sources to specifics of graphene physics*/
 		float DensityFlux(float n,float v,__attribute__((unused)) float s) override;
 		float VelocityFlux(float n,float v,float dv,float s) override;

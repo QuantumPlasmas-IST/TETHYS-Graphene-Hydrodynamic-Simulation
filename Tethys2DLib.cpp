@@ -266,14 +266,8 @@ float  Fluid2D::MassFluxYFluxY(float n,float flx_x, float flx_y,__attribute__((u
 	return f_3;
 }
 
-void Fluid2D::SetFileName(){
-	char buffer [50];
-	sprintf (buffer, "S=%.2fvis=%.2f", vel_snd, kin_vis);
-	file_infix = buffer;
-}
 
 void Fluid2D::CreateFluidFile(){
-	//this->SetFileName();
 	std::string previewfile = "preview_2D_" + file_infix + ".dat" ;
 	data_preview.open (previewfile);
 	data_preview << scientific; 
@@ -333,6 +327,7 @@ void GrapheneFluid2D::MassFluxToVelocity(){
 
 
 void GrapheneFluid2D::SetVelFer(float x){ vel_fer=x;}
+void GrapheneFluid2D::SetCycFreq(float x) { cyc_freq=x;}
 float GrapheneFluid2D::GetVelFer() const{ return vel_fer;  }
 
 float GrapheneFluid2D::GetCycFreq() const{ return cyc_freq; }
@@ -458,11 +453,12 @@ void GrapheneFluid2D::MagneticSourceFtcs(){
 }
 
 
+
 //TODO criar uma nova pequena funcao de escrita de atributos para as particularidades do grafeno velocidade de fermi e cyc freq
 
 
 
-void GrapheneFluid2D::SaveSnapShot(int time_step,int snapshot_step){
+void Fluid2D::SaveSnapShot(int time_step,int snapshot_step){
 	const FloatType      hdf5_float(PredType::NATIVE_FLOAT);
 	const IntType        hdf5_int(PredType::NATIVE_INT);
 	this->MassFluxToVelocity();

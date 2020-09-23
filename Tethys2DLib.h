@@ -10,48 +10,39 @@ using namespace H5;
 class Fluid2D : public TethysBase
 {
 	protected:
-		float * vel_snd_arr;
-		float * den_mid ; // 1st Aux. Grid (Nx-1)*(Ny-1)
+		float * vel_snd_arr;    // array for saving the (potentially varying) S(x,y) function
+		float * den_mid ;       // mid or auxiliary grids defined with (Nx-1)*(Ny-1) size
 		float * flxX_mid ;
 		float * flxY_mid ;
-
-		float * lap_flxX ; //new grids for the laplacians
-		float * lap_flxY ;
-
-		std::ofstream data_preview;
-		virtual void SetFileName();
-
+		float * lap_flxX ;      // mass density flux laplacian component x
+		float * lap_flxY ;      // mass density flux laplacian component y
+		std::ofstream data_preview; // file stream for simplified .dat file output
 	public :
-		float * Den ;
-		float * VelX ;
-		float * VelY ;
-		float * FlxX ;
-		float * FlxY ;
-		float * CurX ;
-		float * CurY ;
+		float * Den ;       // number density
+		float * VelX ;      // fluid velocity x component
+		float * VelY ;      // fluid velocity y component
+		float * FlxX ;      // mass density flux x component
+		float * FlxY ;      // mass density flux y component
+		float * CurX ;      // current density x component
+		float * CurY ;      // current density y component
 		Fluid2D(int size_nx, int size_ny, float sound_velocity, float shear_viscosity);
 		~Fluid2D();
-		void SetSound();
-
-
-		virtual void SetSimulationTime();
-
-		void InitialCondRand();
-		void InitialCondTest();
-		void Richtmyer();
-		virtual void CflCondition();
-
-		virtual float DensityFluxX(__attribute__((unused)) float n, float flx_x, __attribute__((unused)) float vel_y, __attribute__((unused)) float mass, __attribute__((unused)) float s);
-		virtual float DensityFluxY(__attribute__((unused)) float n, __attribute__((unused)) float vel_x, float vel_y, __attribute__((unused)) float mass, __attribute__((unused)) float s);
-		virtual float MassFluxXFluxX(float n, float flx_x, float flx_y,__attribute__((unused)) float mass, float s);
-		virtual float MassFluxXFluxY(float n, float flx_x, float flx_y,__attribute__((unused)) float mass, float s);
-		virtual float MassFluxYFluxX(float n, float flx_x, float flx_y,__attribute__((unused)) float mass, float s);
-		virtual float MassFluxYFluxY(float n, float flx_x, float flx_y,__attribute__((unused)) float mass, float s);
-
+		void SetSound();     // Applies the anisotropy to the sound velocity array
+		virtual void SetSimulationTime();   // Finds and set the appropriate simulation time that is 1) Longer than the saturation time 2) Contains enough oscillation periods in the saturated region
+		void InitialCondRand();             // Initial condition, zero velocity and constant density with 0.5% white noise
+		void InitialCondTest();             // Initial condition for testing and debugging
+		virtual void CflCondition();    // Calculates dx and imposes Courant–Friedrichs–Lewy condition to dt
+		void Richtmyer();                   // Central Algorithm for solving the hyperbolic conservation law
+		virtual float DensityFluxX(__attribute__((unused)) float n, float flx_x, __attribute__((unused)) float vel_y, __attribute__((unused)) float mass, __attribute__((unused)) float s); // density equation (continuity equation) conserved flux X component
+		virtual float DensityFluxY(__attribute__((unused)) float n, __attribute__((unused)) float vel_x, float vel_y, __attribute__((unused)) float mass, __attribute__((unused)) float s); // density equation (continuity equation) conserved flux Y component
+		virtual float MassFluxXFluxX(float n, float flx_x, float flx_y,__attribute__((unused)) float mass, float s); // velocity X component equation (momentum equation) conserved flux X component
+		virtual float MassFluxXFluxY(float n, float flx_x, float flx_y,__attribute__((unused)) float mass, float s); // velocity X component equation (momentum equation) conserved flux Y component
+		virtual float MassFluxYFluxX(float n, float flx_x, float flx_y,__attribute__((unused)) float mass, float s); // velocity Y component equation (momentum equation) conserved flux X component
+		virtual float MassFluxYFluxY(float n, float flx_x, float flx_y,__attribute__((unused)) float mass, float s); // velocity Y component equation (momentum equation) conserved flux Y component
 		virtual void MassFluxToVelocity(); // Converts the mass flux density p=mnv to velocity
-		
-		void CreateFluidFile();
-		void WriteFluidFile(float t) ;
+		void CreateFluidFile();     // create and open the simplified .dat file output
+		void WriteFluidFile(float t) ; // writes the line of time t on the simplified .dat file output
+		void SaveSnapShot(int time_step,int snapshot_step);
 };
 
 class GrapheneFluid2D : public Fluid2D{
@@ -60,11 +51,10 @@ class GrapheneFluid2D : public Fluid2D{
 		float cyc_freq =0.0f;
 	public :
 		GrapheneFluid2D(int size_nx, int size_ny, float sound_velocity, float fermi_velocity, float shear_viscosity, float collision_frequency, float cyclotron_frequency);
-
-		void SetVelFer(float x);
-		float GetVelFer() const;
-
-		float GetCycFreq() const;
+		void SetVelFer(float x);        // setter method for Fermi Velocity
+		float GetVelFer() const;        // getter method for Fermi Velocity
+		void SetCycFreq(float x);        // setter method for cyclotron frequency
+		float GetCycFreq() const;       // getter method for cyclotron frequency
 		void CflCondition() override;
 		void SetSimulationTime() override;
 		void MassFluxToVelocity() override; // Converts the mass density flux back to velocity, in graphene  v = p n^{-3/2}
@@ -76,10 +66,9 @@ class GrapheneFluid2D : public Fluid2D{
 		float MassFluxYFluxX(float n, float flx_x, float flx_y,float mass, float s) override;
 		float MassFluxYFluxY(float n, float flx_x, float flx_y,float mass, float s) override;
 
-		void MagneticSourceSemiAnalytic();
-		void MagneticSourceFtcs();
-		void ViscosityFtcs();
-		void SaveSnapShot(int time_step,int snapshot_step);
+		void MagneticSourceSemiAnalytic(); // Semi analytic method for the magnetic interaction
+		void MagneticSourceFtcs();  // Forward Time Centered Space method for the magnetic interaction
+		void ViscosityFtcs();       // Forward Time Centered Space method for the viscous terms
 };
 
 
