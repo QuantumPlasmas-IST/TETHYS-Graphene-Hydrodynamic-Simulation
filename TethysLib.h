@@ -86,7 +86,25 @@ class TethysBase {
 		int SizeX() const;          // getter method for the number of simulation points along x
 		int SizeY() const;          // getter method for the number of simulation points along y
 		int Rank() const;           // getter method for the system dimensionality
-		
+
+		void SetVelSnd(float x);    // setter method for nominal S value
+		void SetKinVis(float x);    // setter method for kinetic shear viscosity
+		void SetColFreq(float x);   // setter method for collision frequency
+		void SetDx(float x);        // setter method for spatial step x
+		void SetDy(float x);        // setter method for spatial step y
+		void SetDt(float x);        // setter method for temporal step
+		void SetLengthX(float x);   // setter method for total length along x
+		void SetLengthY(float x);   // setter method for total length along y
+
+		float GetVelSnd() const;    // getter method for nominal S value
+		float GetKinVis() const;    // getter method for kinetic shear viscosity
+		float GetColFreq() const;   // getter method for collision frequency
+		float GetDx() const;        // getter method for spatial discretization x
+		float GetDy() const;        // getter method for spatial discretization y
+		float GetDt() const;        // getter method for time discretization
+		float GetLengthX() const;   // getter method for total length along x
+		float GetLengthY() const;   // getter method for total length along y
+
 		std::string GetInfix() const;   // getter method for file name infix
 		void CreateHdf5File();          // creates the HDF5 files with the necessary structure
 		void CloseHdf5File();           // closes the HDF5 file

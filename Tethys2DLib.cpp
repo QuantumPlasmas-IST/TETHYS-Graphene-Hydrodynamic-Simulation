@@ -68,21 +68,6 @@ void Fluid2D::SetSound(){
 }
 
 
-float Fluid2D::GetVelSnd() const{ return vel_snd; }
-void Fluid2D::SetVelSnd(float x){ vel_snd=x; }
-float Fluid2D::GetKinVis() const{ return kin_vis; }
-void Fluid2D::SetKinVis(float x){ kin_vis=x;}
-float Fluid2D::GetDx() const{return dx;}
-void Fluid2D::SetDx(float x){ dx=x;}
-float Fluid2D::GetDy() const{return dy;}
-void Fluid2D::SetDy(float x){ dy=x;}
-float Fluid2D::GetDt() const{return dt;}
-void Fluid2D::SetDt(float x){ dt=x;}
-
-void Fluid2D::SetLengthX(float x){lengX=x;}
-void Fluid2D::SetLengthY(float x){lengY=x;}
-float Fluid2D::GetLengthX() const{return lengX;}
-float Fluid2D::GetLengthY() const{return lengX;}
 
 
 void Fluid2D::InitialCondRand(){
@@ -349,8 +334,7 @@ void GrapheneFluid2D::MassFluxToVelocity(){
 
 void GrapheneFluid2D::SetVelFer(float x){ vel_fer=x;}
 float GrapheneFluid2D::GetVelFer() const{ return vel_fer;  }
-void GrapheneFluid2D::SetColFreq(float x){ col_freq=x; }
-float GrapheneFluid2D::GetColFreq() const{ return col_freq; }
+
 float GrapheneFluid2D::GetCycFreq() const{ return cyc_freq; }
 
 void GrapheneFluid2D::CflCondition(){ // Eventual redefinition

@@ -136,10 +136,35 @@ void TethysBase::WellcomeScreen(float vel_snd, float vel_fer, float col_freq, fl
 
 std::string TethysBase::GetInfix() const {return file_infix;}
 float TethysBase::GetTmax() const{return Tmax;}
-void TethysBase::SetTmax(float x){ Tmax=x;}
 int TethysBase::Rank() const{ return RANK; }
 int TethysBase::SizeX() const{ return Nx; }
 int TethysBase::SizeY() const{ return Ny; }
+float TethysBase::GetVelSnd() const{ return vel_snd; }
+float TethysBase::GetKinVis() const{ return kin_vis; }
+float TethysBase::GetColFreq() const{ return col_freq; }
+float TethysBase::GetDx() const{return dx;}
+float TethysBase::GetDy() const{return dy;}
+float TethysBase::GetDt() const{return dt;}
+float TethysBase::GetLengthX() const{return lengX;}
+float TethysBase::GetLengthY() const{return lengY;}
+
+void TethysBase::SetTmax(float x){ Tmax=x;}
+void TethysBase::SetVelSnd(float x){ vel_snd=x; }
+void TethysBase::SetKinVis(float x){ kin_vis=x;}
+void TethysBase::SetColFreq(float x){ col_freq=x; }
+void TethysBase::SetDx(float x){ dx=x;}
+void TethysBase::SetDy(float x){ dy=x;}
+void TethysBase::SetDt(float x){ dt=x;}
+void TethysBase::SetLengthX(float x){lengX=x;}
+void TethysBase::SetLengthY(float x){lengY=x;}
+
+
+
+
+
+
+
+
 
 
 void TethysBase::CloseHdf5File(){

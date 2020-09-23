@@ -31,22 +31,8 @@ class Fluid2D : public TethysBase
 		float * CurY ;
 		Fluid2D(int size_nx, int size_ny, float sound_velocity, float shear_viscosity);
 		~Fluid2D();
-		// TODO move to base
-		void SetVelSnd(float x);
 		void SetSound();
-		float GetVelSnd() const;
-		void SetKinVis(float x);
-		float GetKinVis() const;
-		void SetLengthX(float x);
-		void SetLengthY(float x);
-		float GetLengthX() const;
-		float GetLengthY() const;
-		float GetDx() const;
-		void SetDx(float x);
-		float GetDy() const;
-		void SetDy(float x);
-		float GetDt() const;
-		void SetDt(float x);
+
 
 		virtual void SetSimulationTime();
 
@@ -77,8 +63,7 @@ class GrapheneFluid2D : public Fluid2D{
 
 		void SetVelFer(float x);
 		float GetVelFer() const;
-		void SetColFreq(float x);
-		float GetColFreq() const;
+
 		float GetCycFreq() const;
 		void CflCondition() override;
 		void SetSimulationTime() override;
