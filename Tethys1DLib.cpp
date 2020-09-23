@@ -23,7 +23,7 @@ GrapheneFluid1D::GrapheneFluid1D(int size_n, float sound_velocity, float fermi_v
 /*....................................................................*/	
 /*.......... 1 Dimensional Fluid Class ...............................*/	
 /*....................................................................*/	
-Fluid1D::Fluid1D(int size_nx, float sound_velocity, float shear_viscosity): TETHYSBase{size_nx, 0, 1}{
+Fluid1D::Fluid1D(int size_nx, float sound_velocity, float shear_viscosity): TethysBase{size_nx, 0, 1}{
 	Nx = size_nx;
 	vel_snd =sound_velocity;
 	kin_vis =shear_viscosity;
@@ -74,7 +74,7 @@ float  Fluid1D::VelocitySource(float n,float v,float s){
 	return 0;
 }
 
-void Fluid1D::CFLCondition(){
+void Fluid1D::CflCondition(){
 		dx = lengX / ( float ) ( Nx - 1 );
 		dt = dx/10.0f;
 }
@@ -252,7 +252,7 @@ void Fluid1D::SaveSnapShot(int time_step,int snapshot_step){
 
 
 
-void GrapheneFluid1D::CFLCondition(){
+void GrapheneFluid1D::CflCondition(){
 	dx = lengX / ( float ) ( Nx - 1 );
 	float lambda;
 	if(vel_snd<0.36f*vel_fer){

@@ -6,7 +6,7 @@
 using namespace H5;
 using namespace std;
 
-class Fluid1D : public TETHYSBase{
+class Fluid1D : public TethysBase{
 	protected:
 		float * vel_snd_arr;        // array for saving the (potentially varying) S(x) function
 		float * den_mid ;           // number density at midpoint
@@ -37,7 +37,7 @@ class Fluid1D : public TETHYSBase{
 		void InitialCondTest();     // Initial condition for testing and debugging
 		void Richtmyer();           // Central Algorithm for solving the hyperbolic conservation law
 		void SetSound();            // Applies the anisotropy to the sound velocity array
-		virtual void CFLCondition();    // Calculates dx and imposes Courant–Friedrichs–Lewy condition to dt
+		virtual void CflCondition();    // Calculates dx and imposes Courant–Friedrichs–Lewy condition to dt
 		virtual float DensityFlux(float n,float v, __attribute__((unused)) float s);    // density equation (continuity equation) conserved flux
 		virtual float VelocityFlux(float n,float v,float dv, __attribute__((unused)) float s); // velocity equation (momentum equation) conserved flux
 		virtual float DensitySource( __attribute__((unused)) float n,  __attribute__((unused)) float v, __attribute__((unused)) float s); // density equation (continuity equation) source term
@@ -52,7 +52,7 @@ class GrapheneFluid1D : public Fluid1D{
 	public :
 		GrapheneFluid1D(int size_n, float sound_velocity, float fermi_velocity, float shear_viscosity, float collision_frequency);
 		/*Override CFL condition to the case of graphene equations */
-		void CFLCondition() override;
+		void CflCondition() override;
 		void SetVelFer(float x);    // setter method for Fermi velocity
 		float GetVelFer() const;    // getter method for Fermi velocity
 		//TODO move colisio frqeucni setter and getter to base

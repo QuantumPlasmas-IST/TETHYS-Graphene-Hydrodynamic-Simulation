@@ -31,8 +31,8 @@ int main(int argc, char **argv){
 
 
 	graph.BannerDisplay();
-	/*......CFL routine to determine dt...............................*/	
-	graph.CFLCondition();
+	/*......CFL routine to determine dt...............................*/
+	graph.CflCondition();
 	dx=graph.GetDx();
 	dt=graph.GetDt();
 //	graph.SetTmax(10.0);
@@ -48,7 +48,7 @@ int main(int argc, char **argv){
 	ElectroAnalysis elec;
 	elec.CreateElectroFile(graph);
 	graph.CreateFluidFile();
-	graph.CreateHDF5File();
+	graph.CreateHdf5File();
 	/*................................................................*/
 	
 	graph.WellcomeScreen(graph.GetVelSnd(), graph.GetVelFer(), graph.GetColFreq(), graph.GetKinVis(), dt, dx,dx, t_max);
@@ -57,7 +57,7 @@ int main(int argc, char **argv){
 	////////////////////////////////////////////////////////////////////
 	// Initialization	
 	graph.InitialCondRand();
-	BC.DyakonovShurBC(graph);
+	BC.DyakonovShurBc(graph);
 	////////////////////////////////////////////////////////////////////
 	int time_step=0;
 	int snapshot_per_period = 10;
@@ -74,7 +74,7 @@ int main(int argc, char **argv){
 		// Main algorithm		
 		graph.Richtmyer();
 		// Impose boundary conditions
-		BC.DyakonovShurBC(graph);
+		BC.DyakonovShurBc(graph);
 		// Applying average filters for smoothing 	
 		graph.Smooth(2);
 		//Record full data
@@ -87,7 +87,7 @@ int main(int argc, char **argv){
 	if(data_save_mode ) {
 		graph.WriteAtributes();
 	}
-	graph.CloseHDF5File();
+	graph.CloseHdf5File();
 	if(!data_save_mode ) {
 		system("rm hdf5_1D*");
 	}

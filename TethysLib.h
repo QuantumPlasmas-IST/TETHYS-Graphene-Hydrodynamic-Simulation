@@ -52,7 +52,7 @@ void Average_Filter(const float * vec_in, float * vec_out, int size , int width 
 /* Base class from which the fluid and graphene fluid classes are derived
  * The setting of the dimensions and creation of the HDF5 file and its attributes is controlled from this class
  * */
-class TETHYSBase {
+class TethysBase {
 	protected:
 		int   Nx ;          // Simulation region (dataset) dimensions
 		int   Ny ;
@@ -69,10 +69,10 @@ class TETHYSBase {
 		float Tmax=10;          // total time of simulation
 		bool HDF5fileCreated = false;   // flag to indicate the if the HDF5 file was created in the case the user choose the full output option
 	public:
-		TETHYSBase(int size_nx, int size_ny, int dimensions); // class constructor initializes Nx, Ny, RANK and file_infix
-		~TETHYSBase();  // class destructor if the the flag HDF5fileCreated=TRUE it deletes the dataspaces and hdf5 files
+		TethysBase(int size_nx, int size_ny, int dimensions); // class constructor initializes Nx, Ny, RANK and file_infix
+		~TethysBase();  // class destructor if the the flag HDF5fileCreated=TRUE it deletes the dataspaces and hdf5 files
 
-		H5File* hdf5file ;  // hdf5 file handler
+		H5File* Hdf5File ;  // hdf5 file handler
 		Group* GrpDat ;     // group for the simulated data: Attributes; Density; Velocity X; Velocity Y
 		Group* GrpDen ;     // group for ALL Density snapshots
 		Group* GrpVelX ;    // group for ALL Velocity X snapshots
@@ -88,8 +88,8 @@ class TETHYSBase {
 		int Rank() const;           // getter method for the system dimensionality
 		
 		std::string GetInfix() const;   // getter method for file name infix
-		void CreateHDF5File();          // creates the HDF5 files with the necessary structure
-		void CloseHDF5File();           // closes the HDF5 file
+		void CreateHdf5File();          // creates the HDF5 files with the necessary structure
+		void CloseHdf5File();           // closes the HDF5 file
 		void WriteAtributes();          // saves the simulation attributes (either physical and simulation parameters)
 
 		void BannerDisplay(); // launches the initial ASCII art banner

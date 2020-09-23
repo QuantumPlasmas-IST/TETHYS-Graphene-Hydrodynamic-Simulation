@@ -174,13 +174,13 @@
         </UML:Operation>
        </UML:Classifier.feature>
       </UML:Class>
-      <UML:Class xmi.id="unChRZVOPjfID" visibility="public" isSpecification="false" isRoot="false" isAbstract="false" isLeaf="false" name="TETHYSBase" namespace="Logical_View">
+      <UML:Class xmi.id="unChRZVOPjfID" visibility="public" isSpecification="false" isRoot="false" isAbstract="false" isLeaf="false" name="TethysBase" namespace="Logical_View">
        <UML:Classifier.feature>
         <UML:Attribute xmi.id="u13tyxzdfnLLm" visibility="protected" isSpecification="false" type="u9eHbPuGqG5vy" name="Nx" comment="dataset dimensions"/>
         <UML:Attribute xmi.id="ukFpRiuelNvs8" visibility="protected" isSpecification="false" type="u9eHbPuGqG5vy" name="Ny"/>
         <UML:Attribute xmi.id="uoD4nXcuDvFD8" visibility="protected" isSpecification="false" type="u9eHbPuGqG5vy" name="RANK"/>
         <UML:Attribute xmi.id="u6o3odrix4exe" visibility="protected" isSpecification="false" type="u8Rd17TS3oshN" name="file_infix"/>
-        <UML:Attribute xmi.id="ut3oMNxfU1jAA" visibility="public" isSpecification="false" type="uFOZx3NNbAHDm" name="hdf5file" comment="acho que pelo menos para já nao vai precisar de construtor ou entao ponho o banner mesmo no constrturos &#xa;( se tirar o namespace nao esquecer usar o H5::)"/>
+        <UML:Attribute xmi.id="ut3oMNxfU1jAA" visibility="public" isSpecification="false" type="uFOZx3NNbAHDm" name="Hdf5File" comment="acho que pelo menos para já nao vai precisar de construtor ou entao ponho o banner mesmo no constrturos &#xa;( se tirar o namespace nao esquecer usar o H5::)"/>
         <UML:Attribute xmi.id="uEk2UOUvJxXDY" visibility="public" isSpecification="false" type="uegp3nkm1ZGXu" name="GrpDat"/>
         <UML:Attribute xmi.id="u5AQsZPdb4vSW" visibility="public" isSpecification="false" type="uegp3nkm1ZGXu" name="GrpDen"/>
         <UML:Attribute xmi.id="u6XYGQe5rWiOQ" visibility="public" isSpecification="false" type="uegp3nkm1ZGXu" name="GrpVelX"/>
@@ -188,20 +188,20 @@
         <UML:Attribute xmi.id="u8W9Si9oO5Qps" visibility="public" isSpecification="false" type="uI8FXmyDgLmal" name="DataspaceDen"/>
         <UML:Attribute xmi.id="uZbkSmzaaT2Dg" visibility="public" isSpecification="false" type="uI8FXmyDgLmal" name="DataspaceVelX"/>
         <UML:Attribute xmi.id="uGbFDvfEJWvPV" visibility="public" isSpecification="false" type="uI8FXmyDgLmal" name="DataspaceVelY"/>
-        <UML:Operation xmi.id="uQSL0nmkVn4iF" visibility="public" isSpecification="false" isRoot="false" isQuery="false" isVirtual="false" isInline="false" isAbstract="false" stereotype="constructor" isLeaf="false" name="TETHYSBase" isOverride="false">
+        <UML:Operation xmi.id="uQSL0nmkVn4iF" visibility="public" isSpecification="false" isRoot="false" isQuery="false" isVirtual="false" isInline="false" isAbstract="false" stereotype="constructor" isLeaf="false" name="TethysBase" isOverride="false">
          <UML:BehavioralFeature.parameter>
           <UML:Parameter xmi.id="ugVxNqlTyP8fi" visibility="private" isSpecification="false" value="" type="u9eHbPuGqG5vy" name="sizeNX"/>
           <UML:Parameter xmi.id="unZTVfSiSO8yv" visibility="private" isSpecification="false" value="" type="u9eHbPuGqG5vy" name="sizeNY"/>
           <UML:Parameter xmi.id="unmaE68Nw1evi" visibility="private" isSpecification="false" value="" type="u9eHbPuGqG5vy" name="dimensions"/>
          </UML:BehavioralFeature.parameter>
         </UML:Operation>
-        <UML:Operation xmi.id="uQHPwLys3f7vK" visibility="public" isSpecification="false" isRoot="false" isQuery="false" isVirtual="true" isInline="true" isAbstract="false" stereotype="destructor" isLeaf="false" name="~ TETHYSBase" isOverride="false"/>
+        <UML:Operation xmi.id="uQHPwLys3f7vK" visibility="public" isSpecification="false" isRoot="false" isQuery="false" isVirtual="true" isInline="true" isAbstract="false" stereotype="destructor" isLeaf="false" name="~ TethysBase" isOverride="false"/>
         <UML:Operation xmi.id="uJ04jL9ZLBDtJ" visibility="public" isSpecification="false" isRoot="false" isQuery="false" isVirtual="false" isInline="false" isAbstract="false" isLeaf="false" name="GetInfix" isOverride="false">
          <UML:BehavioralFeature.parameter>
           <UML:Parameter xmi.id="usedvxX4ckki7" kind="return" type="u8Rd17TS3oshN"/>
          </UML:BehavioralFeature.parameter>
         </UML:Operation>
-        <UML:Operation xmi.id="uaUhrUu5jy7TK" visibility="public" isSpecification="false" isRoot="false" isQuery="false" isVirtual="false" isInline="false" isAbstract="false" isLeaf="false" name="CreateHDF5File" isOverride="false"/>
+        <UML:Operation xmi.id="uaUhrUu5jy7TK" visibility="public" isSpecification="false" isRoot="false" isQuery="false" isVirtual="false" isInline="false" isAbstract="false" isLeaf="false" name="CreateHdf5File" isOverride="false"/>
         <UML:Operation xmi.id="u8OoEriDfpE3b" visibility="public" isSpecification="false" isRoot="false" isQuery="false" isVirtual="false" isInline="false" isAbstract="false" isLeaf="false" name="BannerDisplay" isOverride="false"/>
         <UML:Operation xmi.id="uYpWvFKkq6nzz" visibility="public" isSpecification="false" isRoot="false" isQuery="false" isVirtual="false" isInline="false" isAbstract="false" isLeaf="false" name="WellcomeScreen" isOverride="false">
          <UML:BehavioralFeature.parameter>
@@ -458,7 +458,7 @@
         <UML:Operation xmi.id="uZD7P5cEYTByO" visibility="public" isSpecification="false" isRoot="false" isQuery="false" isVirtual="false" isInline="false" isAbstract="false" isLeaf="false" name="InitialCondRand" isOverride="false"/>
         <UML:Operation xmi.id="uyt2ybkL9U0d1" visibility="public" isSpecification="false" isRoot="false" isQuery="false" isVirtual="false" isInline="false" isAbstract="false" isLeaf="false" name="InitialCondTest" isOverride="false"/>
         <UML:Operation xmi.id="u5qM0TUHCVyWB" visibility="public" isSpecification="false" isRoot="false" isQuery="false" isVirtual="false" isInline="false" isAbstract="false" isLeaf="false" name="Richtmyer" isOverride="false"/>
-        <UML:Operation xmi.id="uHSOiNtO1unvG" visibility="public" isSpecification="false" isRoot="false" isQuery="false" isVirtual="true" isInline="false" isAbstract="false" isLeaf="false" name="CFLCondition" isOverride="false"/>
+        <UML:Operation xmi.id="uHSOiNtO1unvG" visibility="public" isSpecification="false" isRoot="false" isQuery="false" isVirtual="true" isInline="false" isAbstract="false" isLeaf="false" name="CflCondition" isOverride="false"/>
         <UML:Operation xmi.id="uJGGF79hCU1du" visibility="public" isSpecification="false" isRoot="false" isQuery="false" isVirtual="false" isInline="false" isAbstract="false" isLeaf="false" name="BoundaryCond" isOverride="false">
          <UML:BehavioralFeature.parameter>
           <UML:Parameter xmi.id="usBtKqde1xRN4" visibility="private" isSpecification="false" value="" type="u9eHbPuGqG5vy" name="type"/>
@@ -592,7 +592,7 @@
           <UML:Parameter xmi.id="uxA758BrqHM26" kind="return" type="uT8Tqq1BGOBQs"/>
          </UML:BehavioralFeature.parameter>
         </UML:Operation>
-        <UML:Operation xmi.id="ugFHsHNZmmpcb" visibility="public" isSpecification="false" isRoot="false" isQuery="false" isVirtual="true" isInline="true" isAbstract="false" isLeaf="false" name="CFLCondition" isOverride="true"/>
+        <UML:Operation xmi.id="ugFHsHNZmmpcb" visibility="public" isSpecification="false" isRoot="false" isQuery="false" isVirtual="true" isInline="true" isAbstract="false" isLeaf="false" name="CflCondition" isOverride="true"/>
         <UML:Operation xmi.id="uhnVu1fCSWOT9" visibility="public" isSpecification="false" isRoot="false" isQuery="false" isVirtual="false" isInline="false" isAbstract="false" isLeaf="false" name="BoundaryCond" isOverride="false">
          <UML:BehavioralFeature.parameter>
           <UML:Parameter xmi.id="u7w6n87LXXyk2" visibility="private" isSpecification="false" value="" type="u9eHbPuGqG5vy" name="type"/>

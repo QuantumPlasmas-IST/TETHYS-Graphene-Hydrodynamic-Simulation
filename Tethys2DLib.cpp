@@ -13,7 +13,7 @@ using namespace std;
 #	define MAT_PI 3.14159265358979323846
 #endif
 
-Fluid2D::Fluid2D(int size_nx, int size_ny, float sound_velocity, float shear_viscosity) : TETHYSBase{size_nx, size_ny, 2}{
+Fluid2D::Fluid2D(int size_nx, int size_ny, float sound_velocity, float shear_viscosity) : TethysBase{size_nx, size_ny, 2}{
 	Nx = size_nx;
 	Ny = size_ny;
 	vel_snd =sound_velocity;
@@ -241,7 +241,7 @@ void Fluid2D::Richtmyer(){
 		
 
 
-void Fluid2D::CFLCondition(){ 
+void Fluid2D::CflCondition(){
 		dx = lengX / ( float ) ( Nx - 1 );
 		dy = lengY / ( float ) ( Ny - 1 );
 		dt = dx/10.0f;
@@ -309,7 +309,7 @@ void Fluid2D::WriteFluidFile(float t){
 		<< FlxX[pos_ini] << "\n";
 	}catch (const char* msg) {
 		cerr << msg  <<"\nExiting"<< endl;
-		this->CloseHDF5File();
+		this->CloseHdf5File();
 		exit(EXIT_FAILURE);
 	}
 }
@@ -353,7 +353,7 @@ void GrapheneFluid2D::SetColFreq(float x){ col_freq=x; }
 float GrapheneFluid2D::GetColFreq() const{ return col_freq; }
 float GrapheneFluid2D::GetCycFreq() const{ return cyc_freq; }
 
-void GrapheneFluid2D::CFLCondition(){ // Eventual redefinition 
+void GrapheneFluid2D::CflCondition(){ // Eventual redefinition
 	dx = lengX / ( float ) ( Nx - 1 );
 	dy = lengY / ( float ) ( Ny - 1 );
 	//dt = 2.4/(vel_snd*sqrt(25.0/(dx*dx)+16.0/(dy*dy)));
@@ -412,7 +412,7 @@ void GrapheneFluid2D::MagneticSourceSemiAnalytic(){
 	}		
 }
 
-void GrapheneFluid2D::ViscosityFTCS() {
+void GrapheneFluid2D::ViscosityFtcs() {
 int north, south, east, west;
 float mass_den_center, mass_den_north, mass_den_south, mass_den_east, mass_den_west;
 
@@ -460,7 +460,7 @@ float mass_den_center, mass_den_north, mass_den_south, mass_den_east, mass_den_w
 
 
 
-void GrapheneFluid2D::MagneticSourceFTCS(){
+void GrapheneFluid2D::MagneticSourceFtcs(){
 	float px_0,py_0,sqrtn_0;
 	for(int kp=1+Nx; kp<=Nx*Ny-Nx-2; kp++){ //correr a grelha principal evitando as fronteiras
 		if( kp%Nx!=Nx-1 && kp%Nx!=0){

@@ -35,7 +35,7 @@ int main(int argc, char **argv){
 	/*......CFL routine to determine dt...............................*/
 	graph.SetLengthX(1.0f);
 	graph.SetLengthY(2.0f);
-	graph.CFLCondition();
+	graph.CflCondition();
 	dx=graph.GetDx();
 	dy=graph.GetDy();
 	dt=graph.GetDt();
@@ -51,7 +51,7 @@ int main(int argc, char **argv){
 	ElectroAnalysis elec;
 	elec.CreateElectroFile(graph);
 	graph.CreateFluidFile();
-	graph.CreateHDF5File();
+	graph.CreateHdf5File();
 	/*................................................................*/
 
 	//t_max=3.0f; //encurtar o tempo para testes
@@ -74,7 +74,7 @@ int main(int argc, char **argv){
 		++time_step;
 		t += dt;
 		graph.Richtmyer();
-		//boundary_condition.DyakonovShurBC(graph);
+		//boundary_condition.DyakonovShurBc(graph);
 		//boundary_condition.YFree(graph);
 		boundary_condition.YFree(graph); //para menter a densidade free em y=0
 		boundary_condition.XFreeRight(graph);
@@ -90,12 +90,12 @@ int main(int argc, char **argv){
 */
 
 		/*if(graph.GetCycFreq()!=0.0f){
-			graph.MagneticSourceFTCS();
+			graph.MagneticSourceFtcs();
 (....)
 		}*/
 		if(graph.GetKinVis()!=0.0f) {
-			graph.ViscosityFTCS();
-			//boundary_condition.DyakonovShurBC(graph);
+			graph.ViscosityFtcs();
+			//boundary_condition.DyakonovShurBc(graph);
 			//boundary_condition.YFree(graph);
 			boundary_condition.YFree(graph); //para menter a densidade free em y=0
 			boundary_condition.XFreeRight(graph);
@@ -121,7 +121,7 @@ int main(int argc, char **argv){
 	if(data_save_mode ) {
 		graph.WriteAtributes();
 	}
-	graph.CloseHDF5File();
+	graph.CloseHdf5File();
 	/*if(!data_save_mode ) {
 		//Remove the empty hdf5 file if unused
 		system("rm hdf5_2D*");

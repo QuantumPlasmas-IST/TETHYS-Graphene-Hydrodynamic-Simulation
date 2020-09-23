@@ -7,7 +7,7 @@
 using namespace H5;
 
 
-class Fluid2D : public TETHYSBase
+class Fluid2D : public TethysBase
 {
 	protected:
 		float * vel_snd_arr;
@@ -53,7 +53,7 @@ class Fluid2D : public TETHYSBase
 		void InitialCondRand();
 		void InitialCondTest();
 		void Richtmyer();
-		virtual void CFLCondition();
+		virtual void CflCondition();
 
 		virtual float DensityFluxX(__attribute__((unused)) float n, float flx_x, __attribute__((unused)) float vel_y, __attribute__((unused)) float mass, __attribute__((unused)) float s);
 		virtual float DensityFluxY(__attribute__((unused)) float n, __attribute__((unused)) float vel_x, float vel_y, __attribute__((unused)) float mass, __attribute__((unused)) float s);
@@ -61,7 +61,8 @@ class Fluid2D : public TETHYSBase
 		virtual float MassFluxXFluxY(float n, float flx_x, float flx_y,__attribute__((unused)) float mass, float s);
 		virtual float MassFluxYFluxX(float n, float flx_x, float flx_y,__attribute__((unused)) float mass, float s);
 		virtual float MassFluxYFluxY(float n, float flx_x, float flx_y,__attribute__((unused)) float mass, float s);
-		virtual void MassFluxToVelocity();
+
+		virtual void MassFluxToVelocity(); // Converts the mass flux density p=mnv to velocity
 		
 		void CreateFluidFile();
 		void WriteFluidFile(float t) ;
@@ -79,18 +80,20 @@ class GrapheneFluid2D : public Fluid2D{
 		void SetColFreq(float x);
 		float GetColFreq() const;
 		float GetCycFreq() const;
-		void CFLCondition() override;
+		void CflCondition() override;
 		void SetSimulationTime() override;
-		void MassFluxToVelocity() override;
+		void MassFluxToVelocity() override; // Converts the mass density flux back to velocity, in graphene  v = p n^{-3/2}
+		/*Override fluxes and sources to specifics of graphene physics*/
 		float DensityFluxX(float n, float flx_x, float flx_y,float mass, float s) override;
 		float DensityFluxY(float n, float flx_x, float flx_y,float mass, float s) override;
 		float MassFluxXFluxX(float n, float flx_x, float flx_y,float mass, float s) override;
 		float MassFluxXFluxY(float n, float flx_x, float flx_y,float mass, float s) override;
 		float MassFluxYFluxX(float n, float flx_x, float flx_y,float mass, float s) override;
 		float MassFluxYFluxY(float n, float flx_x, float flx_y,float mass, float s) override;
+
 		void MagneticSourceSemiAnalytic();
-		void MagneticSourceFTCS();
-		void ViscosityFTCS();
+		void MagneticSourceFtcs();
+		void ViscosityFtcs();
 		void SaveSnapShot(int time_step,int snapshot_step);
 };
 

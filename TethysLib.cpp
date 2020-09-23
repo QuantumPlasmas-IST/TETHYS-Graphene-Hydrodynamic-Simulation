@@ -95,7 +95,7 @@ void Average_Filter(const float * vec_in, float * vec_out, int size , int width 
 /*....................................................................*/
 /*........ General Functions .........................................*/
 /*....................................................................*/
-void TETHYSBase::BannerDisplay(){
+void TethysBase::BannerDisplay(){
 cout<<"\n" ;
 	cout<<"╔═════════════════════════════════════════════════════════════════════════╗\n";
 	cout<<"║\033[2m  ▆▆▆▆▆▆▆▆▆▆▆ ▆▆▆▆▆▆▆▆▆▆  ▆▆▆▆▆▆▆▆▆▆▆ ▆▆▆▆▆ ▆▆▆▆▆ ▆▆▆▖   ▗▆▆▆ ▗▆▆▆▆▆▆▆▖  \033[0m║\n";
@@ -108,7 +108,7 @@ cout<<"\n" ;
 	cout<<"╚═════════════════════════════════════════════════════════════════════════╝\n";
 }
 
-void TETHYSBase::WellcomeScreen(float vel_snd, float vel_fer, float col_freq,float viscosity, float dt,float dx,float dy, float tmax){
+void TethysBase::WellcomeScreen(float vel_snd, float vel_fer, float col_freq, float viscosity, float dt, float dx, float dy, float tmax){
 	cout << "\nFermi velocity\t\033[1mvF\t"<< vel_fer <<" v\342\202\200\033[0m\n";
 	if (Phase_Vel(vel_snd, vel_fer) < vel_fer){
 		cout << "Phase velocity\t\033[1mS'\t" << Phase_Vel(vel_snd, vel_fer) << " v\342\202\200\033[0m  \033[1;5;7;31m WARNING plasmon in damping region \033[0m" << endl;
@@ -134,26 +134,26 @@ void TETHYSBase::WellcomeScreen(float vel_snd, float vel_fer, float col_freq,flo
 	cout <<"\033[1m\316\224t\t"<<dt<<" L/v\342\202\200\t\316\224x\t"<<dx<<" L\033[0m\n"<<endl;
 }
 
-std::string TETHYSBase::GetInfix() const {return file_infix;}
-float TETHYSBase::GetTmax() const{return Tmax;}
-void TETHYSBase::SetTmax(float x){ Tmax=x;}
-int TETHYSBase::Rank() const{ return RANK; }
-int TETHYSBase::SizeX() const{ return Nx; }
-int TETHYSBase::SizeY() const{ return Ny; }
+std::string TethysBase::GetInfix() const {return file_infix;}
+float TethysBase::GetTmax() const{return Tmax;}
+void TethysBase::SetTmax(float x){ Tmax=x;}
+int TethysBase::Rank() const{ return RANK; }
+int TethysBase::SizeX() const{ return Nx; }
+int TethysBase::SizeY() const{ return Ny; }
 
 
-void TETHYSBase::CloseHDF5File(){
+void TethysBase::CloseHdf5File(){
 	GrpDat->close();
 	GrpDen->close();
 	GrpVelX->close();
 	if (RANK == 2) {
 		GrpVelY->close();
 	}
-	hdf5file->close();
+	Hdf5File->close();
 }
 
 
-void TETHYSBase::WriteAtributes(){
+void TethysBase::WriteAtributes(){
 	const FloatType      hdf5_float(PredType::NATIVE_FLOAT);
 	const IntType        hdf5_int(PredType::NATIVE_INT);
 	int total_steps= static_cast<int>(Tmax / dt);
@@ -213,7 +213,7 @@ void TETHYSBase::WriteAtributes(){
 
 
 
-TETHYSBase::~TETHYSBase(){
+TethysBase::~TethysBase(){
 	if(HDF5fileCreated) {
 		delete GrpDat;
 		delete GrpDen;
@@ -224,7 +224,7 @@ TETHYSBase::~TETHYSBase(){
 			delete GrpVelY;
 			delete DataspaceVelY;
 		}
-		delete hdf5file;
+		delete Hdf5File;
 	}
 }
 
@@ -236,7 +236,7 @@ TETHYSBase::~TETHYSBase(){
 
 
 
-TETHYSBase::TETHYSBase(int size_nx, int size_ny, int dimension){
+TethysBase::TethysBase(int size_nx, int size_ny, int dimension){
 	Nx = size_nx;
 	Ny = size_ny;
 	RANK=dimension;
@@ -252,7 +252,7 @@ TETHYSBase::TETHYSBase(int size_nx, int size_ny, int dimension){
 	file_infix = buffer;
 }
 
-void TETHYSBase::CreateHDF5File(){
+void TethysBase::CreateHdf5File(){
 	std::string hdf5name;
 	HDF5fileCreated=true;
 	if(RANK==1){
@@ -262,13 +262,13 @@ void TETHYSBase::CreateHDF5File(){
 		hdf5name = "hdf5_2D_" + this->GetInfix() + ".h5" ;
 	}
 	H5std_string  FILE_NAME( hdf5name );
-	hdf5file = new H5File( FILE_NAME, H5F_ACC_TRUNC );
+	Hdf5File = new H5File(FILE_NAME, H5F_ACC_TRUNC );
 
-	GrpDat = new Group(hdf5file->createGroup("/Data" ));
-	GrpDen = new Group(hdf5file->createGroup("/Data/Density" ));
-	GrpVelX = new Group(hdf5file->createGroup("/Data/VelocityX" ));
+	GrpDat = new Group(Hdf5File->createGroup("/Data" ));
+	GrpDen = new Group(Hdf5File->createGroup("/Data/Density" ));
+	GrpVelX = new Group(Hdf5File->createGroup("/Data/VelocityX" ));
 	if(RANK==2) {
-		GrpVelY = new Group(hdf5file->createGroup("/Data/VelocityY"));
+		GrpVelY = new Group(Hdf5File->createGroup("/Data/VelocityY"));
 	}
 	if(RANK==1){		
 		hsize_t dimsf[1];// dataset dimensions

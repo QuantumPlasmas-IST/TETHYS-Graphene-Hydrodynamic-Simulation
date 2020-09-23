@@ -321,7 +321,7 @@ void DirichletBoundaryCondition::MassFluxYBottom(Fluid2D &fluid_class, float bot
 	}
 }
 
-void DyakonovShurBoundaryCondition::DyakonovShurBC(GrapheneFluid1D& fluid_class) {
+void DyakonovShurBoundaryCondition::DyakonovShurBc(GrapheneFluid1D& fluid_class) {
 	int nx=fluid_class.SizeX();
 	fluid_class.Den[0] = 1.0f;
 	fluid_class.Vel[0] = fluid_class.Vel[1];
@@ -329,7 +329,7 @@ void DyakonovShurBoundaryCondition::DyakonovShurBC(GrapheneFluid1D& fluid_class)
 	fluid_class.Vel[nx - 1] = 1.0f / fluid_class.Den[nx - 1];
 }
 
-void DyakonovShurBoundaryCondition::DyakonovShurBC(GrapheneFluid2D& fluid_class) {
+void DyakonovShurBoundaryCondition::DyakonovShurBc(GrapheneFluid2D& fluid_class) {
 	int nx=fluid_class.SizeX();
 	int ny=fluid_class.SizeY();
 	 

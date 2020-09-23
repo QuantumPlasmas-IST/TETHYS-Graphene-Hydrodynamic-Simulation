@@ -58,8 +58,8 @@ class  DirichletBoundaryCondition : public BoundaryCondition
 class  DyakonovShurBoundaryCondition : public DirichletBoundaryCondition
 {
 public:
-	void DyakonovShurBC(GrapheneFluid1D& fluid_class);
-	void DyakonovShurBC(GrapheneFluid2D& fluid_class);
+	void DyakonovShurBc(GrapheneFluid1D& fluid_class);
+	void DyakonovShurBc(GrapheneFluid2D& fluid_class);
 };
 
 
