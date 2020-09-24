@@ -245,7 +245,7 @@ float  Fluid2D::DensityFluxY(__attribute__((unused)) float n, __attribute__((unu
 	return f_1;
 }
 
-float  Fluid2D::MassFluxXFluxX(float n,float flx_x, float flx_y,__attribute__((unused)) float mass,__attribute__((unused))  float s){
+float  Fluid2D::MassFluxXFluxX(float n,float flx_x,__attribute__((unused)) float flx_y,__attribute__((unused)) float mass,__attribute__((unused))  float s){
 	float f_2;
 	f_2 = flx_x * flx_x / n + n;
 	return f_2;
@@ -260,7 +260,7 @@ float  Fluid2D::MassFluxYFluxX(float n,float flx_x, float flx_y,__attribute__((u
 	f_3 = flx_x * flx_y / n;
 	return f_3;
 }
-float  Fluid2D::MassFluxYFluxY(float n,float flx_x, float flx_y,__attribute__((unused)) float mass,__attribute__((unused))  float s){
+float  Fluid2D::MassFluxYFluxY(float n, __attribute__((unused)) float flx_x, float flx_y,__attribute__((unused)) float mass,__attribute__((unused))  float s){
 	float f_3;
 	f_3 = flx_y * flx_y / n + n;
 	return f_3;
@@ -355,8 +355,8 @@ float  GrapheneFluid2D::DensityFluxY(float n,float flx_x, float flx_y,float mass
 	f_1 = flx_y / sqrt(n);
 	return f_1;
 }
-// 27% of cpu usage of them 22.6% are int the pow function
-float  GrapheneFluid2D::MassFluxXFluxX(float n,float flx_x, float flx_y,float mass, float s){
+
+float  GrapheneFluid2D::MassFluxXFluxX(float n,float flx_x,__attribute__((unused)) float flx_y,float mass, float s){
 	float f_2;
 	f_2 = flx_x * flx_x / mass + vel_fer * vel_fer * mass / 3.0f + 0.5f * vel_snd * vel_snd * n * n;
 	return f_2;
@@ -371,7 +371,7 @@ float  GrapheneFluid2D::MassFluxYFluxX(float n,float flx_x, float flx_y,float ma
 	f_3 = flx_x * flx_y / mass;
 	return f_3;
 }
-float  GrapheneFluid2D::MassFluxYFluxY(float n,float flx_x, float flx_y,float mass, float s){
+float  GrapheneFluid2D::MassFluxYFluxY(float n,__attribute__((unused)) float flx_x, float flx_y,float mass, float s){
 	float f_3;
 	f_3 = flx_y * flx_y / mass + vel_fer * vel_fer * mass / 3.0f + 0.5f * vel_snd * vel_snd * n * n;
 	return f_3;

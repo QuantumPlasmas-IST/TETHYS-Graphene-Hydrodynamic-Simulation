@@ -50,8 +50,8 @@ int main(int argc, char **argv){
 	graph.CreateFluidFile();
 	graph.CreateHdf5File();
 	/*................................................................*/
-	
-	graph.WellcomeScreen(graph.GetVelSnd(), graph.GetVelFer(), graph.GetColFreq(), graph.GetKinVis(), dt, dx,dx, t_max);
+
+	graph.WelcomeScreen(graph.GetVelFer());
 	Record_Log_File(graph.GetVelSnd(), graph.GetVelFer(), graph.GetColFreq(), dt, dx, 0.0, t_max);
 	
 	////////////////////////////////////////////////////////////////////
@@ -85,7 +85,7 @@ int main(int argc, char **argv){
 		elec.WriteElectroFile(t,graph);
 	}
 	if(data_save_mode ) {
-		graph.WriteAtributes();
+		graph.WriteAttributes();
 	}
 	graph.CloseHdf5File();
 	if(!data_save_mode ) {

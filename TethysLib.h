@@ -19,22 +19,22 @@ using namespace H5;
 
 
 //TODO REVER A NECESSIDADES DESTAS FUNCOES:
-void Convolve_Gauss(int type, float m, float t, float * in, float * out, int size);
-constexpr float Gauss_Kernel(int position , float t); //
-constexpr float Gauss_Kernel_Derivative(int position , float t); //
+//void Convolve_Gauss(int type, float m, float t, float * in, float * out, int size);
+//constexpr float Gauss_Kernel(int position , float t); //
+//constexpr float Gauss_Kernel_Derivative(int position , float t); //
 void Record_Log_File(float vel_snd, float vel_fer, float col_freq, float dt, float dx, float dy, float tmax);
 
-float Signal_Average(int n, float dt, const float * f);
+//float Signal_Average(int n, float dt, const float * f);
 float Integral_1_D(int n, float ds, const float * f);
 float Integral_2_D(int n, int m, float dx, float dy, const float * f);
 
-void Extrema_Finding(float * vec_in, int n, float sound, float dt, float & sat, float  & tau, float & error, const std::string& extremafile);
+//void Extrema_Finding(float * vec_in, int n, float sound, float dt, float & sat, float  & tau, float & error, const std::string& extremafile);
 float Imag_Freq(float sound, float fermi, float col_freq);                  //
 float Phase_Vel(float sound, float fermi);
 float Real_Freq(float sound, float fermi, float col_freq, int mode);  //
 
 void Parameter_Initialization(int argc, char ** argv, int &data_save_mode, float &input_vel_snd, float &input_vel_fer, float &input_col_freq, float &input_kin_vis, float &input_cyc_freq);
-void Parameter_Exeptions_Checking(const int &data_save_mode,const  float &input_vel_snd,const  float &input_vel_fer,const  float &input_col_freq,const  float &input_kin_vis,const  float &input_cyc_freq);
+void Parameter_Exceptions_Checking(const int &data_save_mode, const  float &input_vel_snd, const  float &input_vel_fer, const  float &input_col_freq, const  float &input_kin_vis, const  float &input_cyc_freq);
 //-----------------------------------
 
 
@@ -45,7 +45,7 @@ float Sound_Velocity_Anisotropy(int i, float dx, float s);
 float Sound_Velocity_Anisotropy(int  i,float dx, int j,float dy, float s);
 /*....................................................................................................................*/
 
-/* Average mooving filter for the smoothing of 1D simlation, supresssing the spurious oscillations inherent to the 2nd order solver*/
+/* Average moving filter for the smoothing of 1D simulation, suppressing the spurious oscillations inherent to the 2nd order solver*/
 void Average_Filter(const float * vec_in, float * vec_out, int size , int width );
 
 
@@ -108,11 +108,10 @@ class TethysBase {
 		std::string GetInfix() const;   // getter method for file name infix
 		void CreateHdf5File();          // creates the HDF5 files with the necessary structure
 		void CloseHdf5File();           // closes the HDF5 file
-		void WriteAtributes();          // saves the simulation attributes (either physical and simulation parameters)
+		void WriteAttributes();          // saves the simulation attributes (either physical and simulation parameters)
 
 		void BannerDisplay(); // launches the initial ASCII art banner
-		//TODO make WellcomeScreen display the class objects without passing them
-		void WellcomeScreen(float vel_snd, float vel_fer,float col_freq,float viscosity, float dt, float dx,float dy, float tmax); //launches screen with the relevant info
+		void WelcomeScreen(float vel_fer) const; //launches screen with the relevant info
 };
 #endif
 

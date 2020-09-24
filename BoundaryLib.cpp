@@ -226,7 +226,7 @@ void DirichletBoundaryCondition::Jet(Fluid2D &fluid_class, float left, float lef
 	}
 }
 
-void DirichletBoundaryCondition::DensityRigth(Fluid2D &fluid_class, float right) {
+void DirichletBoundaryCondition::DensityRight(Fluid2D &fluid_class, float right) {
 	int nx=fluid_class.SizeX();
 	int ny=fluid_class.SizeY();
 	for (int j=0; j < ny; j++){

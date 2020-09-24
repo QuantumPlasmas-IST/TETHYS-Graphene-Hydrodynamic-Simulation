@@ -12,7 +12,7 @@ using namespace std;
 #	define MAT_EULER 2.71828182845905f
 #endif
 
-void Parameter_Exeptions_Checking(const int &data_save_mode,const  float &input_vel_snd,const  float &input_vel_fer,const  float &input_col_freq,const  float &input_kin_vis,const  float &input_cyc_freq){
+void Parameter_Exceptions_Checking(const int &data_save_mode, const  float &input_vel_snd, const  float &input_vel_fer, const  float &input_col_freq, const  float &input_kin_vis, const  float &input_cyc_freq){
 	if(input_vel_snd<=0.0f){
 		throw "ERROR: Unphysical Sound Velocity";
 	}
@@ -43,7 +43,8 @@ void Parameter_Initialization(int argc, char ** argv, int &data_save_mode, float
 			input_cyc_freq = strtof(argv[5], nullptr);
 			data_save_mode = (int) strtol(argv[6],nullptr,10);    // full data or light save option
 			//data_save_mode = atoi(argv[6]);    // full data or light save option
-			Parameter_Exeptions_Checking(data_save_mode, input_vel_snd, input_vel_fer, input_col_freq, input_kin_vis,input_cyc_freq);
+			Parameter_Exceptions_Checking(data_save_mode, input_vel_snd, input_vel_fer, input_col_freq, input_kin_vis,
+			                              input_cyc_freq);
 		}catch (const char* msg) {
 			cerr << msg <<"\nExiting"<< endl;
 			exit(EXIT_FAILURE);
@@ -63,7 +64,8 @@ void Parameter_Initialization(int argc, char ** argv, int &data_save_mode, float
 			cin >> input_cyc_freq;
 			cout << "Define data_save_mode value (0-> light save | 1-> full data): ";
 			cin >> data_save_mode;
-			Parameter_Exeptions_Checking(data_save_mode, input_vel_snd, input_vel_fer, input_col_freq, input_kin_vis, input_cyc_freq);
+			Parameter_Exceptions_Checking(data_save_mode, input_vel_snd, input_vel_fer, input_col_freq, input_kin_vis,
+			                              input_cyc_freq);
 		}catch (const char* msg) {
 			cerr << msg  <<"\nExiting"<< endl;
 			exit(EXIT_FAILURE);
@@ -108,19 +110,19 @@ cout<<"\n" ;
 	cout<<"╚═════════════════════════════════════════════════════════════════════════╝\n";
 }
 
-void TethysBase::WellcomeScreen(float vel_snd, float vel_fer, float col_freq, float viscosity, float dt, float dx, float dy, float tmax){
+void TethysBase::WelcomeScreen(float vel_fer) const{
 	cout << "\nFermi velocity\t\033[1mvF\t"<< vel_fer <<" v\342\202\200\033[0m\n";
 	if (Phase_Vel(vel_snd, vel_fer) < vel_fer){
 		cout << "Phase velocity\t\033[1mS'\t" << Phase_Vel(vel_snd, vel_fer) << " v\342\202\200\033[0m  \033[1;5;7;31m WARNING plasmon in damping region \033[0m" << endl;
 	}else{
 		cout << "Phase velocity\t\033[1mS'\t" << Phase_Vel(vel_snd, vel_fer) << " v\342\202\200\033[0m\n";
 	}
-	cout << "Viscosity \t\033[1m\316\267\t"<< viscosity <<"\033[0m\n";
-	if (viscosity !=0.0){
-		if(2.0f*viscosity*dt >= dx*dx*dy*dy/(dx*dx+dy*dy)){
-			cout << "Reynolds n. \t\033[1mRe\t"<< 1.0/viscosity <<"\033[0m \033[1;5;7;31m WARNING ftcs scheme may not converge \033[0m"<<endl;
+	cout << "Viscosity \t\033[1m\316\267\t"<< kin_vis <<"\033[0m\n";
+	if (kin_vis !=0.0){
+		if(2.0f*kin_vis*dt >= dx*dx*dy*dy/(dx*dx+dy*dy)){
+			cout << "Reynolds n. \t\033[1mRe\t"<< 1.0/kin_vis <<"\033[0m \033[1;5;7;31m WARNING ftcs scheme may not converge \033[0m"<<endl;
 		}else{
-			cout << "Reynolds n. \t\033[1mRe\t" << 1.0 / viscosity << "\033[0m\n";
+			cout << "Reynolds n. \t\033[1mRe\t" << 1.0 / kin_vis << "\033[0m\n";
 		}
 	}
 	cout << "Collision \t\033[1m\316\275\t"<< col_freq <<" v\342\202\200/L\n\033[0m\n";
@@ -129,7 +131,7 @@ void TethysBase::WellcomeScreen(float vel_snd, float vel_fer, float col_freq, fl
 	                                                                                                                         Real_Freq(vel_snd, vel_fer, col_freq, 1) << " L/v\342\202\200\033[0m\n";
 	cout << "\033[1m\317\211''\t" << Imag_Freq(vel_snd, vel_fer, col_freq) << " v\342\202\200/L\t2\317\200/\317\211''\t" << 2.0 * MAT_PI /
 	                                                                                                                        Imag_Freq(vel_snd, vel_fer, col_freq) << " L/v\342\202\200\033[0m\n";
-	cout << "Determined maximum simulated time\t\033[1m\nT\342\202\230\342\202\220\342\202\223\t" << tmax << " L/v\342\202\200\033[0m\n";
+	cout << "Determined maximum simulated time\t\033[1m\nT\342\202\230\342\202\220\342\202\223\t" << Tmax << " L/v\342\202\200\033[0m\n";
 	cout <<"Discretisation\n";
 	cout <<"\033[1m\316\224t\t"<<dt<<" L/v\342\202\200\t\316\224x\t"<<dx<<" L\033[0m\n"<<endl;
 }
@@ -178,7 +180,7 @@ void TethysBase::CloseHdf5File(){
 }
 
 
-void TethysBase::WriteAtributes(){
+void TethysBase::WriteAttributes(){
 	const FloatType      hdf5_float(PredType::NATIVE_FLOAT);
 	const IntType        hdf5_int(PredType::NATIVE_INT);
 	int total_steps= static_cast<int>(Tmax / dt);
@@ -369,6 +371,7 @@ float Integral_2_D(int N, int M, float dx, float dy, const float * f){
 	return itg;
 }
 
+/*
 float Signal_Average(int n, float dt, const float * f){
 	float avg=0.0;
 	for(int j=1; j < n / 2; j++){
@@ -378,7 +381,6 @@ float Signal_Average(int n, float dt, const float * f){
 	avg = avg/(n * dt);
 	return avg;
 }
-
 constexpr float Gauss_Kernel(int position , float t){
 	return exp(-0.5f*position*position/t)/(sqrt(2.0f*MAT_PI*t));
 }
@@ -386,8 +388,8 @@ constexpr float Gauss_Kernel(int position , float t){
 constexpr float Gauss_Kernel_Derivative(int position , float t){
 	return (-position*exp(-0.5f*position*position/t)/t)/(sqrt(2.0f*MAT_PI*t));
 }
-
-
+*/
+/*
 void Convolve_Gauss(int type, int m, float t, const float * in, float * out, int size){
 	if(type==0){
 		for(int i=0;i<size;i++){
@@ -409,7 +411,7 @@ void Convolve_Gauss(int type, int m, float t, const float * in, float * out, int
 		}
 	}
 }
-
+*/
 float Phase_Vel(float sound, float fermi){
 	float vel_phs = sqrt(sound*sound+0.5f*fermi*fermi + 0.0625f );
 	return vel_phs ;
@@ -432,7 +434,7 @@ float Imag_Freq(float sound, float fermi, float col_freq){
 	return (vel_phs_sqr - 0.5625f ) * log(fabs( (vel_phs+0.75f)/(vel_phs-0.75f) )) / (2.0f * vel_phs ) - col_freq*(1.0f-0.125f/vel_phs);
 }
 
-
+/*
 void Extrema_Finding(float *vec_in, int n, float sound, float dt, float & sat, float & tau , float & error, const std::string& extremafile){
 //TODO review the entire function
 	ofstream data_extrema;
@@ -465,3 +467,4 @@ void Extrema_Finding(float *vec_in, int n, float sound, float dt, float & sat, f
 	}
 	data_extrema.close();
 }
+*/

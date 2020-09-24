@@ -54,10 +54,10 @@ int main(int argc, char **argv){
 	graph.CreateHdf5File();
 	/*................................................................*/
 
-	//t_max=3.0f; //encurtar o tempo para testes
+	t_max=3.0f; //encurtar o tempo para testes
 
 	graph.BannerDisplay();
-	graph.WellcomeScreen(graph.GetVelSnd(), graph.GetVelFer(), graph.GetColFreq(), graph.GetKinVis(), dt, dx,dy, t_max);
+	graph.WelcomeScreen(graph.GetVelFer());
 	Record_Log_File(graph.GetVelSnd(), graph.GetVelFer(), graph.GetColFreq(), dt, dx, dy, t_max);
 	////////////////////////////////////////////////////////////////////
 	// Initialization	
@@ -78,6 +78,8 @@ int main(int argc, char **argv){
 		//boundary_condition.YFree(graph);
 		boundary_condition.YFree(graph); //para menter a densidade free em y=0
 		boundary_condition.XFreeRight(graph);
+		boundary_condition.MassFluxXTop(graph, 1.0f);
+		boundary_condition.MassFluxYTop(graph, 0.0f);
 		boundary_condition.MassFluxXBottom(graph, 0.0f);
 		boundary_condition.MassFluxYBottom(graph, 0.0f);
 		boundary_condition.MassFluxXLeft(graph, 1.0f);
@@ -99,6 +101,8 @@ int main(int argc, char **argv){
 			//boundary_condition.YFree(graph);
 			boundary_condition.YFree(graph); //para menter a densidade free em y=0
 			boundary_condition.XFreeRight(graph);
+			boundary_condition.MassFluxXTop(graph, 1.0f);
+			boundary_condition.MassFluxYTop(graph, 0.0f);
 			boundary_condition.MassFluxXBottom(graph, 0.0f);
 			boundary_condition.MassFluxYBottom(graph, 0.0f);
 			boundary_condition.MassFluxXLeft(graph, 1.0f);
@@ -119,7 +123,7 @@ int main(int argc, char **argv){
 	}
 	//Record atributes on hdf5 file
 	if(data_save_mode ) {
-		graph.WriteAtributes();
+		graph.WriteAttributes();
 	}
 	graph.CloseHdf5File();
 	/*if(!data_save_mode ) {
