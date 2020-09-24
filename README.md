@@ -33,8 +33,7 @@ Implemented for in 1D+1 and 2D+1 for density and velocity fields.
 
 ## Class Hierarchy
 
-![Classes](/images/classdiagram2.svg)
-
+![Classes](/images/class_diagram_fluid+bc.svg)
 
 ## Style guide
 
