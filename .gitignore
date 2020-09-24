@@ -23,8 +23,7 @@
 CMakeLists.txt
 USING_HDF5_CMake.txt
 cmake-build-debug/
-
-
+venv/
 
 ###########################################
 # Github Template for C/C++
