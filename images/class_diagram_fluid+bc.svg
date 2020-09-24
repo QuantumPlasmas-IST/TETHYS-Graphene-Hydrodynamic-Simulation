@@ -38,9 +38,9 @@
      inkscape:window-height="704"
      id="namedview488"
      showgrid="false"
-     inkscape:zoom="0.64777446"
-     inkscape:cx="434.76623"
-     inkscape:cy="179.48592"
+     inkscape:zoom="2.8284271"
+     inkscape:cx="483.31322"
+     inkscape:cy="223.39554"
      inkscape:window-x="0"
      inkscape:window-y="27"
      inkscape:window-maximized="1"
@@ -150,14 +150,16 @@
        font-size="14.6667"
        font-weight="400"
        font-style="normal"
-       id="g24">
+       id="g24"
+       style="stroke-width:0.99999998;stroke-miterlimit:4;stroke-dasharray:2.99999994,2.99999994;stroke-dashoffset:0">
       <rect
          vector-effect="non-scaling-stroke"
          x="0"
          y="0"
          width="125"
          height="200"
-         id="rect22" />
+         id="rect22"
+         style="stroke-width:0.99999998;stroke-miterlimit:4;stroke-dasharray:2.99999994,2.99999994;stroke-dashoffset:0" />
     </g>
     <g
        fill="none"
@@ -197,14 +199,16 @@
        font-size="14.6667"
        font-weight="400"
        font-style="normal"
-       id="g32">
+       id="g32"
+       style="stroke-width:0.99979595;stroke-miterlimit:4;stroke-dasharray:2.99938787,2.99938787;stroke-dashoffset:0">
       <rect
          vector-effect="non-scaling-stroke"
          x="0"
          y="0"
          width="200"
          height="200"
-         id="rect30" />
+         id="rect30"
+         style="stroke-width:0.99979595;stroke-miterlimit:4;stroke-dasharray:2.99938787,2.99938787;stroke-dashoffset:0" />
     </g>
     <g
        fill="none"
@@ -244,14 +248,16 @@
        font-size="14.6667"
        font-weight="400"
        font-style="normal"
-       id="g40">
+       id="g40"
+       style="stroke-width:0.99999998;stroke-miterlimit:4;stroke-dasharray:2.99999994,2.99999994;stroke-dashoffset:0">
       <rect
          vector-effect="non-scaling-stroke"
          x="0"
          y="0"
          width="725"
          height="100"
-         id="rect38" />
+         id="rect38"
+         style="stroke-width:0.99999998;stroke-miterlimit:4;stroke-dasharray:2.99999994,2.99999994;stroke-dashoffset:0" />
     </g>
     <g
        fill="none"
@@ -1728,17 +1734,17 @@
        font-style="normal"
        id="g290" />
     <g
-       transform="matrix(0.996205,0,0,0.75015956,-123.529,30.850113)"
+       transform="matrix(0.996205,0,0,0.75015956,-124.6206,30.850113)"
        font-size="14.6667"
        font-weight="400"
        font-style="normal"
        id="g294"
-       style="font-style:normal;font-weight:400;font-size:14.66670036px;font-family:Cantarell;fill:#000000;stroke:#729fcf;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1">
+       style="font-style:normal;font-weight:400;font-size:14.66670036px;font-family:Cantarell;fill:#000000;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1">
       <path
          d="M 600,325 V 425"
          id="path292"
          inkscape:connector-curvature="0"
-         style="vector-effect:non-scaling-stroke;fill-rule:evenodd;fill:#000000" />
+         style="vector-effect:non-scaling-stroke;fill:#000000;fill-rule:evenodd;stroke:#000000;stroke-opacity:1" />
     </g>
     <g
        fill="none"
@@ -1780,30 +1786,21 @@
        font-style="normal"
        id="g300" />
     <g
-       fill="none"
-       stroke="#000000"
-       stroke-opacity="1"
-       stroke-width="1"
-       stroke-linecap="square"
-       stroke-linejoin="bevel"
-       transform="matrix(0.996205,0,0,0.996205,474.194,274.953)"
-       font-family="Cantarell"
+       transform="matrix(0.996205,0,0,0.996205,450.85944,271.06391)"
        font-size="14.6667"
        font-weight="400"
        font-style="normal"
-       id="g304">
+       id="g304"
+       style="font-style:normal;font-weight:400;font-size:14.66670036px;font-family:Cantarell;fill:none;stroke:#000000;stroke-width:1;stroke-linecap:square;stroke-linejoin:bevel;stroke-opacity:1">
       <text
-         fill="#000000"
-         fill-opacity="1"
-         stroke="none"
          xml:space="preserve"
          x="9.125"
          y="18"
-         font-family="Cantarell"
          font-size="14.6667"
          font-weight="400"
          font-style="normal"
-         id="text302">1</text>
+         id="text302"
+         style="font-style:normal;font-weight:400;font-size:14.66670036px;font-family:Cantarell;fill:#000000;fill-opacity:1;stroke:none">1</text>
     </g>
     <g
        fill="none"
@@ -1845,30 +1842,21 @@
        font-style="normal"
        id="g310" />
     <g
-       fill="none"
-       stroke="#000000"
-       stroke-opacity="1"
-       stroke-width="1"
-       stroke-linecap="square"
-       stroke-linejoin="bevel"
-       transform="matrix(0.996205,0,0,0.996205,474.194,324.763)"
-       font-family="Cantarell"
+       transform="matrix(0.996205,0,0,0.996205,434.89654,326.94619)"
        font-size="14.6667"
        font-weight="400"
        font-style="normal"
-       id="g314">
+       id="g314"
+       style="font-style:normal;font-weight:400;font-size:14.66670036px;font-family:Cantarell;fill:none;stroke:#000000;stroke-width:1;stroke-linecap:square;stroke-linejoin:bevel;stroke-opacity:1">
       <text
-         fill="#000000"
-         fill-opacity="1"
-         stroke="none"
          xml:space="preserve"
          x="12.6719"
          y="18"
-         font-family="Cantarell"
          font-size="14.6667"
          font-weight="400"
          font-style="normal"
-         id="text312">0..*</text>
+         id="text312"
+         style="font-style:normal;font-weight:400;font-size:14.66670036px;font-family:Cantarell;fill:#000000;fill-opacity:1;stroke:none">0..*</text>
     </g>
     <g
        fill="none"
@@ -2939,14 +2927,14 @@
        font-style="normal"
        id="g482" />
     <g
-       style="font-style:normal;font-weight:400;font-size:14.66670036px;font-family:Cantarell;fill:#000000;stroke:#729fcf;stroke-width:0.99978503;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none"
+       style="font-style:normal;font-weight:400;font-size:14.66670036px;font-family:Cantarell;fill:#000000;stroke:#000000;stroke-width:0.99978503;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none"
        transform="matrix(0.996205,0,0,1.4824911,-290.98612,-206.13532)"
        font-size="14.6667"
        font-weight="400"
        font-style="normal"
        id="g294-3">
       <path
-         style="vector-effect:non-scaling-stroke;fill-rule:evenodd;fill:#000000;stroke-width:0.99978503;stroke-miterlimit:4;stroke-dasharray:none"
+         style="vector-effect:non-scaling-stroke;fill-rule:evenodd;fill:#000000;stroke-width:0.99978503;stroke-miterlimit:4;stroke-dasharray:none;stroke:#000000;stroke-opacity:1"
          inkscape:connector-curvature="0"
          d="M 600,325 V 425"
          id="path292-6" />
