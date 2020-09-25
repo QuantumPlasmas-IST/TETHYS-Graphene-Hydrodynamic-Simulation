@@ -23,7 +23,7 @@ GrapheneFluid1D::GrapheneFluid1D(int size_n,  SetUpInput &input_parameters): Flu
 /*....................................................................*/	
 /*.......... 1 Dimensional Fluid Class ...............................*/	
 /*....................................................................*/	
-Fluid1D::Fluid1D(int size_nx,  SetUpInput &input_parameters): TethysBase{size_nx, 0, 1}{
+Fluid1D::Fluid1D(int size_nx, const SetUpInput &input_parameters): TethysBase{size_nx, 0, 1}{
 	Nx = size_nx;
 	vel_snd = input_parameters.SoundVelocity;
 	kin_vis = input_parameters.ShearViscosity;

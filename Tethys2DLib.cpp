@@ -13,7 +13,7 @@ using namespace std;
 #	define MAT_PI 3.14159265358979323846
 #endif
 
-Fluid2D::Fluid2D(int size_nx, int size_ny, SetUpInput &input_parameters) : TethysBase{size_nx, size_ny, 2}{
+Fluid2D::Fluid2D(int size_nx, int size_ny, const SetUpInput &input_parameters) : TethysBase{size_nx, size_ny, 2}{
 	Nx = size_nx;
 	Ny = size_ny;
 

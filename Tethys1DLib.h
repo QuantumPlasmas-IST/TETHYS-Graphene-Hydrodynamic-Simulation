@@ -25,7 +25,7 @@ public :
 		float * DenCor;     // corrected i.e. smoothed quantities
 		float * VelCor ;
 		float * CurCor ;
-		Fluid1D(int size_nx,  SetUpInput &input_parameters);
+		Fluid1D(int size_nx, const SetUpInput &input_parameters);
 		~Fluid1D();
 		bool Snapshot() const;
 		void Smooth(int width);     // smoothing moving average filter to obtain the "Cor" version of the quantities
