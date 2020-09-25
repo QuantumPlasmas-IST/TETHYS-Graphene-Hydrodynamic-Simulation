@@ -6,6 +6,8 @@
 using namespace H5;
 using namespace std;
 
+//TODO passar para a versao 1D o que andei a fzer no save snapshot 2D
+
 class Fluid1D : public TethysBase{
 	protected:
 		float * vel_snd_arr;        // array for saving the (potentially varying) S(x) function

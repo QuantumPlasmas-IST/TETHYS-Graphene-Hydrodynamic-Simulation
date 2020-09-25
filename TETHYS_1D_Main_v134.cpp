@@ -60,7 +60,7 @@ int main(int argc, char **argv){
 	int time_step=0;
 	int snapshot_per_period = 10;
 	int points_per_period = static_cast<int>((2 * MAT_PI /
-			graph.Real_Freq()) / dt);
+			graph.RealFreq()) / dt);
 	int snapshot_step = points_per_period / snapshot_per_period;
 
 	cout << "\033[1;7;5;33m Program Running \033[0m"<<endl;

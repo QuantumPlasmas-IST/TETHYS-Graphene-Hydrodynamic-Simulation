@@ -16,7 +16,6 @@ int main(int argc, char **argv){
 	int npoints_x = 101;
 	int npoints_y = 201;
 	float t=0.0;
-	float dx,dy;	// spatial discretisation
 	float dt;		// time step
 
 	SetUpInput parameters(argc, argv);
@@ -29,8 +28,6 @@ int main(int argc, char **argv){
 	graph.SetLengthX(1.0f);
 	graph.SetLengthY(2.0f);
 	graph.CflCondition();
-	dx=graph.GetDx();
-	dy=graph.GetDy();
 	dt=graph.GetDt();
 	/*................................................................*/
 	
@@ -57,15 +54,14 @@ int main(int argc, char **argv){
 	graph.InitialCondRand();
 	////////////////////////////////////////////////////////////////////
 	cout << "\033[1;7;5;33m Program Running \033[0m"<<endl;
-	int time_step=0;
-	int snapshot_per_period = 10;
-	int points_per_period = static_cast<int>((2.0 * MAT_PI /graph.Real_Freq()) / dt);
-	int snapshot_step = points_per_period / snapshot_per_period;
+
 
 
 	while (t <= t_max ){
-		++time_step;
+
 		t += dt;
+		graph.TimeStepCounter++;
+
 		graph.Richtmyer();
 		boundary_condition.DyakonovShurBc(graph);
 		boundary_condition.YFree(graph);
@@ -76,13 +72,11 @@ int main(int argc, char **argv){
 		boundary_condition.MassFluxYBottom(graph, 0.0f);
 		boundary_condition.MassFluxXLeft(graph, 1.0f);
 		boundary_condition.MassFluxYLeft(graph, 0.0f);
-*/
 
-/*
 		boundary_condition.XFreeRight(graph);
 		boundary_condition.MassFluxXLeft(graph, 1.0f);
 		boundary_condition.MassFluxYLeft(graph, 0.0f);
-		boundary_condition.SlipLength(graph,0.3f);
+		boundary_condition.SlipLength(graph,1.5f);
 */
 
 		/*if(graph.GetCycFreq()!=0.0f){
@@ -100,18 +94,17 @@ int main(int argc, char **argv){
 			boundary_condition.MassFluxYBottom(graph, 0.0f);
 			boundary_condition.MassFluxXLeft(graph, 1.0f);
 			boundary_condition.MassFluxYLeft(graph, 0.0f);
-	*/
-			/*
+
 			boundary_condition.XFreeRight(graph);
 			boundary_condition.MassFluxXLeft(graph, 1.0f);
 			boundary_condition.MassFluxYLeft(graph, 0.0f);
-			boundary_condition.SlipLength(graph,0.3f);
-			*/
+			boundary_condition.SlipLength(graph,1.5f);
+	*/
 		}
 
 		//Record full hdf5 data
-		if (parameters.SaveMode && time_step % snapshot_step == 0) {
-			graph.SaveSnapShot(time_step,snapshot_step);
+		if (parameters.SaveMode  && graph.Snapshot()) {
+			graph.SaveSnapShot();
 		}
 		graph.WriteFluidFile(t);
 	}

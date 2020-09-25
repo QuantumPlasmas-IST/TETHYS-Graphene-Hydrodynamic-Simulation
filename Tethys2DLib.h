@@ -17,6 +17,8 @@ class Fluid2D : public TethysBase
 		float * lap_flxX ;      // mass density flux laplacian component x
 		float * lap_flxY ;      // mass density flux laplacian component y
 		std::ofstream data_preview; // file stream for simplified .dat file output
+		int snapshot_per_period = 10;
+		int snapshot_step = 1;
 	public :
 		float * Den ;       // number density
 		float * VelX ;      // fluid velocity x component
@@ -27,6 +29,7 @@ class Fluid2D : public TethysBase
 		float * CurY ;      // current density y component
 		Fluid2D(int size_nx, int size_ny, SetUpInput &input_parameters);
 		~Fluid2D();
+		bool Snapshot();
 		void SetSound();     // Applies the anisotropy to the sound velocity array
 		virtual void SetSimulationTime();   // Finds and set the appropriate simulation time that is 1) Longer than the saturation time 2) Contains enough oscillation periods in the saturated region
 		void InitialCondRand();             // Initial condition, zero velocity and constant density with 0.5% white noise
@@ -42,7 +45,10 @@ class Fluid2D : public TethysBase
 		virtual void MassFluxToVelocity(); // Converts the mass flux density p=mnv to velocity
 		void CreateFluidFile();     // create and open the simplified .dat file output
 		void WriteFluidFile(float t) ; // writes the line of time t on the simplified .dat file output
-		void SaveSnapShot(int time_step,int snapshot_step);
+		void SaveSnapShot();
+
+		int GetSnapshotStep() const;
+		int GetSnapshotFreq() const;
 };
 
 class GrapheneFluid2D : public Fluid2D{

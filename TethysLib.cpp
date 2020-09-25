@@ -51,10 +51,10 @@ cout<<"\n" ;
 
 void TethysBase::WelcomeScreen() const{
 	cout << "\nFermi velocity\t\033[1mvF\t"<< vel_fer <<" v\342\202\200\033[0m\n";
-	if (this->Phase_Vel() < vel_fer){
-		cout << "Phase velocity\t\033[1mS'\t" << this->Phase_Vel() << " v\342\202\200\033[0m  \033[1;5;7;31m WARNING plasmon in damping region \033[0m" << endl;
+	if (this->PhaseVel() < vel_fer){
+		cout << "Phase velocity\t\033[1mS'\t" << this->PhaseVel() << " v\342\202\200\033[0m  \033[1;5;7;31m WARNING plasmon in damping region \033[0m" << endl;
 	}else{
-		cout << "Phase velocity\t\033[1mS'\t" << this->Phase_Vel() << " v\342\202\200\033[0m\n";
+		cout << "Phase velocity\t\033[1mS'\t" << this->PhaseVel() << " v\342\202\200\033[0m\n";
 	}
 	cout << "Viscosity \t\033[1m\316\267\t"<< kin_vis <<"\033[0m\n";
 	if (kin_vis !=0.0){
@@ -66,8 +66,10 @@ void TethysBase::WelcomeScreen() const{
 	}
 	cout << "Collision \t\033[1m\316\275\t"<< col_freq <<" v\342\202\200/L\n\033[0m\n";
 	cout << "Theoretical frequency \033[1m\317\211=\317\211'+i\317\211''\033[0m\n";
-	cout << "\033[1m\317\211'\t" << this->Real_Freq() << " v\342\202\200/L\t2\317\200/\317\211'\t" << 2.0 * MAT_PI /this->Real_Freq() << " L/v\342\202\200\033[0m\n";
-	cout << "\033[1m\317\211''\t" << this->Imag_Freq() << " v\342\202\200/L\t2\317\200/\317\211''\t" << 2.0 * MAT_PI /this->Imag_Freq() << " L/v\342\202\200\033[0m\n";
+	cout << "\033[1m\317\211'\t" << this->RealFreq() << " v\342\202\200/L\t2\317\200/\317\211'\t" << 2.0 * MAT_PI /
+	                                                                                                 this->RealFreq() << " L/v\342\202\200\033[0m\n";
+	cout << "\033[1m\317\211''\t" << this->ImagFreq() << " v\342\202\200/L\t2\317\200/\317\211''\t" << 2.0 * MAT_PI /
+	                                                                                                   this->ImagFreq() << " L/v\342\202\200\033[0m\n";
 	cout << "Determined maximum simulated time\t\033[1m\nT\342\202\230\342\202\220\342\202\223\t" << Tmax << " L/v\342\202\200\033[0m\n";
 	cout <<"Discretisation\n";
 	cout <<"\033[1m\316\224t\t"<<dt<<" L/v\342\202\200\t\316\224x\t"<<dx<<" L\033[0m\n"<<endl;
@@ -148,7 +150,7 @@ void TethysBase::WriteAttributes(){
 	// Write the attribute data.
 	atr_vel_snd.write( hdf5_float, &vel_snd);
 	atr_vel_fer.write( hdf5_float, &vel_fer);
-	atr_vel_fer.write( hdf5_float, &cyc_freq);
+	atr_cyc_freq.write( hdf5_float, &cyc_freq);
 	atr_col_freq.write(hdf5_float, &col_freq);
 	atr_kin_vis.write(hdf5_float, &kin_vis);
 	atr_dx.write(hdf5_float, &dx);
@@ -200,11 +202,12 @@ TethysBase::~TethysBase(){
 
 
 
-
+int TethysBase::TimeStepCounter=0;
 TethysBase::TethysBase(int size_nx, int size_ny, int dimension){
 	Nx = size_nx;
 	Ny = size_ny;
 	RANK=dimension;
+
 	const FloatType hdf5_float(PredType::NATIVE_FLOAT);
 	const IntType hdf5_int(PredType::NATIVE_INT);
 	char buffer [50];
@@ -269,7 +272,7 @@ void TethysBase::CreateHdf5File(){
 	logfile << "\n#Simulation @ " << buffer ;
 	logfile << "#parameters:\n";
 	logfile << "#vel_snd \t vel_fer \t col_freq  \t w' \t w'' \n";
-	logfile << vel_snd << "\t" << vel_fer << "\t" << col_freq << "\t" << Real_Freq(vel_snd, vel_fer, col_freq, 1) << "\t" << Imag_Freq(
+	logfile << vel_snd << "\t" << vel_fer << "\t" << col_freq << "\t" << RealFreq(vel_snd, vel_fer, col_freq, 1) << "\t" << ImagFreq(
 			vel_snd, vel_fer, col_freq) << "\n";
 	logfile << "#discretisation:\n";
 	logfile << "#dt\tdx\ttmax\ttime steps\tspace points\n";
@@ -350,12 +353,12 @@ void Convolve_Gauss(int type, int m, float t, const float * in, float * out, int
 	}
 }
 */
-float TethysBase::Phase_Vel()const{
+float TethysBase::PhaseVel()const{
 	return sqrt(vel_snd*vel_snd+0.5f*vel_fer*vel_fer + 0.0625f );
 }
-float TethysBase::Real_Freq()const {
+float TethysBase::RealFreq()const {
 	int mode = 1;
-	float vel_phs = this->Phase_Vel();
+	float vel_phs = this->PhaseVel();
 	float vel_phs_sqr = vel_phs*vel_phs ;
 	if (1 < vel_phs ){
 		mode = 2*mode-1;
@@ -365,8 +368,8 @@ float TethysBase::Real_Freq()const {
 		}
 	return fabs(vel_phs_sqr - 0.5625f ) * MAT_PI * mode / (2.0f * vel_phs );
 }
-float TethysBase::Imag_Freq()const {
-	float vel_phs = this->Phase_Vel();
+float TethysBase::ImagFreq()const {
+	float vel_phs = this->PhaseVel();
 	float vel_phs_sqr = vel_phs*vel_phs ;
 	return (vel_phs_sqr - 0.5625f ) * log(fabs( (vel_phs+0.75f)/(vel_phs-0.75f) )) / (2.0f * vel_phs ) - col_freq*(1.0f-0.125f/vel_phs);
 }
@@ -379,7 +382,7 @@ void Extrema_Finding(float *vec_in, int n, float sound, float dt, float & sat, f
 	data_extrema << "#pos_max" << "\t" << "Max" <<"\t"<< "pos_min" <<"\t"<< "Min"<<endl;
 	int w = static_cast<int>(floor(1.2f * 2.0f * MAT_PI / (Real_Freq(sound, 1.0f, 1.0f, 1) * dt)));
 	int k = 0;
-	int m = static_cast<int>(ceil(0.5f * dt * n * Real_Freq(sound, 1.0f, 1.0f, 1) / MAT_PI));
+	int m = static_cast<int>(ceil(0.5f * dt * n * RealFreq(sound, 1.0f, 1.0f, 1) / MAT_PI));
 	float *vec_max;
 	vec_max =(float*) calloc (static_cast<size_t>(m), sizeof(float));
 	float *vec_pos;
@@ -415,7 +418,7 @@ SetUpInput::SetUpInput(int argc, char ** argv) {
 			CyclotronFrequency = strtof(argv[5], nullptr);
 			SaveMode = (int) strtol(argv[6],nullptr,10);    // full data or light save option
 			//data_save_mode = atoi(argv[6]);    // full data or light save option
-			Exceptions_Checking();
+			ExceptionsChecking();
 		}catch (const char* msg) {
 			cerr << msg <<"\nExiting"<< endl;
 			exit(EXIT_FAILURE);
@@ -435,7 +438,7 @@ SetUpInput::SetUpInput(int argc, char ** argv) {
 			cin >> CyclotronFrequency;
 			cout << "Define data_save_mode value (0-> light save | 1-> full data): ";
 			cin >> SaveMode;
-			Exceptions_Checking();
+			ExceptionsChecking();
 		}catch (const char* msg) {
 			cerr << msg  <<"\nExiting"<< endl;
 			exit(EXIT_FAILURE);
@@ -445,7 +448,7 @@ SetUpInput::SetUpInput(int argc, char ** argv) {
 
 
 
-void SetUpInput::Exceptions_Checking() const{
+void SetUpInput::ExceptionsChecking() const{
 	if(SoundVelocity<=0.0f){
 		throw "ERROR: Unphysical Sound Velocity";
 	}

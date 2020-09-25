@@ -460,12 +460,19 @@ void GrapheneFluid2D::MagneticSourceFtcs(){
 
 
 
-void Fluid2D::SaveSnapShot(int time_step,int snapshot_step){
+void Fluid2D::SaveSnapShot() {
 	const FloatType      hdf5_float(PredType::NATIVE_FLOAT);
 	const IntType        hdf5_int(PredType::NATIVE_INT);
+
+
+	int points_per_period = static_cast<int>((2.0 * MAT_PI / this->RealFreq()) / dt);
+	snapshot_step = points_per_period / snapshot_per_period;
+
 	this->MassFluxToVelocity();
-	string str_time = to_string(time_step / snapshot_step);
+	string str_time = to_string(TimeStepCounter / snapshot_step);
 	string name_dataset = "snapshot_" + str_time;
+
+//	cout << TimeStepCounter <<"\t"<<name_dataset <<endl;
 
 	DataSet dataset_den = GrpDen->createDataSet(name_dataset, hdf5_float, *DataspaceDen);
 	dataset_den.write(Den, hdf5_float);
@@ -478,4 +485,18 @@ void Fluid2D::SaveSnapShot(int time_step,int snapshot_step){
 	DataSet dataset_vel_y = GrpVelY->createDataSet(name_dataset, hdf5_float, *DataspaceVelY);
 	dataset_vel_y.write(VelY, hdf5_float);
 	dataset_vel_y.close();
+}
+
+int Fluid2D::GetSnapshotStep() const { return snapshot_step;}
+
+int Fluid2D::GetSnapshotFreq() const {return snapshot_per_period;}
+
+bool Fluid2D::Snapshot() {
+	bool state;
+	if(TimeStepCounter % snapshot_step == 0){
+		state = true;
+	}else{
+		state = false;
+	}
+	return state;
 }

@@ -59,7 +59,7 @@ class SetUpInput {
 		float CollisionFrequency;
 		float ShearViscosity;
 		float CyclotronFrequency;
-		void Exceptions_Checking() const;
+		void ExceptionsChecking() const;
 };
 
 
@@ -88,6 +88,7 @@ class TethysBase {
 		TethysBase(int size_nx, int size_ny, int dimensions); // class constructor initializes Nx, Ny, RANK and file_infix
 		~TethysBase();  // class destructor if the the flag HDF5fileCreated=TRUE it deletes the dataspaces and hdf5 files
 
+		static int TimeStepCounter;
 
 		H5File* Hdf5File ;  // hdf5 file handler
 		Group* GrpDat ;     // group for the simulated data: Attributes; Density; Velocity X; Velocity Y
@@ -122,9 +123,9 @@ class TethysBase {
 		float GetLengthX() const;   // getter method for total length along x
 		float GetLengthY() const;   // getter method for total length along y
 
-		float Imag_Freq() const;
-		float Phase_Vel() const;
-		float Real_Freq() const;
+		float ImagFreq() const;
+		float PhaseVel() const;
+		float RealFreq() const;
 
 
 	std::string GetInfix() const;   // getter method for file name infix
