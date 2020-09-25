@@ -58,7 +58,6 @@ int main(int argc, char **argv){
 
 
 	while (t <= t_max ){
-
 		t += dt;
 		graph.TimeStepCounter++;
 
