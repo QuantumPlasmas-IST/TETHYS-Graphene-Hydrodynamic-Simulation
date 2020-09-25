@@ -488,10 +488,9 @@ void Fluid2D::SaveSnapShot() {
 }
 
 int Fluid2D::GetSnapshotStep() const { return snapshot_step;}
-
 int Fluid2D::GetSnapshotFreq() const {return snapshot_per_period;}
 
-bool Fluid2D::Snapshot() {
+bool Fluid2D::Snapshot() const {
 	bool state;
 	if(TimeStepCounter % snapshot_step == 0){
 		state = true;

@@ -16,7 +16,7 @@ using namespace std;
 int main(int argc, char **argv){
 	const int npoints=101; 							// number of spatial points
 	float t=0.0;
-	float dx;								// spatial discretisation
+	//float dx;								// spatial discretisation
 	float dt;								// time step
 
 
@@ -31,7 +31,7 @@ int main(int argc, char **argv){
 	graph.BannerDisplay();
 	/*......CFL routine to determine dt...............................*/
 	graph.CflCondition();
-	dx=graph.GetDx();
+	//dx=graph.GetDx();
 	dt=graph.GetDt();
 //	graph.SetTmax(10.0);
 	/*................................................................*/
@@ -57,18 +57,14 @@ int main(int argc, char **argv){
 	graph.InitialCondRand();
 	BC.DyakonovShurBc(graph);
 	////////////////////////////////////////////////////////////////////
-	int time_step=0;
-	int snapshot_per_period = 10;
-	int points_per_period = static_cast<int>((2 * MAT_PI /
-			graph.RealFreq()) / dt);
-	int snapshot_step = points_per_period / snapshot_per_period;
 
 	cout << "\033[1;7;5;33m Program Running \033[0m"<<endl;
 	
 	//Main cycle
 	while(t <= t_max ) {
-		++time_step;
+
 		t += dt;
+		graph.TimeStepCounter++;
 		// Main algorithm		
 		graph.Richtmyer();
 		// Impose boundary conditions
@@ -76,8 +72,8 @@ int main(int argc, char **argv){
 		// Applying average filters for smoothing 	
 		graph.Smooth(2);
 		//Record full data
-		if(parameters.SaveMode && time_step % snapshot_step == 0 ){
-			graph.SaveSnapShot(time_step,snapshot_step);
+		if (parameters.SaveMode  && graph.Snapshot()) {
+			graph.SaveSnapShot();
 		}
 		graph.WriteFluidFile(t);
 		elec.WriteElectroFile(t,graph);

@@ -15,7 +15,9 @@ class Fluid1D : public TethysBase{
 		float * vel_mid ;           // velocity at midpoint
 		float * grad_vel_mid;       // velocity gradient at mid point for the viscous case
 		std::ofstream data_preview; // file stream for simplified .dat file output
-	public :
+		int snapshot_per_period = 10;
+		int snapshot_step = 1;
+public :
 		float * Den ;       // number density
 		float * Vel ;       // fluid velocity
 		float * GradVel;    // fluid velocity gradient
@@ -25,6 +27,7 @@ class Fluid1D : public TethysBase{
 		float * CurCor ;
 		Fluid1D(int size_nx,  SetUpInput &input_parameters);
 		~Fluid1D();
+		bool Snapshot() const;
 		void Smooth(int width);     // smoothing moving average filter to obtain the "Cor" version of the quantities
 		void SetSimulationTime();   // Finds and set the appropriate simulation time that is 1) Longer than the saturation time 2) Contains enough oscillation periods in the saturated region
 		void InitialCondRand();     // Initial condition, zero velocity and constant density with 0.5% white noise
@@ -37,8 +40,10 @@ class Fluid1D : public TethysBase{
 		virtual float DensitySource( __attribute__((unused)) float n,  __attribute__((unused)) float v, __attribute__((unused)) float s); // density equation (continuity equation) source term
 		virtual float VelocitySource( __attribute__((unused)) float n, __attribute__((unused)) float v, __attribute__((unused)) float s); // velocity equation (momentum equation) source term
 		void CreateFluidFile();     // create and open the simplified .dat file output
-		void SaveSnapShot(int time_step,int snapshot_step); // saves the all the simulated quantities on the appropriate dataspace of the HDF5 file
+		void SaveSnapShot(); // saves the all the simulated quantities on the appropriate dataspace of the HDF5 file
 		void WriteFluidFile(float t) ; // writes the line of time t on the simplified .dat file output
+		int GetSnapshotStep() const;
+		int GetSnapshotFreq() const;
 };
 class GrapheneFluid1D : public Fluid1D{
 	public :

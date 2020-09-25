@@ -221,13 +221,30 @@ float GrapheneFluid1D::VelocitySource(float n,float v,float s){
 
 void GrapheneFluid1D::SetVelFer(float x){ vel_fer=x; }
 float GrapheneFluid1D::GetVelFer() const{ return vel_fer; }
+int Fluid1D::GetSnapshotStep() const { return snapshot_step;}
+int Fluid1D::GetSnapshotFreq() const {return snapshot_per_period;}
 
-void Fluid1D::SaveSnapShot(int time_step,int snapshot_step){
+
+bool Fluid1D::Snapshot() const {
+	bool state;
+	if(TimeStepCounter % snapshot_step == 0){
+		state = true;
+	}else{
+		state = false;
+	}
+	return state;
+}
+
+
+void Fluid1D::SaveSnapShot(){
 	const FloatType      hdf5_float(PredType::NATIVE_FLOAT);
 	const IntType        hdf5_int(PredType::NATIVE_INT);
 
-	string str_time = to_string(time_step / snapshot_step);
+	int points_per_period = static_cast<int>((2.0 * MAT_PI / this->RealFreq()) / dt);
+	snapshot_step = points_per_period / snapshot_per_period;
+	string str_time = to_string(TimeStepCounter / snapshot_step);
 	string name_dataset = "snapshot_" + str_time;
+
 
 	DataSet dataset_den = GrpDen->createDataSet(name_dataset, hdf5_float, *DataspaceDen);
 	dataset_den.write(Den, hdf5_float);

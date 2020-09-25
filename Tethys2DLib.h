@@ -29,7 +29,7 @@ class Fluid2D : public TethysBase
 		float * CurY ;      // current density y component
 		Fluid2D(int size_nx, int size_ny, SetUpInput &input_parameters);
 		~Fluid2D();
-		bool Snapshot();
+		bool Snapshot() const;
 		void SetSound();     // Applies the anisotropy to the sound velocity array
 		virtual void SetSimulationTime();   // Finds and set the appropriate simulation time that is 1) Longer than the saturation time 2) Contains enough oscillation periods in the saturated region
 		void InitialCondRand();             // Initial condition, zero velocity and constant density with 0.5% white noise
@@ -46,7 +46,6 @@ class Fluid2D : public TethysBase
 		void CreateFluidFile();     // create and open the simplified .dat file output
 		void WriteFluidFile(float t) ; // writes the line of time t on the simplified .dat file output
 		void SaveSnapShot();
-
 		int GetSnapshotStep() const;
 		int GetSnapshotFreq() const;
 };
