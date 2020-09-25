@@ -50,7 +50,7 @@ int main(int argc, char **argv){
 	/*................................................................*/
 
 	graph.WelcomeScreen();
-	Record_Log_File(graph.GetVelSnd(), graph.GetVelFer(), graph.GetColFreq(), dt, dx, 0.0, t_max);
+	//Record_Log_File(graph.GetVelSnd(), graph.GetVelFer(), graph.GetColFreq(), dt, dx, 0.0, t_max);
 	
 	////////////////////////////////////////////////////////////////////
 	// Initialization	
@@ -60,7 +60,7 @@ int main(int argc, char **argv){
 	int time_step=0;
 	int snapshot_per_period = 10;
 	int points_per_period = static_cast<int>((2 * MAT_PI /
-			Real_Freq(graph.GetVelSnd(), graph.GetVelFer(), graph.GetColFreq(), 1)) / dt);
+			graph.Real_Freq()) / dt);
 	int snapshot_step = points_per_period / snapshot_per_period;
 
 	cout << "\033[1;7;5;33m Program Running \033[0m"<<endl;
