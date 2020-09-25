@@ -13,11 +13,13 @@ using namespace std;
 #	define MAT_PI 3.14159265358979323846
 #endif
 
-Fluid2D::Fluid2D(int size_nx, int size_ny, float sound_velocity, float shear_viscosity) : TethysBase{size_nx, size_ny, 2}{
+Fluid2D::Fluid2D(int size_nx, int size_ny, SetUpInput &input_parameters) : TethysBase{size_nx, size_ny, 2}{
 	Nx = size_nx;
 	Ny = size_ny;
-	vel_snd =sound_velocity;
-	kin_vis =shear_viscosity;
+
+	vel_snd = input_parameters.SoundVelocity;//sound_velocity;
+	kin_vis = input_parameters.ShearViscosity;//shear_viscosity;
+
 	char buffer [50];
 	sprintf (buffer, "S=%.2fvis=%.2f", vel_snd, kin_vis);
 	file_infix = buffer;
@@ -300,10 +302,10 @@ void Fluid2D::SetSimulationTime(){
 
 
 
-GrapheneFluid2D::GrapheneFluid2D(int size_nx, int size_ny, float sound_velocity, float fermi_velocity, float shear_viscosity, float collision_frequency,float cyclotron_frequency): Fluid2D(size_nx, size_ny, sound_velocity,  shear_viscosity){
-	vel_fer =fermi_velocity;
-	col_freq = collision_frequency;
-	cyc_freq = cyclotron_frequency;
+GrapheneFluid2D::GrapheneFluid2D(int size_nx, int size_ny, SetUpInput &input_parameters): Fluid2D(size_nx, size_ny, input_parameters){
+	vel_fer = input_parameters.FermiVelocity ;//fermi_velocity;
+	col_freq = input_parameters.CollisionFrequency ; // collision_frequency;
+	cyc_freq = input_parameters.CyclotronFrequency ; //cyclotron_frequency;
 	char buffer [50];
 	sprintf (buffer, "S=%.2fvF=%.2fvis=%.2fl=%.2fwc=%.2f", vel_snd, vel_fer, kin_vis, col_freq,cyc_freq);
 	file_infix = buffer;
@@ -454,7 +456,7 @@ void GrapheneFluid2D::MagneticSourceFtcs(){
 
 
 
-//TODO criar uma nova pequena funcao de escrita de atributos para as particularidades do grafeno velocidade de fermi e cyc freq
+
 
 
 

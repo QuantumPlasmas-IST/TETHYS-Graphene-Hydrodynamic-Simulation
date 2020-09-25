@@ -15,21 +15,14 @@ int main(int argc, char **argv){
 	t_max = 6;
 	int npoints_x = 101;
 	int npoints_y = 201;
-	//int npoints = npoints_x * npoints_y;
-	
 	float t=0.0;
 	float dx,dy;	// spatial discretisation
 	float dt;		// time step
 
-	int data_save_mode=0;
-	float input_vel_snd,input_vel_fer,input_col_freq,input_kin_vis,input_cyc_freq;
-	Parameter_Initialization(argc, argv, data_save_mode, input_vel_snd, input_vel_fer, input_col_freq, input_kin_vis,
-	                         input_cyc_freq);
-
-	GrapheneFluid2D	graph(npoints_x, npoints_y, input_vel_snd, input_vel_fer, input_kin_vis, input_col_freq, input_cyc_freq);
-
-	//DyakonovShurBoundaryCondition boundary_condition;
-	RobinBoundaryCondition boundary_condition;
+	SetUpInput parameters(argc, argv);
+	GrapheneFluid2D	graph(npoints_x, npoints_y, parameters);
+	DyakonovShurBoundaryCondition boundary_condition;
+	//RobinBoundaryCondition boundary_condition;
 	//DirichletBoundaryCondition boundary_condition_Dirichelet;
 
 	/*......CFL routine to determine dt...............................*/
@@ -54,11 +47,11 @@ int main(int argc, char **argv){
 	graph.CreateHdf5File();
 	/*................................................................*/
 
-	t_max=3.0f; //encurtar o tempo para testes
+	//t_max=3.0f; //encurtar o tempo para testes
 
 	graph.BannerDisplay();
-	graph.WelcomeScreen(graph.GetVelFer());
-	Record_Log_File(graph.GetVelSnd(), graph.GetVelFer(), graph.GetColFreq(), dt, dx, dy, t_max);
+	graph.WelcomeScreen();
+//	Record_Log_File(graph.GetVelSnd(), graph.GetVelFer(), graph.GetColFreq(), dt, dx, dy, t_max);
 	////////////////////////////////////////////////////////////////////
 	// Initialization	
 	graph.InitialCondRand();
@@ -66,7 +59,7 @@ int main(int argc, char **argv){
 	cout << "\033[1;7;5;33m Program Running \033[0m"<<endl;
 	int time_step=0;
 	int snapshot_per_period = 10;
-	int points_per_period = static_cast<int>((2.0 * MAT_PI /Real_Freq(graph.GetVelSnd(), graph.GetVelFer(), graph.GetColFreq(), 1)) / dt);
+	int points_per_period = static_cast<int>((2.0 * MAT_PI /graph.Real_Freq()) / dt);
 	int snapshot_step = points_per_period / snapshot_per_period;
 
 
@@ -74,16 +67,17 @@ int main(int argc, char **argv){
 		++time_step;
 		t += dt;
 		graph.Richtmyer();
-		//boundary_condition.DyakonovShurBc(graph);
-		//boundary_condition.YFree(graph);
+		boundary_condition.DyakonovShurBc(graph);
+		boundary_condition.YFree(graph);
+/*
 		boundary_condition.YFree(graph); //para menter a densidade free em y=0
 		boundary_condition.XFreeRight(graph);
-		boundary_condition.MassFluxXTop(graph, 1.0f);
-		boundary_condition.MassFluxYTop(graph, 0.0f);
 		boundary_condition.MassFluxXBottom(graph, 0.0f);
 		boundary_condition.MassFluxYBottom(graph, 0.0f);
 		boundary_condition.MassFluxXLeft(graph, 1.0f);
 		boundary_condition.MassFluxYLeft(graph, 0.0f);
+*/
+
 /*
 		boundary_condition.XFreeRight(graph);
 		boundary_condition.MassFluxXLeft(graph, 1.0f);
@@ -97,16 +91,16 @@ int main(int argc, char **argv){
 		}*/
 		if(graph.GetKinVis()!=0.0f) {
 			graph.ViscosityFtcs();
-			//boundary_condition.DyakonovShurBc(graph);
-			//boundary_condition.YFree(graph);
+			boundary_condition.DyakonovShurBc(graph);
+			boundary_condition.YFree(graph);
+	/*
 			boundary_condition.YFree(graph); //para menter a densidade free em y=0
 			boundary_condition.XFreeRight(graph);
-			boundary_condition.MassFluxXTop(graph, 1.0f);
-			boundary_condition.MassFluxYTop(graph, 0.0f);
 			boundary_condition.MassFluxXBottom(graph, 0.0f);
 			boundary_condition.MassFluxYBottom(graph, 0.0f);
 			boundary_condition.MassFluxXLeft(graph, 1.0f);
 			boundary_condition.MassFluxYLeft(graph, 0.0f);
+	*/
 			/*
 			boundary_condition.XFreeRight(graph);
 			boundary_condition.MassFluxXLeft(graph, 1.0f);
@@ -116,20 +110,17 @@ int main(int argc, char **argv){
 		}
 
 		//Record full hdf5 data
-		if (data_save_mode && time_step % snapshot_step == 0) {
+		if (parameters.SaveMode && time_step % snapshot_step == 0) {
 			graph.SaveSnapShot(time_step,snapshot_step);
 		}
 		graph.WriteFluidFile(t);
 	}
 	//Record atributes on hdf5 file
-	if(data_save_mode ) {
+	if(parameters.SaveMode) {
 		graph.WriteAttributes();
 	}
 	graph.CloseHdf5File();
-	/*if(!data_save_mode ) {
-		//Remove the empty hdf5 file if unused
-		system("rm hdf5_2D*");
-	}*/
+
 	cout << "\033[1A\033[2K\033[1;32mDONE!\033[0m\n";
 	cout << "═══════════════════════════════════════════════════════════════════════════" <<endl;
 	return 0;

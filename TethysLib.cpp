@@ -12,67 +12,6 @@ using namespace std;
 #	define MAT_EULER 2.71828182845905f
 #endif
 
-void Parameter_Exceptions_Checking(const int &data_save_mode, const  float &input_vel_snd, const  float &input_vel_fer, const  float &input_col_freq, const  float &input_kin_vis, const  float &input_cyc_freq){
-	if(input_vel_snd<=0.0f){
-		throw "ERROR: Unphysical Sound Velocity";
-	}
-	if(input_vel_fer<=0.0f){
-		throw "ERROR: Unphysical Fermi Velocity";
-	}
-	if(input_kin_vis<0.0f){
-		throw "ERROR: Unphysical Shear Viscosity";
-	}
-	if(input_col_freq<0.0f){
-		throw "ERROR: Unphysical Collision Frequency";
-	}
-	if(input_cyc_freq<0.0f){
-		throw "ERROR: Unphysical Cyclotron Frequency";
-	}
-	if( data_save_mode != 0 && data_save_mode != 1  ) {
-		throw "ERROR: Unknown save mode option";
-	}
-}
-
-void Parameter_Initialization(int argc, char ** argv, int &data_save_mode, float &input_vel_snd, float &input_vel_fer, float &input_col_freq, float &input_kin_vis, float &input_cyc_freq){
-	if(argc==7){
-		try {
-			input_vel_snd = strtof(argv[1], nullptr);
-			input_vel_fer = strtof(argv[2], nullptr);
-			input_col_freq = strtof(argv[3], nullptr);
-			input_kin_vis = strtof(argv[4], nullptr);
-			input_cyc_freq = strtof(argv[5], nullptr);
-			data_save_mode = (int) strtol(argv[6],nullptr,10);    // full data or light save option
-			//data_save_mode = atoi(argv[6]);    // full data or light save option
-			Parameter_Exceptions_Checking(data_save_mode, input_vel_snd, input_vel_fer, input_col_freq, input_kin_vis,
-			                              input_cyc_freq);
-		}catch (const char* msg) {
-			cerr << msg <<"\nExiting"<< endl;
-			exit(EXIT_FAILURE);
-		}
-	}
-	else{
-		try {
-			cout << "Define S value: "; // throw exceptions if the velocities or frequency are negative or if S<Vf
-			cin >> input_vel_snd;
-			cout << "Define vF value: ";
-			cin >> input_vel_fer;
-			cout << "Define kinetic viscosity: ";
-			cin >> input_kin_vis;
-			cout << "Define collision frequency: ";
-			cin >> input_col_freq;
-			cout << "Define cyclotron frequency: ";
-			cin >> input_cyc_freq;
-			cout << "Define data_save_mode value (0-> light save | 1-> full data): ";
-			cin >> data_save_mode;
-			Parameter_Exceptions_Checking(data_save_mode, input_vel_snd, input_vel_fer, input_col_freq, input_kin_vis,
-			                              input_cyc_freq);
-		}catch (const char* msg) {
-			cerr << msg  <<"\nExiting"<< endl;
-			exit(EXIT_FAILURE);
-		}
-	}
-}
-
 float Sound_Velocity_Anisotropy(int i, float dx, float s){
 	return s;
 }
@@ -110,12 +49,12 @@ cout<<"\n" ;
 	cout<<"╚═════════════════════════════════════════════════════════════════════════╝\n";
 }
 
-void TethysBase::WelcomeScreen(float vel_fer) const{
+void TethysBase::WelcomeScreen() const{
 	cout << "\nFermi velocity\t\033[1mvF\t"<< vel_fer <<" v\342\202\200\033[0m\n";
-	if (Phase_Vel(vel_snd, vel_fer) < vel_fer){
-		cout << "Phase velocity\t\033[1mS'\t" << Phase_Vel(vel_snd, vel_fer) << " v\342\202\200\033[0m  \033[1;5;7;31m WARNING plasmon in damping region \033[0m" << endl;
+	if (this->Phase_Vel() < vel_fer){
+		cout << "Phase velocity\t\033[1mS'\t" << this->Phase_Vel() << " v\342\202\200\033[0m  \033[1;5;7;31m WARNING plasmon in damping region \033[0m" << endl;
 	}else{
-		cout << "Phase velocity\t\033[1mS'\t" << Phase_Vel(vel_snd, vel_fer) << " v\342\202\200\033[0m\n";
+		cout << "Phase velocity\t\033[1mS'\t" << this->Phase_Vel() << " v\342\202\200\033[0m\n";
 	}
 	cout << "Viscosity \t\033[1m\316\267\t"<< kin_vis <<"\033[0m\n";
 	if (kin_vis !=0.0){
@@ -127,10 +66,8 @@ void TethysBase::WelcomeScreen(float vel_fer) const{
 	}
 	cout << "Collision \t\033[1m\316\275\t"<< col_freq <<" v\342\202\200/L\n\033[0m\n";
 	cout << "Theoretical frequency \033[1m\317\211=\317\211'+i\317\211''\033[0m\n";
-	cout << "\033[1m\317\211'\t" << Real_Freq(vel_snd, vel_fer, col_freq, 1) << " v\342\202\200/L\t2\317\200/\317\211'\t" << 2.0 * MAT_PI /
-	                                                                                                                         Real_Freq(vel_snd, vel_fer, col_freq, 1) << " L/v\342\202\200\033[0m\n";
-	cout << "\033[1m\317\211''\t" << Imag_Freq(vel_snd, vel_fer, col_freq) << " v\342\202\200/L\t2\317\200/\317\211''\t" << 2.0 * MAT_PI /
-	                                                                                                                        Imag_Freq(vel_snd, vel_fer, col_freq) << " L/v\342\202\200\033[0m\n";
+	cout << "\033[1m\317\211'\t" << this->Real_Freq() << " v\342\202\200/L\t2\317\200/\317\211'\t" << 2.0 * MAT_PI /this->Real_Freq() << " L/v\342\202\200\033[0m\n";
+	cout << "\033[1m\317\211''\t" << this->Imag_Freq() << " v\342\202\200/L\t2\317\200/\317\211''\t" << 2.0 * MAT_PI /this->Imag_Freq() << " L/v\342\202\200\033[0m\n";
 	cout << "Determined maximum simulated time\t\033[1m\nT\342\202\230\342\202\220\342\202\223\t" << Tmax << " L/v\342\202\200\033[0m\n";
 	cout <<"Discretisation\n";
 	cout <<"\033[1m\316\224t\t"<<dt<<" L/v\342\202\200\t\316\224x\t"<<dx<<" L\033[0m\n"<<endl;
@@ -169,7 +106,7 @@ void TethysBase::SetLengthY(float x){lengY=x;}
 
 
 
-void TethysBase::CloseHdf5File(){
+void TethysBase::CloseHdf5File() const{
 	GrpDat->close();
 	GrpDen->close();
 	GrpVelX->close();
@@ -191,6 +128,8 @@ void TethysBase::WriteAttributes(){
 	Attribute atr_vel_snd  = GrpDat->createAttribute("south parameter", hdf5_float, atr_dataspace);
 	Attribute atr_kin_vis = GrpDat->createAttribute("Kinetic viscosity", hdf5_float, atr_dataspace);
 	Attribute atr_col_freq = GrpDat->createAttribute("Collision frequency", hdf5_float, atr_dataspace);
+	Attribute atr_cyc_freq  = GrpDat->createAttribute("Cyclotron frequency", hdf5_float, atr_dataspace);
+	Attribute atr_vel_fer  = GrpDat->createAttribute("Fermi velocity", hdf5_float, atr_dataspace);
 	Attribute atr_dx = GrpDat->createAttribute("Space discretisation step x", hdf5_float, atr_dataspace);
 	Attribute atr_dy;
 	Attribute atr_dt = GrpDat->createAttribute("Time discretisation step", hdf5_float, atr_dataspace);
@@ -206,11 +145,10 @@ void TethysBase::WriteAttributes(){
 
 
 
-	//Attribute atr_vel_fer  = GrpDat->createAttribute("Fermi velocity", hdf5_float, atr_dataspace);
-	//atr_vel_fer.write( hdf5_float, &vel_fer);
-
 	// Write the attribute data.
 	atr_vel_snd.write( hdf5_float, &vel_snd);
+	atr_vel_fer.write( hdf5_float, &vel_fer);
+	atr_vel_fer.write( hdf5_float, &cyc_freq);
 	atr_col_freq.write(hdf5_float, &col_freq);
 	atr_kin_vis.write(hdf5_float, &kin_vis);
 	atr_dx.write(hdf5_float, &dx);
@@ -319,7 +257,7 @@ void TethysBase::CreateHdf5File(){
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////77
-void Record_Log_File(float vel_snd, float vel_fer, float col_freq, float dt, float dx, float dy, float tmax){
+/*void Record_Log_File(float vel_snd, float vel_fer, float col_freq, float dt, float dx, float dy, float tmax){
 	ofstream logfile;
 	logfile.open("Simulation.log",std::ios_base::app);
 	time_t time_raw;
@@ -337,7 +275,7 @@ void Record_Log_File(float vel_snd, float vel_fer, float col_freq, float dt, flo
 	logfile << "#dt\tdx\ttmax\ttime steps\tspace points\n";
 	logfile << dt << "\t" << dx << "\t" << dy << "\t" << tmax << "\t" << (int) (tmax / dt) << "\t" << (int) 1 / dx << endl;
 }
-
+*/
 float Integral_1_D(int n, float ds, const float * f){
 	float itg=0.0;
 	for(int j=1; j < n / 2; j++){
@@ -412,13 +350,12 @@ void Convolve_Gauss(int type, int m, float t, const float * in, float * out, int
 	}
 }
 */
-float Phase_Vel(float sound, float fermi){
-	float vel_phs = sqrt(sound*sound+0.5f*fermi*fermi + 0.0625f );
-	return vel_phs ;
+float TethysBase::Phase_Vel()const{
+	return sqrt(vel_snd*vel_snd+0.5f*vel_fer*vel_fer + 0.0625f );
 }
-
-float Real_Freq(float sound, float fermi, float col_freq, int mode){
-	float vel_phs = Phase_Vel(sound, fermi);
+float TethysBase::Real_Freq()const {
+	int mode = 1;
+	float vel_phs = this->Phase_Vel();
 	float vel_phs_sqr = vel_phs*vel_phs ;
 	if (1 < vel_phs ){
 		mode = 2*mode-1;
@@ -428,8 +365,8 @@ float Real_Freq(float sound, float fermi, float col_freq, int mode){
 		}
 	return fabs(vel_phs_sqr - 0.5625f ) * MAT_PI * mode / (2.0f * vel_phs );
 }
-float Imag_Freq(float sound, float fermi, float col_freq){
-	float vel_phs = Phase_Vel(sound, fermi);
+float TethysBase::Imag_Freq()const {
+	float vel_phs = this->Phase_Vel();
 	float vel_phs_sqr = vel_phs*vel_phs ;
 	return (vel_phs_sqr - 0.5625f ) * log(fabs( (vel_phs+0.75f)/(vel_phs-0.75f) )) / (2.0f * vel_phs ) - col_freq*(1.0f-0.125f/vel_phs);
 }
@@ -468,3 +405,63 @@ void Extrema_Finding(float *vec_in, int n, float sound, float dt, float & sat, f
 	data_extrema.close();
 }
 */
+SetUpInput::SetUpInput(int argc, char ** argv) {
+	if(argc==7){
+		try {
+			SoundVelocity = strtof(argv[1], nullptr);
+			FermiVelocity = strtof(argv[2], nullptr);
+			CollisionFrequency = strtof(argv[3], nullptr);
+			ShearViscosity = strtof(argv[4], nullptr);
+			CyclotronFrequency = strtof(argv[5], nullptr);
+			SaveMode = (int) strtol(argv[6],nullptr,10);    // full data or light save option
+			//data_save_mode = atoi(argv[6]);    // full data or light save option
+			Exceptions_Checking();
+		}catch (const char* msg) {
+			cerr << msg <<"\nExiting"<< endl;
+			exit(EXIT_FAILURE);
+		}
+	}
+	else{
+		try {
+			cout << "Define S value: "; // throw exceptions if the velocities or frequency are negative or if S<Vf
+			cin >> SoundVelocity;
+			cout << "Define vF value: ";
+			cin >> FermiVelocity;
+			cout << "Define kinetic viscosity: ";
+			cin >> ShearViscosity;
+			cout << "Define collision frequency: ";
+			cin >> CollisionFrequency;
+			cout << "Define cyclotron frequency: ";
+			cin >> CyclotronFrequency;
+			cout << "Define data_save_mode value (0-> light save | 1-> full data): ";
+			cin >> SaveMode;
+			Exceptions_Checking();
+		}catch (const char* msg) {
+			cerr << msg  <<"\nExiting"<< endl;
+			exit(EXIT_FAILURE);
+		}
+	}
+}
+
+
+
+void SetUpInput::Exceptions_Checking() const{
+	if(SoundVelocity<=0.0f){
+		throw "ERROR: Unphysical Sound Velocity";
+	}
+	if(FermiVelocity<=0.0f){
+		throw "ERROR: Unphysical Fermi Velocity";
+	}
+	if(ShearViscosity<0.0f){
+		throw "ERROR: Unphysical Shear Viscosity";
+	}
+	if(CollisionFrequency<0.0f){
+		throw "ERROR: Unphysical Collision Frequency";
+	}
+	if(CyclotronFrequency<0.0f){
+		throw "ERROR: Unphysical Cyclotron Frequency";
+	}
+	if( SaveMode != 0 && SaveMode != 1  ) {
+		throw "ERROR: Unknown save mode option";
+	}
+}

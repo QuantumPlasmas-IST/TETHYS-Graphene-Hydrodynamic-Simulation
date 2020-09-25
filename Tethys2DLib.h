@@ -25,7 +25,7 @@ class Fluid2D : public TethysBase
 		float * FlxY ;      // mass density flux y component
 		float * CurX ;      // current density x component
 		float * CurY ;      // current density y component
-		Fluid2D(int size_nx, int size_ny, float sound_velocity, float shear_viscosity);
+		Fluid2D(int size_nx, int size_ny, SetUpInput &input_parameters);
 		~Fluid2D();
 		void SetSound();     // Applies the anisotropy to the sound velocity array
 		virtual void SetSimulationTime();   // Finds and set the appropriate simulation time that is 1) Longer than the saturation time 2) Contains enough oscillation periods in the saturated region
@@ -46,11 +46,8 @@ class Fluid2D : public TethysBase
 };
 
 class GrapheneFluid2D : public Fluid2D{
-	protected : 
-		float vel_fer =10.0f;
-		float cyc_freq =0.0f;
 	public :
-		GrapheneFluid2D(int size_nx, int size_ny, float sound_velocity, float fermi_velocity, float shear_viscosity, float collision_frequency, float cyclotron_frequency);
+		GrapheneFluid2D(int size_nx, int size_ny, SetUpInput &input_parameters);
 		void SetVelFer(float x);        // setter method for Fermi Velocity
 		float GetVelFer() const;        // getter method for Fermi Velocity
 		void SetCycFreq(float x);        // setter method for cyclotron frequency

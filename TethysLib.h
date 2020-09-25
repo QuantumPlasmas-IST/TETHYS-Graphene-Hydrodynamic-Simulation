@@ -22,19 +22,14 @@ using namespace H5;
 //void Convolve_Gauss(int type, float m, float t, float * in, float * out, int size);
 //constexpr float Gauss_Kernel(int position , float t); //
 //constexpr float Gauss_Kernel_Derivative(int position , float t); //
-void Record_Log_File(float vel_snd, float vel_fer, float col_freq, float dt, float dx, float dy, float tmax);
+//void Record_Log_File(float vel_snd, float vel_fer, float col_freq, float dt, float dx, float dy, float tmax);
 
 //float Signal_Average(int n, float dt, const float * f);
 float Integral_1_D(int n, float ds, const float * f);
 float Integral_2_D(int n, int m, float dx, float dy, const float * f);
 
 //void Extrema_Finding(float * vec_in, int n, float sound, float dt, float & sat, float  & tau, float & error, const std::string& extremafile);
-float Imag_Freq(float sound, float fermi, float col_freq);                  //
-float Phase_Vel(float sound, float fermi);
-float Real_Freq(float sound, float fermi, float col_freq, int mode);  //
 
-void Parameter_Initialization(int argc, char ** argv, int &data_save_mode, float &input_vel_snd, float &input_vel_fer, float &input_col_freq, float &input_kin_vis, float &input_cyc_freq);
-void Parameter_Exceptions_Checking(const int &data_save_mode, const  float &input_vel_snd, const  float &input_vel_fer, const  float &input_col_freq, const  float &input_kin_vis, const  float &input_cyc_freq);
 //-----------------------------------
 
 
@@ -45,8 +40,27 @@ float Sound_Velocity_Anisotropy(int i, float dx, float s);
 float Sound_Velocity_Anisotropy(int  i,float dx, int j,float dy, float s);
 /*....................................................................................................................*/
 
+
 /* Average moving filter for the smoothing of 1D simulation, suppressing the spurious oscillations inherent to the 2nd order solver*/
 void Average_Filter(const float * vec_in, float * vec_out, int size , int width );
+
+
+/*
+ * Struct to pass the initialization
+ * */
+
+class SetUpInput {
+	public:
+		SetUpInput(int argc, char ** argv);
+		~SetUpInput() = default;
+		int SaveMode;
+		float SoundVelocity;
+		float FermiVelocity;
+		float CollisionFrequency;
+		float ShearViscosity;
+		float CyclotronFrequency;
+		void Exceptions_Checking() const;
+};
 
 
 /* Base class from which the fluid and graphene fluid classes are derived
@@ -63,6 +77,8 @@ class TethysBase {
 		float lengX=1.0f;   // physical length along x. dx will be redifined as lengX/Nx
 		float lengY=1.0f;   // physical length along y. dy will be redifined as lengY/Ny
 		float vel_snd =50.0f;   // sound velocity parameter
+		float vel_fer =10.0f;
+		float cyc_freq =0.0f;
 		float kin_vis =0.0f;    // kinetic shear viscosity parameter
 		float col_freq =0.0f;   // colision frequency parameter
 		std::string file_infix; // base name for the output files
@@ -71,6 +87,7 @@ class TethysBase {
 	public:
 		TethysBase(int size_nx, int size_ny, int dimensions); // class constructor initializes Nx, Ny, RANK and file_infix
 		~TethysBase();  // class destructor if the the flag HDF5fileCreated=TRUE it deletes the dataspaces and hdf5 files
+
 
 		H5File* Hdf5File ;  // hdf5 file handler
 		Group* GrpDat ;     // group for the simulated data: Attributes; Density; Velocity X; Velocity Y
@@ -105,13 +122,18 @@ class TethysBase {
 		float GetLengthX() const;   // getter method for total length along x
 		float GetLengthY() const;   // getter method for total length along y
 
-		std::string GetInfix() const;   // getter method for file name infix
+		float Imag_Freq() const;
+		float Phase_Vel() const;
+		float Real_Freq() const;
+
+
+	std::string GetInfix() const;   // getter method for file name infix
 		void CreateHdf5File();          // creates the HDF5 files with the necessary structure
-		void CloseHdf5File();           // closes the HDF5 file
+		void CloseHdf5File() const;           // closes the HDF5 file
 		void WriteAttributes();          // saves the simulation attributes (either physical and simulation parameters)
 
 		void BannerDisplay(); // launches the initial ASCII art banner
-		void WelcomeScreen(float vel_fer) const; //launches screen with the relevant info
+		void WelcomeScreen() const; //launches screen with the relevant info
 };
 #endif
 

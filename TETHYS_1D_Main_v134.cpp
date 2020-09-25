@@ -19,13 +19,11 @@ int main(int argc, char **argv){
 	float dx;								// spatial discretisation
 	float dt;								// time step
 
-	int data_save_mode=0;
-	float input_vel_snd,input_vel_fer,input_col_freq,input_kin_vis,input_cyc_freq=0.0;
-	Parameter_Initialization(argc, argv, data_save_mode, input_vel_snd, input_vel_fer, input_col_freq, input_kin_vis,
-	                         input_cyc_freq);
 
-	
-	GrapheneFluid1D	graph(npoints, input_vel_snd, input_vel_fer, input_kin_vis, input_col_freq);
+
+	SetUpInput parameters(argc, argv);
+
+	GrapheneFluid1D	graph(npoints, parameters);
 	DyakonovShurBoundaryCondition BC;
 	
 
@@ -51,7 +49,7 @@ int main(int argc, char **argv){
 	graph.CreateHdf5File();
 	/*................................................................*/
 
-	graph.WelcomeScreen(graph.GetVelFer());
+	graph.WelcomeScreen();
 	Record_Log_File(graph.GetVelSnd(), graph.GetVelFer(), graph.GetColFreq(), dt, dx, 0.0, t_max);
 	
 	////////////////////////////////////////////////////////////////////
@@ -78,19 +76,17 @@ int main(int argc, char **argv){
 		// Applying average filters for smoothing 	
 		graph.Smooth(2);
 		//Record full data
-		if(data_save_mode && time_step % snapshot_step == 0 ){
+		if(parameters.SaveMode && time_step % snapshot_step == 0 ){
 			graph.SaveSnapShot(time_step,snapshot_step);
 		}
 		graph.WriteFluidFile(t);
 		elec.WriteElectroFile(t,graph);
 	}
-	if(data_save_mode ) {
+	if(parameters.SaveMode ) {
 		graph.WriteAttributes();
 	}
 	graph.CloseHdf5File();
-	if(!data_save_mode ) {
-		system("rm hdf5_1D*");
-	}
+
 	cout << "\033[1A\033[2K\033[1;32mDONE!\033[0m\n";
 	cout<<"═══════════════════════════════════════════════════════════════════════════" <<endl;
 

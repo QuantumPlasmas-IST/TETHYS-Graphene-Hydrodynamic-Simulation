@@ -12,9 +12,9 @@ using namespace H5;
 using namespace std;
 
 
-GrapheneFluid1D::GrapheneFluid1D(int size_n, float sound_velocity, float fermi_velocity, float shear_viscosity, float collision_frequency): Fluid1D(size_n, sound_velocity, shear_viscosity){
-	vel_fer =fermi_velocity;
-	col_freq =collision_frequency;
+GrapheneFluid1D::GrapheneFluid1D(int size_n,  SetUpInput &input_parameters): Fluid1D(size_n, input_parameters){
+	vel_fer = input_parameters.FermiVelocity;
+	col_freq = input_parameters.CollisionFrequency;
 	char buffer [50];
 	sprintf (buffer, "S=%.2fvF=%.2fvis=%.2fl=%.2f", vel_snd, vel_fer, kin_vis, col_freq);
 	file_infix = buffer;
@@ -23,10 +23,10 @@ GrapheneFluid1D::GrapheneFluid1D(int size_n, float sound_velocity, float fermi_v
 /*....................................................................*/	
 /*.......... 1 Dimensional Fluid Class ...............................*/	
 /*....................................................................*/	
-Fluid1D::Fluid1D(int size_nx, float sound_velocity, float shear_viscosity): TethysBase{size_nx, 0, 1}{
+Fluid1D::Fluid1D(int size_nx,  SetUpInput &input_parameters): TethysBase{size_nx, 0, 1}{
 	Nx = size_nx;
-	vel_snd =sound_velocity;
-	kin_vis =shear_viscosity;
+	vel_snd = input_parameters.SoundVelocity;
+	kin_vis = input_parameters.ShearViscosity;
 	char buffer [50];
 	sprintf (buffer, "S=%.2fvis=%.2f", vel_snd, kin_vis);
 	file_infix = buffer;
@@ -238,7 +238,7 @@ void Fluid1D::SaveSnapShot(int time_step,int snapshot_step){
 	dataset_vel_x.close();
 }
 
-//TODO criar uma nova pequena funcao de escrita de atributos para as particularidades do grafeno velocidade de fermi e cyc freq
+
 
 
 

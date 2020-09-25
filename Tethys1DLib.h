@@ -21,7 +21,7 @@ class Fluid1D : public TethysBase{
 		float * DenCor;     // corrected i.e. smoothed quantities
 		float * VelCor ;
 		float * CurCor ;
-		Fluid1D(int size_nx, float sound_velocity, float shear_viscosity);
+		Fluid1D(int size_nx,  SetUpInput &input_parameters);
 		~Fluid1D();
 		void Smooth(int width);     // smoothing moving average filter to obtain the "Cor" version of the quantities
 		void SetSimulationTime();   // Finds and set the appropriate simulation time that is 1) Longer than the saturation time 2) Contains enough oscillation periods in the saturated region
@@ -39,10 +39,8 @@ class Fluid1D : public TethysBase{
 		void WriteFluidFile(float t) ; // writes the line of time t on the simplified .dat file output
 };
 class GrapheneFluid1D : public Fluid1D{
-	protected : 
-		float vel_fer =10.0;    // Fermi velocity of the electron fluid
 	public :
-		GrapheneFluid1D(int size_n, float sound_velocity, float fermi_velocity, float shear_viscosity, float collision_frequency);
+		GrapheneFluid1D(int size_n,  SetUpInput &input_parameters);
 		/*Override CFL condition to the case of graphene equations */
 		void CflCondition() override;
 		void SetVelFer(float x);    // setter method for Fermi velocity
