@@ -19,21 +19,14 @@ int main(int argc, char **argv){
 	//float dx;								// spatial discretisation
 	float dt;								// time step
 
-
-
 	SetUpInput parameters(argc, argv);
-
 	GrapheneFluid1D	graph(npoints, parameters);
 	DyakonovShurBoundaryCondition BC;
-	
-
 
 	graph.BannerDisplay();
 	/*......CFL routine to determine dt...............................*/
 	graph.CflCondition();
-	//dx=graph.GetDx();
 	dt=graph.GetDt();
-//	graph.SetTmax(10.0);
 	/*................................................................*/
 	
 	/*.........Fixed or variable vel_snd value........................*/
