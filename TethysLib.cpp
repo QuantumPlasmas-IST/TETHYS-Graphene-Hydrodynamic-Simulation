@@ -58,8 +58,8 @@ void TethysBase::WelcomeScreen() const{
 	}
 	cout << "Viscosity \t\033[1m\316\267\t"<< kin_vis <<"\033[0m\n";
 	if (kin_vis !=0.0){
-		if(2.0f*kin_vis*dt >= dx*dx*dy*dy/(dx*dx+dy*dy)){
-			cout << "Reynolds n. \t\033[1mRe\t"<< 1.0/kin_vis <<"\033[0m \033[1;5;7;31m WARNING ftcs scheme may not converge \033[0m"<<endl;
+		if(2.0f*kin_vis*dt > 0.95*dx*dx*dy*dy/(dx*dx+dy*dy)){
+			cout << "Reynolds n. \t\033[1mRe\t"<< 1.0/kin_vis <<"\033[0m \033[1;5;7;31m WARNING ftcs scheme may not converge.  \033[0m"<<endl;
 		}else{
 			cout << "Reynolds n. \t\033[1mRe\t" << 1.0 / kin_vis << "\033[0m\n";
 		}
