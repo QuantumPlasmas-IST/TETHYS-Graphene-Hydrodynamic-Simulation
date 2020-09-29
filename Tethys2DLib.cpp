@@ -346,7 +346,6 @@ void GrapheneFluid2D::CflCondition(){ // Eventual redefinition
 	}
 	dt = dx/lambda;
 	if(kin_vis>0.0f&&2.0f*kin_vis*dt > dx*dx*dy*dy/(dx*dx+dy*dy)){
-		cout << "Adjusted dt for FTCS" <<endl;
 		dt = 0.5*0.25f*dx*dx/kin_vis;
 	}
 }	
