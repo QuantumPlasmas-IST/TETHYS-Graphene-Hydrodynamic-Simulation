@@ -20,9 +20,9 @@ int main(int argc, char **argv){
 
 	SetUpInput parameters(argc, argv);
 	GrapheneFluid2D	graph(npoints_x, npoints_y, parameters);
-	DyakonovShurBoundaryCondition boundary_condition;
+	//DyakonovShurBoundaryCondition boundary_condition;
 	//RobinBoundaryCondition boundary_condition;
-	//DirichletBoundaryCondition boundary_condition_Dirichelet;
+	DirichletBoundaryCondition boundary_condition;
 
 	/*......CFL routine to determine dt...............................*/
 	graph.SetLengthX(1.0f);
@@ -55,23 +55,26 @@ int main(int argc, char **argv){
 	////////////////////////////////////////////////////////////////////
 	cout << "\033[1;7;5;33m Program Running \033[0m"<<endl;
 
-
+t_max=4.0f;
 
 	while (t <= t_max ){
 		t += dt;
 		graph.TimeStepCounter++;
 
 		graph.Richtmyer();
-		boundary_condition.DyakonovShurBc(graph);
-		boundary_condition.YFree(graph);
-/*
+		//boundary_condition.DyakonovShurBc(graph);
+		//boundary_condition.YFree(graph);
+
 		boundary_condition.YFree(graph); //para menter a densidade free em y=0
 		boundary_condition.XFreeRight(graph);
 		boundary_condition.MassFluxXBottom(graph, 0.0f);
 		boundary_condition.MassFluxYBottom(graph, 0.0f);
+		boundary_condition.DensityLeft(graph, 1.0f);
+		boundary_condition.DensityTop(graph, 1.0f);
+		boundary_condition.MassFluxXTop(graph, 1.0f);
 		boundary_condition.MassFluxXLeft(graph, 1.0f);
 		boundary_condition.MassFluxYLeft(graph, 0.0f);
-
+/*
 		boundary_condition.XFreeRight(graph);
 		boundary_condition.MassFluxXLeft(graph, 1.0f);
 		boundary_condition.MassFluxYLeft(graph, 0.0f);
@@ -84,16 +87,19 @@ int main(int argc, char **argv){
 		}*/
 		if(graph.GetKinVis()!=0.0f) {
 			graph.ViscosityFtcs();
-			boundary_condition.DyakonovShurBc(graph);
-			boundary_condition.YFree(graph);
-	/*
+			//boundary_condition.DyakonovShurBc(graph);
+			//boundary_condition.YFree(graph);
+
 			boundary_condition.YFree(graph); //para menter a densidade free em y=0
 			boundary_condition.XFreeRight(graph);
 			boundary_condition.MassFluxXBottom(graph, 0.0f);
 			boundary_condition.MassFluxYBottom(graph, 0.0f);
+			boundary_condition.DensityTop(graph, 1.0f);
+			boundary_condition.MassFluxXTop(graph, 1.0f);
+			boundary_condition.DensityLeft(graph, 1.0f);
 			boundary_condition.MassFluxXLeft(graph, 1.0f);
 			boundary_condition.MassFluxYLeft(graph, 0.0f);
-
+	/*
 			boundary_condition.XFreeRight(graph);
 			boundary_condition.MassFluxXLeft(graph, 1.0f);
 			boundary_condition.MassFluxYLeft(graph, 0.0f);
