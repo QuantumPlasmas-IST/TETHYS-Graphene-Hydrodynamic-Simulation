@@ -20,9 +20,9 @@ int main(int argc, char **argv){
 
 	SetUpInput parameters(argc, argv);
 	GrapheneFluid2D	graph(npoints_x, npoints_y, parameters);
-	//DyakonovShurBoundaryCondition boundary_condition;
+	DyakonovShurBoundaryCondition boundary_condition;
 	//RobinBoundaryCondition boundary_condition;
-	DirichletBoundaryCondition boundary_condition;
+	//DirichletBoundaryCondition boundary_condition;
 
 	/*......CFL routine to determine dt...............................*/
 	graph.SetLengthX(1.0f);
@@ -62,9 +62,16 @@ t_max=4.0f;
 		graph.TimeStepCounter++;
 
 		graph.Richtmyer();
-		//boundary_condition.DyakonovShurBc(graph);
-		//boundary_condition.YFree(graph);
-
+		boundary_condition.DyakonovShurBc(graph);
+		boundary_condition.YFree(graph);
+		/*
+		boundary_condition.YFree(graph);
+		boundary_condition.DensityLeft(graph, 2.0f);
+		boundary_condition.MassFluxXLeft(graph, 1.0f);
+		boundary_condition.MassFluxXRight(graph, 1.0f);
+		boundary_condition.DensityRight(graph, 1.0f);
+		*/
+		/*
 		boundary_condition.YFree(graph); //para menter a densidade free em y=0
 		boundary_condition.XFreeRight(graph);
 		boundary_condition.MassFluxXBottom(graph, 0.0f);
@@ -74,6 +81,7 @@ t_max=4.0f;
 		boundary_condition.MassFluxXTop(graph, 1.0f);
 		boundary_condition.MassFluxXLeft(graph, 1.0f);
 		boundary_condition.MassFluxYLeft(graph, 0.0f);
+		*/
 /*
 		boundary_condition.XFreeRight(graph);
 		boundary_condition.MassFluxXLeft(graph, 1.0f);
@@ -83,13 +91,18 @@ t_max=4.0f;
 
 		/*if(graph.GetCycFreq()!=0.0f){
 			graph.MagneticSourceFtcs();
-(....)
+			boundary_condition.YFree(graph);
+			boundary_condition.DensityLeft(graph, 2.0f);
+			boundary_condition.MassFluxXLeft(graph, 1.0f);
+			boundary_condition.MassFluxXRight(graph, 1.0f);
+			boundary_condition.DensityRight(graph, 1.0f);
 		}*/
 		if(graph.GetKinVis()!=0.0f) {
 			graph.ViscosityFtcs();
-			//boundary_condition.DyakonovShurBc(graph);
-			//boundary_condition.YFree(graph);
+			boundary_condition.DyakonovShurBc(graph);
+			boundary_condition.YFree(graph);
 
+			/*
 			boundary_condition.YFree(graph); //para menter a densidade free em y=0
 			boundary_condition.XFreeRight(graph);
 			boundary_condition.MassFluxXBottom(graph, 0.0f);
@@ -99,6 +112,8 @@ t_max=4.0f;
 			boundary_condition.DensityLeft(graph, 1.0f);
 			boundary_condition.MassFluxXLeft(graph, 1.0f);
 			boundary_condition.MassFluxYLeft(graph, 0.0f);
+			*/
+
 	/*
 			boundary_condition.XFreeRight(graph);
 			boundary_condition.MassFluxXLeft(graph, 1.0f);
