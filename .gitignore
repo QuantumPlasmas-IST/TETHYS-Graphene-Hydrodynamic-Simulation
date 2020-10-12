@@ -16,6 +16,9 @@
 #images
 *.png
 
+#archives
+*.zip
+*.tar.xz
 
 
 #CMAke and Clion stuff
