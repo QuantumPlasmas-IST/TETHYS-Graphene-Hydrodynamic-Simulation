@@ -55,7 +55,7 @@ int main(int argc, char **argv){
 	////////////////////////////////////////////////////////////////////
 	cout << "\033[1;7;5;33m Program Running \033[0m"<<endl;
 
-t_max=4.0f;
+//t_max=4.0f;
 
 	while (t <= t_max ){
 		t += dt;
