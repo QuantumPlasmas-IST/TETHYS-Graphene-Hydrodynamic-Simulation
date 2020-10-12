@@ -19,6 +19,7 @@
 #archives
 *.zip
 *.tar.xz
+*.tar*
 
 
 #CMAke and Clion stuff
