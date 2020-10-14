@@ -128,7 +128,7 @@ void TethysBase::WriteAttributes(){
 	hsize_t dim_atr[1] = { 1 };
 	DataSpace atr_dataspace = DataSpace (1, dim_atr );
 	// Create a group attribute.
-	Attribute atr_vel_snd  = GrpDat->createAttribute("south parameter", hdf5_float, atr_dataspace);
+	Attribute atr_vel_snd  = GrpDat->createAttribute("Sound velocity", hdf5_float, atr_dataspace);
 	Attribute atr_kin_vis = GrpDat->createAttribute("Kinetic viscosity", hdf5_float, atr_dataspace);
 	Attribute atr_col_freq = GrpDat->createAttribute("Collision frequency", hdf5_float, atr_dataspace);
 	Attribute atr_cyc_freq  = GrpDat->createAttribute("Cyclotron frequency", hdf5_float, atr_dataspace);
@@ -145,9 +145,6 @@ void TethysBase::WriteAttributes(){
 		atr_num_space_points_y = GrpDat->createAttribute("Number of spatial points y", hdf5_int,
 		                                                           atr_dataspace);
 	}
-
-
-
 	// Write the attribute data.
 	atr_vel_snd.write( hdf5_float, &vel_snd);
 	atr_vel_fer.write( hdf5_float, &vel_fer);

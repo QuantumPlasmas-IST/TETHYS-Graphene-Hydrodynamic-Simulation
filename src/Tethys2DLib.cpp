@@ -466,7 +466,8 @@ void GrapheneFluid2D::MagneticSourceFtcs(){
 void Fluid2D::SaveSnapShot() {
 	const FloatType      hdf5_float(PredType::NATIVE_FLOAT);
 	const IntType        hdf5_int(PredType::NATIVE_INT);
-
+	hsize_t dim_atr[1] = { 1 };
+	DataSpace atr_dataspace = DataSpace (1, dim_atr );
 
 	int points_per_period = static_cast<int>((2.0 * MAT_PI / this->RealFreq()) / dt);
 	snapshot_step = points_per_period / snapshot_per_period;
@@ -477,17 +478,42 @@ void Fluid2D::SaveSnapShot() {
 
 //	cout << TimeStepCounter <<"\t"<<name_dataset <<endl;
 
+
 	DataSet dataset_den = GrpDen->createDataSet(name_dataset, hdf5_float, *DataspaceDen);
+	Attribute atr_step_den = dataset_den.createAttribute("time step", hdf5_int, atr_dataspace);
+	Attribute atr_time_den = dataset_den.createAttribute("time", hdf5_float, atr_dataspace);
+	float currenttime=TimeStepCounter * dt;
+	atr_step_den.write( hdf5_int, &TimeStepCounter);
+	atr_time_den.write( hdf5_float , &currenttime);
+	atr_step_den.close();
+	atr_time_den.close();
+
+
 	dataset_den.write(Den, hdf5_float);
 	dataset_den.close();
 
+
 	DataSet dataset_vel_x = GrpVelX->createDataSet(name_dataset, hdf5_float, *DataspaceVelX);
+	Attribute atr_step_vel_x = dataset_vel_x.createAttribute("time step", hdf5_int, atr_dataspace);
+	Attribute atr_time_vel_x = dataset_vel_x.createAttribute("time", hdf5_float, atr_dataspace);
 	dataset_vel_x.write(VelX, hdf5_float);
 	dataset_vel_x.close();
+	atr_step_vel_x.write( hdf5_int, &TimeStepCounter);
+	atr_time_vel_x.write( hdf5_float , &currenttime);
+	atr_step_vel_x.close();
+	atr_time_vel_x.close();
+
 
 	DataSet dataset_vel_y = GrpVelY->createDataSet(name_dataset, hdf5_float, *DataspaceVelY);
+	Attribute atr_step_vel_y = dataset_vel_x.createAttribute("time step", hdf5_int, atr_dataspace);
+	Attribute atr_time_vel_y = dataset_vel_x.createAttribute("time", hdf5_float, atr_dataspace);
 	dataset_vel_y.write(VelY, hdf5_float);
 	dataset_vel_y.close();
+	atr_step_vel_y.write( hdf5_int, &TimeStepCounter);
+	atr_time_vel_y.write( hdf5_float , &currenttime);
+	atr_step_vel_y.close();
+	atr_time_vel_y.close();
+
 }
 
 int Fluid2D::GetSnapshotStep() const { return snapshot_step;}

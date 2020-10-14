@@ -32,7 +32,7 @@ int main(int argc, char **argv){
 	/*.........Fixed or variable vel_snd value........................*/
 	graph.SetSound();
 	graph.SetSimulationTime();
-	float t_max=graph.GetTmax();
+
 	/*................................................................*/
 
 	/*.........Output files and streams...............................*/
@@ -43,7 +43,7 @@ int main(int argc, char **argv){
 	/*................................................................*/
 
 	graph.WelcomeScreen();
-	//Record_Log_File(graph.GetVelSnd(), graph.GetVelFer(), graph.GetColFreq(), dt, dx, 0.0, t_max);
+
 	
 	////////////////////////////////////////////////////////////////////
 	// Initialization	
@@ -54,7 +54,7 @@ int main(int argc, char **argv){
 	cout << "\033[1;7;5;33m Program Running \033[0m"<<endl;
 	
 	//Main cycle
-	while(t <= t_max ) {
+	while(t <= graph.GetTmax() ) {
 		t += dt;
 		graph.TimeStepCounter++;
 		// Main algorithm		

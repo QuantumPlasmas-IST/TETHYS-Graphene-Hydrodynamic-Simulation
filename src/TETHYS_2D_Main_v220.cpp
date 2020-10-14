@@ -11,22 +11,21 @@ using namespace std;
 
 
 int main(int argc, char **argv){
-	float t_max;
-	t_max = 6;
+
 	int npoints_x = 101;
-	int npoints_y = 201;
+	int npoints_y = 101;
 	float t=0.0;
 	float dt;		// time step
 
 	SetUpInput parameters(argc, argv);
 	GrapheneFluid2D	graph(npoints_x, npoints_y, parameters);
-	//DyakonovShurBoundaryCondition boundary_condition;
+	DyakonovShurBoundaryCondition boundary_condition;
 	//RobinBoundaryCondition boundary_condition;
-	DirichletBoundaryCondition boundary_condition;
+	//DirichletBoundaryCondition boundary_condition;
 
 	/*......CFL routine to determine dt...............................*/
 	graph.SetLengthX(1.0f);
-	graph.SetLengthY(2.0f);
+	graph.SetLengthY(1.0f);
 	graph.CflCondition();
 	dt=graph.GetDt();
 	/*................................................................*/
@@ -44,34 +43,33 @@ int main(int argc, char **argv){
 	graph.CreateHdf5File();
 	/*................................................................*/
 
-	//t_max=3.0f; //encurtar o tempo para testes
-
 	graph.BannerDisplay();
 	graph.WelcomeScreen();
-//	Record_Log_File(graph.GetVelSnd(), graph.GetVelFer(), graph.GetColFreq(), dt, dx, dy, t_max);
+
 	////////////////////////////////////////////////////////////////////
 	// Initialization	
 	graph.InitialCondRand();
 	////////////////////////////////////////////////////////////////////
 	cout << "\033[1;7;5;33m Program Running \033[0m"<<endl;
 
-//t_max=4.0f;
 
-	while (t <= t_max ){
+
+	while (t <= graph.GetTmax() ){
 		t += dt;
 		graph.TimeStepCounter++;
 
 		graph.Richtmyer();
-		//boundary_condition.DyakonovShurBc(graph);
-		//boundary_condition.YFree(graph);
+		boundary_condition.DyakonovShurBc(graph);
+		boundary_condition.YFree(graph);
 
 
-
+/*
 		boundary_condition.YFree(graph);
 		boundary_condition.DensityLeft(graph, 1.0f);
 		boundary_condition.DensityRight(graph, 1.0f);
 		boundary_condition.MassFluxXLeft(graph, 1.0f);
 		boundary_condition.MassFluxXRight(graph, 1.0f);
+		*/
 		//boundary_condition.MassFluxXRight(graph, 1.0f);
 		//boundary_condition.DensityRight(graph, 1.0f);
 
@@ -93,7 +91,7 @@ int main(int argc, char **argv){
 		boundary_condition.SlipLength(graph,1.5f);
 */
 
-		if(graph.GetCycFreq()!=0.0f){
+		/*if(graph.GetCycFreq()!=0.0f){
 			graph.MagneticSourceFtcs();
 			boundary_condition.YFree(graph);
 			boundary_condition.DensityLeft(graph, 1.0f);
@@ -126,7 +124,7 @@ int main(int argc, char **argv){
 			boundary_condition.MassFluxYLeft(graph, 0.0f);
 			boundary_condition.SlipLength(graph,1.5f);
 	*/
-		}
+		//}
 
 		//Record full hdf5 data
 		if (parameters.SaveMode  && graph.Snapshot()) {
