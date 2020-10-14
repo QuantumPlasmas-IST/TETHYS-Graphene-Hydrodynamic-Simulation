@@ -65,6 +65,8 @@ int main(int argc, char **argv){
 		//boundary_condition.DyakonovShurBc(graph);
 		//boundary_condition.YFree(graph);
 
+
+
 		boundary_condition.YFree(graph);
 		boundary_condition.DensityLeft(graph, 1.0f);
 		boundary_condition.DensityRight(graph, 1.0f);
