@@ -64,7 +64,8 @@ void TethysBase::WelcomeScreen() const{
 			cout << "Reynolds n. \t\033[1mRe\t" << 1.0 / kin_vis << "\033[0m\n";
 		}
 	}
-	cout << "Collision \t\033[1m\316\275\t"<< col_freq <<" v\342\202\200/L\n\033[0m\n";
+	cout << "Collision rate \t\033[1m\316\275\t"<< col_freq <<" v\342\202\200/L\033[0m\n";
+	cout << "Cyclotron frequency \t\033[1m\317\211c\t"<< cyc_freq <<" v\342\202\200/L\n\033[0m\n";
 	cout << "Theoretical frequency \033[1m\317\211=\317\211'+i\317\211''\033[0m\n";
 	cout << "\033[1m\317\211'\t" << this->RealFreq() << " v\342\202\200/L\t2\317\200/\317\211'\t" << 2.0 * MAT_PI /
 	                                                                                                 this->RealFreq() << " L/v\342\202\200\033[0m\n";
@@ -417,7 +418,6 @@ SetUpInput::SetUpInput(int argc, char ** argv) {
 			ShearViscosity = strtof(argv[4], nullptr);
 			CyclotronFrequency = strtof(argv[5], nullptr);
 			SaveMode = (int) strtol(argv[6],nullptr,10);    // full data or light save option
-			//data_save_mode = atoi(argv[6]);    // full data or light save option
 			ExceptionsChecking();
 		}catch (const char* msg) {
 			cerr << msg <<"\nExiting"<< endl;
