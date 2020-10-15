@@ -503,7 +503,6 @@ void Fluid2D::SaveSnapShot() {
 	atr_step_vel_x.close();
 	atr_time_vel_x.close();
 
-
 	DataSet dataset_vel_y = GrpVelY->createDataSet(name_dataset, hdf5_float, *DataspaceVelY);
 	Attribute atr_step_vel_y = dataset_vel_x.createAttribute("time step", hdf5_int, atr_dataspace);
 	Attribute atr_time_vel_y = dataset_vel_x.createAttribute("time", hdf5_float, atr_dataspace);
