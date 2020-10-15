@@ -66,6 +66,8 @@ Standard form of numeric *major.minor.patch* starting with the initial commit 1.
   <br>&emsp;2.0.3 Linear _for_ loops
   <br>&emsp;2.1.0 Magnetic Field inclusion with _Godunov Splitting_ 
   <br>&emsp;2.2.0 Shear viscosity with FTCS method. Variable Aspect ratio 
+  
+ 
 ### Internal syntax
 
 | Type            | Style                                 | E.g.              |
