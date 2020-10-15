@@ -61,19 +61,21 @@ Fluid2D::~Fluid2D(){
 
 
 
-void Fluid2D::SetSound(){ 
-	for(int i = 0; i<Nx  ;i++){
-		for(int j=0; j<Ny ; j++){
-			vel_snd_arr[i+j*Nx]=Sound_Velocity_Anisotropy(i,dx,j,dy, vel_snd);
-			//vel_snd_arr[i+j*Nx]=vel_snd;
-		}
+void Fluid2D::SetSound(){
+	for(int kp=0; kp<=Nx*Ny-1; kp++) { //correr a grelha principal evitando as fronteiras
+		div_t divresult;
+		divresult = div(kp, Nx);
+		int j = divresult.quot;
+		int i = divresult.rem;
+		vel_snd_arr[kp]= Sound_Velocity_Anisotropy(i*dx, j*dy , vel_snd);
 	}
-	/*for(int i = 0; i<Nx-1  ;i++){
-		for(int j=0; j<Ny-1 ; j++){
-			vel_snd_arr_mid[i+j*Nx]=Sound_Velocity_Anisotropy(i,dx,j,dy, vel_snd);
-			//vel_snd_arr_mid[i+j*Nx]=vel_snd;
-		}
-	}*/
+	for(int ks=0; ks<=Nx*Ny-Nx-Ny; ks++) { //correr todos os pontos da grelha secundaria
+		div_t divresult;
+		divresult = div(ks, Nx - 1);
+		int j = divresult.quot;
+		int i = divresult.rem;
+		vel_snd_arr_mid[ks]= Sound_Velocity_Anisotropy((i+0.5f)*dx, (j+0.5f)*dy , vel_snd);
+	}
 }
 
 
@@ -123,6 +125,7 @@ void Fluid2D::Richtmyer(){
 	//TODO implement spatial anisotropy on S
 		int northeast,northwest,southeast,southwest;
 		float den_north, den_south ,den_east ,den_west, px_north, px_south, px_east, px_west, py_north, py_south, py_east, py_west,m_east,m_west,m_north,m_south;
+		float  sound_north, sound_south ,sound_east ,sound_west;
 		//k=i+j*Nx
 		for(int ks=0; ks<=Nx*Ny-Nx-Ny; ks++){ //correr todos os pontos da grelha secundaria de den_mid
 			div_t divresult;
@@ -134,7 +137,12 @@ void Fluid2D::Richtmyer(){
 			northwest=i+(j+1)*Nx;
 			southeast=i+1+j*Nx;
 			southwest=i+j*Nx;
-		
+
+			sound_north = 0.5f * (vel_snd_arr[northeast] + vel_snd_arr[northwest]);
+			sound_south = 0.5f*(vel_snd_arr[southeast] + vel_snd_arr[southwest]);
+			sound_east = 0.5f*(vel_snd_arr[northeast] + vel_snd_arr[southeast]);
+			sound_west = 0.5f*(vel_snd_arr[northwest] + vel_snd_arr[southwest]);
+
 			den_north = 0.5f*(Den[northeast] + Den[northwest]);
 			den_south = 0.5f*(Den[southeast] + Den[southwest]);
 			den_east = 0.5f*(Den[northeast] + Den[southeast]);
@@ -157,25 +165,25 @@ void Fluid2D::Richtmyer(){
 			m_south=pow(den_south,1.5f);
 			den_mid[ks] = 0.25f*(Den[southwest] + Den[southeast] + Den[northwest] + Den[northeast]) // How shall we include vel_snd_arr ? //TODO assumindo  que varia lentamente uma primeira abordagem seria mante-lo sempre calculado em ks na grelhe secundaria e kp na principal
 							-0.5f*(dt/dx)*(
-								DensityFluxX(den_east, px_east, py_east,m_east,vel_snd_arr[ks])-
-								DensityFluxX(den_west, px_west, py_west,m_west,vel_snd_arr[ks]))
+								DensityFluxX(den_east, px_east, py_east,m_east,sound_east)-
+								DensityFluxX(den_west, px_west, py_west,m_west,sound_west))
 								-0.5f*(dt/dy)*(
-								DensityFluxY(den_north, px_north, py_north,m_north,vel_snd_arr[ks])-
-								DensityFluxY(den_south, px_south, py_south,m_south,vel_snd_arr[ks]));
+								DensityFluxY(den_north, px_north, py_north,m_north,sound_north)-
+								DensityFluxY(den_south, px_south, py_south,m_south,sound_south));
 			flxX_mid[ks] = 0.25f*(FlxX[southwest] + FlxX[southeast] + FlxX[northwest] + FlxX[northeast])
 							-0.5f*(dt/dx)*(
-								MassFluxXFluxX(den_east, px_east, py_east,m_east,vel_snd_arr[ks])-
-								MassFluxXFluxX(den_west, px_west, py_west,m_west,vel_snd_arr[ks]))
+								MassFluxXFluxX(den_east, px_east, py_east,m_east,sound_east)-
+								MassFluxXFluxX(den_west, px_west, py_west,m_west,sound_west))
 							-0.5f*(dt/dy)*(
-								MassFluxXFluxY(den_north, px_north, py_north,m_north,vel_snd_arr[ks])-
-								MassFluxXFluxY(den_south, px_south, py_south,m_south,vel_snd_arr[ks]));
+								MassFluxXFluxY(den_north, px_north, py_north,m_north,sound_north)-
+								MassFluxXFluxY(den_south, px_south, py_south,m_south,sound_south));
 			flxY_mid[ks] = 0.25f*(FlxY[southwest] + FlxY[southeast] + FlxY[northwest] + FlxY[northeast])
 							-0.5f*(dt/dx)*(
-								MassFluxYFluxX(den_east, px_east, py_east,m_east,vel_snd_arr[ks])-
-								MassFluxYFluxX(den_west, px_west, py_west,m_west,vel_snd_arr[ks]))
+								MassFluxYFluxX(den_east, px_east, py_east,m_east,sound_east)-
+								MassFluxYFluxX(den_west, px_west, py_west,m_west,sound_west))
 							-0.5f*(dt/dy)*(
-								MassFluxYFluxY(den_north, px_north, py_north,m_north,vel_snd_arr[ks])-
-								MassFluxYFluxY(den_south, px_south, py_south,m_south,vel_snd_arr[ks]));
+								MassFluxYFluxY(den_north, px_north, py_north,m_north,sound_north)-
+								MassFluxYFluxY(den_south, px_south, py_south,m_south,sound_south));
 		}
 		for(int kp=1+Nx; kp<=Nx*Ny-Nx-2; kp++){ //correr a grelha principal evitando as fronteiras
 			div_t divresult;
@@ -189,7 +197,12 @@ void Fluid2D::Richtmyer(){
 				northwest=i-1+j*(Nx-1);
 				southeast=i+(j-1)*(Nx-1);
 				southwest=i-1+(j-1)*(Nx-1);
-				
+
+				sound_north = 0.5f * (vel_snd_arr_mid[northeast] + vel_snd_arr_mid[northwest]);
+				sound_south = 0.5f*(vel_snd_arr_mid[southeast] + vel_snd_arr_mid[southwest]);
+				sound_east = 0.5f*(vel_snd_arr_mid[northeast] + vel_snd_arr_mid[southeast]);
+				sound_west = 0.5f*(vel_snd_arr_mid[northwest] + vel_snd_arr_mid[southwest]);
+
 				den_north = 0.5f*(den_mid[northeast]+den_mid[northwest]);
 				den_south = 0.5f*(den_mid[southeast]+den_mid[southwest]);
 				den_east = 0.5f*(den_mid[northeast]+den_mid[southeast]);
@@ -212,23 +225,23 @@ void Fluid2D::Richtmyer(){
 				m_south=pow(den_south,1.5f);
 
 				Den[kp] = Den[kp]-(dt/dx)*(
-									DensityFluxX(den_east, px_east, py_east,m_east,vel_snd_arr[kp])-
-									DensityFluxX(den_west, px_west, py_west,m_west,vel_snd_arr[kp]))
+									DensityFluxX(den_east, px_east, py_east,m_east,sound_east)-
+									DensityFluxX(den_west, px_west, py_west,m_west,sound_west))
 									-(dt/dy)*(
-									DensityFluxY(den_north, px_north, py_north,m_north,vel_snd_arr[kp])-
-									DensityFluxY(den_south, px_south, py_south,m_south,vel_snd_arr[kp]));
+									DensityFluxY(den_north, px_north, py_north,m_north,sound_north)-
+									DensityFluxY(den_south, px_south, py_south,m_south,sound_south));
 				FlxX[kp] = FlxX[kp]-(dt/dx)*(
-									MassFluxXFluxX(den_east, px_east, py_east,m_east,vel_snd_arr[kp])-
-									MassFluxXFluxX(den_west, px_west, py_west,m_west,vel_snd_arr[kp]))
+									MassFluxXFluxX(den_east, px_east, py_east,m_east,sound_east)-
+									MassFluxXFluxX(den_west, px_west, py_west,m_west,sound_west))
 									-(dt/dy)*(
-									MassFluxXFluxY(den_north, px_north, py_north,m_north,vel_snd_arr[kp])-
-									MassFluxXFluxY(den_south, px_south, py_south,m_south,vel_snd_arr[kp]));
+									MassFluxXFluxY(den_north, px_north, py_north,m_north,sound_north)-
+									MassFluxXFluxY(den_south, px_south, py_south,m_south,sound_south));
 				FlxY[kp] = FlxY[kp]-(dt/dx)*(
-									MassFluxYFluxX(den_east, px_east, py_east,m_east,vel_snd_arr[kp])-
-									MassFluxYFluxX(den_west, px_west, py_west,m_west,vel_snd_arr[kp]))
+									MassFluxYFluxX(den_east, px_east, py_east,m_east,sound_east)-
+									MassFluxYFluxX(den_west, px_west, py_west,m_west,sound_west))
 									-(dt/dy)*(
-									MassFluxYFluxY(den_north, px_north, py_north,m_north,vel_snd_arr[kp])-
-									MassFluxYFluxY(den_south, px_south, py_south,m_south,vel_snd_arr[kp]));
+									MassFluxYFluxY(den_north, px_north, py_north,m_north,sound_north)-
+									MassFluxYFluxY(den_south, px_south, py_south,m_south,sound_south));
 			}
 		}
 }
@@ -348,7 +361,7 @@ void GrapheneFluid2D::CflCondition(){ // Eventual redefinition
 	}
 	dt = dx/lambda;
 	if(kin_vis>0.0f&&2.0f*kin_vis*dt > dx*dx*dy*dy/(dx*dx+dy*dy)){
-		dt = 0.5*0.25f*dx*dx/kin_vis;
+		dt = 0.5f*0.25f*dx*dx/kin_vis;
 	}
 }	
 

@@ -50,8 +50,6 @@ class GrapheneFluid1D : public Fluid1D{
 		GrapheneFluid1D(int size_n,  SetUpInput &input_parameters);
 		/*Override CFL condition to the case of graphene equations */
 		void CflCondition() override;
-		void SetVelFer(float x);    // setter method for Fermi velocity
-		float GetVelFer() const;    // getter method for Fermi velocity
 		/*Override fluxes and sources to specifics of graphene physics*/
 		float DensityFlux(float n,float v,__attribute__((unused)) float s) override;
 		float VelocityFlux(float n,float v,float dv,float s) override;
