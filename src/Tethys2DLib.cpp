@@ -40,6 +40,7 @@ Fluid2D::Fluid2D(int size_nx, int size_ny, const SetUpInput &input_parameters) :
 	den_mid		= new float[(Nx-1)*(Ny-1)]();  
 	flxX_mid	= new float[(Nx-1)*(Ny-1)]();
 	flxY_mid	= new float[(Nx-1)*(Ny-1)]();
+	vel_snd_arr_mid	= new float[(Nx-1)*(Ny-1)]();
 }
 	
 Fluid2D::~Fluid2D(){
@@ -67,6 +68,12 @@ void Fluid2D::SetSound(){
 			//vel_snd_arr[i+j*Nx]=vel_snd;
 		}
 	}
+	/*for(int i = 0; i<Nx-1  ;i++){
+		for(int j=0; j<Ny-1 ; j++){
+			vel_snd_arr_mid[i+j*Nx]=Sound_Velocity_Anisotropy(i,dx,j,dy, vel_snd);
+			//vel_snd_arr_mid[i+j*Nx]=vel_snd;
+		}
+	}*/
 }
 
 
@@ -328,11 +335,6 @@ void GrapheneFluid2D::MassFluxToVelocity(){
 }
 
 
-void GrapheneFluid2D::SetVelFer(float x){ vel_fer=x;}
-void GrapheneFluid2D::SetCycFreq(float x) { cyc_freq=x;}
-float GrapheneFluid2D::GetVelFer() const{ return vel_fer;  }
-
-float GrapheneFluid2D::GetCycFreq() const{ return cyc_freq; }
 
 void GrapheneFluid2D::CflCondition(){ // Eventual redefinition
 	dx = lengX / ( float ) ( Nx - 1 );
@@ -504,8 +506,8 @@ void Fluid2D::SaveSnapShot() {
 	atr_time_vel_x.close();
 
 	DataSet dataset_vel_y = GrpVelY->createDataSet(name_dataset, hdf5_float, *DataspaceVelY);
-	Attribute atr_step_vel_y = dataset_vel_x.createAttribute("time step", hdf5_int, atr_dataspace);
-	Attribute atr_time_vel_y = dataset_vel_x.createAttribute("time", hdf5_float, atr_dataspace);
+	Attribute atr_step_vel_y = dataset_vel_y.createAttribute("time step", hdf5_int, atr_dataspace);
+	Attribute atr_time_vel_y = dataset_vel_y.createAttribute("time", hdf5_float, atr_dataspace);
 	dataset_vel_y.write(VelY, hdf5_float);
 	dataset_vel_y.close();
 	atr_step_vel_y.write( hdf5_int, &TimeStepCounter);

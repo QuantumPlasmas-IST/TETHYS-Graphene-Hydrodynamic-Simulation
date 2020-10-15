@@ -109,6 +109,8 @@ class TethysBase {
 		void SetVelSnd(float x);    // setter method for nominal S value
 		void SetKinVis(float x);    // setter method for kinetic shear viscosity
 		void SetColFreq(float x);   // setter method for collision frequency
+		void SetVelFer(float x);        // setter method for Fermi Velocity
+		void SetCycFreq(float x);        // setter method for cyclotron frequency
 		void SetDx(float x);        // setter method for spatial step x
 		void SetDy(float x);        // setter method for spatial step y
 		void SetDt(float x);        // setter method for temporal step
@@ -118,6 +120,8 @@ class TethysBase {
 		float GetVelSnd() const;    // getter method for nominal S value
 		float GetKinVis() const;    // getter method for kinetic shear viscosity
 		float GetColFreq() const;   // getter method for collision frequency
+		float GetVelFer() const;        // getter method for Fermi Velocity
+		float GetCycFreq() const;       // getter method for cyclotron frequency
 		float GetDx() const;        // getter method for spatial discretization x
 		float GetDy() const;        // getter method for spatial discretization y
 		float GetDt() const;        // getter method for time discretization

@@ -12,8 +12,33 @@ using namespace std;
 
 int main(int argc, char **argv){
 
-	int npoints_x = 101;
-	int npoints_y = 101;
+	int npoints_x;
+	int npoints_y;
+	float size_x;
+	float size_y;
+//  float aspect_ratio = 2.0f;
+	float aspect_ratio = 0.5f;
+
+	if(aspect_ratio>1.0f){
+		size_x=1.0f*aspect_ratio;
+		size_y=1.0f;
+		npoints_y=101;
+		npoints_x=(int) (npoints_y-1)*aspect_ratio+1;
+	}
+	if(aspect_ratio==1.0f){
+		size_x=1.0f;
+		size_y=1.0f;
+		npoints_x=101;
+		npoints_y=101;
+	}
+	if(aspect_ratio<1.0f){
+		size_x=1.0f;
+		size_y=1.0f/aspect_ratio;
+		npoints_x=101;
+		npoints_y=(int) (npoints_x-1)/aspect_ratio+1;
+	}
+
+
 	float t=0.0;
 	float dt;		// time step
 
@@ -24,8 +49,8 @@ int main(int argc, char **argv){
 	//DirichletBoundaryCondition boundary_condition;
 
 	/*......CFL routine to determine dt...............................*/
-	graph.SetLengthX(1.0f);
-	graph.SetLengthY(1.0f);
+	graph.SetLengthX(size_x);
+	graph.SetLengthY(size_y);
 	graph.CflCondition();
 	dt=graph.GetDt();
 	/*................................................................*/

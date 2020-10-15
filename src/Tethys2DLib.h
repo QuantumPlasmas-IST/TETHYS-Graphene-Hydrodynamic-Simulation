@@ -10,7 +10,8 @@ using namespace H5;
 class Fluid2D : public TethysBase
 {
 	protected:
-		float * vel_snd_arr;    // array for saving the (potentially varying) S(x,y) function
+		float * vel_snd_arr;    // array for saving the (potentially varying) S(x,y) function at main grid
+		float * vel_snd_arr_mid;    // array for saving the (potentially varying) S(x,y) function at auxiliary grid
 		float * den_mid ;       // mid or auxiliary grids defined with (Nx-1)*(Ny-1) size
 		float * flxX_mid ;
 		float * flxY_mid ;
@@ -53,10 +54,7 @@ class Fluid2D : public TethysBase
 class GrapheneFluid2D : public Fluid2D{
 	public :
 		GrapheneFluid2D(int size_nx, int size_ny, SetUpInput &input_parameters);
-		void SetVelFer(float x);        // setter method for Fermi Velocity
-		float GetVelFer() const;        // getter method for Fermi Velocity
-		void SetCycFreq(float x);        // setter method for cyclotron frequency
-		float GetCycFreq() const;       // getter method for cyclotron frequency
+
 		void CflCondition() override;
 		void SetSimulationTime() override;
 		void MassFluxToVelocity() override; // Converts the mass density flux back to velocity, in graphene  v = p n^{-3/2}
