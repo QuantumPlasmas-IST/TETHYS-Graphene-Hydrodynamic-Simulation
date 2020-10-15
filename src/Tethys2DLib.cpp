@@ -122,7 +122,6 @@ void Fluid2D::MassFluxToVelocity(){
 }
 
 void Fluid2D::Richtmyer(){
-	//TODO implement spatial anisotropy on S
 		int northeast,northwest,southeast,southwest;
 		float den_north, den_south ,den_east ,den_west, px_north, px_south, px_east, px_west, py_north, py_south, py_east, py_west,m_east,m_west,m_north,m_south;
 		float  sound_north, sound_south ,sound_east ,sound_west;
@@ -163,7 +162,7 @@ void Fluid2D::Richtmyer(){
 			m_west=pow(den_west,1.5f);
 			m_north=pow(den_north,1.5f);
 			m_south=pow(den_south,1.5f);
-			den_mid[ks] = 0.25f*(Den[southwest] + Den[southeast] + Den[northwest] + Den[northeast]) // How shall we include vel_snd_arr ? //TODO assumindo  que varia lentamente uma primeira abordagem seria mante-lo sempre calculado em ks na grelhe secundaria e kp na principal
+			den_mid[ks] = 0.25f*(Den[southwest] + Den[southeast] + Den[northwest] + Den[northeast])
 							-0.5f*(dt/dx)*(
 								DensityFluxX(den_east, px_east, py_east,m_east,sound_east)-
 								DensityFluxX(den_west, px_west, py_west,m_west,sound_west))
@@ -365,12 +364,12 @@ void GrapheneFluid2D::CflCondition(){ // Eventual redefinition
 	}
 }	
 
-float  GrapheneFluid2D::DensityFluxX(float n,float flx_x, float flx_y,float mass,__attribute__((unused))  float s){
+float  GrapheneFluid2D::DensityFluxX(float n,float flx_x, __attribute__((unused)) float flx_y, __attribute__((unused)) float mass,__attribute__((unused))  float s){
 	float f_1;
 	f_1 = flx_x / sqrt(n);
 	return f_1;
 }
-float  GrapheneFluid2D::DensityFluxY(float n,float flx_x, float flx_y,float mass,__attribute__((unused))  float s){
+float  GrapheneFluid2D::DensityFluxY(float n,__attribute__((unused)) float flx_x, float flx_y, __attribute__((unused)) float mass,__attribute__((unused))  float s){
 	float f_1;
 	f_1 = flx_y / sqrt(n);
 	return f_1;
@@ -378,22 +377,22 @@ float  GrapheneFluid2D::DensityFluxY(float n,float flx_x, float flx_y,float mass
 
 float  GrapheneFluid2D::MassFluxXFluxX(float n,float flx_x,__attribute__((unused)) float flx_y,float mass, float s){
 	float f_2;
-	f_2 = flx_x * flx_x / mass + vel_fer * vel_fer * mass / 3.0f + 0.5f * vel_snd * vel_snd * n * n;
+	f_2 = flx_x * flx_x / mass + vel_fer * vel_fer * mass / 3.0f + 0.5f * s * s * n * n;
 	return f_2;
 }
-float  GrapheneFluid2D::MassFluxXFluxY(float n,float flx_x, float flx_y,float mass, float s){
+float  GrapheneFluid2D::MassFluxXFluxY(__attribute__((unused)) float n,float flx_x, float flx_y,float mass,__attribute__((unused)) float s){
 	float f_2;
 	f_2 = flx_x * flx_y / mass;
 	return f_2;
 }
-float  GrapheneFluid2D::MassFluxYFluxX(float n,float flx_x, float flx_y,float mass, float s){
+float  GrapheneFluid2D::MassFluxYFluxX(__attribute__((unused)) float n,float flx_x, float flx_y,float mass,__attribute__((unused)) float s){
 	float f_3;
 	f_3 = flx_x * flx_y / mass;
 	return f_3;
 }
 float  GrapheneFluid2D::MassFluxYFluxY(float n,__attribute__((unused)) float flx_x, float flx_y,float mass, float s){
 	float f_3;
-	f_3 = flx_y * flx_y / mass + vel_fer * vel_fer * mass / 3.0f + 0.5f * vel_snd * vel_snd * n * n;
+	f_3 = flx_y * flx_y / mass + vel_fer * vel_fer * mass / 3.0f + 0.5f * s * s * n * n;
 	return f_3;
 }
 

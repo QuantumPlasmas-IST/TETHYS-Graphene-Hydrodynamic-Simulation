@@ -85,7 +85,7 @@ void Fluid1D::SetSimulationTime(){
 		
 void Fluid1D::SetSound(){
 	for(int i = 0; i<Nx-1  ;i++){
-		vel_snd_arr[i]= Sound_Velocity_Anisotropy(i, dx, vel_snd);
+		vel_snd_arr[i]= Sound_Velocity_Anisotropy(i*dx, vel_snd);
 	}
 }
 		

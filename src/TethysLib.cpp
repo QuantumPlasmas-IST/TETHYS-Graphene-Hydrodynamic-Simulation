@@ -12,7 +12,7 @@ using namespace std;
 #	define MAT_EULER 2.71828182845905f
 #endif
 
-float Sound_Velocity_Anisotropy(int i, float dx, float s){
+float Sound_Velocity_Anisotropy(float x, float s) {
 	return s;
 }
 float Sound_Velocity_Anisotropy(float x, float y, float s) {
@@ -71,10 +71,13 @@ void TethysBase::WelcomeScreen() const{
 	                                                                                                 this->RealFreq() << " L/v\342\202\200\033[0m\n";
 	cout << "\033[1m\317\211''\t" << this->ImagFreq() << " v\342\202\200/L\t2\317\200/\317\211''\t" << 2.0 * MAT_PI /
 	                                                                                                   this->ImagFreq() << " L/v\342\202\200\033[0m\n";
-	cout << "Determined maximum simulated time\t\033[1m\nT\342\202\230\342\202\220\342\202\223\t" << Tmax << " L/v\342\202\200\033[0m\n";
+	cout << "\nDetermined maximum simulated time\t\033[1m\nT\342\202\230\342\202\220\342\202\223\t" << Tmax << " L/v\342\202\200\t\342\211\210"<<Tmax/dt<<"\033[0m\t time steps"<<endl;
 	cout <<"Discretisation\n";
-	cout <<"\033[1m\316\224t\t"<<dt<<" L/v\342\202\200\t\316\224x\t"<<dx<<" L\033[0m\n"<<endl;
+	cout <<"\033[1m\316\224t\t"<<dt<<" L/v\342\202\200\t\316\224x\t"<<dx<<" L\t"<<"\316\224y\t"<<dy<<" L\033[0m\n";
+	cout <<"Simulation grid\t\033[1m"<< Nx-1 <<" x "<<Ny-1<<"\033[0m\n";
 }
+
+
 
 std::string TethysBase::GetInfix() const {return file_infix;}
 float TethysBase::GetTmax() const{return Tmax;}
@@ -413,14 +416,17 @@ void Extrema_Finding(float *vec_in, int n, float sound, float dt, float & sat, f
 }
 */
 SetUpInput::SetUpInput(int argc, char ** argv) {
-	if(argc==7){
+	if(argc==7||argc==8){
 		try {
 			SoundVelocity = strtof(argv[1], nullptr);
 			FermiVelocity = strtof(argv[2], nullptr);
 			CollisionFrequency = strtof(argv[3], nullptr);
 			ShearViscosity = strtof(argv[4], nullptr);
 			CyclotronFrequency = strtof(argv[5], nullptr);
-			SaveMode = (int) strtol(argv[6],nullptr,10);    // full data or light save option
+			SaveMode = (int) strtol(argv[6], nullptr, 10);    // full data or light save option
+			if (argc == 8) {
+				AspectRatio = strtof(argv[7], nullptr);
+			}
 			ExceptionsChecking();
 		}catch (const char* msg) {
 			cerr << msg <<"\nExiting"<< endl;
@@ -439,6 +445,8 @@ SetUpInput::SetUpInput(int argc, char ** argv) {
 			cin >> CollisionFrequency;
 			cout << "Define cyclotron frequency: ";
 			cin >> CyclotronFrequency;
+			cout << "Define the aspect ratio x:y ";
+			cin >> AspectRatio;
 			cout << "Define data_save_mode value (0-> light save | 1-> full data): ";
 			cin >> SaveMode;
 			ExceptionsChecking();

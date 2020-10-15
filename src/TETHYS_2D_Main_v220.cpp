@@ -12,12 +12,13 @@ using namespace std;
 
 int main(int argc, char **argv){
 
-	int npoints_x;
-	int npoints_y;
-	float size_x;
-	float size_y;
-//  float aspect_ratio = 2.0f;
-	float aspect_ratio = 0.5f;
+	SetUpInput parameters(argc, argv);
+
+	int npoints_x=100;
+	int npoints_y=100;
+	float size_x=1.0f;
+	float size_y=1.0f;
+	float aspect_ratio = parameters.AspectRatio;
 
 	if(aspect_ratio>1.0f){
 		size_x=1.0f*aspect_ratio;
@@ -42,7 +43,7 @@ int main(int argc, char **argv){
 	float t=0.0;
 	float dt;		// time step
 
-	SetUpInput parameters(argc, argv);
+
 	GrapheneFluid2D	graph(npoints_x, npoints_y, parameters);
 	DyakonovShurBoundaryCondition boundary_condition;
 	//RobinBoundaryCondition boundary_condition;
@@ -87,6 +88,11 @@ int main(int argc, char **argv){
 		boundary_condition.DyakonovShurBc(graph);
 		boundary_condition.YFree(graph);
 
+		if(graph.GetCycFreq()!=0.0f){
+			graph.MagneticSourceFtcs();
+			boundary_condition.DyakonovShurBc(graph);
+			boundary_condition.YFree(graph);
+		}
 
 /*
 		boundary_condition.YFree(graph);

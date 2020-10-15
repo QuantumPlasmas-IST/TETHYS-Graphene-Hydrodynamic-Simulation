@@ -36,7 +36,7 @@ float Integral_2_D(int n, int m, float dx, float dy, const float * f);
 /* Functions to implement the spatial variation of the sound velocity S(x) in 1D or S(x,y) in 2D
  * corresponding to a variation of substrat permitivitty or even the description of a multi gated system.
  * */
-float Sound_Velocity_Anisotropy(int i, float dx, float s);
+float Sound_Velocity_Anisotropy(float x, float s);
 float Sound_Velocity_Anisotropy(float x, float y, float s);
 /*....................................................................................................................*/
 
@@ -54,6 +54,7 @@ class SetUpInput {
 		SetUpInput(int argc, char ** argv);
 		~SetUpInput() = default;
 		int SaveMode;
+		float AspectRatio=1.0f;
 		float SoundVelocity;
 		float FermiVelocity;
 		float CollisionFrequency;
