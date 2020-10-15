@@ -61,19 +61,21 @@ Fluid2D::~Fluid2D(){
 
 
 
-void Fluid2D::SetSound(){ 
-	for(int i = 0; i<Nx  ;i++){
-		for(int j=0; j<Ny ; j++){
-			vel_snd_arr[i+j*Nx]=Sound_Velocity_Anisotropy(i,dx,j,dy, vel_snd);
-			//vel_snd_arr[i+j*Nx]=vel_snd;
-		}
+void Fluid2D::SetSound(){
+	for(int kp=0; kp<=Nx*Ny-1; kp++) { //correr a grelha principal evitando as fronteiras
+		div_t divresult;
+		divresult = div(kp, Nx);
+		int j = divresult.quot;
+		int i = divresult.rem;
+		vel_snd_arr[kp]= Sound_Velocity_Anisotropy(i*dx, j*dy , vel_snd);
 	}
-	/*for(int i = 0; i<Nx-1  ;i++){
-		for(int j=0; j<Ny-1 ; j++){
-			vel_snd_arr_mid[i+j*Nx]=Sound_Velocity_Anisotropy(i,dx,j,dy, vel_snd);
-			//vel_snd_arr_mid[i+j*Nx]=vel_snd;
-		}
-	}*/
+	for(int ks=0; ks<=Nx*Ny-Nx-Ny; ks++) { //correr todos os pontos da grelha secundaria
+		div_t divresult;
+		divresult = div(ks, Nx - 1);
+		int j = divresult.quot;
+		int i = divresult.rem;
+		vel_snd_arr_mid[ks]= Sound_Velocity_Anisotropy((i+0.5f)*dx, (j+0.5f)*dy , vel_snd);
+	}
 }
 
 
@@ -348,7 +350,7 @@ void GrapheneFluid2D::CflCondition(){ // Eventual redefinition
 	}
 	dt = dx/lambda;
 	if(kin_vis>0.0f&&2.0f*kin_vis*dt > dx*dx*dy*dy/(dx*dx+dy*dy)){
-		dt = 0.5*0.25f*dx*dx/kin_vis;
+		dt = 0.5f*0.25f*dx*dx/kin_vis;
 	}
 }	
 

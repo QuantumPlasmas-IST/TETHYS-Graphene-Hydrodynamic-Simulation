@@ -219,8 +219,7 @@ float GrapheneFluid1D::VelocitySource(float n,float v,float s){
 	return q_2;
 }
 
-void GrapheneFluid1D::SetVelFer(float x){ vel_fer=x; }
-float GrapheneFluid1D::GetVelFer() const{ return vel_fer; }
+
 int Fluid1D::GetSnapshotStep() const { return snapshot_step;}
 int Fluid1D::GetSnapshotFreq() const {return snapshot_per_period;}
 

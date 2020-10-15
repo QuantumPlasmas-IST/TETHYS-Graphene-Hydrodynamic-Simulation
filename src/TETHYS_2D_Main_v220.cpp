@@ -23,7 +23,7 @@ int main(int argc, char **argv){
 		size_x=1.0f*aspect_ratio;
 		size_y=1.0f;
 		npoints_y=101;
-		npoints_x=(int) (npoints_y-1)*aspect_ratio+1;
+		npoints_x= static_cast<int>( (npoints_y-1)*aspect_ratio)+1;
 	}
 	if(aspect_ratio==1.0f){
 		size_x=1.0f;
@@ -35,7 +35,7 @@ int main(int argc, char **argv){
 		size_x=1.0f;
 		size_y=1.0f/aspect_ratio;
 		npoints_x=101;
-		npoints_y=(int) (npoints_x-1)/aspect_ratio+1;
+		npoints_y= static_cast<int>( (npoints_x - 1) / aspect_ratio ) + 1;
 	}
 
 

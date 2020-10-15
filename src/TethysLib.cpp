@@ -15,7 +15,7 @@ using namespace std;
 float Sound_Velocity_Anisotropy(int i, float dx, float s){
 	return s;
 }
-float Sound_Velocity_Anisotropy(int i,float dx, int j,float dy, float s){
+float Sound_Velocity_Anisotropy(float x, float y, float s) {
 	return s;
 }
 
