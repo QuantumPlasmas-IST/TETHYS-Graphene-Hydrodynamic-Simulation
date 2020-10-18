@@ -21,7 +21,7 @@ int main(int argc, char **argv){
 
 	SetUpInput parameters(argc, argv);
 	GrapheneFluid1D	graph(npoints, parameters);
-	DyakonovShurBoundaryCondition BC;
+	DyakonovShurBoundaryCondition boundary_condition;
 
 	graph.BannerDisplay();
 	/*......CFL routine to determine dt...............................*/
@@ -48,7 +48,7 @@ int main(int argc, char **argv){
 	////////////////////////////////////////////////////////////////////
 	// Initialization	
 	graph.InitialCondRand();
-	BC.DyakonovShurBc(graph);
+	boundary_condition.DyakonovShurBc(graph);
 	////////////////////////////////////////////////////////////////////
 
 	cout << "\033[1;7;5;33m Program Running \033[0m"<<endl;
@@ -60,7 +60,7 @@ int main(int argc, char **argv){
 		// Main algorithm		
 		graph.Richtmyer();
 		// Impose boundary conditions
-		BC.DyakonovShurBc(graph);
+		boundary_condition.DyakonovShurBc(graph);
 		// Applying average filters for smoothing 	
 		graph.Smooth(2);
 		//Record full data
