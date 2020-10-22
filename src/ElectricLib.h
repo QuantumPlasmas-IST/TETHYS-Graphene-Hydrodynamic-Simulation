@@ -19,7 +19,8 @@ public:
 	float OhmPower(const GrapheneFluid1D& graphene);
 	//float OhmPower(GrapheneFluid2D& graphene);
 	float AverageCurrent(const GrapheneFluid1D& graphene);
-	float AverageCurrent(const GrapheneFluid2D& graphene);
+	float AverageHallCurrent(const GrapheneFluid2D& graphene);
+	float AverageDirectCurrent(const GrapheneFluid2D& graphene);
 	float ElectricDipole(const GrapheneFluid1D& graphene);
 	//float ElectricDipole(GrapheneFluid2D& graphene);
 	float ElectricDipoleVariation(const GrapheneFluid1D& graphene);

@@ -76,6 +76,8 @@ void Fluid2D::SetSound(){
 		int i = divresult.rem;
 		vel_snd_arr_mid[ks]= Sound_Velocity_Anisotropy((i+0.5f)*dx, (j+0.5f)*dy , vel_snd);
 	}
+
+
 }
 
 
@@ -475,7 +477,12 @@ void GrapheneFluid2D::MagneticSourceFtcs(){
 
 
 
-
+void Fluid2D::SaveSound() {
+	const FloatType      hdf5_float(PredType::NATIVE_FLOAT);
+	DataSet dataset_vel_snd = GrpDat->createDataSet("Sound velocicity", hdf5_float, *DataspaceVelSnd);
+	dataset_vel_snd.write(vel_snd_arr, hdf5_float);
+	dataset_vel_snd.close();
+}
 
 void Fluid2D::SaveSnapShot() {
 	const FloatType      hdf5_float(PredType::NATIVE_FLOAT);
