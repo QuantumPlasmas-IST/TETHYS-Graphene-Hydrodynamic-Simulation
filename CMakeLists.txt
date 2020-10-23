@@ -43,7 +43,7 @@ add_executable(TETHYS_2D
         src/Tethys1DLib.h
         src/Tethys2DLib.cpp
         src/Tethys2DLib.h
-        src/TETHYS_2D_Main_v220.cpp
+        src/TETHYS_2D_Main_v221.cpp
         src/TethysLib.cpp
         src/TethysLib.h)
 
