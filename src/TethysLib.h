@@ -97,7 +97,8 @@ class TethysBase {
 		Group* GrpDen ;     // group for ALL Density snapshots
 		Group* GrpVelX ;    // group for ALL Velocity X snapshots
 		Group* GrpVelY ;    // group for ALL Velocity X snapshots
-		DataSpace* DataspaceVelSnd; // dataspace for the sound velocity
+		DataSpace* DataspaceVelSnd; // dataspace for the sound anisotropy
+		DataSpace* DataspaceVelSndMid; // dataspace for the sound anisotropy
 		DataSpace* DataspaceDen;    // dataspace for EACH Density snapshots
 		DataSpace* DataspaceVelX;   // dataspace for EACH Velocity X snapshots
 		DataSpace* DataspaceVelY;   // dataspace for EACH Velocity Y snapshots

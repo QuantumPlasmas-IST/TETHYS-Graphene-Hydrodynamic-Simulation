@@ -17,9 +17,11 @@ float Sound_Velocity_Anisotropy(float x, float s) {
 }
 float Sound_Velocity_Anisotropy(float x, float y, float s) {
 	float S_mod;
-	float slope=0.05;
-	S_mod = s * (1.0f - slope * x);
-	//S_mod=s;
+	//float slope=0.05;
+	//S_mod = s * (1.0f - slope * x);
+	//S_mod = s + 0.2f*pow(2.0f + cos(25.0f*x/MAT_PI),2.0f)/8.0f;
+
+	S_mod=s;//-y*(y-1.0f);
 	return S_mod;
 }
 
@@ -264,6 +266,9 @@ void TethysBase::CreateHdf5File(){
 		DataspaceDen = new DataSpace(RANK, dimsf );
 		DataspaceVelX = new DataSpace(RANK, dimsf );
 		DataspaceVelY = new DataSpace(RANK, dimsf );
+		dimsf[0] = static_cast<hsize_t>(Ny-1);
+		dimsf[1] = static_cast<hsize_t>(Nx-1);  //troquei !
+		DataspaceVelSndMid = new DataSpace(RANK, dimsf );
 	}
 }
 
