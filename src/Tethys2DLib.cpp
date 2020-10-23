@@ -479,13 +479,9 @@ void GrapheneFluid2D::MagneticSourceFtcs(){
 
 void Fluid2D::SaveSound() {
 	const FloatType      hdf5_float(PredType::NATIVE_FLOAT);
-	DataSet dataset_vel_snd = GrpDat->createDataSet("Sound velocity", hdf5_float, *DataspaceVelSnd);
+	DataSet dataset_vel_snd = GrpDat->createDataSet("Sound velocicity", hdf5_float, *DataspaceVelSnd);
 	dataset_vel_snd.write(vel_snd_arr, hdf5_float);
 	dataset_vel_snd.close();
-	//IN the case of debugging
-	//DataSet dataset_vel_snd_mid = GrpDat->createDataSet("Sound velocity mid", hdf5_float, *DataspaceVelSndMid);
-	//dataset_vel_snd_mid.write(vel_snd_arr_mid, hdf5_float);
-	//dataset_vel_snd_mid.close();
 }
 
 void Fluid2D::SaveSnapShot() {
