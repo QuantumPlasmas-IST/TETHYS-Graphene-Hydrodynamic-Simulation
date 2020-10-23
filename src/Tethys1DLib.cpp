@@ -149,8 +149,8 @@ void Fluid1D::Richtmyer(){
 		{
 			GradVel[i] = (-0.5f * Vel[i - 1] + 0.5f * Vel[i + 1]) / dx;
 		}
-	GradVel[0] = (-1.5f * Vel[0] + 2.0f * Vel[1] - 0.5f * Vel[2]) / dx;
-	GradVel[Nx - 1] = (0.5f * Vel[Nx - 1 - 2] - 2.0f * Vel[Nx - 1 - 1] + 1.5f * Vel[Nx - 1]) / dx;
+		GradVel[0] = (-1.5f * Vel[0] + 2.0f * Vel[1] - 0.5f * Vel[2]) / dx;
+		GradVel[Nx - 1] = (0.5f * Vel[Nx - 1 - 2] - 2.0f * Vel[Nx - 1 - 1] + 1.5f * Vel[Nx - 1]) / dx;
 		//
 		//Half step calculate density and velocity at time k+0.5 at the spatial midpoints
 		//
@@ -158,10 +158,10 @@ void Fluid1D::Richtmyer(){
 		{
 			den_mid[i] = 0.5f*(Den[i] + Den[i + 1] )
 				- ( 0.5f*dt/dx ) * (DensityFlux(Den[i + 1], Vel[i + 1], vel_snd_arr[i]) - DensityFlux(Den[i], Vel[i], vel_snd_arr[i]) )
-					;//+ ( 0.5f*dt    ) * DensitySource(0.5f*(Den[i] + Den[i + 1]), 0.5f * (Vel[i] + Vel[i + 1]), vel_snd_arr[i]) ;
+					+ ( 0.5f*dt    ) * DensitySource(0.5f*(Den[i] + Den[i + 1]), 0.5f * (Vel[i] + Vel[i + 1]), vel_snd_arr[i]) ;
 			vel_mid[i] = 0.5f*(Vel[i] + Vel[i + 1] )
 				- ( 0.5f*dt/dx ) * (VelocityFlux(Den[i + 1], Vel[i + 1], GradVel[i + 1], vel_snd_arr[i]) - VelocityFlux(Den[i], Vel[i], GradVel[i], vel_snd_arr[i]) )
-					;//+ ( 0.5f*dt    ) * VelocitySource(0.5f*(Den[i] + Den[i + 1]), 0.5f * (Vel[i] + Vel[i + 1]), vel_snd_arr[i]) ;
+					+ ( 0.5f*dt    ) * VelocitySource(0.5f*(Den[i] + Den[i + 1]), 0.5f * (Vel[i] + Vel[i + 1]), vel_snd_arr[i]) ;
 		}
 		//
 		//  Calculating the velocity gradient at k+1/2 time
@@ -177,12 +177,12 @@ void Fluid1D::Richtmyer(){
 		//
 		for ( int i = 1; i <= Nx - 2; i++ )
 		{
-			//float den_old = Den[i];
-			//float vel_old = Vel[i];
+			float den_old = Den[i];
+			float vel_old = Vel[i];
 			Den[i] = Den[i] - (dt / dx) * (DensityFlux(den_mid[i], vel_mid[i], vel_snd_arr[i]) - DensityFlux(den_mid[i - 1], vel_mid[i - 1], vel_snd_arr[i] ) )
-			        ;// +  dt * DensitySource(den_old,vel_old,vel_snd_arr[i]);
+			         +  dt * DensitySource(den_old,vel_old,vel_snd_arr[i]);
 			Vel[i] = Vel[i] - (dt / dx) * (VelocityFlux(den_mid[i], vel_mid[i], grad_vel_mid[i], vel_snd_arr[i]) - VelocityFlux(den_mid[i - 1], vel_mid[i - 1], grad_vel_mid[i - 1], vel_snd_arr[i] ) )
-			        ;// +  dt * VelocitySource(den_old,vel_old,vel_snd_arr[i]);
+					 +  dt * VelocitySource(den_old,vel_old,vel_snd_arr[i]);
 			Cur[i] = Vel[i] * Den[i];
 		}
 } 
@@ -210,13 +210,10 @@ float GrapheneFluid1D::VelocityFlux(float n,float v,float dv,float s){
 	return f_2;
 }
 float GrapheneFluid1D::DensitySource(float n,float v,float s){
-	float q_1=0.0f;
-	return q_1;
+	return 0.0f;
 }
 float GrapheneFluid1D::VelocitySource(float n,float v,float s){
-	float q_2;
-	q_2= -1.0f * col_freq * (v - 1);
-	return q_2;
+	return -1.0f * col_freq * v ;
 }
 
 
