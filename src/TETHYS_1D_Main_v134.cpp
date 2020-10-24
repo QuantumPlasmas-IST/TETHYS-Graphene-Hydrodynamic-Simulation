@@ -14,13 +14,13 @@ using namespace std;
 
 
 int main(int argc, char **argv){
-	const int npoints=101; 							// number of spatial points
+	//const int npoints=101; 							// number of spatial points
 	float t=0.0;
 	//float dx;								// spatial discretisation
 	float dt;								// time step
 
-	SetUpInput parameters(argc, argv);
-	GrapheneFluid1D	graph(npoints, parameters);
+	SetUpParameters parameters(argc, argv);
+	GrapheneFluid1D graph(parameters);
 	DyakonovShurBoundaryCondition boundary_condition;
 
 	graph.BannerDisplay();

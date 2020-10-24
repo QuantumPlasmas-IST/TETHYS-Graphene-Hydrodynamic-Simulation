@@ -246,6 +246,7 @@ TethysBase::TethysBase(int size_nx, int size_ny, int dimension){
 	file_infix = buffer;
 }
 
+
 void TethysBase::CreateHdf5File(){
 	std::string hdf5name;
 	HDF5fileCreated=true;
@@ -257,7 +258,6 @@ void TethysBase::CreateHdf5File(){
 	}
 	H5std_string  FILE_NAME( hdf5name );
 	Hdf5File = new H5File(FILE_NAME, H5F_ACC_TRUNC );
-
 	GrpDat = new Group(Hdf5File->createGroup("/Data" ));
 	GrpDen = new Group(Hdf5File->createGroup("/Data/Density" ));
 	GrpVelX = new Group(Hdf5File->createGroup("/Data/VelocityX" ));
@@ -439,7 +439,23 @@ void Extrema_Finding(float *vec_in, int n, float sound, float dt, float & sat, f
 	data_extrema.close();
 }
 */
-SetUpInput::SetUpInput(float sound, float fermi, float coll, float visco, float cyclo, int mode, float aspect){
+
+SetUpParameters::SetUpParameters() {
+	SizeX=101;
+	SizeY=101;
+	SoundVelocity = 30.0f;
+	FermiVelocity = 10.0f;
+	CollisionFrequency = 0.01f;
+	ShearViscosity = 0.0f;
+	CyclotronFrequency = 0.0f;
+	SaveMode = 1;
+	this->DefineGeometry();
+}
+
+
+SetUpParameters::SetUpParameters(float sound, float fermi, float coll, float visco, float cyclo, int mode, float aspect){
+	SizeX=101;
+	SizeY=101;
 	try {
 		SoundVelocity = sound;
 		FermiVelocity = fermi;
@@ -448,15 +464,18 @@ SetUpInput::SetUpInput(float sound, float fermi, float coll, float visco, float 
 		CyclotronFrequency = cyclo;
 		SaveMode = mode;
 		AspectRatio = aspect;
-		ExceptionsChecking();
+		this->ExceptionsChecking();
 	}catch (const char* msg) {
 		cerr << msg <<"\nExiting"<< endl;
 		exit(EXIT_FAILURE);
 	}
+	this->DefineGeometry();
 }
 
 
-SetUpInput::SetUpInput(int argc, char ** argv) {
+SetUpParameters::SetUpParameters(int argc, char ** argv) {
+	SizeX=101;
+	SizeY=101;
 	if(argc==7||argc==8){
 		try {
 			SoundVelocity = strtof(argv[1], nullptr);
@@ -468,7 +487,7 @@ SetUpInput::SetUpInput(int argc, char ** argv) {
 			if (argc == 8) {
 				AspectRatio = strtof(argv[7], nullptr);
 			}
-			ExceptionsChecking();
+			this->ExceptionsChecking();
 		}catch (const char* msg) {
 			cerr << msg <<"\nExiting"<< endl;
 			exit(EXIT_FAILURE);
@@ -490,17 +509,18 @@ SetUpInput::SetUpInput(int argc, char ** argv) {
 			cin >> AspectRatio;
 			cout << "Define data_save_mode value (0-> light save | 1-> full data): ";
 			cin >> SaveMode;
-			ExceptionsChecking();
+			this->ExceptionsChecking();
 		}catch (const char* msg) {
 			cerr << msg  <<"\nExiting"<< endl;
 			exit(EXIT_FAILURE);
 		}
 	}
+	this->DefineGeometry();
 }
 
 
 
-void SetUpInput::ExceptionsChecking() const{
+void SetUpParameters::ExceptionsChecking() const{
 	if(SoundVelocity<=0.0f){
 		throw "ERROR: Unphysical Sound Velocity";
 	}
@@ -520,3 +540,49 @@ void SetUpInput::ExceptionsChecking() const{
 		throw "ERROR: Unknown save mode option";
 	}
 }
+
+void SetUpParameters::ParametersFromHdf5File(const std::string& hdf5name){
+	H5std_string  FILE_NAME( hdf5name );
+	H5File* hdf5_file;
+	Group* grp_dat;
+	hdf5_file = new H5File(FILE_NAME, H5F_ACC_RDONLY );
+	grp_dat = new Group(hdf5_file->openGroup("/Data" ));
+	auto *attr_n_x = new Attribute(grp_dat->openAttribute("Number of spatial points x"));
+	auto *attr_n_y = new Attribute(grp_dat->openAttribute("Number of spatial points y"));
+	auto *attr_snd = new Attribute(grp_dat->openAttribute("Sound velocity"));
+	auto *attr_fer = new Attribute(grp_dat->openAttribute("Fermi velocity"));
+	auto *attr_vis = new Attribute(grp_dat->openAttribute("Kinetic viscosity"));
+	auto *attr_cyc = new Attribute(grp_dat->openAttribute("Cyclotron frequency"));
+	auto *attr_col = new Attribute(grp_dat->openAttribute("Collision frequency"));
+	int npoints_x,npoints_y;
+	attr_n_x->read(attr_n_x->getDataType(), &npoints_x);
+	attr_n_y->read(attr_n_y->getDataType(), &npoints_y);
+	attr_snd->read(attr_snd->getDataType(), &SoundVelocity);
+	attr_fer->read(attr_fer->getDataType(), &FermiVelocity);
+	attr_vis->read(attr_vis->getDataType(), &ShearViscosity);
+	attr_cyc->read(attr_cyc->getDataType(), &CyclotronFrequency);
+	attr_col->read(attr_col->getDataType(), &CollisionFrequency);
+	AspectRatio =  (npoints_x-1)/(npoints_y-1);
+}
+
+void SetUpParameters::DefineGeometry() {
+	if(AspectRatio>1.0f){
+		Length=1.0f*AspectRatio;
+		Width=1.0f;
+		SizeY=201;
+		SizeX= static_cast<int>( (SizeY-1)*AspectRatio)+1;
+	}
+	if(AspectRatio==1.0f){
+		Length=1.0f;
+		Width=1.0f;
+		SizeX=201;
+		SizeY=201;
+	}
+	if(AspectRatio<1.0f){
+		Length=1.0f;
+		Width=1.0f/AspectRatio;
+		SizeX=201;
+		SizeY= static_cast<int>( (SizeX - 1) / AspectRatio) + 1;
+	}
+}
+

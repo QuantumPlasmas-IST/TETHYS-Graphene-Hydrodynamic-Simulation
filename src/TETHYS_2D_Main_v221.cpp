@@ -12,46 +12,32 @@ using namespace std;
 
 int main(int argc, char **argv){
 
-	SetUpInput parameters(argc, argv);
+	SetUpParameters parameters(argc, argv);
+	parameters.DefineGeometry();
+	//int npoints_x=200;
+	//int npoints_y=200;
+	//float size_x=1.0f;
+	//float size_y=1.0f;
+	//float aspect_ratio = parameters.AspectRatio;
 
-	int npoints_x=200;
-	int npoints_y=200;
-	float size_x=1.0f;
-	float size_y=1.0f;
-	float aspect_ratio = parameters.AspectRatio;
 
-	if(aspect_ratio>1.0f){
-		size_x=1.0f*aspect_ratio;
-		size_y=1.0f;
-		npoints_y=201;
-		npoints_x= static_cast<int>( (npoints_y-1)*aspect_ratio)+1;
-	}
-	if(aspect_ratio==1.0f){
-		size_x=1.0f;
-		size_y=1.0f;
-		npoints_x=201;
-		npoints_y=201;
-	}
-	if(aspect_ratio<1.0f){
-		size_x=1.0f;
-		size_y=1.0f/aspect_ratio;
-		npoints_x=201;
-		npoints_y= static_cast<int>( (npoints_x - 1) / aspect_ratio ) + 1;
-	}
 
 
 	float t=0.0;
 	float dt;		// time step
 
 
-	GrapheneFluid2D	graph(npoints_x, npoints_y, parameters);
+	GrapheneFluid2D graph(parameters);
 	DyakonovShurBoundaryCondition boundary_condition;
 	//RobinBoundaryCondition boundary_condition;
 	//DirichletBoundaryCondition boundary_condition;
 
+//	cout<<graph.GetLengthX()<<endl;
+//	cout<<graph.GetLengthY()<<endl;
+
 	/*......CFL routine to determine dt...............................*/
-	graph.SetLengthX(size_x);
-	graph.SetLengthY(size_y);
+	//graph.SetLengthX(size_x);
+	//graph.SetLengthY(size_y);
 	graph.CflCondition();
 	dt=graph.GetDt();
 	/*................................................................*/

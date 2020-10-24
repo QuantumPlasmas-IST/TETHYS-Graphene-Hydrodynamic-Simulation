@@ -12,7 +12,7 @@ using namespace H5;
 using namespace std;
 
 
-GrapheneFluid1D::GrapheneFluid1D(int size_n,  SetUpInput &input_parameters): Fluid1D(size_n, input_parameters){
+GrapheneFluid1D::GrapheneFluid1D(SetUpParameters &input_parameters) : Fluid1D(input_parameters) {
 	vel_fer = input_parameters.FermiVelocity;
 	col_freq = input_parameters.CollisionFrequency;
 	char buffer [50];
@@ -22,25 +22,25 @@ GrapheneFluid1D::GrapheneFluid1D(int size_n,  SetUpInput &input_parameters): Flu
 
 /*....................................................................*/	
 /*.......... 1 Dimensional Fluid Class ...............................*/	
-/*....................................................................*/	
-Fluid1D::Fluid1D(int size_nx, const SetUpInput &input_parameters): TethysBase{size_nx, 0, 1}{
-	Nx = size_nx;
+/*....................................................................*/
+Fluid1D::Fluid1D(const SetUpParameters &input_parameters) : TethysBase{input_parameters.SizeX, 0, 1}{
+	Nx = input_parameters.SizeX;
 	vel_snd = input_parameters.SoundVelocity;
 	kin_vis = input_parameters.ShearViscosity;
 	char buffer [50];
 	sprintf (buffer, "S=%.2fvis=%.2f", vel_snd, kin_vis);
 	file_infix = buffer;
-	Den = new float[size_nx]();
-	Vel = new float[size_nx]();
-	GradVel= new float[size_nx]();
-	Cur = new float[size_nx]();
-	DenCor = new float[size_nx]();
-	VelCor = new float[size_nx]();
-	CurCor = new float[size_nx]();
-	den_mid = new float[size_nx - 1]();
-	vel_mid = new float[size_nx - 1]();
-	grad_vel_mid = new float[size_nx - 1]();
-	vel_snd_arr = new float[size_nx - 1]();
+	Den = new float[Nx]();
+	Vel = new float[Nx]();
+	GradVel= new float[Nx]();
+	Cur = new float[Nx]();
+	DenCor = new float[Nx]();
+	VelCor = new float[Nx]();
+	CurCor = new float[Nx]();
+	den_mid = new float[Nx - 1]();
+	vel_mid = new float[Nx - 1]();
+	grad_vel_mid = new float[Nx - 1]();
+	vel_snd_arr = new float[Nx - 1]();
 }	
 	
 Fluid1D::~Fluid1D(){

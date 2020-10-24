@@ -49,12 +49,17 @@ void Average_Filter(const float * vec_in, float * vec_out, int size , int width 
  * Struct to pass the initialization
  * */
 
-class SetUpInput {
+class SetUpParameters {
 	public:
-		SetUpInput(int argc, char ** argv);
-		SetUpInput(float sound, float fermi, float coll, float visco, float cyclo, int mode, float aspect);
-		~SetUpInput() = default;
+		SetUpParameters();
+		SetUpParameters(int argc, char ** argv);
+		SetUpParameters(float sound, float fermi, float coll, float visco, float cyclo, int mode, float aspect);
+		~SetUpParameters() = default;
 		int SaveMode;
+		int SizeX;
+		int SizeY;
+		float Length=1.0f;
+		float Width=1.0f;
 		float AspectRatio=1.0f;
 		float SoundVelocity;
 		float FermiVelocity;
@@ -62,6 +67,8 @@ class SetUpInput {
 		float ShearViscosity;
 		float CyclotronFrequency;
 		void ExceptionsChecking() const;
+		void DefineGeometry();
+		void ParametersFromHdf5File(const std::string& hdf5name);
 };
 
 
@@ -138,6 +145,7 @@ class TethysBase {
 
 
 		std::string GetInfix() const;   // getter method for file name infix
+
 		void CreateHdf5File();          // creates the HDF5 files with the necessary structure
 		void CloseHdf5File() const;           // closes the HDF5 file
 		void WriteAttributes();          // saves the simulation attributes (either physical and simulation parameters)

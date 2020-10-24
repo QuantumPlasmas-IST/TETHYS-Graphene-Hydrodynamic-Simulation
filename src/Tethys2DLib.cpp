@@ -13,10 +13,11 @@ using namespace std;
 #	define MAT_PI 3.14159265358979323846
 #endif
 
-Fluid2D::Fluid2D(int size_nx, int size_ny, const SetUpInput &input_parameters) : TethysBase{size_nx, size_ny, 2}{
-	Nx = size_nx;
-	Ny = size_ny;
-
+Fluid2D::Fluid2D(const SetUpParameters &input_parameters) : TethysBase{input_parameters.SizeX, input_parameters.SizeY, 2}{
+	Nx = input_parameters.SizeX;
+	Ny = input_parameters.SizeY;
+	lengX=input_parameters.Length;
+	lengY=input_parameters.Width;
 	vel_snd = input_parameters.SoundVelocity;//sound_velocity;
 	kin_vis = input_parameters.ShearViscosity;//shear_viscosity;
 
@@ -42,7 +43,7 @@ Fluid2D::Fluid2D(int size_nx, int size_ny, const SetUpInput &input_parameters) :
 	flxY_mid	= new float[(Nx-1)*(Ny-1)]();
 	vel_snd_arr_mid	= new float[(Nx-1)*(Ny-1)]();
 }
-	
+
 Fluid2D::~Fluid2D(){
 	delete [] Den;
 	delete [] VelX;
@@ -333,10 +334,12 @@ void Fluid2D::SetSimulationTime(){
 
 
 
-GrapheneFluid2D::GrapheneFluid2D(int size_nx, int size_ny, SetUpInput &input_parameters): Fluid2D(size_nx, size_ny, input_parameters){
+GrapheneFluid2D::GrapheneFluid2D(SetUpParameters &input_parameters) : Fluid2D(input_parameters) {
 	vel_fer = input_parameters.FermiVelocity ;//fermi_velocity;
 	col_freq = input_parameters.CollisionFrequency ; // collision_frequency;
 	cyc_freq = input_parameters.CyclotronFrequency ; //cyclotron_frequency;
+
+
 	char buffer [50];
 	sprintf (buffer, "S=%.2fvF=%.2fvis=%.2fl=%.2fwc=%.2f", vel_snd, vel_fer, kin_vis, col_freq,cyc_freq);
 	file_infix = buffer;

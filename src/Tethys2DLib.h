@@ -28,7 +28,7 @@ class Fluid2D : public TethysBase
 		float * FlxY ;      // mass density flux y component
 		float * CurX ;      // current density x component
 		float * CurY ;      // current density y component
-		Fluid2D(int size_nx, int size_ny, const SetUpInput &input_parameters);
+		explicit Fluid2D(const SetUpParameters &input_parameters);
 		~Fluid2D();
 		bool Snapshot() const;
 		void SetSound();     // Applies the anisotropy to the sound velocity array
@@ -57,7 +57,7 @@ class Fluid2D : public TethysBase
 
 class GrapheneFluid2D : public Fluid2D{
 	public :
-		GrapheneFluid2D(int size_nx, int size_ny, SetUpInput &input_parameters);
+		explicit GrapheneFluid2D(SetUpParameters &input_parameters);
 
 		void CflCondition() override;
 		void SetSimulationTime() override;
