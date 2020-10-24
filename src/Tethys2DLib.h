@@ -10,7 +10,8 @@ using namespace H5;
 class Fluid2D : public TethysBase
 {
 	protected:
-		float * vel_snd_arr;    // array for saving the (potentially varying) S(x,y) function
+		float * vel_snd_arr;    // array for saving the (potentially varying) S(x,y) function at main grid
+		float * vel_snd_arr_mid;    // array for saving the (potentially varying) S(x,y) function at auxiliary grid
 		float * den_mid ;       // mid or auxiliary grids defined with (Nx-1)*(Ny-1) size
 		float * flxX_mid ;
 		float * flxY_mid ;
@@ -36,16 +37,20 @@ class Fluid2D : public TethysBase
 		void InitialCondTest();             // Initial condition for testing and debugging
 		virtual void CflCondition();    // Calculates dx and imposes Courant–Friedrichs–Lewy condition to dt
 		void Richtmyer();                   // Central Algorithm for solving the hyperbolic conservation law
-		virtual float DensityFluxX(__attribute__((unused)) float n, float flx_x, __attribute__((unused)) float vel_y, __attribute__((unused)) float mass, __attribute__((unused)) float s); // density equation (continuity equation) conserved flux X component
-		virtual float DensityFluxY(__attribute__((unused)) float n, __attribute__((unused)) float vel_x, float vel_y, __attribute__((unused)) float mass, __attribute__((unused)) float s); // density equation (continuity equation) conserved flux Y component
+		virtual float DensityFluxX(__attribute__((unused)) float n, float flx_x, __attribute__((unused)) float flx_y, __attribute__((unused)) float mass, __attribute__((unused)) float s); // density equation (continuity equation) conserved flux X component
+		virtual float DensityFluxY(__attribute__((unused)) float n, __attribute__((unused)) float flx_x, float flx_y, __attribute__((unused)) float mass, __attribute__((unused)) float s); // density equation (continuity equation) conserved flux Y component
+		virtual float DensitySource(__attribute__((unused)) float n,__attribute__((unused)) float flx_x,__attribute__((unused)) float flx_y,__attribute__((unused)) float mass,__attribute__((unused)) float s);
 		virtual float MassFluxXFluxX(float n, float flx_x, float flx_y,__attribute__((unused)) float mass, float s); // velocity X component equation (momentum equation) conserved flux X component
 		virtual float MassFluxXFluxY(float n, float flx_x, float flx_y,__attribute__((unused)) float mass, float s); // velocity X component equation (momentum equation) conserved flux Y component
+		virtual float MassFluxXSource(__attribute__((unused))float n, float flx_x,__attribute__((unused)) float flx_y,__attribute__((unused)) float mass,__attribute__((unused)) float s);
 		virtual float MassFluxYFluxX(float n, float flx_x, float flx_y,__attribute__((unused)) float mass, float s); // velocity Y component equation (momentum equation) conserved flux X component
 		virtual float MassFluxYFluxY(float n, float flx_x, float flx_y,__attribute__((unused)) float mass, float s); // velocity Y component equation (momentum equation) conserved flux Y component
+		virtual float MassFluxYSource(__attribute__((unused))float n, float flx_x,__attribute__((unused)) float flx_y,__attribute__((unused)) float mass,__attribute__((unused)) float s);
 		virtual void MassFluxToVelocity(); // Converts the mass flux density p=mnv to velocity
 		void CreateFluidFile();     // create and open the simplified .dat file output
 		void WriteFluidFile(float t) ; // writes the line of time t on the simplified .dat file output
 		void SaveSnapShot();
+		void SaveSound();
 		int GetSnapshotStep() const;
 		int GetSnapshotFreq() const;
 };
@@ -53,20 +58,22 @@ class Fluid2D : public TethysBase
 class GrapheneFluid2D : public Fluid2D{
 	public :
 		GrapheneFluid2D(int size_nx, int size_ny, SetUpInput &input_parameters);
-		void SetVelFer(float x);        // setter method for Fermi Velocity
-		float GetVelFer() const;        // getter method for Fermi Velocity
-		void SetCycFreq(float x);        // setter method for cyclotron frequency
-		float GetCycFreq() const;       // getter method for cyclotron frequency
+
 		void CflCondition() override;
 		void SetSimulationTime() override;
 		void MassFluxToVelocity() override; // Converts the mass density flux back to velocity, in graphene  v = p n^{-3/2}
 		/*Override fluxes and sources to specifics of graphene physics*/
 		float DensityFluxX(float n, float flx_x, float flx_y,float mass, float s) override;
 		float DensityFluxY(float n, float flx_x, float flx_y,float mass, float s) override;
+		float DensitySource(float n, float flx_x, float flx_y, float mass, float s)override;
 		float MassFluxXFluxX(float n, float flx_x, float flx_y,float mass, float s) override;
 		float MassFluxXFluxY(float n, float flx_x, float flx_y,float mass, float s) override;
+		float MassFluxXSource(float n, float flx_x, float flx_y, float mass, float s)override;
 		float MassFluxYFluxX(float n, float flx_x, float flx_y,float mass, float s) override;
 		float MassFluxYFluxY(float n, float flx_x, float flx_y,float mass, float s) override;
+		float MassFluxYSource(float n, float flx_x, float flx_y, float mass, float s)override;
+
+
 
 		void MagneticSourceSemiAnalytic(); // Semi analytic method for the magnetic interaction
 		void MagneticSourceFtcs();  // Forward Time Centered Space method for the magnetic interaction

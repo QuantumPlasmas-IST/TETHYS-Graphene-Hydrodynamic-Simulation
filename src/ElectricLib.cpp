@@ -38,7 +38,13 @@ void ElectroAnalysis::WriteElectroFile(float t,const GrapheneFluid1D& graphene){
 }
 
 void ElectroAnalysis::WriteElectroFile(float t,const GrapheneFluid2D& graphene){
-	data_electro << t << "\t" << "\n";
+	float q_net = this->NetCharge(graphene);
+	float i_ds   = this->AverageDirectCurrent(graphene);
+	float i_hall = this->AverageHallCurrent(graphene);
+	float p_ohm = this->OhmPower(graphene);
+	float dipole_var=this->ElectricDipoleVariation(graphene);
+	float dipole=this->ElectricDipole(graphene);
+	data_electro << t << "\t"<<q_net << "\t"<<i_ds<<"\t"<<i_hall<< "\t" << p_ohm << "\t" << dipole << "\t" << dipole_var << "\n";
 }
 
 float ElectroAnalysis::NetCharge(const GrapheneFluid1D& graphene){
@@ -52,9 +58,14 @@ float ElectroAnalysis::AverageCurrent(const GrapheneFluid1D& graphene){
 	return Integral_1_D(graphene.SizeX(), graphene.GetDx(), graphene.CurCor);
 }
 
-float ElectroAnalysis::AverageCurrent(const GrapheneFluid2D& graphene){
+float ElectroAnalysis::AverageDirectCurrent(const GrapheneFluid2D& graphene){
 	return Integral_2_D(graphene.SizeX(),graphene.SizeY(), graphene.GetDx(),graphene.GetDy(), graphene.CurX);
 }
+
+float ElectroAnalysis::AverageHallCurrent(const GrapheneFluid2D& graphene){
+	return Integral_2_D(graphene.SizeX(),graphene.SizeY(), graphene.GetDx(),graphene.GetDy(), graphene.CurY);
+}
+
 
 float ElectroAnalysis::ElectricDipoleVariation(const GrapheneFluid1D& graphene){
 	return Integral_1_D(graphene.SizeX(), graphene.GetDx(), graphene.CurCor);
@@ -79,3 +90,14 @@ float ElectroAnalysis::OhmPower(const GrapheneFluid1D& graphene){
 	return itg;
 }
 
+float ElectroAnalysis::OhmPower(const GrapheneFluid2D& graphene){
+	return 0.0f;
+}
+
+float ElectroAnalysis::ElectricDipole(const GrapheneFluid2D &graphene) {
+	return 0.0f;
+}
+
+float ElectroAnalysis::ElectricDipoleVariation(const GrapheneFluid2D &graphene) {
+	return 0.0f;
+}

@@ -67,10 +67,10 @@ float  Fluid1D::VelocityFlux(float n,float v,float dv, __attribute__((unused)) f
 	f_2 = 0.5f * v * v + n - kin_vis * dv;
 	return f_2;
 }
-float  Fluid1D::DensitySource(float n,float v,float s){
+float  Fluid1D::DensitySource( __attribute__((unused)) float n, __attribute__((unused)) float v, __attribute__((unused)) float s){
 	return 0;
 }
-float  Fluid1D::VelocitySource(float n,float v,float s){
+float  Fluid1D::VelocitySource(__attribute__((unused)) float n,__attribute__((unused)) float v,__attribute__((unused)) float s){
 	return 0;
 }
 
@@ -85,7 +85,7 @@ void Fluid1D::SetSimulationTime(){
 		
 void Fluid1D::SetSound(){
 	for(int i = 0; i<Nx-1  ;i++){
-		vel_snd_arr[i]= Sound_Velocity_Anisotropy(i, dx, vel_snd);
+		vel_snd_arr[i]= Sound_Velocity_Anisotropy(i*dx, vel_snd);
 	}
 }
 		
@@ -149,8 +149,8 @@ void Fluid1D::Richtmyer(){
 		{
 			GradVel[i] = (-0.5f * Vel[i - 1] + 0.5f * Vel[i + 1]) / dx;
 		}
-	GradVel[0] = (-1.5f * Vel[0] + 2.0f * Vel[1] - 0.5f * Vel[2]) / dx;
-	GradVel[Nx - 1] = (0.5f * Vel[Nx - 1 - 2] - 2.0f * Vel[Nx - 1 - 1] + 1.5f * Vel[Nx - 1]) / dx;
+		GradVel[0] = (-1.5f * Vel[0] + 2.0f * Vel[1] - 0.5f * Vel[2]) / dx;
+		GradVel[Nx - 1] = (0.5f * Vel[Nx - 1 - 2] - 2.0f * Vel[Nx - 1 - 1] + 1.5f * Vel[Nx - 1]) / dx;
 		//
 		//Half step calculate density and velocity at time k+0.5 at the spatial midpoints
 		//
@@ -158,10 +158,10 @@ void Fluid1D::Richtmyer(){
 		{
 			den_mid[i] = 0.5f*(Den[i] + Den[i + 1] )
 				- ( 0.5f*dt/dx ) * (DensityFlux(Den[i + 1], Vel[i + 1], vel_snd_arr[i]) - DensityFlux(Den[i], Vel[i], vel_snd_arr[i]) )
-					;//+ ( 0.5f*dt    ) * DensitySource(0.5f*(Den[i] + Den[i + 1]), 0.5f * (Vel[i] + Vel[i + 1]), vel_snd_arr[i]) ;
+					+ ( 0.5f*dt    ) * DensitySource(0.5f*(Den[i] + Den[i + 1]), 0.5f * (Vel[i] + Vel[i + 1]), vel_snd_arr[i]) ;
 			vel_mid[i] = 0.5f*(Vel[i] + Vel[i + 1] )
 				- ( 0.5f*dt/dx ) * (VelocityFlux(Den[i + 1], Vel[i + 1], GradVel[i + 1], vel_snd_arr[i]) - VelocityFlux(Den[i], Vel[i], GradVel[i], vel_snd_arr[i]) )
-					;//+ ( 0.5f*dt    ) * VelocitySource(0.5f*(Den[i] + Den[i + 1]), 0.5f * (Vel[i] + Vel[i + 1]), vel_snd_arr[i]) ;
+					+ ( 0.5f*dt    ) * VelocitySource(0.5f*(Den[i] + Den[i + 1]), 0.5f * (Vel[i] + Vel[i + 1]), vel_snd_arr[i]) ;
 		}
 		//
 		//  Calculating the velocity gradient at k+1/2 time
@@ -177,12 +177,12 @@ void Fluid1D::Richtmyer(){
 		//
 		for ( int i = 1; i <= Nx - 2; i++ )
 		{
-			//float den_old = Den[i];
-			//float vel_old = Vel[i];
+			float den_old = Den[i];
+			float vel_old = Vel[i];
 			Den[i] = Den[i] - (dt / dx) * (DensityFlux(den_mid[i], vel_mid[i], vel_snd_arr[i]) - DensityFlux(den_mid[i - 1], vel_mid[i - 1], vel_snd_arr[i] ) )
-			        ;// +  dt * DensitySource(den_old,vel_old,vel_snd_arr[i]);
+			         +  dt * DensitySource(den_old,vel_old,vel_snd_arr[i]);
 			Vel[i] = Vel[i] - (dt / dx) * (VelocityFlux(den_mid[i], vel_mid[i], grad_vel_mid[i], vel_snd_arr[i]) - VelocityFlux(den_mid[i - 1], vel_mid[i - 1], grad_vel_mid[i - 1], vel_snd_arr[i] ) )
-			        ;// +  dt * VelocitySource(den_old,vel_old,vel_snd_arr[i]);
+					 +  dt * VelocitySource(den_old,vel_old,vel_snd_arr[i]);
 			Cur[i] = Vel[i] * Den[i];
 		}
 } 
@@ -209,18 +209,14 @@ float GrapheneFluid1D::VelocityFlux(float n,float v,float dv,float s){
 	}
 	return f_2;
 }
-float GrapheneFluid1D::DensitySource(float n,float v,float s){
-	float q_1=0.0f;
-	return q_1;
+float GrapheneFluid1D::DensitySource(__attribute__((unused)) float n, __attribute__((unused)) float v, __attribute__((unused)) float s){
+	return 0.0f;
 }
-float GrapheneFluid1D::VelocitySource(float n,float v,float s){
-	float q_2;
-	q_2= -1.0f * col_freq * (v - 1);
-	return q_2;
+float GrapheneFluid1D::VelocitySource(__attribute__((unused)) float n,float v,__attribute__((unused)) float s){
+	return -1.0f * col_freq * v ;
 }
 
-void GrapheneFluid1D::SetVelFer(float x){ vel_fer=x; }
-float GrapheneFluid1D::GetVelFer() const{ return vel_fer; }
+
 int Fluid1D::GetSnapshotStep() const { return snapshot_step;}
 int Fluid1D::GetSnapshotFreq() const {return snapshot_per_period;}
 
@@ -239,6 +235,8 @@ bool Fluid1D::Snapshot() const {
 void Fluid1D::SaveSnapShot(){
 	const FloatType      hdf5_float(PredType::NATIVE_FLOAT);
 	const IntType        hdf5_int(PredType::NATIVE_INT);
+	hsize_t dim_atr[1] = { 1 };
+	DataSpace atr_dataspace = DataSpace (1, dim_atr );
 
 	int points_per_period = static_cast<int>((2.0 * MAT_PI / this->RealFreq()) / dt);
 	snapshot_step = points_per_period / snapshot_per_period;
@@ -247,10 +245,23 @@ void Fluid1D::SaveSnapShot(){
 
 
 	DataSet dataset_den = GrpDen->createDataSet(name_dataset, hdf5_float, *DataspaceDen);
+	Attribute atr_step_den = dataset_den.createAttribute("time step", hdf5_int, atr_dataspace);
+	Attribute atr_time_den = dataset_den.createAttribute("time", hdf5_float, atr_dataspace);
+	float currenttime=TimeStepCounter * dt;
+	atr_step_den.write( hdf5_int, &TimeStepCounter);
+	atr_time_den.write( hdf5_float , &currenttime);
+	atr_step_den.close();
+	atr_time_den.close();
 	dataset_den.write(Den, hdf5_float);
 	dataset_den.close();
 
 	DataSet dataset_vel_x = GrpVelX->createDataSet(name_dataset, hdf5_float, *DataspaceVelX);
+	Attribute atr_step_vel_x = dataset_vel_x.createAttribute("time step", hdf5_int, atr_dataspace);
+	Attribute atr_time_vel_x = dataset_vel_x.createAttribute("time", hdf5_float, atr_dataspace);
+	atr_step_vel_x.write( hdf5_int, &TimeStepCounter);
+	atr_time_vel_x.write( hdf5_float , &currenttime);
+	atr_step_vel_x.close();
+	atr_time_vel_x.close();
 	dataset_vel_x.write(Vel, hdf5_float);
 	dataset_vel_x.close();
 }

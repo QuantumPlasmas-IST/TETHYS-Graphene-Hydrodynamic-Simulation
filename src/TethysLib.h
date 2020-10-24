@@ -36,8 +36,8 @@ float Integral_2_D(int n, int m, float dx, float dy, const float * f);
 /* Functions to implement the spatial variation of the sound velocity S(x) in 1D or S(x,y) in 2D
  * corresponding to a variation of substrat permitivitty or even the description of a multi gated system.
  * */
-float Sound_Velocity_Anisotropy(int i, float dx, float s);
-float Sound_Velocity_Anisotropy(int  i,float dx, int j,float dy, float s);
+float Sound_Velocity_Anisotropy(float x, float s);
+float Sound_Velocity_Anisotropy(float x, float y, float s);
 /*....................................................................................................................*/
 
 
@@ -54,6 +54,7 @@ class SetUpInput {
 		SetUpInput(int argc, char ** argv);
 		~SetUpInput() = default;
 		int SaveMode;
+		float AspectRatio=1.0f;
 		float SoundVelocity;
 		float FermiVelocity;
 		float CollisionFrequency;
@@ -96,6 +97,8 @@ class TethysBase {
 		Group* GrpDen ;     // group for ALL Density snapshots
 		Group* GrpVelX ;    // group for ALL Velocity X snapshots
 		Group* GrpVelY ;    // group for ALL Velocity X snapshots
+		DataSpace* DataspaceVelSnd; // dataspace for the sound anisotropy
+		DataSpace* DataspaceVelSndMid; // dataspace for the sound anisotropy
 		DataSpace* DataspaceDen;    // dataspace for EACH Density snapshots
 		DataSpace* DataspaceVelX;   // dataspace for EACH Velocity X snapshots
 		DataSpace* DataspaceVelY;   // dataspace for EACH Velocity Y snapshots
@@ -109,6 +112,8 @@ class TethysBase {
 		void SetVelSnd(float x);    // setter method for nominal S value
 		void SetKinVis(float x);    // setter method for kinetic shear viscosity
 		void SetColFreq(float x);   // setter method for collision frequency
+		void SetVelFer(float x);        // setter method for Fermi Velocity
+		void SetCycFreq(float x);        // setter method for cyclotron frequency
 		void SetDx(float x);        // setter method for spatial step x
 		void SetDy(float x);        // setter method for spatial step y
 		void SetDt(float x);        // setter method for temporal step
@@ -118,6 +123,8 @@ class TethysBase {
 		float GetVelSnd() const;    // getter method for nominal S value
 		float GetKinVis() const;    // getter method for kinetic shear viscosity
 		float GetColFreq() const;   // getter method for collision frequency
+		float GetVelFer() const;        // getter method for Fermi Velocity
+		float GetCycFreq() const;       // getter method for cyclotron frequency
 		float GetDx() const;        // getter method for spatial discretization x
 		float GetDy() const;        // getter method for spatial discretization y
 		float GetDt() const;        // getter method for time discretization

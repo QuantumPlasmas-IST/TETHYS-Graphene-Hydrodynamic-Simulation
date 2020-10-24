@@ -12,11 +12,18 @@ using namespace std;
 #	define MAT_EULER 2.71828182845905f
 #endif
 
-float Sound_Velocity_Anisotropy(int i, float dx, float s){
+float Sound_Velocity_Anisotropy(float x, float s) {
 	return s;
 }
-float Sound_Velocity_Anisotropy(int i,float dx, int j,float dy, float s){
-	return s;
+float Sound_Velocity_Anisotropy(float x, float y, float s) {
+	float s_mod;
+	//float slope=0.05;
+	//s_mod = s * (1.0f - slope * x);
+	//s_mod = s + 0.2f*pow(2.0f + cos(25.0f*x/MAT_PI),2.0f)/8.0f;
+
+	//s_mod=s+0.1f*abs(sin(3.0f*MAT_PI*x)*sin(3.0f*MAT_PI*y));
+	s_mod=s;//+1.0f*abs(sin(3.0f*MAT_PI*x));
+	return s_mod;
 }
 
 void Average_Filter(const float * vec_in, float * vec_out, int size , int width ){
@@ -45,36 +52,51 @@ cout<<"\n" ;
 	cout<<"║\033[2m      ▐█▌      ▐█▌    ▗▉      ▐█▌      ▐█▌   ▐█▌      ▐█▌    ▗       ██  \033[0m║\n";
 	cout<<"║\033[2m     ▆███▆    ▆███▆▆▆██▉     ▆███▆    ▆███▆ ▆███▆    ▆███▆   ▐█▆▆▆▆▆██▘  \033[0m║\n";
 	cout<<"║                                                                         ║\n";
-	cout<<"║ \033[1mTwo-dimensional Emitter of THz, Hydrodynamic Simulation.  Version 2.2.0\033[0m ║\n";
+	cout<<"║ \033[1mTwo-dimensional Emitter of THz, Hydrodynamic Simulation.  Version 2.2.1\033[0m ║\n";
 	cout<<"╚═════════════════════════════════════════════════════════════════════════╝\n";
 }
 
-void TethysBase::WelcomeScreen() const{
-	cout << "\nFermi velocity\t\033[1mvF\t"<< vel_fer <<" v\342\202\200\033[0m\n";
-	if (this->PhaseVel() < vel_fer){
-		cout << "Phase velocity\t\033[1mS'\t" << this->PhaseVel() << " v\342\202\200\033[0m  \033[1;5;7;31m WARNING plasmon in damping region \033[0m" << endl;
-	}else{
+void TethysBase::WelcomeScreen() const {
+	cout << "\nFermi velocity\t\033[1mvF\t" << vel_fer << " v\342\202\200\033[0m\n";
+	if (this->PhaseVel() < vel_fer) {
+		cout << "Phase velocity\t\033[1mS'\t" << this->PhaseVel()
+		     << " v\342\202\200\033[0m  \033[1;5;7;31m WARNING plasmon in damping region \033[0m" << endl;
+	} else {
 		cout << "Phase velocity\t\033[1mS'\t" << this->PhaseVel() << " v\342\202\200\033[0m\n";
 	}
-	cout << "Viscosity \t\033[1m\316\267\t"<< kin_vis <<"\033[0m\n";
-	if (kin_vis !=0.0){
-		if(2.0f*kin_vis*dt > 0.95*dx*dx*dy*dy/(dx*dx+dy*dy)){
-			cout << "Reynolds n. \t\033[1mRe\t"<< 1.0/kin_vis <<"\033[0m \033[1;5;7;31m WARNING ftcs scheme may not converge.  \033[0m"<<endl;
-		}else{
+	cout << "Viscosity \t\033[1m\316\267\t" << kin_vis << "\033[0m\n";
+	if (kin_vis != 0.0) {
+		if (2.0f * kin_vis * dt > 0.95 * dx * dx * dy * dy / (dx * dx + dy * dy)) {
+			cout << "Reynolds n. \t\033[1mRe\t" << 1.0 / kin_vis
+			     << "\033[0m \033[1;5;7;31m WARNING ftcs scheme may not converge.  \033[0m" << endl;
+		} else {
 			cout << "Reynolds n. \t\033[1mRe\t" << 1.0 / kin_vis << "\033[0m\n";
 		}
 	}
-	cout << "Collision rate \t\033[1m\316\275\t"<< col_freq <<" v\342\202\200/L\033[0m\n";
-	cout << "Cyclotron frequency \t\033[1m\317\211c\t"<< cyc_freq <<" v\342\202\200/L\n\033[0m\n";
+	cout << "Collision rate \t\033[1m\316\275\t" << col_freq << " v\342\202\200/L\033[0m\n";
+	cout << "Cyclotron frequency \t\033[1m\317\211c\t" << cyc_freq << " v\342\202\200/L\n\033[0m\n";
 	cout << "Theoretical frequency \033[1m\317\211=\317\211'+i\317\211''\033[0m\n";
 	cout << "\033[1m\317\211'\t" << this->RealFreq() << " v\342\202\200/L\t2\317\200/\317\211'\t" << 2.0 * MAT_PI /
-	                                                                                                 this->RealFreq() << " L/v\342\202\200\033[0m\n";
+	                                                                                                 this->RealFreq()
+	     << " L/v\342\202\200\033[0m\n";
 	cout << "\033[1m\317\211''\t" << this->ImagFreq() << " v\342\202\200/L\t2\317\200/\317\211''\t" << 2.0 * MAT_PI /
-	                                                                                                   this->ImagFreq() << " L/v\342\202\200\033[0m\n";
-	cout << "Determined maximum simulated time\t\033[1m\nT\342\202\230\342\202\220\342\202\223\t" << Tmax << " L/v\342\202\200\033[0m\n";
-	cout <<"Discretisation\n";
-	cout <<"\033[1m\316\224t\t"<<dt<<" L/v\342\202\200\t\316\224x\t"<<dx<<" L\033[0m\n"<<endl;
+	                                                                                                   this->ImagFreq()
+	     << " L/v\342\202\200\033[0m\n";
+	cout << "\nDetermined maximum simulated time\t\033[1m\nT\342\202\230\342\202\220\342\202\223\t" << Tmax
+	     << " L/v\342\202\200\t\342\211\210" << Tmax / dt << "\033[0m\t time steps" << endl;
+	cout << "Discretisation\n";
+	if (2==RANK){
+	cout << "\033[1m\316\224t\t" << dt << " L/v\342\202\200\t\316\224x\t" << dx << " L\t" << "\316\224y\t" << dy
+	     << " L\033[0m\n";
+	cout << "Simulation grid\t\033[1m" << Nx - 1 << " x " << Ny - 1 << "\033[0m\n";
+	}
+	if (1==RANK){
+		cout << "\033[1m\316\224t\t" << dt << " L/v\342\202\200\t\316\224x\t" << dx << " L\033[0m\n";
+		cout << "Simulation grid\t\033[1m" << Nx - 1 << "\033[0m\n";
+	}
 }
+
+
 
 std::string TethysBase::GetInfix() const {return file_infix;}
 float TethysBase::GetTmax() const{return Tmax;}
@@ -84,16 +106,22 @@ int TethysBase::SizeY() const{ return Ny; }
 float TethysBase::GetVelSnd() const{ return vel_snd; }
 float TethysBase::GetKinVis() const{ return kin_vis; }
 float TethysBase::GetColFreq() const{ return col_freq; }
+float TethysBase::GetVelFer() const{ return vel_fer;  }
+float TethysBase::GetCycFreq() const{ return cyc_freq; }
 float TethysBase::GetDx() const{return dx;}
 float TethysBase::GetDy() const{return dy;}
 float TethysBase::GetDt() const{return dt;}
 float TethysBase::GetLengthX() const{return lengX;}
 float TethysBase::GetLengthY() const{return lengY;}
 
+
+
 void TethysBase::SetTmax(float x){ Tmax=x;}
 void TethysBase::SetVelSnd(float x){ vel_snd=x; }
 void TethysBase::SetKinVis(float x){ kin_vis=x;}
 void TethysBase::SetColFreq(float x){ col_freq=x; }
+void TethysBase::SetVelFer(float x){ vel_fer=x;}
+void TethysBase::SetCycFreq(float x) { cyc_freq=x;}
 void TethysBase::SetDx(float x){ dx=x;}
 void TethysBase::SetDy(float x){ dy=x;}
 void TethysBase::SetDt(float x){ dt=x;}
@@ -128,7 +156,7 @@ void TethysBase::WriteAttributes(){
 	hsize_t dim_atr[1] = { 1 };
 	DataSpace atr_dataspace = DataSpace (1, dim_atr );
 	// Create a group attribute.
-	Attribute atr_vel_snd  = GrpDat->createAttribute("south parameter", hdf5_float, atr_dataspace);
+	Attribute atr_vel_snd  = GrpDat->createAttribute("Sound velocity", hdf5_float, atr_dataspace);
 	Attribute atr_kin_vis = GrpDat->createAttribute("Kinetic viscosity", hdf5_float, atr_dataspace);
 	Attribute atr_col_freq = GrpDat->createAttribute("Collision frequency", hdf5_float, atr_dataspace);
 	Attribute atr_cyc_freq  = GrpDat->createAttribute("Cyclotron frequency", hdf5_float, atr_dataspace);
@@ -145,9 +173,6 @@ void TethysBase::WriteAttributes(){
 		atr_num_space_points_y = GrpDat->createAttribute("Number of spatial points y", hdf5_int,
 		                                                           atr_dataspace);
 	}
-
-
-
 	// Write the attribute data.
 	atr_vel_snd.write( hdf5_float, &vel_snd);
 	atr_vel_fer.write( hdf5_float, &vel_fer);
@@ -244,14 +269,19 @@ void TethysBase::CreateHdf5File(){
 		dimsf[0] = static_cast<hsize_t>(Nx);
 		DataspaceDen = new DataSpace(RANK, dimsf );
 		DataspaceVelX = new DataSpace(RANK, dimsf );
+		DataspaceVelSnd = new DataSpace(RANK, dimsf );
 	}
 	if(RANK==2){
 		hsize_t dimsf[2];
 		dimsf[0] = static_cast<hsize_t>(Ny);
 		dimsf[1] = static_cast<hsize_t>(Nx);  //troquei !
+		DataspaceVelSnd = new DataSpace(RANK, dimsf );
 		DataspaceDen = new DataSpace(RANK, dimsf );
 		DataspaceVelX = new DataSpace(RANK, dimsf );
 		DataspaceVelY = new DataSpace(RANK, dimsf );
+		dimsf[0] = static_cast<hsize_t>(Ny-1);
+		dimsf[1] = static_cast<hsize_t>(Nx-1);  //troquei !
+		DataspaceVelSndMid = new DataSpace(RANK, dimsf );
 	}
 }
 
@@ -410,14 +440,17 @@ void Extrema_Finding(float *vec_in, int n, float sound, float dt, float & sat, f
 }
 */
 SetUpInput::SetUpInput(int argc, char ** argv) {
-	if(argc==7){
+	if(argc==7||argc==8){
 		try {
 			SoundVelocity = strtof(argv[1], nullptr);
 			FermiVelocity = strtof(argv[2], nullptr);
 			CollisionFrequency = strtof(argv[3], nullptr);
 			ShearViscosity = strtof(argv[4], nullptr);
 			CyclotronFrequency = strtof(argv[5], nullptr);
-			SaveMode = (int) strtol(argv[6],nullptr,10);    // full data or light save option
+			SaveMode = (int) strtol(argv[6], nullptr, 10);    // full data or light save option
+			if (argc == 8) {
+				AspectRatio = strtof(argv[7], nullptr);
+			}
 			ExceptionsChecking();
 		}catch (const char* msg) {
 			cerr << msg <<"\nExiting"<< endl;
@@ -436,6 +469,8 @@ SetUpInput::SetUpInput(int argc, char ** argv) {
 			cin >> CollisionFrequency;
 			cout << "Define cyclotron frequency: ";
 			cin >> CyclotronFrequency;
+			cout << "Define the aspect ratio x:y ";
+			cin >> AspectRatio;
 			cout << "Define data_save_mode value (0-> light save | 1-> full data): ";
 			cin >> SaveMode;
 			ExceptionsChecking();

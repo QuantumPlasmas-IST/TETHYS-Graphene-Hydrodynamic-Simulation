@@ -21,7 +21,7 @@ int main(int argc, char **argv){
 
 	SetUpInput parameters(argc, argv);
 	GrapheneFluid1D	graph(npoints, parameters);
-	DyakonovShurBoundaryCondition BC;
+	DyakonovShurBoundaryCondition boundary_condition;
 
 	graph.BannerDisplay();
 	/*......CFL routine to determine dt...............................*/
@@ -32,7 +32,7 @@ int main(int argc, char **argv){
 	/*.........Fixed or variable vel_snd value........................*/
 	graph.SetSound();
 	graph.SetSimulationTime();
-	float t_max=graph.GetTmax();
+
 	/*................................................................*/
 
 	/*.........Output files and streams...............................*/
@@ -43,24 +43,24 @@ int main(int argc, char **argv){
 	/*................................................................*/
 
 	graph.WelcomeScreen();
-	//Record_Log_File(graph.GetVelSnd(), graph.GetVelFer(), graph.GetColFreq(), dt, dx, 0.0, t_max);
+
 	
 	////////////////////////////////////////////////////////////////////
 	// Initialization	
 	graph.InitialCondRand();
-	BC.DyakonovShurBc(graph);
+	boundary_condition.DyakonovShurBc(graph);
 	////////////////////////////////////////////////////////////////////
 
 	cout << "\033[1;7;5;33m Program Running \033[0m"<<endl;
-	
+	graph.SetTmax(15.0);
 	//Main cycle
-	while(t <= t_max ) {
+	while(t <= graph.GetTmax() ) {
 		t += dt;
 		graph.TimeStepCounter++;
 		// Main algorithm		
 		graph.Richtmyer();
 		// Impose boundary conditions
-		BC.DyakonovShurBc(graph);
+		boundary_condition.DyakonovShurBc(graph);
 		// Applying average filters for smoothing 	
 		graph.Smooth(2);
 		//Record full data
