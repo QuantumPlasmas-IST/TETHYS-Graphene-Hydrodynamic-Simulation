@@ -67,10 +67,10 @@ float  Fluid1D::VelocityFlux(float n,float v,float dv, __attribute__((unused)) f
 	f_2 = 0.5f * v * v + n - kin_vis * dv;
 	return f_2;
 }
-float  Fluid1D::DensitySource(float n,float v,float s){
+float  Fluid1D::DensitySource( __attribute__((unused)) float n, __attribute__((unused)) float v, __attribute__((unused)) float s){
 	return 0;
 }
-float  Fluid1D::VelocitySource(float n,float v,float s){
+float  Fluid1D::VelocitySource(__attribute__((unused)) float n,__attribute__((unused)) float v,__attribute__((unused)) float s){
 	return 0;
 }
 
@@ -209,10 +209,10 @@ float GrapheneFluid1D::VelocityFlux(float n,float v,float dv,float s){
 	}
 	return f_2;
 }
-float GrapheneFluid1D::DensitySource(float n,float v,float s){
+float GrapheneFluid1D::DensitySource(__attribute__((unused)) float n, __attribute__((unused)) float v, __attribute__((unused)) float s){
 	return 0.0f;
 }
-float GrapheneFluid1D::VelocitySource(float n,float v,float s){
+float GrapheneFluid1D::VelocitySource(__attribute__((unused)) float n,float v,__attribute__((unused)) float s){
 	return -1.0f * col_freq * v ;
 }
 

@@ -14,8 +14,8 @@ int main(int argc, char **argv){
 
 	SetUpInput parameters(argc, argv);
 
-	int npoints_x=100;
-	int npoints_y=100;
+	int npoints_x=200;
+	int npoints_y=200;
 	float size_x=1.0f;
 	float size_y=1.0f;
 	float aspect_ratio = parameters.AspectRatio;
@@ -23,19 +23,19 @@ int main(int argc, char **argv){
 	if(aspect_ratio>1.0f){
 		size_x=1.0f*aspect_ratio;
 		size_y=1.0f;
-		npoints_y=101;
+		npoints_y=201;
 		npoints_x= static_cast<int>( (npoints_y-1)*aspect_ratio)+1;
 	}
 	if(aspect_ratio==1.0f){
 		size_x=1.0f;
 		size_y=1.0f;
-		npoints_x=101;
-		npoints_y=101;
+		npoints_x=201;
+		npoints_y=201;
 	}
 	if(aspect_ratio<1.0f){
 		size_x=1.0f;
 		size_y=1.0f/aspect_ratio;
-		npoints_x=101;
+		npoints_x=201;
 		npoints_y= static_cast<int>( (npoints_x - 1) / aspect_ratio ) + 1;
 	}
 
@@ -104,9 +104,10 @@ int main(int argc, char **argv){
 			boundary_condition.XFreeRight(graph);
 		}*/
 		if(graph.GetKinVis()!=0.0f) {
+			graph.ViscosityFtcs();
 			boundary_condition.DyakonovShurBc(graph);
 			boundary_condition.YFree(graph);
-		/*	graph.ViscosityFtcs();
+		/*
 			boundary_condition.YClosedNoSlip(graph);
 			boundary_condition.DensityLeft(graph, 1.0f);
 			boundary_condition.MassFluxXLeft(graph, 1.0f);

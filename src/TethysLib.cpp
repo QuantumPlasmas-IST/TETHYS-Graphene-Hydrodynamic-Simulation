@@ -16,13 +16,14 @@ float Sound_Velocity_Anisotropy(float x, float s) {
 	return s;
 }
 float Sound_Velocity_Anisotropy(float x, float y, float s) {
-	float S_mod;
+	float s_mod;
 	//float slope=0.05;
-	//S_mod = s * (1.0f - slope * x);
-	//S_mod = s + 0.2f*pow(2.0f + cos(25.0f*x/MAT_PI),2.0f)/8.0f;
+	//s_mod = s * (1.0f - slope * x);
+	//s_mod = s + 0.2f*pow(2.0f + cos(25.0f*x/MAT_PI),2.0f)/8.0f;
 
-	S_mod=s;//-y*(y-1.0f);
-	return S_mod;
+	//s_mod=s+0.1f*abs(sin(3.0f*MAT_PI*x)*sin(3.0f*MAT_PI*y));
+	s_mod=s;//+1.0f*abs(sin(3.0f*MAT_PI*x));
+	return s_mod;
 }
 
 void Average_Filter(const float * vec_in, float * vec_out, int size , int width ){

@@ -39,13 +39,13 @@ class Fluid2D : public TethysBase
 		void Richtmyer();                   // Central Algorithm for solving the hyperbolic conservation law
 		virtual float DensityFluxX(__attribute__((unused)) float n, float flx_x, __attribute__((unused)) float flx_y, __attribute__((unused)) float mass, __attribute__((unused)) float s); // density equation (continuity equation) conserved flux X component
 		virtual float DensityFluxY(__attribute__((unused)) float n, __attribute__((unused)) float flx_x, float flx_y, __attribute__((unused)) float mass, __attribute__((unused)) float s); // density equation (continuity equation) conserved flux Y component
-		virtual float DensitySource(float n, float flx_x, float flx_y, float mass, float s);
+		virtual float DensitySource(__attribute__((unused)) float n,__attribute__((unused)) float flx_x,__attribute__((unused)) float flx_y,__attribute__((unused)) float mass,__attribute__((unused)) float s);
 		virtual float MassFluxXFluxX(float n, float flx_x, float flx_y,__attribute__((unused)) float mass, float s); // velocity X component equation (momentum equation) conserved flux X component
 		virtual float MassFluxXFluxY(float n, float flx_x, float flx_y,__attribute__((unused)) float mass, float s); // velocity X component equation (momentum equation) conserved flux Y component
-		virtual float MassFluxXSource(float n, float flx_x, float flx_y, float mass, float s);
+		virtual float MassFluxXSource(__attribute__((unused))float n, float flx_x,__attribute__((unused)) float flx_y,__attribute__((unused)) float mass,__attribute__((unused)) float s);
 		virtual float MassFluxYFluxX(float n, float flx_x, float flx_y,__attribute__((unused)) float mass, float s); // velocity Y component equation (momentum equation) conserved flux X component
 		virtual float MassFluxYFluxY(float n, float flx_x, float flx_y,__attribute__((unused)) float mass, float s); // velocity Y component equation (momentum equation) conserved flux Y component
-		virtual float MassFluxYSource(float n, float flx_x, float flx_y, float mass, float s);
+		virtual float MassFluxYSource(__attribute__((unused))float n, float flx_x,__attribute__((unused)) float flx_y,__attribute__((unused)) float mass,__attribute__((unused)) float s);
 		virtual void MassFluxToVelocity(); // Converts the mass flux density p=mnv to velocity
 		void CreateFluidFile();     // create and open the simplified .dat file output
 		void WriteFluidFile(float t) ; // writes the line of time t on the simplified .dat file output

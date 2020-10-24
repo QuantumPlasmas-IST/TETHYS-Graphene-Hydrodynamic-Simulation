@@ -37,7 +37,7 @@ public :
 		virtual void CflCondition();    // Calculates dx and imposes Courant–Friedrichs–Lewy condition to dt
 		virtual float DensityFlux(float n,float v, __attribute__((unused)) float s);    // density equation (continuity equation) conserved flux
 		virtual float VelocityFlux(float n,float v,float dv, __attribute__((unused)) float s); // velocity equation (momentum equation) conserved flux
-		virtual float DensitySource( __attribute__((unused)) float n,  __attribute__((unused)) float v, __attribute__((unused)) float s); // density equation (continuity equation) source term
+		virtual float DensitySource(__attribute__((unused)) float n,  __attribute__((unused)) float v, __attribute__((unused)) float s); // density equation (continuity equation) source term
 		virtual float VelocitySource( __attribute__((unused)) float n, __attribute__((unused)) float v, __attribute__((unused)) float s); // velocity equation (momentum equation) source term
 		void CreateFluidFile();     // create and open the simplified .dat file output
 		void SaveSnapShot(); // saves the all the simulated quantities on the appropriate dataspace of the HDF5 file
@@ -53,8 +53,8 @@ class GrapheneFluid1D : public Fluid1D{
 		/*Override fluxes and sources to specifics of graphene physics*/
 		float DensityFlux(float n,float v,__attribute__((unused)) float s) override;
 		float VelocityFlux(float n,float v,float dv,float s) override;
-		float DensitySource(float n,float v,float s) override;
-		float VelocitySource(float n,float v,float s) override;
+		float DensitySource(__attribute__((unused)) float n,__attribute__((unused)) float v, __attribute__((unused)) float s) override;
+		float VelocitySource(__attribute__((unused)) float n,float v,__attribute__((unused)) float s) override;
 };
 #endif
 
