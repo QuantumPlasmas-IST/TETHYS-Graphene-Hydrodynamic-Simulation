@@ -439,6 +439,23 @@ void Extrema_Finding(float *vec_in, int n, float sound, float dt, float & sat, f
 	data_extrema.close();
 }
 */
+SetUpInput::SetUpInput(float sound, float fermi, float coll, float visco, float cyclo, int mode, float aspect){
+	try {
+		SoundVelocity = sound;
+		FermiVelocity = fermi;
+		CollisionFrequency = coll;
+		ShearViscosity = visco;
+		CyclotronFrequency = cyclo;
+		SaveMode = mode;
+		AspectRatio = aspect;
+		ExceptionsChecking();
+	}catch (const char* msg) {
+		cerr << msg <<"\nExiting"<< endl;
+		exit(EXIT_FAILURE);
+	}
+}
+
+
 SetUpInput::SetUpInput(int argc, char ** argv) {
 	if(argc==7||argc==8){
 		try {

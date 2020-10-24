@@ -28,8 +28,6 @@ add_executable(TETHYS_1D
         src/ElectricLib.h
         src/Tethys1DLib.cpp
         src/Tethys1DLib.h
-        src/Tethys2DLib.cpp
-        src/Tethys2DLib.h
         src/TETHYS_1D_Main_v134.cpp
         src/TethysLib.cpp
         src/TethysLib.h)
@@ -39,15 +37,20 @@ add_executable(TETHYS_2D
         src/BoundaryLib.h
         src/ElectricLib.cpp
         src/ElectricLib.h
-        src/Tethys1DLib.cpp
-        src/Tethys1DLib.h
         src/Tethys2DLib.cpp
         src/Tethys2DLib.h
         src/TETHYS_2D_Main_v221.cpp
         src/TethysLib.cpp
         src/TethysLib.h)
 
-
+add_executable(TETHYS_ELEC_2D
+        src/ElectricLib.cpp
+        src/ElectricLib.h
+        src/Tethys2DLib.cpp
+        src/Tethys2DLib.h
+        src/TETHYS_2D_ElectronicAnalysis.cpp
+        src/TethysLib.cpp
+        src/TethysLib.h)
 
 
 
@@ -56,3 +59,6 @@ target_link_libraries(TETHYS_1D PRIVATE ${HDF5_CXX_LIBRARIES})
 
 target_include_directories(TETHYS_2D PRIVATE ${HDF5_INCLUDE_DIRS})
 target_link_libraries(TETHYS_2D PRIVATE ${HDF5_CXX_LIBRARIES})
+
+target_include_directories(TETHYS_ELEC_2D PRIVATE ${HDF5_INCLUDE_DIRS})
+target_link_libraries(TETHYS_ELEC_2D PRIVATE ${HDF5_CXX_LIBRARIES})

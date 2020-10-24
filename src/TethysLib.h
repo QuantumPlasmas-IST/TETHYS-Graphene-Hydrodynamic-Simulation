@@ -52,6 +52,7 @@ void Average_Filter(const float * vec_in, float * vec_out, int size , int width 
 class SetUpInput {
 	public:
 		SetUpInput(int argc, char ** argv);
+		SetUpInput(float sound, float fermi, float coll, float visco, float cyclo, int mode, float aspect);
 		~SetUpInput() = default;
 		int SaveMode;
 		float AspectRatio=1.0f;
@@ -136,7 +137,7 @@ class TethysBase {
 		float RealFreq() const;
 
 
-	std::string GetInfix() const;   // getter method for file name infix
+		std::string GetInfix() const;   // getter method for file name infix
 		void CreateHdf5File();          // creates the HDF5 files with the necessary structure
 		void CloseHdf5File() const;           // closes the HDF5 file
 		void WriteAttributes();          // saves the simulation attributes (either physical and simulation parameters)

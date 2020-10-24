@@ -504,7 +504,7 @@ void Fluid2D::SaveSound() {
 	dataset_vel_snd.close();
 }
 
-void Fluid2D::SaveSnapShot() {
+void Fluid2D::SaveSnapShot() { //TODO maybe move this function to TETHYS base (the problem would be the MassFluxToVelocity function)
 	const FloatType      hdf5_float(PredType::NATIVE_FLOAT);
 	const IntType        hdf5_int(PredType::NATIVE_INT);
 	hsize_t dim_atr[1] = { 1 };
