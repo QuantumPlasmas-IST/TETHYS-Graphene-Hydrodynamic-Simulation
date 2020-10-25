@@ -99,6 +99,7 @@ class TethysBase {
 		~TethysBase();  // class destructor if the the flag HDF5fileCreated=TRUE it deletes the dataspaces and hdf5 files
 
 		static int TimeStepCounter;
+		static float TimeStamp;
 
 		H5File* Hdf5File ;  // hdf5 file handler
 		Group* GrpDat ;     // group for the simulated data: Attributes; Density; Velocity X; Velocity Y
@@ -146,7 +147,9 @@ class TethysBase {
 
 		std::string GetInfix() const;   // getter method for file name infix
 
+
 		void CreateHdf5File();          // creates the HDF5 files with the necessary structure
+		void OpenHdf5File(std::string); // opens an existing HDF5 file with the necessary structure
 		void CloseHdf5File() const;           // closes the HDF5 file
 		void WriteAttributes();          // saves the simulation attributes (either physical and simulation parameters)
 

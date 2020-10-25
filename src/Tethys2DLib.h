@@ -50,6 +50,7 @@ class Fluid2D : public TethysBase
 		void CreateFluidFile();     // create and open the simplified .dat file output
 		void WriteFluidFile(float t) ; // writes the line of time t on the simplified .dat file output
 		void SaveSnapShot();
+		void ReadSnapShot(H5std_string snap_name);
 		void SaveSound();
 		int GetSnapshotStep() const;
 		int GetSnapshotFreq() const;

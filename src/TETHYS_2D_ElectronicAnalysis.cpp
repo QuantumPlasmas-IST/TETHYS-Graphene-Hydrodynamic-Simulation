@@ -9,7 +9,8 @@
 using namespace std;
 
 int main(int argc, char **argv){
-
+	std::cout << std::fixed;
+	std::cout << std::setprecision(8);
 	SetUpParameters parameters;
 	parameters.ParametersFromHdf5File("hdf5_2D_TEST.h5");
 	cout <<"NX\t"<< parameters.SizeX << endl;
@@ -22,58 +23,41 @@ int main(int argc, char **argv){
 	cout <<"Aspect Ratio\t"<< parameters.AspectRatio << endl;
 
 	GrapheneFluid2D graph(parameters);
-
+	cout <<"graphene RANK "<<graph.Rank()<<endl;
 	cout << "OPENING HDF5" <<endl;
+	graph.OpenHdf5File("hdf5_2D_TEST.h5");
+	cout << "DONE" <<endl;
 
-	H5std_string  FILE_NAME( "hdf5_2D_TEST.h5" );
-	H5File* hdf5_file;
-	Group* grp_dat;
-	Group* grp_den;
-	hdf5_file = new H5File(FILE_NAME, H5F_ACC_RDONLY );
-	grp_dat = new Group(hdf5_file->openGroup("/Data" ));
-	grp_den = new Group(hdf5_file->openGroup("/Data/Density" ));
-
-	cout <<"Total number of datasets "<< grp_den->getNumObjs()<<endl;
-	int NX=parameters.SizeX;
-	int NY=parameters.SizeY;
-	auto *data_input = new float[NX*NY];
-
+	cout <<"Total number of datasets "<< graph.GrpDen->getNumObjs()<<endl;
 
 	float t;
-	DataSet* dataset;
-	for(hsize_t i=0; i < grp_den->getNumObjs(); i++){
-		dataset = new DataSet(grp_den->openDataSet(grp_den->getObjnameByIdx(i) ));
-		auto *attr_time = new Attribute(dataset->openAttribute("time"));
-		attr_time->read(attr_time->getDataType(), &t);
-		cout <<"Dataset ID: "<< i <<"\tName:\t"<<grp_den->getObjnameByIdx(i)<<"\ttime:\t"<<t<<endl;
+	//DataSet dataset_den;
+	/*
+	DataSpace* DataspaceDen;    // dataspace for EACH Density snapshots
+	DataSpace* DataspaceVelX;   // dataspace for EACH Velocity X snapshots
+	DataSpace* DataspaceVelY;   // dataspace for EACH Velocity Y snapshots
+	*/
 
-		/*
-		* Get dataspace of the dataset.
-		*/
-		DataSpace dataspace = dataset->getSpace();
-		/*
-		* Get the number of dimensions in the dataspace.
-		*/
-		int rank = dataspace.getSimpleExtentNdims();
-		/*
-		* Get the dimension size of each dimension in the dataspace and display them.
-		*/
-		hsize_t dims_out[2];
-		int ndims = dataspace.getSimpleExtentDims( dims_out, NULL);
-		cout << "rank " << rank << ", dimensions " <<
-			(unsigned long)(dims_out[0]) << " x " <<
-			(unsigned long)(dims_out[1]) << endl;
+	for(hsize_t i=0; i < graph.GrpDen->getNumObjs(); i++){
 
-		dataset->read( data_input, PredType::NATIVE_FLOAT,   dataspace );
-		cout << "primeiros 10 elementos da 5a coluna:\n";
-		std::cout << std::fixed;
-		std::cout << std::setprecision(7);
-		for(int k =0;k<10;k++){
-			cout << data_input[5+k*NX] <<"\t";
+		graph.ReadSnapShot(graph.GrpDen->getObjnameByIdx(i));
+
+
+		cout << t<<"\t"<<graph.TimeStamp<<"\n";
+		for(int k =0;k<5;k++){
+			cout << graph.Den[k] <<"\t";
 		}
 		cout<<"\n";
+		for(int k =0;k<5;k++){
+			cout << graph.VelX[k] <<"\t";
+		}
+		cout<<"\n";
+		for(int k =0;k<5;k++){
+			cout << graph.VelY[k] <<"\t";
+		}
+		cout<<"\n\n";
 
-		dataset->close();
+
 	}
 
 

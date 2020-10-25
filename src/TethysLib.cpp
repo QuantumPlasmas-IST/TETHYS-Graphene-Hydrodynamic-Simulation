@@ -229,6 +229,7 @@ TethysBase::~TethysBase(){
 
 
 int TethysBase::TimeStepCounter=0;
+float TethysBase::TimeStamp=0.0f;
 TethysBase::TethysBase(int size_nx, int size_ny, int dimension){
 	Nx = size_nx;
 	Ny = size_ny;
@@ -285,7 +286,16 @@ void TethysBase::CreateHdf5File(){
 	}
 }
 
-
+void TethysBase::OpenHdf5File(std::string hdf5name){
+	H5std_string  FILE_NAME( hdf5name );
+	Hdf5File = new H5File(FILE_NAME, H5F_ACC_RDONLY );
+	GrpDat = new Group(Hdf5File->openGroup("/Data" ));
+	GrpDen = new Group(Hdf5File->openGroup("/Data/Density" ));
+	GrpVelX = new Group(Hdf5File->openGroup("/Data/VelocityX" ));
+	if(RANK==2) {
+		GrpVelY = new Group(Hdf5File->openGroup("/Data/VelocityY"));
+	}
+}
 
 
 

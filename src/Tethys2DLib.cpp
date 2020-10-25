@@ -507,6 +507,25 @@ void Fluid2D::SaveSound() {
 	dataset_vel_snd.close();
 }
 
+void Fluid2D::ReadSnapShot(H5std_string snap_name) {
+	const FloatType      hdf5_float(PredType::NATIVE_FLOAT);
+	const IntType        hdf5_int(PredType::NATIVE_INT);
+	DataSet dataset_den = GrpDen->openDataSet( snap_name );
+	DataSet dataset_vel_x  = GrpVelX->openDataSet( snap_name );
+	DataSet dataset_vel_y = GrpVelY->openDataSet( snap_name );
+	DataSpace dataspace = dataset_den.getSpace(); // Get dataspace of the dataset.
+	Attribute attr_time = dataset_den.openAttribute("time");
+	attr_time.read(attr_time.getDataType(), &TimeStamp);
+	Attribute attr_counter = dataset_den.openAttribute("time step");
+	attr_counter.read(attr_counter.getDataType(), &TimeStepCounter);
+	dataset_den.read( Den, PredType::NATIVE_FLOAT,   dataspace );
+	dataset_vel_x.read( VelX, PredType::NATIVE_FLOAT,   dataspace );
+	dataset_vel_y.read( VelY, PredType::NATIVE_FLOAT,   dataspace );
+	dataset_den.close();
+	dataset_vel_x.close();
+	dataset_vel_y.close();
+}
+
 void Fluid2D::SaveSnapShot() { //TODO maybe move this function to TETHYS base (the problem would be the MassFluxToVelocity function)
 	const FloatType      hdf5_float(PredType::NATIVE_FLOAT);
 	const IntType        hdf5_int(PredType::NATIVE_INT);
