@@ -6,6 +6,7 @@
 #include <cmath>
 #include <cstdlib>
 #include <iostream>
+#include <iomanip>
 #include <fstream>
 #include <ctime>
 #include <algorithm>
@@ -17,6 +18,16 @@
 using namespace std;
 using namespace H5;
 
+#ifndef MAT_PI
+#	define MAT_PI 3.14159265358979323846
+#endif
+
+#ifndef MAT_EULER
+#	define MAT_EULER 2.71828182845905
+#endif
+
+const FloatType      HDF5FLOAT(PredType::NATIVE_FLOAT);
+const IntType        HDF5INT(PredType::NATIVE_INT);
 
 //TODO REVER A NECESSIDADES DESTAS FUNCOES:
 //void Convolve_Gauss(int type, float m, float t, float * in, float * out, int size);
@@ -149,7 +160,7 @@ class TethysBase {
 
 
 		void CreateHdf5File();          // creates the HDF5 files with the necessary structure
-		void OpenHdf5File(std::string); // opens an existing HDF5 file with the necessary structure
+		void OpenHdf5File(const std::string& hdf5name); // opens an existing HDF5 file with the necessary structure
 		void CloseHdf5File() const;           // closes the HDF5 file
 		void WriteAttributes();          // saves the simulation attributes (either physical and simulation parameters)
 

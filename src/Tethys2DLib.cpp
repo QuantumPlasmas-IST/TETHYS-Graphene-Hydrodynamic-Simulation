@@ -9,15 +9,13 @@ using namespace H5;
 using namespace std;
 
 
-#ifndef MAT_PI
-#	define MAT_PI 3.14159265358979323846
-#endif
-
 Fluid2D::Fluid2D(const SetUpParameters &input_parameters) : TethysBase{input_parameters.SizeX, input_parameters.SizeY, 2}{
 	Nx = input_parameters.SizeX;
 	Ny = input_parameters.SizeY;
 	lengX=input_parameters.Length;
 	lengY=input_parameters.Width;
+	dx = lengX / ( float ) ( Nx - 1 );
+	dy = lengY / ( float ) ( Ny - 1 );
 	vel_snd = input_parameters.SoundVelocity;//sound_velocity;
 	kin_vis = input_parameters.ShearViscosity;//shear_viscosity;
 
@@ -119,6 +117,13 @@ void Fluid2D::MassFluxToVelocity(){
 	for(int c=0; c <= Nx * Ny - 1; c++){
 		VelX[c]= FlxX[c] / Den[c];
 		VelY[c]= FlxY[c] / Den[c];
+		CurX[c] = VelX[c] * Den[c];
+		CurY[c] = VelY[c] * Den[c];
+	}
+}
+
+void Fluid2D::VelocityToCurrent() {
+	for(int c=0; c <= Nx * Ny - 1; c++){
 		CurX[c] = VelX[c] * Den[c];
 		CurY[c] = VelY[c] * Den[c];
 	}
@@ -363,6 +368,8 @@ void GrapheneFluid2D::MassFluxToVelocity(){
 
 
 
+
+
 void GrapheneFluid2D::CflCondition(){ // Eventual redefinition
 	dx = lengX / ( float ) ( Nx - 1 );
 	dy = lengY / ( float ) ( Ny - 1 );
@@ -501,15 +508,12 @@ float GrapheneFluid2D::MassFluxYSource(__attribute__((unused)) float n,__attribu
 
 
 void Fluid2D::SaveSound() {
-	const FloatType      hdf5_float(PredType::NATIVE_FLOAT);
-	DataSet dataset_vel_snd = GrpDat->createDataSet("Sound velocicity", hdf5_float, *DataspaceVelSnd);
-	dataset_vel_snd.write(vel_snd_arr, hdf5_float);
+	DataSet dataset_vel_snd = GrpDat->createDataSet("Sound velocicity", HDF5FLOAT, *DataspaceVelSnd);
+	dataset_vel_snd.write(vel_snd_arr, HDF5FLOAT);
 	dataset_vel_snd.close();
 }
 
 void Fluid2D::ReadSnapShot(H5std_string snap_name) {
-	const FloatType      hdf5_float(PredType::NATIVE_FLOAT);
-	const IntType        hdf5_int(PredType::NATIVE_INT);
 	DataSet dataset_den = GrpDen->openDataSet( snap_name );
 	DataSet dataset_vel_x  = GrpVelX->openDataSet( snap_name );
 	DataSet dataset_vel_y = GrpVelY->openDataSet( snap_name );
@@ -527,8 +531,6 @@ void Fluid2D::ReadSnapShot(H5std_string snap_name) {
 }
 
 void Fluid2D::SaveSnapShot() { //TODO maybe move this function to TETHYS base (the problem would be the MassFluxToVelocity function)
-	const FloatType      hdf5_float(PredType::NATIVE_FLOAT);
-	const IntType        hdf5_int(PredType::NATIVE_INT);
 	hsize_t dim_atr[1] = { 1 };
 	DataSpace atr_dataspace = DataSpace (1, dim_atr );
 
@@ -539,35 +541,35 @@ void Fluid2D::SaveSnapShot() { //TODO maybe move this function to TETHYS base (t
 	string str_time = to_string(TimeStepCounter / snapshot_step);
 	string name_dataset = "snapshot_" + str_time;   //TODO add zero padding to the numbering of the snapshots
 
-	DataSet dataset_den = GrpDen->createDataSet(name_dataset, hdf5_float, *DataspaceDen);
-	Attribute atr_step_den = dataset_den.createAttribute("time step", hdf5_int, atr_dataspace);
-	Attribute atr_time_den = dataset_den.createAttribute("time", hdf5_float, atr_dataspace);
+	DataSet dataset_den = GrpDen->createDataSet(name_dataset, HDF5FLOAT, *DataspaceDen);
+	Attribute atr_step_den = dataset_den.createAttribute("time step", HDF5INT, atr_dataspace);
+	Attribute atr_time_den = dataset_den.createAttribute("time", HDF5FLOAT, atr_dataspace);
 	float currenttime=TimeStepCounter * dt;
-	atr_step_den.write( hdf5_int, &TimeStepCounter);
-	atr_time_den.write( hdf5_float , &currenttime);
+	atr_step_den.write(HDF5INT, &TimeStepCounter);
+	atr_time_den.write(HDF5FLOAT , &currenttime);
 	atr_step_den.close();
 	atr_time_den.close();
 
-	dataset_den.write(Den, hdf5_float);
+	dataset_den.write(Den, HDF5FLOAT);
 	dataset_den.close();
 
-	DataSet dataset_vel_x = GrpVelX->createDataSet(name_dataset, hdf5_float, *DataspaceVelX);
-	Attribute atr_step_vel_x = dataset_vel_x.createAttribute("time step", hdf5_int, atr_dataspace);
-	Attribute atr_time_vel_x = dataset_vel_x.createAttribute("time", hdf5_float, atr_dataspace);
-	dataset_vel_x.write(VelX, hdf5_float);
+	DataSet dataset_vel_x = GrpVelX->createDataSet(name_dataset, HDF5FLOAT, *DataspaceVelX);
+	Attribute atr_step_vel_x = dataset_vel_x.createAttribute("time step", HDF5INT, atr_dataspace);
+	Attribute atr_time_vel_x = dataset_vel_x.createAttribute("time", HDF5FLOAT, atr_dataspace);
+	dataset_vel_x.write(VelX, HDF5FLOAT);
 	dataset_vel_x.close();
-	atr_step_vel_x.write( hdf5_int, &TimeStepCounter);
-	atr_time_vel_x.write( hdf5_float , &currenttime);
+	atr_step_vel_x.write(HDF5INT, &TimeStepCounter);
+	atr_time_vel_x.write(HDF5FLOAT , &currenttime);
 	atr_step_vel_x.close();
 	atr_time_vel_x.close();
 
-	DataSet dataset_vel_y = GrpVelY->createDataSet(name_dataset, hdf5_float, *DataspaceVelY);
-	Attribute atr_step_vel_y = dataset_vel_y.createAttribute("time step", hdf5_int, atr_dataspace);
-	Attribute atr_time_vel_y = dataset_vel_y.createAttribute("time", hdf5_float, atr_dataspace);
-	dataset_vel_y.write(VelY, hdf5_float);
+	DataSet dataset_vel_y = GrpVelY->createDataSet(name_dataset, HDF5FLOAT, *DataspaceVelY);
+	Attribute atr_step_vel_y = dataset_vel_y.createAttribute("time step", HDF5INT, atr_dataspace);
+	Attribute atr_time_vel_y = dataset_vel_y.createAttribute("time", HDF5FLOAT, atr_dataspace);
+	dataset_vel_y.write(VelY, HDF5FLOAT);
 	dataset_vel_y.close();
-	atr_step_vel_y.write( hdf5_int, &TimeStepCounter);
-	atr_time_vel_y.write( hdf5_float , &currenttime);
+	atr_step_vel_y.write(HDF5INT, &TimeStepCounter);
+	atr_time_vel_y.write(HDF5FLOAT , &currenttime);
 	atr_step_vel_y.close();
 	atr_time_vel_y.close();
 }

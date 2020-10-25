@@ -4,13 +4,7 @@
 using namespace H5;
 using namespace std;
 
-#ifndef MAT_PI
-#	define MAT_PI 3.14159265358979323846f
-#endif
 
-#ifndef MAT_EULER
-#	define MAT_EULER 2.71828182845905f
-#endif
 
 float Sound_Velocity_Anisotropy(float x, float s) {
 	return s;
@@ -149,44 +143,42 @@ void TethysBase::CloseHdf5File() const{
 
 
 void TethysBase::WriteAttributes(){
-	const FloatType      hdf5_float(PredType::NATIVE_FLOAT);
-	const IntType        hdf5_int(PredType::NATIVE_INT);
 	int total_steps= static_cast<int>(Tmax / dt);
 	//Create the data space for the attribute.
 	hsize_t dim_atr[1] = { 1 };
 	DataSpace atr_dataspace = DataSpace (1, dim_atr );
 	// Create a group attribute.
-	Attribute atr_vel_snd  = GrpDat->createAttribute("Sound velocity", hdf5_float, atr_dataspace);
-	Attribute atr_kin_vis = GrpDat->createAttribute("Kinetic viscosity", hdf5_float, atr_dataspace);
-	Attribute atr_col_freq = GrpDat->createAttribute("Collision frequency", hdf5_float, atr_dataspace);
-	Attribute atr_cyc_freq  = GrpDat->createAttribute("Cyclotron frequency", hdf5_float, atr_dataspace);
-	Attribute atr_vel_fer  = GrpDat->createAttribute("Fermi velocity", hdf5_float, atr_dataspace);
-	Attribute atr_dx = GrpDat->createAttribute("Space discretisation step x", hdf5_float, atr_dataspace);
+	Attribute atr_vel_snd  = GrpDat->createAttribute("Sound velocity", HDF5FLOAT, atr_dataspace);
+	Attribute atr_kin_vis = GrpDat->createAttribute("Kinetic viscosity", HDF5FLOAT, atr_dataspace);
+	Attribute atr_col_freq = GrpDat->createAttribute("Collision frequency", HDF5FLOAT, atr_dataspace);
+	Attribute atr_cyc_freq  = GrpDat->createAttribute("Cyclotron frequency", HDF5FLOAT, atr_dataspace);
+	Attribute atr_vel_fer  = GrpDat->createAttribute("Fermi velocity", HDF5FLOAT, atr_dataspace);
+	Attribute atr_dx = GrpDat->createAttribute("Space discretisation step x", HDF5FLOAT, atr_dataspace);
 	Attribute atr_dy;
-	Attribute atr_dt = GrpDat->createAttribute("Time discretisation step", hdf5_float, atr_dataspace);
-	Attribute atr_total_time = GrpDat->createAttribute("Total simulation time", hdf5_float, atr_dataspace);
-	Attribute atr_num_space_points_x = GrpDat->createAttribute("Number of spatial points x", hdf5_int, atr_dataspace);
+	Attribute atr_dt = GrpDat->createAttribute("Time discretisation step", HDF5FLOAT, atr_dataspace);
+	Attribute atr_total_time = GrpDat->createAttribute("Total simulation time", HDF5FLOAT, atr_dataspace);
+	Attribute atr_num_space_points_x = GrpDat->createAttribute("Number of spatial points x", HDF5INT, atr_dataspace);
 	Attribute atr_num_space_points_y;
-	Attribute atr_num_time_steps = GrpDat->createAttribute("Number of time steps", hdf5_int, atr_dataspace);
+	Attribute atr_num_time_steps = GrpDat->createAttribute("Number of time steps", HDF5INT, atr_dataspace);
 	if (RANK == 2) {
-		atr_dy = GrpDat->createAttribute("Space discretisation step y", hdf5_float, atr_dataspace);
-		atr_num_space_points_y = GrpDat->createAttribute("Number of spatial points y", hdf5_int,
-		                                                           atr_dataspace);
+		atr_dy = GrpDat->createAttribute("Space discretisation step y", HDF5FLOAT, atr_dataspace);
+		atr_num_space_points_y = GrpDat->createAttribute("Number of spatial points y", HDF5INT,
+		                                                 atr_dataspace);
 	}
 	// Write the attribute data.
-	atr_vel_snd.write( hdf5_float, &vel_snd);
-	atr_vel_fer.write( hdf5_float, &vel_fer);
-	atr_cyc_freq.write( hdf5_float, &cyc_freq);
-	atr_col_freq.write(hdf5_float, &col_freq);
-	atr_kin_vis.write(hdf5_float, &kin_vis);
-	atr_dx.write(hdf5_float, &dx);
-	atr_dt.write( hdf5_float, &dt);
-	atr_num_space_points_x.write( hdf5_int, &Nx);
-	atr_total_time.write( hdf5_float, &Tmax);
-	atr_num_time_steps.write(hdf5_int, &total_steps);
+	atr_vel_snd.write(HDF5FLOAT, &vel_snd);
+	atr_vel_fer.write(HDF5FLOAT, &vel_fer);
+	atr_cyc_freq.write(HDF5FLOAT, &cyc_freq);
+	atr_col_freq.write(HDF5FLOAT, &col_freq);
+	atr_kin_vis.write(HDF5FLOAT, &kin_vis);
+	atr_dx.write(HDF5FLOAT, &dx);
+	atr_dt.write(HDF5FLOAT, &dt);
+	atr_num_space_points_x.write(HDF5INT, &Nx);
+	atr_total_time.write(HDF5FLOAT, &Tmax);
+	atr_num_time_steps.write(HDF5INT, &total_steps);
 	if (RANK == 2) {
-		atr_dy.write(hdf5_float, &dy);
-		atr_num_space_points_y.write(hdf5_int, &Ny);
+		atr_dy.write(HDF5FLOAT, &dy);
+		atr_num_space_points_y.write(HDF5INT, &Ny);
 	}
 	// Close the attributes.
 	atr_num_time_steps.close();
@@ -235,8 +227,7 @@ TethysBase::TethysBase(int size_nx, int size_ny, int dimension){
 	Ny = size_ny;
 	RANK=dimension;
 
-	const FloatType hdf5_float(PredType::NATIVE_FLOAT);
-	const IntType hdf5_int(PredType::NATIVE_INT);
+
 	char buffer [50];
 	if(RANK==1) {
 		sprintf(buffer, "Fluido1D_Nx=%d", Nx);
@@ -257,8 +248,8 @@ void TethysBase::CreateHdf5File(){
 	if(RANK==2){
 		hdf5name = "hdf5_2D_" + this->GetInfix() + ".h5" ;
 	}
-	H5std_string  FILE_NAME( hdf5name );
-	Hdf5File = new H5File(FILE_NAME, H5F_ACC_TRUNC );
+	H5std_string  file_name(hdf5name );
+	Hdf5File = new H5File(file_name, H5F_ACC_TRUNC );
 	GrpDat = new Group(Hdf5File->createGroup("/Data" ));
 	GrpDen = new Group(Hdf5File->createGroup("/Data/Density" ));
 	GrpVelX = new Group(Hdf5File->createGroup("/Data/VelocityX" ));
@@ -286,9 +277,10 @@ void TethysBase::CreateHdf5File(){
 	}
 }
 
-void TethysBase::OpenHdf5File(std::string hdf5name){
-	H5std_string  FILE_NAME( hdf5name );
-	Hdf5File = new H5File(FILE_NAME, H5F_ACC_RDONLY );
+
+void TethysBase::OpenHdf5File(const std::string& hdf5name){
+	const H5std_string  file_name(hdf5name );
+	Hdf5File = new H5File(file_name, H5F_ACC_RDONLY );
 	GrpDat = new Group(Hdf5File->openGroup("/Data" ));
 	GrpDen = new Group(Hdf5File->openGroup("/Data/Density" ));
 	GrpVelX = new Group(Hdf5File->openGroup("/Data/VelocityX" ));
@@ -329,22 +321,22 @@ float Integral_1_D(int n, float ds, const float * f){
 	return itg;	
 }
 
-float Integral_2_D(int N, int M, float dx, float dy, const float * f){
+float Integral_2_D(int n, int m, float dx, float dy, const float * f){
 	float itg;
 	float interior=0.0f;
 	float edges=0.0f;
 	float vertices;
 
-	vertices = f[0] + f[N-1] + f[N*M-N] + f[N*M-1];
+	vertices = f[0] + f[n - 1] + f[n * m - n] + f[n * m - 1];
 
-	for(int i=1;i<=N-2;i++){
-		edges += f[i] + f[i+(M-1)*N];
+	for(int i=1; i <= n - 2; i++){
+		edges += f[i] + f[i+ (m - 1) * n];
 	}
-	for(int j=1;j<=M-2;j++){
-		edges += f[j*N] + f[N-1+j*N];
+	for(int j=1; j <= m - 2; j++){
+		edges += f[j * n] + f[n - 1 + j * n];
 	}
-	for(int k=1+N; k<=N*M-N-2; k++) { //correr a grelha principal evitando as fronteiras
-		if (k % N != N - 1 && k % N != 0) {
+	for(int k= 1 + n; k <= n * m - n - 2; k++) { //correr a grelha principal evitando as fronteiras
+		if (k % n != n - 1 && k % n != 0) {
 			interior += f[k];
 		}
 	}
@@ -552,10 +544,10 @@ void SetUpParameters::ExceptionsChecking() const{
 }
 
 void SetUpParameters::ParametersFromHdf5File(const std::string& hdf5name){
-	H5std_string  FILE_NAME( hdf5name );
+	const H5std_string  file_name(hdf5name );
 	H5File* hdf5_file;
 	Group* grp_dat;
-	hdf5_file = new H5File(FILE_NAME, H5F_ACC_RDONLY );
+	hdf5_file = new H5File(file_name, H5F_ACC_RDONLY );
 	grp_dat = new Group(hdf5_file->openGroup("/Data" ));
 	auto *attr_n_x = new Attribute(grp_dat->openAttribute("Number of spatial points x"));
 	auto *attr_n_y = new Attribute(grp_dat->openAttribute("Number of spatial points y"));
