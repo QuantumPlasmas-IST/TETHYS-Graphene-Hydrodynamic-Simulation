@@ -8,18 +8,6 @@
 
 using namespace std;
 
-//const H5std_string FILE_NAME( "hdf5_2D_TEST.h5" );
-herr_t
-file_info(hid_t loc_id, const char *name, void *opdata)
-{
-	/*
-	 * Display group name.
-	 */
-	cout << "Name : " << name<< endl;
-
-	return 0;
-}
-
 int main(int argc, char **argv){
 
 	SetUpParameters parameters;
@@ -33,9 +21,7 @@ int main(int argc, char **argv){
 	cout <<"Cyclotron frequency\t"<< parameters.CyclotronFrequency << endl;
 	cout <<"Aspect Ratio\t"<< parameters.AspectRatio << endl;
 
-	//GrapheneFluid2D graph(parameters);
-
-	//cout << graph.SizeX()<<"\t"<<graph.SizeY()<<"\n";
+	GrapheneFluid2D graph(parameters);
 
 	cout << "OPENING HDF5" <<endl;
 
@@ -47,11 +33,16 @@ int main(int argc, char **argv){
 	grp_dat = new Group(hdf5_file->openGroup("/Data" ));
 	grp_den = new Group(hdf5_file->openGroup("/Data/Density" ));
 
-	cout <<"numero de coisos"<< grp_den->getNumObjs()<<endl;
+	cout <<"Total number of datasets "<< grp_den->getNumObjs()<<endl;
 
-	for(int i=0;i<grp_den->getNumObjs();i++){
-
-	cout <<"Dataset ID:"<< i <<"\tName:"<<grp_den->getObjnameByIdx(i)<<endl;
+	float t;
+	DataSet* dataset;
+	for(hsize_t i=0; i < grp_den->getNumObjs(); i++){
+		dataset = new DataSet(grp_den->openDataSet(grp_den->getObjnameByIdx(i) ));
+		auto *attr_time = new Attribute(dataset->openAttribute("time"));
+		attr_time->read(attr_time->getDataType(), &t);
+		cout <<"Dataset ID: "<< i <<"\tName:\t"<<grp_den->getObjnameByIdx(i)<<"\ttime:\t"<<t<<endl;
+		dataset->close();
 	}
 
 

@@ -518,10 +518,7 @@ void Fluid2D::SaveSnapShot() { //TODO maybe move this function to TETHYS base (t
 
 	this->MassFluxToVelocity();
 	string str_time = to_string(TimeStepCounter / snapshot_step);
-	string name_dataset = "snapshot_" + str_time;
-
-//	cout << TimeStepCounter <<"\t"<<name_dataset <<endl;
-
+	string name_dataset = "snapshot_" + str_time;   //TODO add zero padding to the numbering of the snapshots
 
 	DataSet dataset_den = GrpDen->createDataSet(name_dataset, hdf5_float, *DataspaceDen);
 	Attribute atr_step_den = dataset_den.createAttribute("time step", hdf5_int, atr_dataspace);
@@ -532,10 +529,8 @@ void Fluid2D::SaveSnapShot() { //TODO maybe move this function to TETHYS base (t
 	atr_step_den.close();
 	atr_time_den.close();
 
-
 	dataset_den.write(Den, hdf5_float);
 	dataset_den.close();
-
 
 	DataSet dataset_vel_x = GrpVelX->createDataSet(name_dataset, hdf5_float, *DataspaceVelX);
 	Attribute atr_step_vel_x = dataset_vel_x.createAttribute("time step", hdf5_int, atr_dataspace);
@@ -556,7 +551,6 @@ void Fluid2D::SaveSnapShot() { //TODO maybe move this function to TETHYS base (t
 	atr_time_vel_y.write( hdf5_float , &currenttime);
 	atr_step_vel_y.close();
 	atr_time_vel_y.close();
-
 }
 
 int Fluid2D::GetSnapshotStep() const { return snapshot_step;}
