@@ -42,6 +42,27 @@ int main(int argc, char **argv){
 		auto *attr_time = new Attribute(dataset->openAttribute("time"));
 		attr_time->read(attr_time->getDataType(), &t);
 		cout <<"Dataset ID: "<< i <<"\tName:\t"<<grp_den->getObjnameByIdx(i)<<"\ttime:\t"<<t<<endl;
+
+		/*
+		* Get dataspace of the dataset.
+		*/
+		DataSpace dataspace = dataset->getSpace();
+		/*
+		* Get the number of dimensions in the dataspace.
+		*/
+		int rank = dataspace.getSimpleExtentNdims();
+		/*
+		* Get the dimension size of each dimension in the dataspace and
+		* display them.
+		*/
+		hsize_t dims_out[2];
+		int ndims = dataspace.getSimpleExtentDims( dims_out, NULL);
+		cout << "rank " << rank << ", dimensions " <<
+			(unsigned long)(dims_out[0]) << " x " <<
+			(unsigned long)(dims_out[1]) << endl;
+
+
+
 		dataset->close();
 	}
 
