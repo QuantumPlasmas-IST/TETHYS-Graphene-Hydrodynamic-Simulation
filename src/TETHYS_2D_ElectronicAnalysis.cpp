@@ -1,6 +1,6 @@
 #include "Tethys2DLib.h"
 #include "ElectricLib.h"
-
+#include "iomanip"
 #ifndef MAT_PI
 #	define MAT_PI 3.14159265358979323846
 #endif
@@ -34,6 +34,10 @@ int main(int argc, char **argv){
 	grp_den = new Group(hdf5_file->openGroup("/Data/Density" ));
 
 	cout <<"Total number of datasets "<< grp_den->getNumObjs()<<endl;
+	int NX=parameters.SizeX;
+	int NY=parameters.SizeY;
+	auto *data_input = new float[NX*NY];
+
 
 	float t;
 	DataSet* dataset;
@@ -52,8 +56,7 @@ int main(int argc, char **argv){
 		*/
 		int rank = dataspace.getSimpleExtentNdims();
 		/*
-		* Get the dimension size of each dimension in the dataspace and
-		* display them.
+		* Get the dimension size of each dimension in the dataspace and display them.
 		*/
 		hsize_t dims_out[2];
 		int ndims = dataspace.getSimpleExtentDims( dims_out, NULL);
@@ -61,7 +64,14 @@ int main(int argc, char **argv){
 			(unsigned long)(dims_out[0]) << " x " <<
 			(unsigned long)(dims_out[1]) << endl;
 
-
+		dataset->read( data_input, PredType::NATIVE_FLOAT,   dataspace );
+		cout << "primeiros 10 elementos da 5a coluna:\n";
+		std::cout << std::fixed;
+		std::cout << std::setprecision(7);
+		for(int k =0;k<10;k++){
+			cout << data_input[5+k*NX] <<"\t";
+		}
+		cout<<"\n";
 
 		dataset->close();
 	}
