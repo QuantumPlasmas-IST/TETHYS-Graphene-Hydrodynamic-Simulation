@@ -30,7 +30,7 @@ Fluid2D::Fluid2D(const SetUpParameters &input_parameters) : TethysBase{input_par
 	FlxY 		= new float[Nx * Ny]();
 	CurX 		= new float[Nx * Ny]();
 	CurY 		= new float[Nx * Ny]();
-	vel_snd_arr	= new float[Nx*Ny]();
+	vel_snd_arr	= new float[Nx * Ny]();
 
 	lap_flxX = new float[Nx*Ny](); //new grids for the laplacians
 	lap_flxY = new float[Nx*Ny](); //in fact they could be smaller but thiw way they are just 0 at the borders who do not evolve

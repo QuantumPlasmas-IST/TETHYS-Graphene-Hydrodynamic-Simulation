@@ -11,7 +11,7 @@ class Fluid2D : public TethysBase
 {
 	protected:
 		float * vel_snd_arr;    // array for saving the (potentially varying) S(x,y) function at main grid
-		float * vel_snd_arr_mid;    // array for saving the (potentially varying) S(x,y) function at auxiliary grid
+		float * vel_snd_arr_mid;// array for saving the (potentially varying) S(x,y) function at auxiliary grid
 		float * den_mid ;       // mid or auxiliary grids defined with (Nx-1)*(Ny-1) size
 		float * flxX_mid ;
 		float * flxY_mid ;
@@ -74,8 +74,6 @@ class GrapheneFluid2D : public Fluid2D{
 		float MassFluxYFluxX(float n, float flx_x, float flx_y,float mass, float s) override;
 		float MassFluxYFluxY(float n, float flx_x, float flx_y,float mass, float s) override;
 		float MassFluxYSource(float n, float flx_x, float flx_y, float mass, float s)override;
-
-
 
 		void MagneticSourceSemiAnalytic(); // Semi analytic method for the magnetic interaction
 		void MagneticSourceFtcs();  // Forward Time Centered Space method for the magnetic interaction

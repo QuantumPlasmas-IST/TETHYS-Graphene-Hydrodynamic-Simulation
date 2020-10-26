@@ -29,23 +29,26 @@ int main(int argc, char **argv){
 	cout <<"Total number of datasets "<< graph.GrpDen->getNumObjs()<<endl;
 
 
+	string infix = graph.GetInfix();
+	string electrofile;
+	electrofile = "RADIATION_2D_" + infix + ".dat" ;
+	ofstream data_electro;
+	data_electro.open (electrofile);
+	data_electro << scientific;
 
 	for(hsize_t i=0; i < graph.GrpDen->getNumObjs(); i++){
-
 		graph.ReadSnapShot(graph.GrpDen->getObjnameByIdx(i));
 		graph.VelocityToCurrent();
-		cout <<graph.TimeStamp<<"\t"
-		<< elec.NetCharge(graph)<<"\t"
-		<< elec.AverageDirectCurrent(graph) <<"\t"
-		<< elec.AverageHallCurrent(graph) <<"\t"
-		<< elec.OhmPower(graph) <<"\t"
-		<< elec.ElectricDipoleVariation(graph) <<"\t"
-		<< elec.ElectricDipole(graph) <<"\n";
+		data_electro << graph.TimeStamp << "\t"
+		             << elec.NetCharge(graph) << "\t"
+		             << elec.AverageDirectCurrent(graph) << "\t"
+		             << elec.AverageHallCurrent(graph) << "\t"
+		             << elec.OhmPower(graph) << "\t"
+		             << elec.ElectricDipoleVariationX(graph) << "\t"
+		             << elec.ElectricDipoleVariationY(graph) << "\t"
+		             << elec.ElectricDipoleX(graph) << "\t"
+					 << elec.ElectricDipoleY(graph) << "\n";
 	}
-
-
-
-
 
 	return 0;
 }

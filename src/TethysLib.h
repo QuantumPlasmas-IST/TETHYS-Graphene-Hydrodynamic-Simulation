@@ -55,7 +55,6 @@ float Sound_Velocity_Anisotropy(float x, float y, float s);
 /* Average moving filter for the smoothing of 1D simulation, suppressing the spurious oscillations inherent to the 2nd order solver*/
 void Average_Filter(const float * vec_in, float * vec_out, int size , int width );
 
-
 /*
  * Struct to pass the initialization
  * */
@@ -111,6 +110,8 @@ class TethysBase {
 
 		static int TimeStepCounter;
 		static float TimeStamp;
+
+
 
 		H5File* Hdf5File ;  // hdf5 file handler
 		Group* GrpDat ;     // group for the simulated data: Attributes; Density; Velocity X; Velocity Y

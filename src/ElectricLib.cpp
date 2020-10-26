@@ -42,8 +42,8 @@ void ElectroAnalysis::WriteElectroFile(float t,const GrapheneFluid2D& graphene){
 	float i_ds   = this->AverageDirectCurrent(graphene);
 	float i_hall = this->AverageHallCurrent(graphene);
 	float p_ohm = this->OhmPower(graphene);
-	float dipole_var=this->ElectricDipoleVariation(graphene);
-	float dipole=this->ElectricDipole(graphene);
+	float dipole_var= this->ElectricDipoleVariationX(graphene);
+	float dipole= this->ElectricDipoleX(graphene);
 	data_electro << t << "\t"<<q_net << "\t"<<i_ds<<"\t"<<i_hall<< "\t" << p_ohm << "\t" << dipole << "\t" << dipole_var << "\n";
 }
 
@@ -102,10 +102,37 @@ float ElectroAnalysis::OhmPower(const GrapheneFluid2D& graphene){
 	return Integral_2_D(graphene.SizeX(), graphene.SizeY(), graphene.GetDx(), graphene.GetDy(), square_current_density);
 }
 
-float ElectroAnalysis::ElectricDipole(const GrapheneFluid2D &graphene) {
-	return 0.0f;
+float ElectroAnalysis::ElectricDipoleX(const GrapheneFluid2D &graphene) {
+	int size = graphene.SizeX()*graphene.SizeX();
+	float vector[size];
+	float rx;
+	for(int c=0;c<size;c++){
+		div_t divresult;
+		divresult = div (c,graphene.SizeX());
+		int j=divresult.quot;
+		int i=divresult.rem;
+		rx = i*graphene.GetDx();
+		vector[c] = rx*graphene.Den[c];
+	}
+	return Integral_2_D(graphene.SizeX(), graphene.SizeY(), graphene.GetDx(), graphene.GetDy(), vector);
 }
-
-float ElectroAnalysis::ElectricDipoleVariation(const GrapheneFluid2D &graphene) {
-	return 0.0f;
+float ElectroAnalysis::ElectricDipoleY(const GrapheneFluid2D &graphene) {
+	int size = graphene.SizeX()*graphene.SizeX();
+	float vector[size];
+	float ry;
+	for(int c=0;c<size;c++){
+		div_t divresult;
+		divresult = div (c,graphene.SizeX());
+		int j=divresult.quot;
+		int i=divresult.rem;
+		ry = j*graphene.GetDy();
+		vector[c] = ry*graphene.Den[c];
+	}
+	return Integral_2_D(graphene.SizeX(), graphene.SizeY(), graphene.GetDx(), graphene.GetDy(), vector);
+}
+float ElectroAnalysis::ElectricDipoleVariationX(const GrapheneFluid2D &graphene) {
+	return Integral_2_D(graphene.SizeX(), graphene.SizeY(), graphene.GetDx(), graphene.GetDy(), graphene.CurX );
+}
+float ElectroAnalysis::ElectricDipoleVariationY(const GrapheneFluid2D &graphene) {
+	return Integral_2_D(graphene.SizeX(), graphene.SizeY(), graphene.GetDx(), graphene.GetDy(), graphene.CurY );
 }
