@@ -55,28 +55,30 @@ int main(int argc, char **argv){
 	for(int k=0;k<graph.SizeX()*graph.SizeY();k++){
 		div_t divresult;
 		divresult = div (k,graph.SizeX());
-		int i=divresult.quot;
-		int j=divresult.rem;
+		int j=divresult.quot;
+		int i=divresult.rem;
 		float x = i*graph.GetDx();
 		float y = j*graph.GetDy();
-		graph.Den[k]  =  1.0f+sin(3.0f*MAT_PI*x)-5.0f*y*(y-1.0f);
+		graph.Den[k]  =  1.0f+sin(3.0f*MAT_PI*x)-5.0f*y*(y-1.0f)+7.0f*x;
 		graph.VelX[k] =  pow(y*(y-1.0f),2);
 		graph.VelY[k] =  0.2f*x;
 	}
 	graph.VelocityToCurrent();
 
-	float net_charge = 11.0f/6.0f+2.0f/(3.0f*MAT_PI);
-	float i_ds = 29.0f/420.0f+1.0f/(45.0f*MAT_PI);
-	float i_hall = 11.0f/60.0f+4.0f/(60.0f*MAT_PI);
-	float p_ohm = (-176176.0f-9009.0f*MAT_PI+433056.0f*MAT_PI*MAT_PI+497862.0f*MAT_PI*MAT_PI*MAT_PI)/(8108100.0f*MAT_PI*MAT_PI*MAT_PI);;
-	float px = 11.0f/12.0f+1.0f/(3.0f*MAT_PI);
-	float py = 11.0f/12.0f+1.0f/(3.0f*MAT_PI);
+
+
+	float net_charge = 16.0f/3.0f+2.0f/(3.0f*MAT_PI);
+	float i_ds = 13.0f/70.0f+1.0f/(45.0f*MAT_PI);
+	float i_hall = 39.0f/60.0f+4.0f/(60.0f*MAT_PI);
+	float p_ohm = 233333.0f/307125.0f-296.0f/(2025.0f*MAT_PI*MAT_PI*MAT_PI)-1.0f/(900.0f*MAT_PI*MAT_PI)+12863.0f/(51975.0f*MAT_PI);
+	float px = 7.0f/12.0f;
+	float py = 0.0f;
 
 
 
 
-	cout <<"Sim. dimensions"<<graph.GetLengthX()<<" x "<< graph.GetLengthY()<<"\n";
-	cout <<"Sim. points"<<graph.SizeX()<<" x "<< graph.SizeY()<<"\n";
+	cout <<"Sim. dimensions  "<<graph.GetLengthX()<<" x "<< graph.GetLengthY()<<"\n";
+	cout <<"Sim. points  "<<graph.SizeX()<<" x "<< graph.SizeY()<<"\n";
 	std::cout << std::scientific;
 	std::cout << std::setprecision(8);
 	cout << "Quantity\t\t"<<"Numerical"<<"\t"<< "Analytical"<<"\t"<<"%error"<<"\n";
@@ -85,9 +87,9 @@ int main(int argc, char **argv){
 	cout << "Avg. Hall current\t"<<elec.AverageHallCurrent(graph)<<"\t"<<  i_hall <<"\t"<< 100.0f*abs(elec.AverageHallCurrent(graph)-i_hall)/i_hall<<"\n";
 	cout << "Ohm Power\t\t"<<elec.OhmPower(graph)<<"\t"<< p_ohm <<"\t"<< 100.0f*abs(elec.OhmPower(graph)-p_ohm)/p_ohm <<"\n";
 	cout << "Elec. Dipole x\t\t"<<elec.ElectricDipoleX(graph)<<"\t"<< px <<"\t"<< 100.0f*abs(elec.ElectricDipoleX(graph)-px)/px <<"\n";
-	cout << "Elec. Dipole y\t\t"<<elec.ElectricDipoleY(graph)<<"\t"<< px <<"\t"<< 100.0f*abs(elec.ElectricDipoleY(graph)-py)/py <<"\n";
-	cout << "Elec. Dipole var x\t"<<elec.ElectricDipoleVariationX(graph)<<"\t"<<i_hall <<"\t"<< 100.0f*abs(elec.AverageHallCurrent(graph)-i_hall)/i_hall <<"\n";
-	cout << "Elec. Dipole var y\t"<<elec.ElectricDipoleVariationY(graph)<<"\t"<<i_ds <<"\t"<<  100.0f*abs(elec.AverageDirectCurrent(graph)-i_ds)/i_ds <<"\n";
+	cout << "Elec. Dipole y\t\t"<<elec.ElectricDipoleY(graph)<<"\t"<< py <<"\t"<< 100.0f*abs(elec.ElectricDipoleY(graph)-py)/py <<"\n";
+	cout << "Elec. Dipole var x\t"<<elec.ElectricDipoleVariationX(graph)<<"\t"<<i_ds <<"\t"<<  100.0f*abs(elec.AverageDirectCurrent(graph)-i_ds)/i_ds <<"\n";
+	cout << "Elec. Dipole var y\t"<<elec.ElectricDipoleVariationY(graph)<<"\t"<<i_hall <<"\t"<< 100.0f*abs(elec.AverageHallCurrent(graph)-i_hall)/i_hall <<"\n";
 
 
 	return 0;

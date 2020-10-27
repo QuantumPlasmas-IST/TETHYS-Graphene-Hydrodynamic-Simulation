@@ -111,7 +111,7 @@ float ElectroAnalysis::ElectricDipoleX(const GrapheneFluid2D &graphene) {
 		divresult = div (c,graphene.SizeX());
 		int j=divresult.quot;
 		int i=divresult.rem;
-		rx = i*graphene.GetDx();
+		rx = i*graphene.GetDx()-0.5f*graphene.GetLengthX();
 		vector[c] = rx*graphene.Den[c];
 	}
 	return Integral_2_D(graphene.SizeX(), graphene.SizeY(), graphene.GetDx(), graphene.GetDy(), vector);
@@ -125,7 +125,7 @@ float ElectroAnalysis::ElectricDipoleY(const GrapheneFluid2D &graphene) {
 		divresult = div (c,graphene.SizeX());
 		int j=divresult.quot;
 		int i=divresult.rem;
-		ry = j*graphene.GetDy();
+		ry = j*graphene.GetDy()-0.5f*graphene.GetLengthY();
 		vector[c] = ry*graphene.Den[c];
 	}
 	return Integral_2_D(graphene.SizeX(), graphene.SizeY(), graphene.GetDx(), graphene.GetDy(), vector);
