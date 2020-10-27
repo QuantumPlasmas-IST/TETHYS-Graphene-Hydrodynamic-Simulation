@@ -539,6 +539,7 @@ void Fluid2D::SaveSnapShot() { //TODO maybe move this function to TETHYS base (t
 
 	this->MassFluxToVelocity();
 	string str_time = to_string(TimeStepCounter / snapshot_step);
+	str_time.insert(str_time.begin(), 5 - str_time.length(), '0');
 	string name_dataset = "snapshot_" + str_time;   //TODO add zero padding to the numbering of the snapshots
 
 	DataSet dataset_den = GrpDen->createDataSet(name_dataset, HDF5FLOAT, *DataspaceDen);

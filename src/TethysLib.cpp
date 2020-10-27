@@ -476,8 +476,8 @@ SetUpParameters::SetUpParameters(float sound, float fermi, float coll, float vis
 
 
 SetUpParameters::SetUpParameters(int argc, char ** argv) {
-	SizeX=101;
-	SizeY=101;
+	SizeX=201;
+	SizeY=201;
 	if(argc==7||argc==8){
 		try {
 			SoundVelocity = strtof(argv[1], nullptr);
