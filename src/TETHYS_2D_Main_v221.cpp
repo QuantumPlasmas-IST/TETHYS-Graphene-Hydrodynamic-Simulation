@@ -13,7 +13,9 @@ using namespace std;
 int main(int argc, char **argv){
 
 	SetUpParameters parameters(argc, argv);
+
 	parameters.DefineGeometry();
+
 	//int npoints_x=200;
 	//int npoints_y=200;
 	//float size_x=1.0f;
@@ -29,6 +31,7 @@ int main(int argc, char **argv){
 
 	GrapheneFluid2D graph(parameters);
 	DyakonovShurBoundaryCondition boundary_condition;
+
 	//RobinBoundaryCondition boundary_condition;
 	//DirichletBoundaryCondition boundary_condition;
 
@@ -45,14 +48,16 @@ int main(int argc, char **argv){
 	/*.........Fixed or variable vel_snd value........................*/
 	graph.SetSound();
 	//graph.SetSimulationTime();
-	graph.SetTmax(1.0f);
+	graph.SetTmax(6.0f);
 	/*................................................................*/
 
 	/*.........Output files and streams...............................*/
 	ElectroAnalysis elec;
 	elec.CreateElectroFile(graph);
 	graph.CreateFluidFile();
+
 	graph.CreateHdf5File();
+
 	if(parameters.SaveMode){
 		graph.SaveSound();
 	}
@@ -103,8 +108,8 @@ int main(int argc, char **argv){
 
 		//Record full hdf5 data
 		if (parameters.SaveMode  && graph.Snapshot()) {
-			graph.SaveSnapShot();
-			elec.WriteElectroFile(t,graph);
+			graph.SaveSnapShot(); //TODO aumentar o numero de snapshots por periodo de forma a melhor caracterizar as funcoes electricas
+			elec.WriteElectroFile(t,graph); //TODO remove the electro file writting as it will be made by the Electronic Analysis program
 		}
 		graph.WriteFluidFile(t);
 
