@@ -60,7 +60,7 @@ int main(int argc, char **argv){
 		float x = i*graph.GetDx();
 		float y = j*graph.GetDy();
 		graph.Den[k]  =  1.0f+sin(3.0f*MAT_PI*x)-5.0f*y*(y-1.0f)+7.0f*x;
-		graph.VelX[k] =  pow(y*(y-1.0f),2);
+		graph.VelX[k] =  pow(y*(y-1.0f),2.0f);
 		graph.VelY[k] =  0.2f*x;
 	}
 	graph.VelocityToCurrent();

@@ -18,7 +18,7 @@ class Fluid2D : public TethysBase
 		float * lap_flxX ;      // mass density flux laplacian component x
 		float * lap_flxY ;      // mass density flux laplacian component y
 		std::ofstream data_preview; // file stream for simplified .dat file output
-		int snapshot_per_period = 10;
+		int snapshot_per_period = 20;
 		int snapshot_step = 1;
 	public :
 		float * Den ;       // number density

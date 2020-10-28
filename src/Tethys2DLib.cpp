@@ -530,7 +530,7 @@ void Fluid2D::ReadSnapShot(const H5std_string &snap_name) {
 	dataset_vel_y.close();
 }
 
-void Fluid2D::SaveSnapShot() { //TODO maybe move this function to TETHYS base (the problem would be the MassFluxToVelocity function)
+void Fluid2D::SaveSnapShot() {
 	hsize_t dim_atr[1] = { 1 };
 	DataSpace atr_dataspace = DataSpace (1, dim_atr );
 
