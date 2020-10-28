@@ -11,6 +11,7 @@ class ElectroAnalysis{
 private:
 	std::ofstream data_electro;
 public:
+	void CloseElectroFile();
 	void CreateElectroFile(const GrapheneFluid1D& graphene);
 	void CreateElectroFile(const GrapheneFluid2D& graphene);
 	void WriteElectroFile(float t,const GrapheneFluid1D& graphene);

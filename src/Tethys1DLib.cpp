@@ -85,7 +85,7 @@ void Fluid1D::SetSound(){
 void Fluid1D::InitialCondRand(){
 	random_device rd;
 	float maxrand;
-	maxrand = (float) rd.max();
+	maxrand = (float) random_device::max();
 
 	for (int i = 0; i < Nx; i++ ){
 		float noise = (float) rd()/ maxrand ;

@@ -56,7 +56,7 @@ int main(int argc, char **argv){
 	//Main cycle
 	while(t <= graph.GetTmax() ) {
 		t += dt;
-		graph.TimeStepCounter++;
+		GrapheneFluid1D::TimeStepCounter++;
 		// Main algorithm		
 		graph.Richtmyer();
 		// Impose boundary conditions

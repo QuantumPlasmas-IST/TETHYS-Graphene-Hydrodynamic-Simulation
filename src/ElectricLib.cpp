@@ -42,9 +42,11 @@ void ElectroAnalysis::WriteElectroFile(float t,const GrapheneFluid2D& graphene){
 	float i_ds   = this->AverageDirectCurrent(graphene);
 	float i_hall = this->AverageHallCurrent(graphene);
 	float p_ohm = this->OhmPower(graphene);
-	float dipole_var= this->ElectricDipoleVariationX(graphene);
-	float dipole= this->ElectricDipoleX(graphene);
-	data_electro << t << "\t"<<q_net << "\t"<<i_ds<<"\t"<<i_hall<< "\t" << p_ohm << "\t" << dipole << "\t" << dipole_var << "\n";
+	float dipole_var_x= this->ElectricDipoleVariationX(graphene);
+	float dipole_x= this->ElectricDipoleX(graphene);
+	float dipole_var_y= this->ElectricDipoleVariationY(graphene);
+	float dipole_y= this->ElectricDipoleY(graphene);
+	data_electro << t << "\t"<<q_net << "\t"<<i_ds<<"\t"<<i_hall<< "\t" << p_ohm << "\t" << dipole_x << "\t" << dipole_var_x << dipole_y << "\t" << dipole_var_y << "\n";
 }
 
 float ElectroAnalysis::NetCharge(const GrapheneFluid1D& graphene){
@@ -109,7 +111,6 @@ float ElectroAnalysis::ElectricDipoleX(const GrapheneFluid2D &graphene) {
 	for(int c=0;c<size;c++){
 		div_t divresult;
 		divresult = div (c,graphene.SizeX());
-		int j=divresult.quot;
 		int i=divresult.rem;
 		rx = i*graphene.GetDx()-0.5f*graphene.GetLengthX();
 		vector[c] = rx*graphene.Den[c];
@@ -124,7 +125,6 @@ float ElectroAnalysis::ElectricDipoleY(const GrapheneFluid2D &graphene) {
 		div_t divresult;
 		divresult = div (c,graphene.SizeX());
 		int j=divresult.quot;
-		int i=divresult.rem;
 		ry = j*graphene.GetDy()-0.5f*graphene.GetLengthY();
 		vector[c] = ry*graphene.Den[c];
 	}
@@ -135,4 +135,8 @@ float ElectroAnalysis::ElectricDipoleVariationX(const GrapheneFluid2D &graphene)
 }
 float ElectroAnalysis::ElectricDipoleVariationY(const GrapheneFluid2D &graphene) {
 	return Integral_2_D(graphene.SizeX(), graphene.SizeY(), graphene.GetDx(), graphene.GetDy(), graphene.CurY );
+}
+
+void ElectroAnalysis::CloseElectroFile() {
+	data_electro.close();
 }

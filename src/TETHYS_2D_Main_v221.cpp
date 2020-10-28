@@ -73,7 +73,7 @@ int main(int argc, char **argv){
 
 	while (t <= graph.GetTmax() ){
 		t += dt;
-		graph.TimeStepCounter++;
+		GrapheneFluid2D::TimeStepCounter++;
 
 		graph.Richtmyer();
 		boundary_condition.DyakonovShurBc(graph);

@@ -84,8 +84,7 @@ void Fluid2D::SetSound(){
 void Fluid2D::InitialCondRand(){
 	random_device rd;
 	float maxrand;
-	maxrand = (float) rd.max();
-	//srand (static_cast<unsigned int>(time(NULL)));
+	maxrand = (float) random_device::max();
 
 	for (int i = 0; i < Nx; i++ ){
 		for (int j=0; j<Ny; j++){
