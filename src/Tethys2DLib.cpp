@@ -431,34 +431,10 @@ void GrapheneFluid2D::MagneticSourceSemiAnalytic(){
 	}		
 }
 
-void GrapheneFluid2D:: ViscosityFtcs() {
-int north, south, east, west;
-float mass_den_center, mass_den_north, mass_den_south, mass_den_east, mass_den_west;
+void GrapheneFluid2D:: ParabolicOperatorFtcs() {
 
-
-//calculate laplacians
-	for (int kp = 1 + Nx; kp <= Nx * Ny - Nx - 2; kp++) { //correr a grelha principal evitando as fronteiras
-		div_t divresult;
-		divresult = div(kp, Nx);
-		int j = divresult.quot;
-		int i = divresult.rem;
-		if (kp % Nx != Nx - 1 && kp % Nx != 0){
-			north = i + (j + 1) * Nx;
-			south = i + (j - 1) * Nx;
-			east = i + 1 + j * Nx;
-			west = i - 1 + j * Nx;
-			mass_den_center = pow(Den[kp], 1.5f);
-			mass_den_north = pow(Den[north], 1.5f);
-			mass_den_south = pow(Den[south], 1.5f);
-			mass_den_east = pow(Den[east], 1.5f);
-			mass_den_west = pow(Den[west], 1.5f);
-			lap_flxX[kp] =
-					(-4.0f * FlxX[kp] / mass_den_center + FlxX[north] / mass_den_north + FlxX[south] / mass_den_south + FlxX[east] / mass_den_east +
-					 FlxX[west] / mass_den_west) / (dx * dx);
-			lap_flxY[kp] =
-					(-4.0f * FlxY[kp] / mass_den_center + FlxY[north] / mass_den_north + FlxY[south] / mass_den_south + FlxY[east] / mass_den_east +
-					 FlxY[west] / mass_den_west) / (dx * dx);
-		}
+	if(kin_vis !=0.0f) { //we should only spend time on the laplacians if we are to use some viscosity
+		this->VelocityLaplacian();
 	}
 	//FTCS algorithm
 	float old_px,old_py,sqrtn_0;
@@ -475,7 +451,7 @@ float mass_den_center, mass_den_north, mass_den_south, mass_den_east, mass_den_w
 }
 
 
-
+/*
 void GrapheneFluid2D::MagneticSourceFtcs(){
 	float px_0,py_0,sqrtn_0;
 	for(int kp=1+Nx; kp<=Nx*Ny-Nx-2; kp++){ //correr a grelha principal evitando as fronteiras
@@ -488,7 +464,7 @@ void GrapheneFluid2D::MagneticSourceFtcs(){
 		}
 	}
 }
-
+*/
 float GrapheneFluid2D::DensitySource(__attribute__((unused)) float n,__attribute__((unused)) float flx_x,__attribute__((unused)) float flx_y,__attribute__((unused)) float mass,__attribute__((unused)) float s) {
 	return 0.0f;
 }

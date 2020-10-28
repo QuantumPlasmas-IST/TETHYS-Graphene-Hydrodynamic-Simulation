@@ -13,34 +13,17 @@ using namespace std;
 int main(int argc, char **argv){
 
 	SetUpParameters parameters(argc, argv);
-
 	parameters.DefineGeometry();
-
-	//int npoints_x=200;
-	//int npoints_y=200;
-	//float size_x=1.0f;
-	//float size_y=1.0f;
-	//float aspect_ratio = parameters.AspectRatio;
-
-
-
 
 	float t=0.0;
 	float dt;		// time step
 
-
 	GrapheneFluid2D graph(parameters);
 	DyakonovShurBoundaryCondition boundary_condition;
-
 	//RobinBoundaryCondition boundary_condition;
 	//DirichletBoundaryCondition boundary_condition;
 
-//	cout<<graph.GetLengthX()<<endl;
-//	cout<<graph.GetLengthY()<<endl;
-
 	/*......CFL routine to determine dt...............................*/
-	//graph.SetLengthX(size_x);
-	//graph.SetLengthY(size_y);
 	graph.CflCondition();
 	dt=graph.GetDt();
 	/*................................................................*/
@@ -91,8 +74,8 @@ int main(int argc, char **argv){
 			boundary_condition.MassFluxXLeft(graph, 1.0f);
 			boundary_condition.XFreeRight(graph);
 		}*/
-		if(graph.GetKinVis()!=0.0f) {
-			graph.ViscosityFtcs();
+		if(graph.GetKinVis()!=0.0f || graph.GetCycFreq()!=0.0f) {
+			graph.ParabolicOperatorFtcs();
 			boundary_condition.DyakonovShurBc(graph);
 			boundary_condition.YFree(graph);
 		/*

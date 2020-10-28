@@ -43,8 +43,6 @@ int main(int argc, char **argv){
 		graph.VelocityToCurrent();
 		elec.WriteElectroFile(GrapheneFluid2D::TimeStamp,graph);
 	}
-
 	return 0;
-
 }
 

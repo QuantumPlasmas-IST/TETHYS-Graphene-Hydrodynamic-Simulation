@@ -78,8 +78,8 @@ class GrapheneFluid2D : public Fluid2D{
 		float MassFluxYSource(float n, float flx_x, float flx_y, float mass, float s)override;
 
 		void MagneticSourceSemiAnalytic(); // Semi analytic method for the magnetic interaction
-		void MagneticSourceFtcs();  // Forward Time Centered Space method for the magnetic interaction
-		void ViscosityFtcs();       // Forward Time Centered Space method for the viscous terms
+		//void MagneticSourceFtcs();  // Forward Time Centered Space method for the magnetic interaction
+		void ParabolicOperatorFtcs();       // Forward Time Centered Space method for the viscous terms
 };
 
 
