@@ -140,3 +140,30 @@ float ElectroAnalysis::ElectricDipoleVariationY(const GrapheneFluid2D &graphene)
 void ElectroAnalysis::CloseElectroFile() {
 	data_electro.close();
 }
+
+float ElectroAnalysis::DrainToSourceVoltage(const GrapheneFluid2D& graphene) {
+	return 0;
+}
+
+float ElectroAnalysis::SourceCurrent(const GrapheneFluid2D& graphene) {
+	int size1d = graphene.SizeY();
+	float vector[size1d];
+	int pos;
+	for(int j=0;j<size1d;j++){
+		pos=graphene.SizeX()-1+j*graphene.SizeX();
+		vector[j] = graphene.CurX[pos];
+	}
+	return Integral_1_D(graphene.SizeY(), graphene.GetDy(), vector);
+}
+
+float ElectroAnalysis::DrainCurrent(const GrapheneFluid2D& graphene) {
+	int size1d = graphene.SizeY();
+	float vector[size1d];
+	int pos;
+	for(int j=0;j<size1d;j++){
+		pos=j*graphene.SizeX();
+		vector[j] = graphene.CurX[pos];
+	}
+	return Integral_1_D(graphene.SizeY(), graphene.GetDy(), vector);
+}
+// i+j*graphene.SizeY()

@@ -489,7 +489,7 @@ void Fluid2D::ReadSnapShot(const H5std_string &snap_name) {
 	DataSet dataset_vel_x  = GrpVelX->openDataSet( snap_name );
 	DataSet dataset_vel_y = GrpVelY->openDataSet( snap_name );
 	DataSpace dataspace = dataset_den.getSpace(); // Get dataspace of the dataset.
-	Attribute attr_time = dataset_den.openAttribute("time");
+	Attribute attr_time = dataset_den.openAttribute("time"); //TODO trow a exceptin if the attibute does not exist ?
 	attr_time.read(attr_time.getDataType(), &TimeStamp);
 	Attribute attr_counter = dataset_den.openAttribute("time step");
 	attr_counter.read(attr_counter.getDataType(), &TimeStepCounter);

@@ -23,6 +23,9 @@ public:
 	float AverageCurrent(const GrapheneFluid1D& graphene);
 	float AverageHallCurrent(const GrapheneFluid2D& graphene);
 	float AverageDirectCurrent(const GrapheneFluid2D& graphene);
+	float DrainCurrent(const GrapheneFluid2D& graphene);
+	float SourceCurrent(const GrapheneFluid2D& graphene);
+	float DrainToSourceVoltage(const GrapheneFluid2D& graphene);
 	float ElectricDipole(const GrapheneFluid1D& graphene);
 	float ElectricDipoleX(const GrapheneFluid2D& graphene);
 	float ElectricDipoleY(const GrapheneFluid2D& graphene);

@@ -28,7 +28,6 @@ int main(int argc, char **argv){
 	cout <<"Dimensions\t"<< parameters.Length <<" x "<< parameters.Width << endl;
 	cout <<"Grid\t"<< parameters.SizeX <<" x "<< parameters.SizeY << endl;
 
-
 	GrapheneFluid2D graph(parameters);
 	ElectroAnalysis elec;
 
