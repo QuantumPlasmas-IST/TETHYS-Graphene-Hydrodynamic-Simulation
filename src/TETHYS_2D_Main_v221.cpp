@@ -48,7 +48,7 @@ int main(int argc, char **argv){
 	/*.........Fixed or variable vel_snd value........................*/
 	graph.SetSound();
 	//graph.SetSimulationTime();
-	graph.SetTmax(6.0f);
+	graph.SetTmax(0.5f);
 	/*................................................................*/
 
 	/*.........Output files and streams...............................*/
@@ -109,7 +109,7 @@ int main(int argc, char **argv){
 		//Record full hdf5 data
 		if (parameters.SaveMode  && graph.Snapshot()) {
 			graph.SaveSnapShot(); //TODO aumentar o numero de snapshots por periodo de forma a melhor caracterizar as funcoes electricas
-			elec.WriteElectroFile(t,graph); //TODO remove the electro file writting as it will be made by the Electronic Analysis program
+			//elec.WriteElectroFile(t,graph); //TODO remove the electro file writting as it will be made by the Electronic Analysis program
 		}
 		graph.WriteFluidFile(t);
 

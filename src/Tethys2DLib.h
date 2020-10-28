@@ -51,7 +51,7 @@ class Fluid2D : public TethysBase
 		void CreateFluidFile();     // create and open the simplified .dat file output
 		void WriteFluidFile(float t) ; // writes the line of time t on the simplified .dat file output
 		void SaveSnapShot();
-		void ReadSnapShot(H5std_string snap_name);
+		void ReadSnapShot(const H5std_string &snap_name);
 		void SaveSound();
 		int GetSnapshotStep() const;
 		int GetSnapshotFreq() const;
@@ -60,7 +60,7 @@ class Fluid2D : public TethysBase
 class GrapheneFluid2D : public Fluid2D{
 	public :
 		explicit GrapheneFluid2D(SetUpParameters &input_parameters);
-
+		~GrapheneFluid2D();
 		void CflCondition() override;
 		void SetSimulationTime() override;
 		void MassFluxToVelocity() override; // Converts the mass density flux back to velocity, in graphene  v = p n^{-3/2}

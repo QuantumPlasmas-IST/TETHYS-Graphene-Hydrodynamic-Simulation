@@ -43,21 +43,20 @@ Fluid2D::Fluid2D(const SetUpParameters &input_parameters) : TethysBase{input_par
 }
 
 Fluid2D::~Fluid2D(){
-	delete [] Den;
-	delete [] VelX;
-	delete [] VelY;
-	delete [] FlxX;
-	delete [] FlxY;
-	delete [] CurX;
-	delete [] CurY;
-	delete [] den_mid;
-	delete [] flxX_mid;
-	delete [] flxY_mid;
-	delete [] lap_flxX;
-	delete [] lap_flxY;
-	delete [] vel_snd_arr;
+	delete Den;
+	delete VelX;
+	delete VelY;
+	delete FlxX;
+	delete FlxY;
+	delete CurX;
+	delete CurY;
+	delete den_mid;
+	delete flxX_mid;
+	delete flxY_mid;
+	delete lap_flxX;
+	delete lap_flxY;
+	delete vel_snd_arr;
 }
-
 
 
 void Fluid2D::SetSound(){
@@ -505,6 +504,7 @@ float GrapheneFluid2D::MassFluxYSource(__attribute__((unused)) float n,__attribu
 	return -1.0f*col_freq*flx_y;
 }
 
+GrapheneFluid2D::~GrapheneFluid2D() = default;
 
 
 void Fluid2D::SaveSound() {
@@ -513,7 +513,7 @@ void Fluid2D::SaveSound() {
 	dataset_vel_snd.close();
 }
 
-void Fluid2D::ReadSnapShot(H5std_string snap_name) {
+void Fluid2D::ReadSnapShot(const H5std_string &snap_name) {
 	DataSet dataset_den = GrpDen->openDataSet( snap_name );
 	DataSet dataset_vel_x  = GrpVelX->openDataSet( snap_name );
 	DataSet dataset_vel_y = GrpVelY->openDataSet( snap_name );
@@ -540,7 +540,7 @@ void Fluid2D::SaveSnapShot() { //TODO maybe move this function to TETHYS base (t
 	this->MassFluxToVelocity();
 	string str_time = to_string(TimeStepCounter / snapshot_step);
 	str_time.insert(str_time.begin(), 5 - str_time.length(), '0');
-	string name_dataset = "snapshot_" + str_time;   //TODO add zero padding to the numbering of the snapshots
+	string name_dataset = "snapshot_" + str_time;
 
 	DataSet dataset_den = GrpDen->createDataSet(name_dataset, HDF5FLOAT, *DataspaceDen);
 	Attribute atr_step_den = dataset_den.createAttribute("time step", HDF5INT, atr_dataspace);

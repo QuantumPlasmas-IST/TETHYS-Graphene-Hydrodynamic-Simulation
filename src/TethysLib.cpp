@@ -123,21 +123,18 @@ void TethysBase::SetLengthX(float x){lengX=x;}
 void TethysBase::SetLengthY(float x){lengY=x;}
 
 
-
-
-
-
-
-
-
-
 void TethysBase::CloseHdf5File() const{
+	DataspaceVelX->close();
+	DataspaceDen->close();
+	DataspaceVelSnd->close();
 	GrpDat->close();
 	GrpDen->close();
 	GrpVelX->close();
 	if (RANK == 2) {
 		GrpVelY->close();
+		DataspaceVelY->close();
 	}
+	GrpDat->close();
 	Hdf5File->close();
 }
 
@@ -197,9 +194,9 @@ void TethysBase::WriteAttributes(){
 }
 
 
-
 TethysBase::~TethysBase(){
 	if(HDF5fileCreated) {
+		this->CloseHdf5File();
 		delete GrpDat;
 		delete GrpDen;
 		delete GrpVelX;
@@ -565,6 +562,15 @@ void SetUpParameters::ParametersFromHdf5File(const std::string& hdf5name){
 	attr_cyc->read(attr_cyc->getDataType(), &CyclotronFrequency);
 	attr_col->read(attr_col->getDataType(), &CollisionFrequency);
 	AspectRatio =  (npoints_x-1)/(npoints_y-1);
+	attr_n_x->close();
+	attr_n_y->close();
+	attr_snd->close();
+	attr_fer->close();
+	attr_vis->close();
+	attr_cyc->close();
+	attr_col->close();
+	grp_dat->close();
+	hdf5_file->close();
 }
 
 void SetUpParameters::DefineGeometry() {

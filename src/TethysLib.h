@@ -19,11 +19,11 @@ using namespace std;
 using namespace H5;
 
 #ifndef MAT_PI
-#	define MAT_PI 3.14159265358979323846
+#	define MAT_PI 3.14159265358979f
 #endif
 
 #ifndef MAT_EULER
-#	define MAT_EULER 2.71828182845905
+#	define MAT_EULER 2.71828182845905f
 #endif
 
 const FloatType      HDF5FLOAT(PredType::NATIVE_FLOAT);
