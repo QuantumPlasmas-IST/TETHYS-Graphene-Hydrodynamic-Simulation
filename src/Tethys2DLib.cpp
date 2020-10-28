@@ -430,7 +430,7 @@ void GrapheneFluid2D::MagneticSourceSemiAnalytic(){
 	}		
 }
 
-void GrapheneFluid2D::ViscosityFtcs() {
+void GrapheneFluid2D:: ViscosityFtcs() {
 int north, south, east, west;
 float mass_den_center, mass_den_north, mass_den_south, mass_den_east, mass_den_west;
 
@@ -441,7 +441,7 @@ float mass_den_center, mass_den_north, mass_den_south, mass_den_east, mass_den_w
 		divresult = div(kp, Nx);
 		int j = divresult.quot;
 		int i = divresult.rem;
-		if (kp % Nx != Nx - 1 && kp % Nx != 0) {
+		if (kp % Nx != Nx - 1 && kp % Nx != 0){
 			north = i + (j + 1) * Nx;
 			south = i + (j - 1) * Nx;
 			east = i + 1 + j * Nx;
@@ -461,19 +461,14 @@ float mass_den_center, mass_den_north, mass_den_south, mass_den_east, mass_den_w
 	}
 	//FTCS algorithm
 	float old_px,old_py,sqrtn_0;
-	//float	odd_vis=;
 	//float	odd_vis=0.0f;
 	for (int kp = 1 + Nx; kp <= Nx * Ny - Nx - 2; kp++) { //correr a grelha principal evitando as fronteiras
 		if (kp % Nx != Nx - 1 && kp % Nx != 0) {
 			old_px=FlxX[kp];
 			old_py=FlxY[kp];
 			sqrtn_0=sqrt(Den[kp]);
-			//FlxX[kp] = old_px + dt * (kin_vis * lap_flxX[kp] - odd_vis*lap_flxY[kp]);
-			//FlxY[kp] = old_py + dt * (kin_vis * lap_flxY[kp] + odd_vis*lap_flxX[kp]);
-			//FlxX[kp] = old_px + dt * (kin_vis * lap_flxX[kp] -cyc_freq * old_py / sqrtn_0);
-			//FlxY[kp] = old_py + dt * (kin_vis * lap_flxY[kp] +cyc_freq * old_px / sqrtn_0);
-			FlxX[kp] = old_px + dt * (kin_vis * lap_flxX[kp] +col_freq*old_px*0.0f -cyc_freq * old_py / sqrtn_0);
-			FlxY[kp] = old_py + dt * (kin_vis * lap_flxY[kp] +col_freq*old_px*0.0f +cyc_freq * old_px / sqrtn_0);
+			FlxX[kp] = old_px + dt * (kin_vis * lap_flxX[kp] - cyc_freq * old_py / sqrtn_0);
+			FlxY[kp] = old_py + dt * (kin_vis * lap_flxY[kp] + cyc_freq * old_px / sqrtn_0);
 		}
 	}
 }
@@ -596,4 +591,35 @@ float Fluid2D::MassFluxXSource(__attribute__((unused)) float n,__attribute__((un
 }
 float Fluid2D::MassFluxYSource(__attribute__((unused)) float n,__attribute__((unused)) float flx_x,__attribute__((unused)) float flx_y,__attribute__((unused)) float mass,__attribute__((unused)) float s) {
 	return 0.0f;
+}
+
+void Fluid2D::VelocityLaplacian() {
+	int north, south, east, west;
+	float mass_den_center, mass_den_north, mass_den_south, mass_den_east, mass_den_west;
+
+
+//calculate laplacians
+	for (int kp = 1 + Nx; kp <= Nx * Ny - Nx - 2; kp++) { //correr a grelha principal evitando as fronteiras
+		div_t divresult;
+		divresult = div(kp, Nx);
+		int j = divresult.quot;
+		int i = divresult.rem;
+		if (kp % Nx != Nx - 1 && kp % Nx != 0){
+			north = i + (j + 1) * Nx;
+			south = i + (j - 1) * Nx;
+			east = i + 1 + j * Nx;
+			west = i - 1 + j * Nx;
+			mass_den_center = pow(Den[kp], 1.5f);
+			mass_den_north = pow(Den[north], 1.5f);
+			mass_den_south = pow(Den[south], 1.5f);
+			mass_den_east = pow(Den[east], 1.5f);
+			mass_den_west = pow(Den[west], 1.5f);
+			lap_flxX[kp] =
+					(-4.0f * FlxX[kp] / mass_den_center + FlxX[north] / mass_den_north + FlxX[south] / mass_den_south + FlxX[east] / mass_den_east +
+					 FlxX[west] / mass_den_west) / (dx * dx);
+			lap_flxY[kp] =
+					(-4.0f * FlxY[kp] / mass_den_center + FlxY[north] / mass_den_north + FlxY[south] / mass_den_south + FlxY[east] / mass_den_east +
+					 FlxY[west] / mass_den_west) / (dx * dx);
+		}
+	}
 }

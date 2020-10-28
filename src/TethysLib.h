@@ -87,12 +87,13 @@ class TethysBase {
 		float col_freq =0.0f;   // colision frequency parameter
 		std::string file_infix; // base name for the output files
 		float Tmax=10;          // total time of simulation
-		bool HDF5fileCreated = false;   // flag to indicate the if the HDF5 file was created in the case the user choose the full output option
+		//bool HDF5fileOpen = false;   // flag to indicate the if the HDF5 file was created in the case the user choose the full output option
 
 	public:
 		TethysBase(int size_nx, int size_ny, int dimensions); // class constructor initializes Nx, Ny, RANK and file_infix
-		~TethysBase();  // class destructor if the the flag HDF5fileCreated=TRUE it deletes the dataspaces and hdf5 files
+		~TethysBase();  // class destructor if the the flag HDF5fileOpen=TRUE it deletes the dataspaces and hdf5 files
 
+		static bool HDF5fileOpen;
 		static int TimeStepCounter;
 		static float TimeStamp;
 

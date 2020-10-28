@@ -37,17 +37,17 @@ Fluid1D::Fluid1D(const SetUpParameters &input_parameters) : TethysBase{input_par
 }	
 	
 Fluid1D::~Fluid1D(){
-	delete [] Den;
-	delete [] Vel ;
-	delete [] Cur ;
-	delete [] den_mid ;
-	delete [] vel_mid ;
-	delete [] DenCor ;
-	delete [] VelCor ;
-	delete [] CurCor ;
-	delete [] vel_snd_arr ;
-	delete [] GradVel ;
-	delete [] grad_vel_mid ;
+	delete Den;
+	delete Vel ;
+	delete Cur ;
+	delete den_mid ;
+	delete vel_mid ;
+	delete DenCor ;
+	delete VelCor ;
+	delete CurCor ;
+	delete vel_snd_arr ;
+	delete GradVel ;
+	delete grad_vel_mid ;
 }
 
 float  Fluid1D::DensityFlux(float n,float v, __attribute__((unused)) float s){

@@ -182,7 +182,7 @@ void TethysBase::WriteAttributes(){
 
 
 TethysBase::~TethysBase(){
-	if(HDF5fileCreated) {
+	if(HDF5fileOpen) {
 		this->CloseHdf5File();
 		delete GrpDat;
 		delete GrpDen;
@@ -203,9 +203,10 @@ TethysBase::~TethysBase(){
 
 
 
-
+bool TethysBase::HDF5fileOpen=false;
 int TethysBase::TimeStepCounter=0;
 float TethysBase::TimeStamp=0.0f;
+
 TethysBase::TethysBase(int size_nx, int size_ny, int dimension){
 	Nx = size_nx;
 	Ny = size_ny;
@@ -225,7 +226,7 @@ TethysBase::TethysBase(int size_nx, int size_ny, int dimension){
 
 void TethysBase::CreateHdf5File(){
 	std::string hdf5name;
-	HDF5fileCreated=true;
+	TethysBase::HDF5fileOpen=true;
 	if(RANK==1){
 		hdf5name = "hdf5_1D_" + this->GetInfix() + ".h5" ;
 	}
@@ -263,6 +264,7 @@ void TethysBase::CreateHdf5File(){
 
 
 void TethysBase::OpenHdf5File(const std::string& hdf5name){
+	TethysBase::HDF5fileOpen=true;
 	const H5std_string  file_name(hdf5name );
 	Hdf5File = new H5File(file_name, H5F_ACC_RDONLY );
 	GrpDat = new Group(Hdf5File->openGroup("/Data" ));
