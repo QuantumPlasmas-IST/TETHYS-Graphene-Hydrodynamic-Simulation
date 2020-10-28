@@ -212,7 +212,6 @@ TethysBase::TethysBase(int size_nx, int size_ny, int dimension){
 	Ny = size_ny;
 	RANK=dimension;
 
-
 	char buffer [50];
 	if(RANK==1) {
 		sprintf(buffer, "Fluido1D_Nx=%d", Nx);
@@ -221,6 +220,26 @@ TethysBase::TethysBase(int size_nx, int size_ny, int dimension){
 		sprintf(buffer, "Fluido2D_Nx=%d_Ny=%d", Nx, Ny);
 	}
 	file_infix = buffer;
+
+	if(RANK==1){
+		hsize_t dimsf[1];// dataset dimensions
+		dimsf[0] = static_cast<hsize_t>(Nx);
+		DataspaceDen = new DataSpace(RANK, dimsf );
+		DataspaceVelX = new DataSpace(RANK, dimsf );
+		DataspaceVelSnd = new DataSpace(RANK, dimsf );
+	}
+	if(RANK==2){
+		hsize_t dimsf[2];
+		dimsf[0] = static_cast<hsize_t>(Ny);
+		dimsf[1] = static_cast<hsize_t>(Nx);  //troquei !
+		DataspaceVelSnd = new DataSpace(RANK, dimsf );
+		DataspaceDen = new DataSpace(RANK, dimsf );
+		DataspaceVelX = new DataSpace(RANK, dimsf );
+		DataspaceVelY = new DataSpace(RANK, dimsf );
+		dimsf[0] = static_cast<hsize_t>(Ny-1);
+		dimsf[1] = static_cast<hsize_t>(Nx-1);  //troquei !
+		DataspaceVelSndMid = new DataSpace(RANK, dimsf );
+	}
 }
 
 
@@ -240,25 +259,6 @@ void TethysBase::CreateHdf5File(){
 	GrpVelX = new Group(Hdf5File->createGroup("/Data/VelocityX" ));
 	if(RANK==2) {
 		GrpVelY = new Group(Hdf5File->createGroup("/Data/VelocityY"));
-	}
-	if(RANK==1){		
-		hsize_t dimsf[1];// dataset dimensions
-		dimsf[0] = static_cast<hsize_t>(Nx);
-		DataspaceDen = new DataSpace(RANK, dimsf );
-		DataspaceVelX = new DataSpace(RANK, dimsf );
-		DataspaceVelSnd = new DataSpace(RANK, dimsf );
-	}
-	if(RANK==2){
-		hsize_t dimsf[2];
-		dimsf[0] = static_cast<hsize_t>(Ny);
-		dimsf[1] = static_cast<hsize_t>(Nx);  //troquei !
-		DataspaceVelSnd = new DataSpace(RANK, dimsf );
-		DataspaceDen = new DataSpace(RANK, dimsf );
-		DataspaceVelX = new DataSpace(RANK, dimsf );
-		DataspaceVelY = new DataSpace(RANK, dimsf );
-		dimsf[0] = static_cast<hsize_t>(Ny-1);
-		dimsf[1] = static_cast<hsize_t>(Nx-1);  //troquei !
-		DataspaceVelSndMid = new DataSpace(RANK, dimsf );
 	}
 }
 
@@ -435,15 +435,14 @@ void SetUpParameters::ParametersFromHdf5File(const std::string& hdf5name){
 	auto *attr_vis = new Attribute(grp_dat->openAttribute("Kinetic viscosity"));
 	auto *attr_cyc = new Attribute(grp_dat->openAttribute("Cyclotron frequency"));
 	auto *attr_col = new Attribute(grp_dat->openAttribute("Collision frequency"));
-	int npoints_x,npoints_y;
-	attr_n_x->read(attr_n_x->getDataType(), &npoints_x);
-	attr_n_y->read(attr_n_y->getDataType(), &npoints_y);
+	attr_n_x->read(attr_n_x->getDataType(), &SizeX);
+	attr_n_y->read(attr_n_y->getDataType(), &SizeY);
 	attr_snd->read(attr_snd->getDataType(), &SoundVelocity);
 	attr_fer->read(attr_fer->getDataType(), &FermiVelocity);
 	attr_vis->read(attr_vis->getDataType(), &ShearViscosity);
 	attr_cyc->read(attr_cyc->getDataType(), &CyclotronFrequency);
 	attr_col->read(attr_col->getDataType(), &CollisionFrequency);
-	AspectRatio =  (npoints_x-1)/(npoints_y-1);
+	AspectRatio =  (SizeX-1)/(SizeY-1); //TODO incluse aspect ratio already on the attributes of the hdf5
 	attr_n_x->close();
 	attr_n_y->close();
 	attr_snd->close();

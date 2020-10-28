@@ -44,8 +44,6 @@ int main(int argc, char **argv){
 		elec.WriteElectroFile(GrapheneFluid2D::TimeStamp,graph);
 	}
 
-	TethysBase::HDF5fileOpen=false;
-
 	return 0;
 
 }

@@ -20,7 +20,7 @@ Fluid2D::Fluid2D(const SetUpParameters &input_parameters) : TethysBase{input_par
 	kin_vis = input_parameters.ShearViscosity;//shear_viscosity;
 
 	char buffer [50];
-	sprintf (buffer, "S=%.2fvis=%.2f", vel_snd, kin_vis);
+	sprintf (buffer, "S=%.2fvF=%.2fvis=%.2fl=%.2fwc=%.2f", vel_snd, vel_fer, kin_vis, col_freq,cyc_freq);
 	file_infix = buffer;
 	// main grid variables Nx*Ny
 	Den 		= new float[Nx * Ny]();
@@ -40,6 +40,9 @@ Fluid2D::Fluid2D(const SetUpParameters &input_parameters) : TethysBase{input_par
 	flxX_mid	= new float[(Nx-1)*(Ny-1)]();
 	flxY_mid	= new float[(Nx-1)*(Ny-1)]();
 	vel_snd_arr_mid	= new float[(Nx-1)*(Ny-1)]();
+
+
+
 }
 
 Fluid2D::~Fluid2D(){
@@ -341,8 +344,6 @@ GrapheneFluid2D::GrapheneFluid2D(SetUpParameters &input_parameters) : Fluid2D(in
 	vel_fer = input_parameters.FermiVelocity ;//fermi_velocity;
 	col_freq = input_parameters.CollisionFrequency ; // collision_frequency;
 	cyc_freq = input_parameters.CyclotronFrequency ; //cyclotron_frequency;
-
-
 	char buffer [50];
 	sprintf (buffer, "S=%.2fvF=%.2fvis=%.2fl=%.2fwc=%.2f", vel_snd, vel_fer, kin_vis, col_freq,cyc_freq);
 	file_infix = buffer;
