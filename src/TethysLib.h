@@ -29,18 +29,6 @@ using namespace H5;
 const FloatType      HDF5FLOAT(PredType::NATIVE_FLOAT);
 const IntType        HDF5INT(PredType::NATIVE_INT);
 
-//TODO REVER A NECESSIDADES DESTAS FUNCOES:
-//void Convolve_Gauss(int type, float m, float t, float * in, float * out, int size);
-//constexpr float Gauss_Kernel(int position , float t); //
-//constexpr float Gauss_Kernel_Derivative(int position , float t); //
-//void Record_Log_File(float vel_snd, float vel_fer, float col_freq, float dt, float dx, float dy, float tmax);
-
-//float Signal_Average(int n, float dt, const float * f);
-float Integral_1_D(int n, float ds, const float * f);
-float Integral_2_D(int n, int m, float dx, float dy, const float * f);
-
-//void Extrema_Finding(float * vec_in, int n, float sound, float dt, float & sat, float  & tau, float & error, const std::string& extremafile);
-
 //-----------------------------------
 
 
@@ -51,9 +39,6 @@ float Sound_Velocity_Anisotropy(float x, float s);
 float Sound_Velocity_Anisotropy(float x, float y, float s);
 /*....................................................................................................................*/
 
-
-/* Average moving filter for the smoothing of 1D simulation, suppressing the spurious oscillations inherent to the 2nd order solver*/
-void Average_Filter(const float * vec_in, float * vec_out, int size , int width );
 
 /*
  * Struct to pass the initialization

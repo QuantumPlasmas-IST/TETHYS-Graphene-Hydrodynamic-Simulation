@@ -20,19 +20,6 @@ float Sound_Velocity_Anisotropy(float x, float y, float s) {
 	return s_mod;
 }
 
-void Average_Filter(const float * vec_in, float * vec_out, int size , int width ){
-	for ( int i = 0; i < size; i++ ){
-		if(i>=width &&i<=size-1-width){
-			for(int k = i-width; k <= i+width;k++){
-				vec_out[i] += vec_in[k]; 
-			}
-			vec_out[i] = vec_out[i]/(2.0f*(float)width+1.0f);
-			}
-		else{
-			vec_out[i] = vec_in[i] ;
-		}
-	}
-}
 
 /*....................................................................*/
 /*........ General Functions .........................................*/
@@ -309,80 +296,7 @@ void TethysBase::OpenHdf5File(const std::string& hdf5name){
 	logfile << dt << "\t" << dx << "\t" << dy << "\t" << tmax << "\t" << (int) (tmax / dt) << "\t" << (int) 1 / dx << endl;
 }
 */
-float Integral_1_D(int n, float ds, const float * f){
-	float itg=0.0;
-	for(int j=1; j < n / 2; j++){
-		itg += f[2*j-2] + 4*f[2*j-1] + f[2*j];
-	}
-	itg = itg*ds/3.0f;
-	return itg;	
-}
 
-float Integral_2_D(int n, int m, float dx, float dy, const float * f){
-	float itg;
-	float interior=0.0f;
-	float edges=0.0f;
-	float vertices;
-
-	vertices = f[0] + f[n - 1] + f[n * m - n] + f[n * m - 1];
-
-	for(int i=1; i <= n - 2; i++){
-		edges += f[i] + f[i+ (m - 1) * n];
-	}
-	for(int j=1; j <= m - 2; j++){
-		edges += f[j * n] + f[n - 1 + j * n];
-	}
-	for(int k= 1 + n; k <= n * m - n - 2; k++) { //correr a grelha principal evitando as fronteiras
-		if (k % n != n - 1 && k % n != 0) {
-			interior += f[k];
-		}
-	}
-
-	itg = dx * dy * (0.25f * vertices + 0.5f * edges + interior);
-	return itg;
-}
-
-/*
-float Signal_Average(int n, float dt, const float * f){
-	float avg=0.0;
-	for(int j=1; j < n / 2; j++){
-		avg += f[2*j-2] + 4*f[2*j-1] + f[2*j];
-	}
-	avg = avg*dt/3.0f;
-	avg = avg/(n * dt);
-	return avg;
-}
-constexpr float Gauss_Kernel(int position , float t){
-	return exp(-0.5f*position*position/t)/(sqrt(2.0f*MAT_PI*t));
-}
-
-constexpr float Gauss_Kernel_Derivative(int position , float t){
-	return (-position*exp(-0.5f*position*position/t)/t)/(sqrt(2.0f*MAT_PI*t));
-}
-*/
-/*
-void Convolve_Gauss(int type, int m, float t, const float * in, float * out, int size){
-	if(type==0){
-		for(int i=0;i<size;i++){
-			if(i >= m && i < size - m){
-			for(int k=-m; k <= m; k++){
-					out[i] += in[i-k] * Gauss_Kernel(k, t);
-				}
-			}
-		}
-	}
-	if(type==1){
-		for(int i=0;i<size;i++){
-			if(i >= m && i < size - m){
-			for(int k=-m; k <= m; k++){
-					out[i] += in[i-k] * Gauss_Kernel_Derivative(k, t);
-				}
-			}
-			//out[i] = out[i] * size;
-		}
-	}
-}
-*/
 float TethysBase::PhaseVel()const{
 	return sqrt(vel_snd*vel_snd+0.5f*vel_fer*vel_fer + 0.0625f );
 }
@@ -404,40 +318,6 @@ float TethysBase::ImagFreq()const {
 	return (vel_phs_sqr - 0.5625f ) * log(fabs( (vel_phs+0.75f)/(vel_phs-0.75f) )) / (2.0f * vel_phs ) - col_freq*(1.0f-0.125f/vel_phs);
 }
 
-/*
-void Extrema_Finding(float *vec_in, int n, float sound, float dt, float & sat, float & tau , float & error, const std::string& extremafile){
-//TODO review the entire function
-	ofstream data_extrema;
-	data_extrema.open(extremafile);
-	data_extrema << "#pos_max" << "\t" << "Max" <<"\t"<< "pos_min" <<"\t"<< "Min"<<endl;
-	int w = static_cast<int>(floor(1.2f * 2.0f * MAT_PI / (Real_Freq(sound, 1.0f, 1.0f, 1) * dt)));
-	int k = 0;
-	int m = static_cast<int>(ceil(0.5f * dt * n * RealFreq(sound, 1.0f, 1.0f, 1) / MAT_PI));
-	float *vec_max;
-	vec_max =(float*) calloc (static_cast<size_t>(m), sizeof(float));
-	float *vec_pos;
-	vec_pos =(float*) calloc (static_cast<size_t>(m), sizeof(float));
-	for(int shift=0; shift < n - w ; shift += w){
-		float maximum =  *max_element( vec_in + shift , vec_in + shift + w );
-		int pos_max = static_cast<int>(max_element(vec_in + shift, vec_in + shift + w) - vec_in);
-		float minimum =  *min_element( vec_in + shift , vec_in + shift + w );
-		int pos_min = static_cast<int>(min_element(vec_in + shift, vec_in + shift + w) - vec_in);
-		data_extrema << pos_max*dt << "\t" << maximum <<"\t"<< pos_min*dt <<"\t"<< minimum  <<endl;
-		vec_max[k] = maximum;
-		vec_pos[k] = pos_max*dt;
-		k++;
-	}
-	sat =  *max_element( vec_max , vec_max + m );
-	for(int i=1; i < m - 1; i++){
-		if( vec_max[i] > 0.99f*sat ){
-			tau  = 	vec_pos[i];
-			error = 0.5f*(vec_pos[i+1]-vec_pos[i]);
-			break;
-		}
-	}
-	data_extrema.close();
-}
-*/
 
 SetUpParameters::SetUpParameters() {
 	SizeX=101;

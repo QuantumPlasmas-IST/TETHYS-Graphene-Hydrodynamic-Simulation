@@ -30,7 +30,7 @@ add_executable(TETHYS_1D
         src/Tethys1DLib.h
         src/TETHYS_1D_Main_v134.cpp
         src/TethysLib.cpp
-        src/TethysLib.h)
+        src/TethysLib.h src/TethysMathLib.h src/TethysMathLib.cpp)
 
 add_executable(TETHYS_2D
         src/BoundaryLib.cpp
@@ -41,7 +41,7 @@ add_executable(TETHYS_2D
         src/Tethys2DLib.h
         src/TETHYS_2D_Main_v221.cpp
         src/TethysLib.cpp
-        src/TethysLib.h)
+        src/TethysLib.h src/TethysMathLib.h src/TethysMathLib.cpp)
 
 add_executable(TETHYS_ELEC_2D
         src/ElectricLib.cpp
@@ -50,7 +50,7 @@ add_executable(TETHYS_ELEC_2D
         src/Tethys2DLib.h
         src/TETHYS_2D_ElectronicAnalysis.cpp
         src/TethysLib.cpp
-        src/TethysLib.h)
+        src/TethysLib.h src/TethysMathLib.h src/TethysMathLib.cpp)
 
 
 

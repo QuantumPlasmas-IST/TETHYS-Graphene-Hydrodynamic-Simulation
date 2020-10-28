@@ -3,6 +3,7 @@
 
 #include <H5Cpp.h>
 #include "TethysLib.h"
+#include "TethysMathLib.h"
 
 using namespace H5;
 
