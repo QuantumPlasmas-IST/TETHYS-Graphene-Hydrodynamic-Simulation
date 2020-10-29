@@ -28,7 +28,7 @@ void ElectroAnalysis::CreateElectroFile(const GrapheneFluid2D& graphene){
 	data_electro << scientific;
 }
 
-void ElectroAnalysis::WriteElectroFile(float t,const GrapheneFluid1D& graphene){
+void ElectroAnalysis::WriteElectroFile(float t,const GrapheneFluid1D& graphene){//TODO por em conformidade com o 2d talvez
 	float q_net = this->NetCharge(graphene);
 	float i_avg = this->AverageCurrent(graphene);
 	float p_ohm = this->OhmPower(graphene);
@@ -37,7 +37,7 @@ void ElectroAnalysis::WriteElectroFile(float t,const GrapheneFluid1D& graphene){
 	data_electro << t << "\t" << q_net << "\t" << i_avg << "\t" << q_net * q_net * 0.5 << "\t" << p_ohm << "\t" << dipole << "\t" << dipole_var << "\n";
 }
 
-void ElectroAnalysis::ComputeElectro(float t,const GrapheneFluid2D& graphene){
+void ElectroAnalysis::ComputeElectroBase(float t, const GrapheneFluid2D& graphene){
 	TmpArr.push_back(t);
 	NetQ.push_back(this->NetCharge(graphene));
 	DipX.push_back(this->ElectricDipoleX(graphene));
@@ -47,24 +47,42 @@ void ElectroAnalysis::ComputeElectro(float t,const GrapheneFluid2D& graphene){
 	PowOhm.push_back(this->OhmPower(graphene));
 }
 
+void ElectroAnalysis::ComputeElectroDerived() {
+	DipVarX.resize(DipX.size());
+	DipVarVarX.resize(DipX.size());
+	DipVarY.resize(DipY.size());
+	DipVarVarY.resize(DipY.size());
+	Convolve_Gauss(1,5,1.0,DipX.data(),DipVarX.data(),DipX.size());
+	Convolve_Gauss(1,5,1.0,DipVarX.data(),DipVarVarX.data(),DipX.size());
+	Convolve_Gauss(1,5,1.0,DipY.data(),DipVarY.data(),DipY.size());
+	Convolve_Gauss(1,5,1.0,DipVarY.data(),DipVarVarY.data(),DipY.size());
+	float dt;
+	dt=TmpArr.back()/DipX.size();
+	transform(DipVarX.begin(), DipVarX.end(), DipVarX.begin(), [dt](float &c){ return c/dt; });
+	transform(DipVarVarX.begin(), DipVarVarX.end(), DipVarVarX.begin(), [dt](float &c){ return c/(dt*dt); });
+	transform(DipVarY.begin(), DipVarY.end(), DipVarY.begin(), [dt](float &c){ return c/dt; });
+	transform(DipVarVarY.begin(), DipVarVarY.end(), DipVarVarY.begin(), [dt](float &c){ return c/(dt*dt); });
+}
+
+
 void ElectroAnalysis::WriteElectroFile(float t,const GrapheneFluid2D& graphene){
-	float q_net = this->NetCharge(graphene);
-	float i_ds   = this->AverageDirectCurrent(graphene);
-	float i_hall = this->AverageHallCurrent(graphene);
-	float p_ohm = this->OhmPower(graphene);
-	float dipole_var_x= ElectricDipoleVariationX(graphene);
-	float dipole_x= this->ElectricDipoleX(graphene);
-	float dipole_var_y= ElectricDipoleVariationY(graphene);
-	float dipole_y= this->ElectricDipoleY(graphene);
-	data_electro<< t <<"\t"
-				<< q_net<<"\t"
-				<< i_ds <<"\t"
-				<<i_hall<<"\t"
-				<< p_ohm<<"\t"
-				<< dipole_x<<"\t"
-				<< dipole_var_x <<"\t"
-				<< dipole_y << "\t"
-				<< dipole_var_y << "\n";
+	if(!NetQ.empty()){
+		for(size_t i = 0; i < NetQ.size(); ++i){
+			data_electro<< TmpArr[i] <<"\t"
+						<< NetQ[i]<<"\t"
+						<< AvgCurDS[i] <<"\t"
+						<< AvgCurHall[i] <<"\t"
+						<< PowOhm[i]<<"\t"
+						<< DipX[i]<<"\t"
+						<< DipVarX[i] <<"\t"
+						<< DipVarVarX[i] <<"\t"
+						<< DipY[i] << "\t"
+						<< DipVarY[i] << "\t"
+						<< DipVarVarY[i] << "\n";
+		}
+	}else{
+		cout<<"erro"<<endl; //TODO try catch block
+	}
 }
 
 float ElectroAnalysis::NetCharge(const GrapheneFluid1D& graphene){
@@ -184,4 +202,5 @@ float ElectroAnalysis::DrainCurrent(const GrapheneFluid2D& graphene) {
 	}
 	return Integral_1_D(graphene.SizeY(), graphene.GetDy(), vector);
 }
+
 

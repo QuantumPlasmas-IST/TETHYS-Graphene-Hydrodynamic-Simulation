@@ -45,7 +45,8 @@ public:
 	float ElectricDipoleVariationX(const GrapheneFluid2D& graphene);
 	float ElectricDipoleVariationY(const GrapheneFluid2D& graphene);
 
-	void ComputeElectro(float t, const GrapheneFluid2D &graphene);
+	void ComputeElectroBase(float t, const GrapheneFluid2D &graphene);
+	void ComputeElectroDerived();
 };
 
 #endif
