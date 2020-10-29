@@ -138,13 +138,15 @@ void TethysBase::WriteAttributes(){
 	Attribute atr_cyc_freq  = GrpDat->createAttribute("Cyclotron frequency", HDF5FLOAT, atr_dataspace);
 	Attribute atr_vel_fer  = GrpDat->createAttribute("Fermi velocity", HDF5FLOAT, atr_dataspace);
 	Attribute atr_dx = GrpDat->createAttribute("Space discretisation step x", HDF5FLOAT, atr_dataspace);
-	Attribute atr_dy;
 	Attribute atr_dt = GrpDat->createAttribute("Time discretisation step", HDF5FLOAT, atr_dataspace);
 	Attribute atr_total_time = GrpDat->createAttribute("Total simulation time", HDF5FLOAT, atr_dataspace);
 	Attribute atr_num_space_points_x = GrpDat->createAttribute("Number of spatial points x", HDF5INT, atr_dataspace);
-	Attribute atr_num_space_points_y;
 	Attribute atr_num_time_steps = GrpDat->createAttribute("Number of time steps", HDF5INT, atr_dataspace);
+	Attribute atr_dy;
+	Attribute atr_num_space_points_y;
+	Attribute atr_aspect_ratio;
 	if (RANK == 2) {
+		atr_aspect_ratio = GrpDat->createAttribute("Aspect ratio", HDF5FLOAT, atr_dataspace);
 		atr_dy = GrpDat->createAttribute("Space discretisation step y", HDF5FLOAT, atr_dataspace);
 		atr_num_space_points_y = GrpDat->createAttribute("Number of spatial points y", HDF5INT,
 		                                                 atr_dataspace);
@@ -161,8 +163,10 @@ void TethysBase::WriteAttributes(){
 	atr_total_time.write(HDF5FLOAT, &Tmax);
 	atr_num_time_steps.write(HDF5INT, &total_steps);
 	if (RANK == 2) {
+		float aspect_ratio= lengX/lengY;
 		atr_dy.write(HDF5FLOAT, &dy);
 		atr_num_space_points_y.write(HDF5INT, &Ny);
+		atr_aspect_ratio.write(HDF5FLOAT,&aspect_ratio);
 	}
 	// Close the attributes.
 	atr_num_time_steps.close();

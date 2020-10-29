@@ -42,11 +42,19 @@ void ElectroAnalysis::WriteElectroFile(float t,const GrapheneFluid2D& graphene){
 	float i_ds   = this->AverageDirectCurrent(graphene);
 	float i_hall = this->AverageHallCurrent(graphene);
 	float p_ohm = this->OhmPower(graphene);
-	float dipole_var_x= this->ElectricDipoleVariationX(graphene);
+	float dipole_var_x= ElectricDipoleVariationX(graphene);
 	float dipole_x= this->ElectricDipoleX(graphene);
-	float dipole_var_y= this->ElectricDipoleVariationY(graphene);
+	float dipole_var_y= ElectricDipoleVariationY(graphene);
 	float dipole_y= this->ElectricDipoleY(graphene);
-	data_electro << t << "\t"<<q_net << "\t"<<i_ds<<"\t"<<i_hall<< "\t" << p_ohm << "\t" << dipole_x << "\t" << dipole_var_x << dipole_y << "\t" << dipole_var_y << "\n";
+	data_electro<< t <<"\t"
+				<< q_net<<"\t"
+				<< i_ds <<"\t"
+				<<i_hall<<"\t"
+				<< p_ohm<<"\t"
+				<< dipole_x<<"\t"
+				<< dipole_var_x <<"\t"
+				<< dipole_y << "\t"
+				<< dipole_var_y << "\n";
 }
 
 float ElectroAnalysis::NetCharge(const GrapheneFluid1D& graphene){

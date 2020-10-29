@@ -6,7 +6,8 @@
 
 using namespace std;
 
-void Convolve_Gauss(int type, float m, float t, float * in, float * out, int size);
+void Convolve_Gauss(int type, int m, float t, const float * in, float * out, int size);
+//void Convolve_Gauss(int type, float m, float t, float * in, float * out, int size);
 constexpr float Gauss_Kernel(int position , float t); //
 constexpr float Gauss_Kernel_Derivative(int position , float t); //
 float Signal_Average(int n, float dt, const float * f);

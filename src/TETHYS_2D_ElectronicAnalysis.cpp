@@ -37,6 +37,7 @@ int main(int argc, char **argv){
 
 	elec.CreateElectroFile(graph);
 
+
 	for(hsize_t i=0; i < graph.GrpDen->getNumObjs(); i++){
 		graph.ReadSnapShot(graph.GrpDen->getObjnameByIdx(i));
 		graph.VelocityToCurrent();
@@ -44,6 +45,37 @@ int main(int argc, char **argv){
 	}
 
 
+	int numero_total=graph.GrpDen->getNumObjs();
+	float time[numero_total];
+	float dpx[numero_total];
+	float ddpx[numero_total];
+	float px[numero_total];
+	for(hsize_t i=0; i < numero_total; i++){
+		graph.ReadSnapShot(graph.GrpDen->getObjnameByIdx(i));
+		graph.VelocityToCurrent();
+		time[i]=GrapheneFluid2D::TimeStamp;
+
+		px[i]=elec.ElectricDipoleX(graph);
+		dpx[i]=0.0f;
+		ddpx[i]=0.0f;
+	}
+
+
+	std::ofstream data_teste;
+	std::string infix = graph.GetInfix();
+	std::string testefile;
+	testefile = "TESTE_2D_" + infix + ".dat" ;
+	data_teste.open (testefile);
+	data_teste << scientific;
+
+Convolve_Gauss(1,5,1.0,px,dpx,numero_total);
+Convolve_Gauss(1,5,1.0,dpx,ddpx,numero_total);
+float diferenca_tempo;
+	//diferenca_tempo=time[11]-time[10];
+	diferenca_tempo=time[numero_total-1]/numero_total;
+	for(hsize_t i=0; i < numero_total; i++){
+		data_teste <<time[i]<<"\t"<< px[i] <<"\t"<< dpx[i]/diferenca_tempo <<"\t"<<dpx[i]/(diferenca_tempo*diferenca_tempo)<<endl;
+	}
 
 	return 0;
 }
