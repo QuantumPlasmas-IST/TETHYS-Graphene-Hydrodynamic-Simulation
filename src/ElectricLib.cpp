@@ -37,6 +37,16 @@ void ElectroAnalysis::WriteElectroFile(float t,const GrapheneFluid1D& graphene){
 	data_electro << t << "\t" << q_net << "\t" << i_avg << "\t" << q_net * q_net * 0.5 << "\t" << p_ohm << "\t" << dipole << "\t" << dipole_var << "\n";
 }
 
+void ElectroAnalysis::ComputeElectro(float t,const GrapheneFluid2D& graphene){
+	TmpArr.push_back(t);
+	NetQ.push_back(this->NetCharge(graphene));
+	DipX.push_back(this->ElectricDipoleX(graphene));
+	DipY.push_back(this->ElectricDipoleY(graphene));
+	AvgCurDS.push_back(this->AverageDirectCurrent(graphene));
+	AvgCurHall.push_back(this->AverageHallCurrent(graphene));
+	PowOhm.push_back(this->OhmPower(graphene));
+}
+
 void ElectroAnalysis::WriteElectroFile(float t,const GrapheneFluid2D& graphene){
 	float q_net = this->NetCharge(graphene);
 	float i_ds   = this->AverageDirectCurrent(graphene);
@@ -174,3 +184,4 @@ float ElectroAnalysis::DrainCurrent(const GrapheneFluid2D& graphene) {
 	}
 	return Integral_1_D(graphene.SizeY(), graphene.GetDy(), vector);
 }
+

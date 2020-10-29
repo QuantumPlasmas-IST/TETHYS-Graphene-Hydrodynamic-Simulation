@@ -11,6 +11,18 @@ class ElectroAnalysis{
 private:
 	std::ofstream data_electro;
 public:
+	vector<float> TmpArr;
+	vector<float> NetQ;
+	vector<float> DipX;
+	vector<float> DipY;
+	vector<float> DipVarX;
+	vector<float> DipVarY;
+	vector<float> DipVarVarX;
+	vector<float> DipVarVarY;
+	vector<float> AvgCurDS;
+	vector<float> AvgCurHall;
+	vector<float> PowOhm;
+
 	void CloseElectroFile();
 	void CreateElectroFile(const GrapheneFluid1D& graphene);
 	void CreateElectroFile(const GrapheneFluid2D& graphene);
@@ -32,6 +44,8 @@ public:
 	float ElectricDipoleVariation(const GrapheneFluid1D& graphene);
 	float ElectricDipoleVariationX(const GrapheneFluid2D& graphene);
 	float ElectricDipoleVariationY(const GrapheneFluid2D& graphene);
+
+	void ComputeElectro(float t, const GrapheneFluid2D &graphene);
 };
 
 #endif

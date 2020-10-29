@@ -35,16 +35,20 @@ int main(int argc, char **argv){
 	graph.OpenHdf5File(input_file_name);
 	cout << "DONE" <<endl;
 
-	elec.CreateElectroFile(graph);
+	//elec.CreateElectroFile(graph);
 
 
 	for(hsize_t i=0; i < graph.GrpDen->getNumObjs(); i++){
 		graph.ReadSnapShot(graph.GrpDen->getObjnameByIdx(i));
 		graph.VelocityToCurrent();
-		elec.WriteElectroFile(GrapheneFluid2D::TimeStamp,graph);
+		elec.ComputeElectro(GrapheneFluid2D::TimeStamp,graph);
+	//	elec.WriteElectroFile(GrapheneFluid2D::TimeStamp,graph);
 	}
 
-
+	for(hsize_t i=0; i < graph.GrpDen->getNumObjs(); i++){
+		cout <<elec.TmpArr[i] <<"\t"<< elec.NetQ[i] <<"\n";
+	}
+/*
 	int numero_total=graph.GrpDen->getNumObjs();
 	float time[numero_total];
 	float dpx[numero_total];
@@ -59,8 +63,7 @@ int main(int argc, char **argv){
 		dpx[i]=0.0f;
 		ddpx[i]=0.0f;
 	}
-
-
+// TODO mover o calculo da derivada temporal para dentro da classe do electro
 	std::ofstream data_teste;
 	std::string infix = graph.GetInfix();
 	std::string testefile;
@@ -76,7 +79,7 @@ float diferenca_tempo;
 	for(hsize_t i=0; i < numero_total; i++){
 		data_teste <<time[i]<<"\t"<< px[i] <<"\t"<< dpx[i]/diferenca_tempo <<"\t"<<dpx[i]/(diferenca_tempo*diferenca_tempo)<<endl;
 	}
-
+*/
 	return 0;
 }
 
