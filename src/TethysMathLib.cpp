@@ -61,20 +61,20 @@ float Signal_Average(int n, float dt, const float * f){
 		avg += f[2*j-2] + 4*f[2*j-1] + f[2*j];
 	}
 	avg = avg*dt/3.0f;
-	avg = avg/(n * dt);
+	avg = avg/( n * dt);
 	return avg;
 }
 constexpr float Gauss_Kernel(int position , float t){
-	return exp(-0.5f*position*position/t)/(sqrt(2.0f*MAT_PI*t));
+	return exp( -0.5f*position*position/t)/(sqrt(2.0f*MAT_PI*t));
 }
 
 constexpr float Gauss_Kernel_Derivative(int position , float t){
-	return (-position*exp(-0.5f*position*position/t)/t)/(sqrt(2.0f*MAT_PI*t));
+	return ( -position*exp(-0.5f*position*position/t)/t)/(sqrt(2.0f*MAT_PI*t));
 }
 
 void Convolve_Gauss(unsigned int type, unsigned int m, float t, const float * in, float * out, unsigned long size){
 	if(type==0){
-		for(unsigned int i=0;i<size;i++){
+		for(int i=0;i<size;i++){
 			if(i >= m && i < size - m){
 			for(int k=-m; k <= m; k++){
 					out[i] += in[i-k] * Gauss_Kernel(k, t);

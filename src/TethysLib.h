@@ -151,7 +151,7 @@ class TethysBase {
 		void CloseHdf5File() const;           // closes the HDF5 file
 		void WriteAttributes();          // saves the simulation attributes (either physical and simulation parameters)
 
-		void BannerDisplay(); // launches the initial ASCII art banner
+		void BannerDisplay() const; // launches the initial ASCII art banner
 		void WelcomeScreen() const; //launches screen with the relevant info
 };
 #endif

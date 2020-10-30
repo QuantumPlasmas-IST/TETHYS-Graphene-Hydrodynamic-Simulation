@@ -78,7 +78,7 @@ void Fluid1D::SetSimulationTime(){
 		
 void Fluid1D::SetSound(){
 	for(int i = 0; i<Nx-1  ;i++){
-		vel_snd_arr[i]= Sound_Velocity_Anisotropy(i*dx, vel_snd);
+		vel_snd_arr[i]= Sound_Velocity_Anisotropy( i*dx, vel_snd);
 	}
 }
 		
@@ -238,7 +238,7 @@ void Fluid1D::SaveSnapShot(){
 	DataSet dataset_den = GrpDen->createDataSet(name_dataset, HDF5FLOAT, *DataspaceDen);
 	Attribute atr_step_den = dataset_den.createAttribute("time step", HDF5INT, atr_dataspace);
 	Attribute atr_time_den = dataset_den.createAttribute("time", HDF5FLOAT, atr_dataspace);
-	float currenttime=TimeStepCounter * dt;
+	float currenttime= TimeStepCounter * dt;
 	atr_step_den.write(HDF5INT, &TimeStepCounter);
 	atr_time_den.write(HDF5FLOAT , &currenttime);
 	atr_step_den.close();

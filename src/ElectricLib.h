@@ -47,6 +47,8 @@ public:
 
 	void ComputeElectroBase(float t, const GrapheneFluid2D &graphene);
 	void ComputeElectroDerived();
+
+	void BannerDisplay(const GrapheneFluid2D &graphene);
 };
 
 #endif

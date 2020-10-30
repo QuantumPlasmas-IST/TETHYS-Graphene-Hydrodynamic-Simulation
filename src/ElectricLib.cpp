@@ -65,22 +65,26 @@ void ElectroAnalysis::ComputeElectroDerived() {
 
 
 void ElectroAnalysis::WriteElectroFile() {
-	if(!NetQ.empty()){
-		for(size_t i = 0; i < NetQ.size(); ++i){
-			data_electro<< TmpArr[i] <<"\t"
-						<< NetQ[i]<<"\t"
-						<< AvgCurDS[i] <<"\t"
-						<< AvgCurHall[i] <<"\t"
-						<< PowOhm[i]<<"\t"
-						<< DipX[i]<<"\t"
-						<< DipVarX[i] <<"\t"
-						<< DipVarVarX[i] <<"\t"
-						<< DipY[i] << "\t"
-						<< DipVarY[i] << "\t"
-						<< DipVarVarY[i] << "\n";
+	try{
+		if(NetQ.empty() || DipVarY.empty()){
+			throw "Nothing to save on output file";
 		}
-	}else{
-		cout<<"erro"<<endl; //TODO try catch block
+		for(size_t i = 0; i < NetQ.size(); ++i) {
+			data_electro << TmpArr[i] << "\t"
+			             << NetQ[i] << "\t"
+			             << AvgCurDS[i] << "\t"
+			             << AvgCurHall[i] << "\t"
+			             << PowOhm[i] << "\t"
+			             << DipX[i] << "\t"
+			             << DipVarX[i] << "\t"
+			             << DipVarVarX[i] << "\t"
+			             << DipY[i] << "\t"
+			             << DipVarY[i] << "\t"
+			             << DipVarVarY[i] << "\n";
+		}
+	}catch (const char* msg) {
+		cerr << msg  <<"\nExiting"<< endl;
+		exit(EXIT_FAILURE);
 	}
 }
 
@@ -202,4 +206,21 @@ float ElectroAnalysis::DrainCurrent(const GrapheneFluid2D& graphene) {
 	return Integral_1_D(graphene.SizeY(), graphene.GetDy(), vector);
 }
 
+void ElectroAnalysis::BannerDisplay(const GrapheneFluid2D &graphene) {
+	graphene.BannerDisplay();
+	cout<<"┌─────────────────────────────────────────────────────────────────────────┐\n";
+	cout<<"│                \033[3mComputation of the Electronic Quantities\033[0m                 │\n";
+	cout<<"└─────────────────────────────────────────────────────────────────────────┘\n";
+
+	cout<<"Detected parameters: \n";
+	cout << "Fermi velocity\t\033[1mvF\t" << graphene.GetVelFer() << " v\342\202\200\033[0m\n";
+	cout << "Phase velocity\t\033[1mS'\t" << graphene.PhaseVel() << " v\342\202\200\033[0m\n";
+	cout << "Viscosity \t\033[1m\316\267\t" << graphene.GetKinVis() << "\033[0m\n";
+	if (graphene.GetKinVis() != 0.0) {
+		cout << "Reynolds n. \t\033[1mRe\t" << 1.0 / graphene.GetKinVis() << "\033[0m\n";
+	}
+	cout << "Collision rate \t\033[1m\316\275\t" << graphene.GetColFreq()<< " v\342\202\200/L\033[0m\n";
+	cout << "Cyclotron frequency \t\033[1m\317\211c\t" << graphene.GetCycFreq() << " v\342\202\200/L\n\033[0m\n";
+
+}
 

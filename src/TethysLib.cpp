@@ -24,7 +24,7 @@ float Sound_Velocity_Anisotropy(float x, float y, float s) {
 /*....................................................................*/
 /*........ General Functions .........................................*/
 /*....................................................................*/
-void TethysBase::BannerDisplay(){
+void TethysBase::BannerDisplay() const {
 cout<<"\n" ;
 	cout<<"╔═════════════════════════════════════════════════════════════════════════╗\n";
 	cout<<"║\033[2m  ▆▆▆▆▆▆▆▆▆▆▆ ▆▆▆▆▆▆▆▆▆▆  ▆▆▆▆▆▆▆▆▆▆▆ ▆▆▆▆▆ ▆▆▆▆▆ ▆▆▆▖   ▗▆▆▆ ▗▆▆▆▆▆▆▆▖  \033[0m║\n";
@@ -426,32 +426,46 @@ void SetUpParameters::ExceptionsChecking() const{
 }
 
 void SetUpParameters::ParametersFromHdf5File(const std::string& hdf5name){
-	H5File* hdf5_file;
-	Group* grp_dat;
-	hdf5_file = new H5File(hdf5name, H5F_ACC_RDONLY );
-	grp_dat = new Group(hdf5_file->openGroup("/Data" ));
-	auto *attr_n_x = new Attribute(grp_dat->openAttribute("Number of spatial points x"));
-	auto *attr_n_y = new Attribute(grp_dat->openAttribute("Number of spatial points y"));
-	auto *attr_snd = new Attribute(grp_dat->openAttribute("Sound velocity"));
-	auto *attr_fer = new Attribute(grp_dat->openAttribute("Fermi velocity"));
-	auto *attr_vis = new Attribute(grp_dat->openAttribute("Kinetic viscosity"));
-	auto *attr_cyc = new Attribute(grp_dat->openAttribute("Cyclotron frequency"));
-	auto *attr_col = new Attribute(grp_dat->openAttribute("Collision frequency"));
-	attr_n_x->read(attr_n_x->getDataType(), &SizeX);
-	attr_n_y->read(attr_n_y->getDataType(), &SizeY);
-	attr_snd->read(attr_snd->getDataType(), &SoundVelocity);
-	attr_fer->read(attr_fer->getDataType(), &FermiVelocity);
-	attr_vis->read(attr_vis->getDataType(), &ShearViscosity);
-	attr_cyc->read(attr_cyc->getDataType(), &CyclotronFrequency);
-	attr_col->read(attr_col->getDataType(), &CollisionFrequency);
-	AspectRatio =  (SizeX-1)/(SizeY-1); //TODO incluse aspect ratio already on the attributes of the hdf5
-	attr_n_x->close();
-	attr_n_y->close();
-	attr_snd->close();
-	attr_fer->close();
-	attr_vis->close();
-	attr_cyc->close();
-	attr_col->close();
+	H5File *hdf5_file;
+	Group *grp_dat;
+	try{
+		Exception::dontPrint();
+		hdf5_file = new H5File(hdf5name, H5F_ACC_RDONLY);
+		grp_dat = new Group(hdf5_file->openGroup("/Data"));
+	}
+	catch( FileIException file_error )
+	{
+		cerr<<"Unable to open HDF5 file \t Exiting";
+		//file_error.printError();
+		exit(EXIT_FAILURE);
+	}
+	catch (...) {
+		cerr<<"Error found\tExiting";
+		exit(EXIT_FAILURE);
+	}
+	Attribute attr_n_x(grp_dat->openAttribute("Number of spatial points x"));
+	attr_n_x.read(attr_n_x.getDataType(), &SizeX);
+	Attribute attr_n_y(grp_dat->openAttribute("Number of spatial points y"));
+	attr_n_y.read(attr_n_y.getDataType(), &SizeY);
+	Attribute attr_snd(grp_dat->openAttribute("Sound velocity"));
+	attr_snd.read(attr_snd.getDataType(), &SoundVelocity);
+	Attribute attr_fer(grp_dat->openAttribute("Fermi velocity"));
+	attr_fer.read(attr_fer.getDataType(), &FermiVelocity);
+	Attribute attr_vis(grp_dat->openAttribute("Kinetic viscosity"));
+	attr_vis.read(attr_vis.getDataType(), &ShearViscosity);
+	Attribute attr_cyc(grp_dat->openAttribute("Cyclotron frequency"));
+	attr_cyc.read(attr_cyc.getDataType(), &CyclotronFrequency);
+	Attribute attr_col(grp_dat->openAttribute("Collision frequency"));
+	attr_col.read(attr_col.getDataType(), &CollisionFrequency);
+
+	AspectRatio = (SizeX - 1) / (SizeY - 1); //TODO incluse aspect ratio already on the attributes of the hdf5
+	attr_n_x.close();
+	attr_n_y.close();
+	attr_snd.close();
+	attr_fer.close();
+	attr_vis.close();
+	attr_cyc.close();
+	attr_col.close();
 	grp_dat->close();
 	hdf5_file->close();
 }
