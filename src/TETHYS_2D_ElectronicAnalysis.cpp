@@ -22,21 +22,18 @@ int main(int argc, char **argv){
 
 	elec.BannerDisplay(graph);
 
-
-	cout << "Importing HDF5 file...";
 	graph.OpenHdf5File(input_file_name);
 	for(hsize_t i=0; i < graph.GrpDen->getNumObjs(); i++){
 		graph.ReadSnapShot(graph.GrpDen->getObjnameByIdx(i));
 		graph.VelocityToCurrent();
 		elec.ComputeElectroBase(GrapheneFluid2D::TimeStamp, graph);
 	}
-	cout << " DONE" <<endl;
 	elec.ComputeElectroDerived();
 	elec.CreateElectroFile(graph.GetInfix());
-	cout << "Writing outpu file...";
 	elec.WriteElectroFile();
-	cout << " DONE" <<endl;
 
+	cout << "\033[1A\033[2K\033[1;32mDONE!\033[0m\n";
+	cout << "═══════════════════════════════════════════════════════════════════════════" <<endl;
 	return 0;
 }
 

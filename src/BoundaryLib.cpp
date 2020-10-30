@@ -210,8 +210,8 @@ void DirichletBoundaryCondition::MassFluxY(Fluid2D& fluid_class, float left, flo
 void DirichletBoundaryCondition::Jet(Fluid2D &fluid_class, float left, float left_width, float right, float right_width) {
 	int nx=fluid_class.SizeX();
 	int ny=fluid_class.SizeY();
-	int n_width_left= static_cast<int>(ny * left_width);
-	int n_width_right= static_cast<int>(ny * right_width);
+	int n_width_left= static_cast<int>(static_cast<float>(ny) * left_width);
+	int n_width_right= static_cast<int>(static_cast<float>(ny) * right_width);
 	for (int j=0; j < ny; j++){
 		if( j>=(ny-n_width_left)/2 && j<= (ny+n_width_left)/2){
 			fluid_class.FlxX[0 + j * nx] = left;

@@ -2,6 +2,19 @@
 
 using namespace std;
 
+float Sound_Velocity_Anisotropy(float x, float s) {
+	return s;
+}
+float Sound_Velocity_Anisotropy(float x, float y, float s) {
+	float s_mod;
+	//float slope=0.05;
+	//s_mod = s * (1.0f - slope * x);
+	//s_mod = s + 0.2f*pow(2.0f + cos(25.0f*x/MAT_PI),2.0f)/8.0f;
+
+	//s_mod=s+0.1f*abs(sin(3.0f*MAT_PI*x)*sin(3.0f*MAT_PI*y));
+	s_mod=s;//+1.0f*abs(sin(3.0f*MAT_PI*x));
+	return s_mod;
+}
 
 
 
@@ -61,31 +74,33 @@ float Signal_Average(int n, float dt, const float * f){
 		avg += f[2*j-2] + 4*f[2*j-1] + f[2*j];
 	}
 	avg = avg*dt/3.0f;
-	avg = avg/( n * dt);
+	avg = avg/(static_cast<float>(n) * dt);
 	return avg;
 }
 constexpr float Gauss_Kernel(int position , float t){
-	return exp( -0.5f*position*position/t)/(sqrt(2.0f*MAT_PI*t));
+	auto pos=static_cast<float>(position);
+	return exp(-0.5f * pos * pos / t) / (sqrt(2.0f * MAT_PI * t));
 }
 
 constexpr float Gauss_Kernel_Derivative(int position , float t){
-	return ( -position*exp(-0.5f*position*position/t)/t)/(sqrt(2.0f*MAT_PI*t));
+	auto pos=static_cast<float>(position);
+	return (-pos * exp(-0.5f * pos * pos / t) / t) / (sqrt(2.0f * MAT_PI * t));
 }
 
 void Convolve_Gauss(unsigned int type, unsigned int m, float t, const float * in, float * out, unsigned long size){
 	if(type==0){
-		for(int i=0;i<size;i++){
+		for(unsigned int i=0;i<size;i++){
 			if(i >= m && i < size - m){
-			for(int k=-m; k <= m; k++){
+			for(int k=static_cast<int>(-1*m); k <= static_cast<int>(m); k++){
 					out[i] += in[i-k] * Gauss_Kernel(k, t);
 				}
 			}
 		}
 	}
 	if(type==1){
-		for(int i=0;i<size;i++){
+		for(unsigned int i=0;i<size;i++){
 			if(i >= m && i < size - m){
-			for(int k=-m; k <= m; k++){
+			for(int k=static_cast<int>(-1*m); k <= static_cast<int>(m); k++){
 					out[i] += in[i-k] * Gauss_Kernel_Derivative(k, t);
 				}
 			}

@@ -78,7 +78,7 @@ void Fluid1D::SetSimulationTime(){
 		
 void Fluid1D::SetSound(){
 	for(int i = 0; i<Nx-1  ;i++){
-		vel_snd_arr[i]= Sound_Velocity_Anisotropy( i*dx, vel_snd);
+		vel_snd_arr[i]= Sound_Velocity_Anisotropy( static_cast<float>(i)*dx, vel_snd);
 	}
 }
 		
@@ -98,7 +98,7 @@ void Fluid1D::InitialCondTest(){
 	//float sigma=dx*Nx/10.0f;
 	for (int i = 0; i < Nx; i++ ){
 		//Vel[i] = 0.4f*exp(-0.5f*((i*dx-mean)*(i*dx-mean)/(sigma*sigma)))/sigma;
-		Vel[i] = 1.0f+tanh(10.0f*(dx*i-0.5f));
+		Vel[i] = 1.0f+tanh(10.0f*(dx*static_cast<float>(i)-0.5f));
 	}
 }
 
@@ -189,7 +189,7 @@ float GrapheneFluid1D::DensityFlux(float n,float v,float __attribute__((unused))
 	f_1 = n * v;
 	return f_1;
 }
-float GrapheneFluid1D::VelocityFlux(float n,float v,float dv,float s){
+float GrapheneFluid1D::VelocityFlux(float n,float v,__attribute__((unused))float dv,float s){
 	float f_2;
 	try {
 		if(n<0 || !isfinite(n)){
@@ -238,7 +238,7 @@ void Fluid1D::SaveSnapShot(){
 	DataSet dataset_den = GrpDen->createDataSet(name_dataset, HDF5FLOAT, *DataspaceDen);
 	Attribute atr_step_den = dataset_den.createAttribute("time step", HDF5INT, atr_dataspace);
 	Attribute atr_time_den = dataset_den.createAttribute("time", HDF5FLOAT, atr_dataspace);
-	float currenttime= TimeStepCounter * dt;
+	float currenttime= static_cast<float>(TimeStepCounter) * dt;
 	atr_step_den.write(HDF5INT, &TimeStepCounter);
 	atr_time_den.write(HDF5FLOAT , &currenttime);
 	atr_step_den.close();

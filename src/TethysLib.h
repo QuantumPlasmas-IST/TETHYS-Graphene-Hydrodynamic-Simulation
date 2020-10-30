@@ -29,21 +29,10 @@ using namespace H5;
 const FloatType      HDF5FLOAT(PredType::NATIVE_FLOAT);
 const IntType        HDF5INT(PredType::NATIVE_INT);
 
-//-----------------------------------
-
-
-/* Functions to implement the spatial variation of the sound velocity S(x) in 1D or S(x,y) in 2D
- * corresponding to a variation of substrat permitivitty or even the description of a multi gated system.
- * */
-float Sound_Velocity_Anisotropy(float x, float s);
-float Sound_Velocity_Anisotropy(float x, float y, float s);
-/*....................................................................................................................*/
-
 
 /*
  * Struct to pass the initialization
  * */
-
 class SetUpParameters {
 	public:
 		SetUpParameters();

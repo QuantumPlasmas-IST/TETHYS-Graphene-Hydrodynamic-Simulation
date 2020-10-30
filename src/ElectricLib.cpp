@@ -116,7 +116,7 @@ float ElectroAnalysis::ElectricDipole(const GrapheneFluid1D& graphene){
 	float p=0.0;
 	float dx=graphene.GetDx();
 	for(int j=1;j<graphene.SizeX()/2;j++){
-		p += dx*(2*j-2)*graphene.DenCor[2 * j - 2] + 4 * dx * (2 * j - 1) * graphene.DenCor[2 * j - 1] + dx * (2 * j) * graphene.DenCor[2 * j];
+		p += dx*static_cast<float>(2*j-2)*graphene.DenCor[2 * j - 2] + 4 * dx * static_cast<float>(2 * j - 1) * graphene.DenCor[2 * j - 1] + dx * static_cast<float>(2 * j) * graphene.DenCor[2 * j];
 	}
 	p = p*graphene.GetDx()/3.0f;
 	return p;
@@ -150,8 +150,9 @@ float ElectroAnalysis::ElectricDipoleX(const GrapheneFluid2D &graphene) {
 	for(int c=0;c<size;c++){
 		div_t divresult;
 		divresult = div (c,graphene.SizeX());
-		int i=divresult.rem;
+		auto i=static_cast<float>(divresult.rem);
 		rx = i*graphene.GetDx()-0.5f*graphene.GetLengthX();
+
 		vector[c] = rx*graphene.Den[c];
 	}
 	return Integral_2_D(graphene.SizeX(), graphene.SizeY(), graphene.GetDx(), graphene.GetDy(), vector);
@@ -163,7 +164,7 @@ float ElectroAnalysis::ElectricDipoleY(const GrapheneFluid2D &graphene) {
 	for(int c=0;c<size;c++){
 		div_t divresult;
 		divresult = div (c,graphene.SizeX());
-		int j=divresult.quot;
+		auto j=static_cast<float>(divresult.quot);
 		ry = j*graphene.GetDy()-0.5f*graphene.GetLengthY();
 		vector[c] = ry*graphene.Den[c];
 	}

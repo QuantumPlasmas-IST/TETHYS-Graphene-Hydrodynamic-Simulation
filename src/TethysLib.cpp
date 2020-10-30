@@ -6,19 +6,6 @@ using namespace std;
 
 
 
-float Sound_Velocity_Anisotropy(float x, float s) {
-	return s;
-}
-float Sound_Velocity_Anisotropy(float x, float y, float s) {
-	float s_mod;
-	//float slope=0.05;
-	//s_mod = s * (1.0f - slope * x);
-	//s_mod = s + 0.2f*pow(2.0f + cos(25.0f*x/MAT_PI),2.0f)/8.0f;
-
-	//s_mod=s+0.1f*abs(sin(3.0f*MAT_PI*x)*sin(3.0f*MAT_PI*y));
-	s_mod=s;//+1.0f*abs(sin(3.0f*MAT_PI*x));
-	return s_mod;
-}
 
 
 /*....................................................................*/
@@ -306,14 +293,14 @@ float TethysBase::PhaseVel()const{
 	return sqrt(vel_snd*vel_snd+0.5f*vel_fer*vel_fer + 0.0625f );
 }
 float TethysBase::RealFreq()const {
-	int mode = 1;
+	float mode = 1.0f;
 	float vel_phs = this->PhaseVel();
 	float vel_phs_sqr = vel_phs*vel_phs ;
-	if (1 < vel_phs ){
-		mode = 2*mode-1;
+	if (1.0f < vel_phs ){
+		mode = 2.0f*mode-1.0f;
 	}
 	else{
-		mode = 2*mode;
+		mode = 2.0f*mode;
 		}
 	return fabs(vel_phs_sqr - 0.5625f ) * MAT_PI * mode / (2.0f * vel_phs );
 }
@@ -433,14 +420,13 @@ void SetUpParameters::ParametersFromHdf5File(const std::string& hdf5name){
 		hdf5_file = new H5File(hdf5name, H5F_ACC_RDONLY);
 		grp_dat = new Group(hdf5_file->openGroup("/Data"));
 	}
-	catch( FileIException file_error )
+	catch( FileIException &file_error )
 	{
-		cerr<<"Unable to open HDF5 file \t Exiting";
-		//file_error.printError();
+		cerr<<"Unable to open HDF5 file\t"<< file_error.getDetailMsg() <<"\nExiting\n";
 		exit(EXIT_FAILURE);
 	}
 	catch (...) {
-		cerr<<"Error found\tExiting";
+		cerr<<"Unknown error found\nExiting";
 		exit(EXIT_FAILURE);
 	}
 	Attribute attr_n_x(grp_dat->openAttribute("Number of spatial points x"));
@@ -457,8 +443,7 @@ void SetUpParameters::ParametersFromHdf5File(const std::string& hdf5name){
 	attr_cyc.read(attr_cyc.getDataType(), &CyclotronFrequency);
 	Attribute attr_col(grp_dat->openAttribute("Collision frequency"));
 	attr_col.read(attr_col.getDataType(), &CollisionFrequency);
-
-	AspectRatio = (SizeX - 1) / (SizeY - 1); //TODO incluse aspect ratio already on the attributes of the hdf5
+	AspectRatio = (static_cast<float>(SizeX-1)) / (static_cast<float>(SizeY-1));
 	attr_n_x.close();
 	attr_n_y.close();
 	attr_snd.close();
@@ -475,7 +460,7 @@ void SetUpParameters::DefineGeometry() {
 		Length=1.0f*AspectRatio;
 		Width=1.0f;
 		SizeY=201;
-		SizeX= static_cast<int>( (SizeY-1)*AspectRatio)+1;
+		SizeX= static_cast<int>( static_cast<float>(SizeY-1)*AspectRatio)+1;
 	}
 	if(AspectRatio==1.0f){
 		Length=1.0f;
@@ -487,7 +472,7 @@ void SetUpParameters::DefineGeometry() {
 		Length=1.0f;
 		Width=1.0f/AspectRatio;
 		SizeX=201;
-		SizeY= static_cast<int>( (SizeX - 1) / AspectRatio) + 1;
+		SizeY= static_cast<int>( static_cast<float>(SizeX - 1) / AspectRatio) + 1;
 	}
 }
 

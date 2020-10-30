@@ -66,15 +66,15 @@ void Fluid2D::SetSound(){
 	for(int kp=0; kp<=Nx*Ny-1; kp++) { //correr a grelha principal evitando as fronteiras
 		div_t divresult;
 		divresult = div(kp, Nx);
-		int j = divresult.quot;
-		int i = divresult.rem;
+		auto j = static_cast<float>(divresult.quot);
+		auto i = static_cast<float>(divresult.rem);
 		vel_snd_arr[kp]= Sound_Velocity_Anisotropy(i*dx, j*dy , vel_snd);
 	}
 	for(int ks=0; ks<=Nx*Ny-Nx-Ny; ks++) { //correr todos os pontos da grelha secundaria
 		div_t divresult;
 		divresult = div(ks, Nx - 1);
-		int j = divresult.quot;
-		int i = divresult.rem;
+		auto j = static_cast<float>(divresult.quot);
+		auto i = static_cast<float>(divresult.rem);
 		vel_snd_arr_mid[ks]= Sound_Velocity_Anisotropy((i+0.5f)*dx, (j+0.5f)*dy , vel_snd);
 	}
 
@@ -524,7 +524,7 @@ void Fluid2D::SaveSnapShot() {
 	DataSet dataset_den = GrpDen->createDataSet(name_dataset, HDF5FLOAT, *DataspaceDen);
 	Attribute atr_step_den = dataset_den.createAttribute("time step", HDF5INT, atr_dataspace);
 	Attribute atr_time_den = dataset_den.createAttribute("time", HDF5FLOAT, atr_dataspace);
-	float currenttime=TimeStepCounter * dt;
+	float currenttime=static_cast<float>(TimeStepCounter) * dt;
 	atr_step_den.write(HDF5INT, &TimeStepCounter);
 	atr_time_den.write(HDF5FLOAT , &currenttime);
 	atr_step_den.close();
