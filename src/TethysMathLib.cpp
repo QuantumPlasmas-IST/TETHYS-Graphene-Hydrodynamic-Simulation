@@ -72,9 +72,9 @@ constexpr float Gauss_Kernel_Derivative(int position , float t){
 	return (-position*exp(-0.5f*position*position/t)/t)/(sqrt(2.0f*MAT_PI*t));
 }
 
-void Convolve_Gauss(int type, int m, float t, const float * in, float * out, int size){
+void Convolve_Gauss(unsigned int type, unsigned int m, float t, const float * in, float * out, unsigned long size){
 	if(type==0){
-		for(int i=0;i<size;i++){
+		for(unsigned int i=0;i<size;i++){
 			if(i >= m && i < size - m){
 			for(int k=-m; k <= m; k++){
 					out[i] += in[i-k] * Gauss_Kernel(k, t);

@@ -25,9 +25,9 @@ public:
 
 	void CloseElectroFile();
 	void CreateElectroFile(const GrapheneFluid1D& graphene);
-	void CreateElectroFile(const GrapheneFluid2D& graphene);
+	void CreateElectroFile(const string &infix_string);
 	void WriteElectroFile(float t,const GrapheneFluid1D& graphene);
-	void WriteElectroFile(float t,const GrapheneFluid2D& graphene);
+	void WriteElectroFile();
 	float NetCharge(const GrapheneFluid1D& graphene);
 	float NetCharge(const GrapheneFluid2D& graphene);
 	float OhmPower(const GrapheneFluid1D& graphene);

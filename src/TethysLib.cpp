@@ -269,8 +269,7 @@ void TethysBase::CreateHdf5File(){
 
 void TethysBase::OpenHdf5File(const std::string& hdf5name){
 	TethysBase::HDF5fileOpen=true;
-	const H5std_string  file_name(hdf5name );
-	Hdf5File = new H5File(file_name, H5F_ACC_RDONLY );
+	Hdf5File = new H5File(hdf5name, H5F_ACC_RDONLY );
 	GrpDat = new Group(Hdf5File->openGroup("/Data" ));
 	GrpDen = new Group(Hdf5File->openGroup("/Data/Density" ));
 	GrpVelX = new Group(Hdf5File->openGroup("/Data/VelocityX" ));
@@ -427,10 +426,9 @@ void SetUpParameters::ExceptionsChecking() const{
 }
 
 void SetUpParameters::ParametersFromHdf5File(const std::string& hdf5name){
-	const H5std_string  file_name(hdf5name );
 	H5File* hdf5_file;
 	Group* grp_dat;
-	hdf5_file = new H5File(file_name, H5F_ACC_RDONLY );
+	hdf5_file = new H5File(hdf5name, H5F_ACC_RDONLY );
 	grp_dat = new Group(hdf5_file->openGroup("/Data" ));
 	auto *attr_n_x = new Attribute(grp_dat->openAttribute("Number of spatial points x"));
 	auto *attr_n_y = new Attribute(grp_dat->openAttribute("Number of spatial points y"));

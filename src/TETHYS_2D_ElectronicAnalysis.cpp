@@ -40,9 +40,9 @@ int main(int argc, char **argv){
 	}
 	cout << " DONE" <<endl;
 	elec.ComputeElectroDerived();
-	elec.CreateElectroFile(graph);
+	elec.CreateElectroFile(graph.GetInfix());
 	cout << "Writing outpu file...";
-	elec.WriteElectroFile(GrapheneFluid2D::TimeStamp,graph);
+	elec.WriteElectroFile();
 	cout << " DONE" <<endl;
 
 	return 0;

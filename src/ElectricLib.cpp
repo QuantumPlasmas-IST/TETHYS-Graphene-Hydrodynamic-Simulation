@@ -20,10 +20,9 @@ void ElectroAnalysis::CreateElectroFile(const GrapheneFluid1D& graphene){
 	data_electro << scientific;
 }
 
-void ElectroAnalysis::CreateElectroFile(const GrapheneFluid2D& graphene){
-	std::string infix = graphene.GetInfix();
+void ElectroAnalysis::CreateElectroFile(const string &infix_string){
 	std::string electrofile;
-	electrofile = "electro_2D_" + infix + ".dat" ;
+	electrofile = "electro_2D_" + infix_string + ".dat" ;
 	data_electro.open (electrofile);
 	data_electro << scientific;
 }
@@ -65,7 +64,7 @@ void ElectroAnalysis::ComputeElectroDerived() {
 }
 
 
-void ElectroAnalysis::WriteElectroFile(float t,const GrapheneFluid2D& graphene){
+void ElectroAnalysis::WriteElectroFile() {
 	if(!NetQ.empty()){
 		for(size_t i = 0; i < NetQ.size(); ++i){
 			data_electro<< TmpArr[i] <<"\t"
