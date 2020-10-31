@@ -47,6 +47,7 @@ Fluid2D::Fluid2D(const SetUpParameters &input_parameters) : TethysBase{input_par
 
 Fluid2D::~Fluid2D() = default;
 
+
 void Fluid2D::SetSound(){
 	for(int kp=0; kp<=Nx*Ny-1; kp++) { //correr a grelha principal evitando as fronteiras
 		div_t divresult;
@@ -460,8 +461,23 @@ float GrapheneFluid2D::MassFluxYSource(__attribute__((unused)) float n,__attribu
 	return -1.0f*col_freq*flx_y;
 }
 
-GrapheneFluid2D::~GrapheneFluid2D() = default;
-
+//GrapheneFluid2D::~GrapheneFluid2D() = default;
+GrapheneFluid2D::~GrapheneFluid2D(){
+delete[] Den;
+delete[] VelX;
+delete[] VelY;
+delete[] FlxX;
+delete[] FlxY;
+delete[] CurX;
+delete[] CurY;
+delete[] den_mid;
+delete[] flxX_mid;
+delete[] flxY_mid;
+delete[] lap_flxX;
+delete[] lap_flxY;
+delete[] vel_snd_arr;
+delete[] vel_snd_arr_mid;
+}
 
 void Fluid2D::SaveSound() {
 	DataSet dataset_vel_snd = GrpDat->createDataSet("Sound velocicity", HDF5FLOAT, *DataspaceVelSnd);

@@ -31,7 +31,7 @@ int main(int argc, char **argv){
 	/*.........Fixed or variable vel_snd value........................*/
 	graph.SetSound();
 	graph.SetSimulationTime();
-	//graph.SetTmax(0.5f);
+	//graph.SetTmax(0.3f);
 	/*................................................................*/
 
 	/*.........Output files and streams...............................*/
@@ -54,7 +54,8 @@ int main(int argc, char **argv){
 
 
 
-	while (t <= graph.GetTmax() ){
+	//while (t <= graph.GetTmax() ){
+	while (t <= 3.0f*dt ){
 		t += dt;
 		GrapheneFluid2D::TimeStepCounter++;
 
@@ -98,6 +99,7 @@ int main(int argc, char **argv){
 		graph.WriteAttributes();
 	}
 	graph.CloseHdf5File();
+	
 
 	cout << "\033[1A\033[2K\033[1;32mDONE!\033[0m\n";
 	cout << "═══════════════════════════════════════════════════════════════════════════" <<endl;
