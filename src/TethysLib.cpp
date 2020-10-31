@@ -231,6 +231,13 @@ TethysBase::TethysBase(int size_nx, int size_ny, int dimension){
 		dimsf[1] = static_cast<hsize_t>(Nx-1);  //troquei !
 		DataspaceVelSndMid = new DataSpace(RANK, dimsf );
 	}
+
+	Hdf5File = nullptr;
+	GrpDat = nullptr;
+	GrpDen = nullptr;
+	GrpVelX = nullptr;
+	GrpVelY = nullptr;
+
 }
 
 

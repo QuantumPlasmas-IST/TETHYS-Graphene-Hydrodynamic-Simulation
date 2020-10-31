@@ -45,22 +45,7 @@ Fluid2D::Fluid2D(const SetUpParameters &input_parameters) : TethysBase{input_par
 
 }
 
-Fluid2D::~Fluid2D(){
-	delete Den;
-	delete VelX;
-	delete VelY;
-	delete FlxX;
-	delete FlxY;
-	delete CurX;
-	delete CurY;
-	delete den_mid;
-	delete flxX_mid;
-	delete flxY_mid;
-	delete lap_flxX;
-	delete lap_flxY;
-	delete vel_snd_arr;
-}
-
+Fluid2D::~Fluid2D() = default;
 
 void Fluid2D::SetSound(){
 	for(int kp=0; kp<=Nx*Ny-1; kp++) { //correr a grelha principal evitando as fronteiras
