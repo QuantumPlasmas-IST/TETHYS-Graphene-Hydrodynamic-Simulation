@@ -31,7 +31,7 @@ int main(int argc, char **argv){
 	/*.........Fixed or variable vel_snd value........................*/
 	graph.SetSound();
 	//graph.SetSimulationTime();
-	graph.SetTmax(5.0f);
+	graph.SetTmax(2.0f);
 	/*................................................................*/
 
 	/*.........Output files and streams...............................*/

@@ -10,7 +10,6 @@
 class ElectroAnalysis{
 private:
 	std::ofstream data_electro;
-public:
 	vector<float> TmpArr;
 	vector<float> NetQ;
 	vector<float> DipX;
@@ -20,11 +19,13 @@ public:
 	vector<float> DipVarVarX;
 	vector<float> DipVarVarY;
 	vector<float> AvgCurDS;
+	vector<float> CurS;
+	vector<float> CurD;
 	vector<float> AvgCurHall;
 	vector<float> PowOhm;
 	vector<float> EngCap;
 	vector<float> PowCap;
-
+public:
 	void CloseElectroFile();
 	void CreateElectroFile(const GrapheneFluid1D& graphene);
 	void CreateElectroFile(const string &infix_string);
