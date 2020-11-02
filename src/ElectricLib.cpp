@@ -46,7 +46,15 @@ void ElectroAnalysis::ComputeElectroBase(float t, const GrapheneFluid2D& graphen
 	PowOhm.push_back(this->OhmPower(graphene));
 }
 
+
 void ElectroAnalysis::ComputeElectroDerived() {
+	float dt;
+	dt=TmpArr.back()/DipX.size();
+	EngCap.resize(DipX.size());
+	PowCap.resize(DipX.size());
+	transform(NetQ.begin(), NetQ.end(), EngCap.begin(), [](float &c){ return 0.5f*c*c; });
+	Convolve_Gauss(1,5,1.0,EngCap.data(),PowCap.data(),EngCap.size());
+	transform(PowCap.begin(), PowCap.end(), PowCap.begin(), [dt](float &c){ return c/dt; });
 	DipVarX.resize(DipX.size());
 	DipVarVarX.resize(DipX.size());
 	DipVarY.resize(DipY.size());
@@ -55,8 +63,6 @@ void ElectroAnalysis::ComputeElectroDerived() {
 	Convolve_Gauss(1,5,1.0,DipVarX.data(),DipVarVarX.data(),DipX.size());
 	Convolve_Gauss(1,5,1.0,DipY.data(),DipVarY.data(),DipY.size());
 	Convolve_Gauss(1,5,1.0,DipVarY.data(),DipVarVarY.data(),DipY.size());
-	float dt;
-	dt=TmpArr.back()/DipX.size();
 	transform(DipVarX.begin(), DipVarX.end(), DipVarX.begin(), [dt](float &c){ return c/dt; });
 	transform(DipVarVarX.begin(), DipVarVarX.end(), DipVarVarX.begin(), [dt](float &c){ return c/(dt*dt); });
 	transform(DipVarY.begin(), DipVarY.end(), DipVarY.begin(), [dt](float &c){ return c/dt; });
@@ -75,6 +81,7 @@ void ElectroAnalysis::WriteElectroFile() {
 			             << AvgCurDS[i] << "\t"
 			             << AvgCurHall[i] << "\t"
 			             << PowOhm[i] << "\t"
+			             << PowCap[i] << "\t"
 			             << DipX[i] << "\t"
 			             << DipVarX[i] << "\t"
 			             << DipVarVarX[i] << "\t"

@@ -22,6 +22,8 @@ public:
 	vector<float> AvgCurDS;
 	vector<float> AvgCurHall;
 	vector<float> PowOhm;
+	vector<float> EngCap;
+	vector<float> PowCap;
 
 	void CloseElectroFile();
 	void CreateElectroFile(const GrapheneFluid1D& graphene);
