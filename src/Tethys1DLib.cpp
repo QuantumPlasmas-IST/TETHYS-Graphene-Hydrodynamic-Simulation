@@ -35,8 +35,10 @@ Fluid1D::Fluid1D(const SetUpParameters &input_parameters) : TethysBase{input_par
 	grad_vel_mid = new float[Nx - 1]();
 	vel_snd_arr = new float[Nx - 1]();
 }	
-	
-Fluid1D::~Fluid1D(){
+
+Fluid1D::~Fluid1D() = default;
+
+GrapheneFluid1D::~GrapheneFluid1D(){
 	delete Den;
 	delete Vel ;
 	delete Cur ;

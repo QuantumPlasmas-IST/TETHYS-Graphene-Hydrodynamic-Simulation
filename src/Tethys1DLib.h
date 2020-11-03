@@ -18,6 +18,7 @@ class Fluid1D : public TethysBase{
 		std::ofstream data_preview; // file stream for simplified .dat file output
 		int snapshot_per_period = 10;
 		int snapshot_step = 1;
+
 public :
 		float * Den ;       // number density
 		float * Vel ;       // fluid velocity
@@ -49,6 +50,7 @@ public :
 class GrapheneFluid1D : public Fluid1D{
 	public :
 		explicit GrapheneFluid1D(SetUpParameters &input_parameters);
+		~GrapheneFluid1D();
 		/*Override CFL condition to the case of graphene equations */
 		void CflCondition() override;
 		/*Override fluxes and sources to specifics of graphene physics*/

@@ -91,7 +91,7 @@ void Convolve_Gauss(unsigned int type, unsigned int m, float t, const float * in
 	if(type==0){
 		for(unsigned int i=0;i<size;i++){
 			if(i >= m && i < size - m){
-			for(int k=static_cast<int>(-1*m); k <= static_cast<int>(m); k++){
+			for(int k=-1*static_cast<int>(m); k <= static_cast<int>(m); k++){
 					out[i] += in[i-k] * Gauss_Kernel(k, t);
 				}
 			}
@@ -100,7 +100,7 @@ void Convolve_Gauss(unsigned int type, unsigned int m, float t, const float * in
 	if(type==1){
 		for(unsigned int i=0;i<size;i++){
 			if(i >= m && i < size - m){
-			for(int k=static_cast<int>(-1*m); k <= static_cast<int>(m); k++){
+			for(int k=-1*static_cast<int>(m); k <= static_cast<int>(m); k++){
 					out[i] += in[i-k] * Gauss_Kernel_Derivative(k, t);
 				}
 			}
