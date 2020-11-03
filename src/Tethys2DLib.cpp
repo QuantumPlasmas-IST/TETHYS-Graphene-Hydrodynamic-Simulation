@@ -40,13 +40,9 @@ Fluid2D::Fluid2D(const SetUpParameters &input_parameters) : TethysBase{input_par
 	flxX_mid	= new float[(Nx-1)*(Ny-1)]();
 	flxY_mid	= new float[(Nx-1)*(Ny-1)]();
 	vel_snd_arr_mid	= new float[(Nx-1)*(Ny-1)]();
-
-
-
 }
 
 Fluid2D::~Fluid2D() = default;
-
 
 void Fluid2D::SetSound(){
 	for(int kp=0; kp<=Nx*Ny-1; kp++) { //correr a grelha principal evitando as fronteiras
@@ -63,8 +59,6 @@ void Fluid2D::SetSound(){
 		auto i = static_cast<float>(divresult.rem);
 		vel_snd_arr_mid[ks]= Sound_Velocity_Anisotropy((i+0.5f)*dx, (j+0.5f)*dy , vel_snd);
 	}
-
-
 }
 
 
@@ -418,7 +412,6 @@ void GrapheneFluid2D::MagneticSourceSemiAnalytic(){
 }
 
 void GrapheneFluid2D:: ParabolicOperatorFtcs() {
-
 	if(kin_vis !=0.0f) { //we should only spend time on the laplacians if we are to use some viscosity
 		this->VelocityLaplacian();
 	}

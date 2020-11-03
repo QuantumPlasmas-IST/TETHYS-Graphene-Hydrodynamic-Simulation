@@ -54,9 +54,9 @@ void ElectroAnalysis::ComputeElectroDerived() {
 	dt=TmpArr.back()/DipX.size();
 	EngCap.resize(DipX.size());
 	PowCap.resize(DipX.size());
-	transform(NetQ.begin(), NetQ.end(), EngCap.begin(), [](float &c){ return 0.5f*c*c; });
+	transform(NetQ.begin(), NetQ.end(), EngCap.begin(), [](const float &c){ return 0.5f*c*c; });
 	Convolve_Gauss(1,5,1.0,EngCap.data(),PowCap.data(),EngCap.size());
-	transform(PowCap.begin(), PowCap.end(), PowCap.begin(), [dt](float &c){ return c/dt; });
+	transform(PowCap.begin(), PowCap.end(), PowCap.begin(), [dt](const float &c){ return c/dt; });
 	DipVarX.resize(DipX.size());
 	DipVarVarX.resize(DipX.size());
 	DipVarY.resize(DipY.size());
@@ -65,10 +65,10 @@ void ElectroAnalysis::ComputeElectroDerived() {
 	Convolve_Gauss(1,5,1.0,DipVarX.data(),DipVarVarX.data(),DipX.size());
 	Convolve_Gauss(1,5,1.0,DipY.data(),DipVarY.data(),DipY.size());
 	Convolve_Gauss(1,5,1.0,DipVarY.data(),DipVarVarY.data(),DipY.size());
-	transform(DipVarX.begin(), DipVarX.end(), DipVarX.begin(), [dt](float &c){ return c/dt; });
-	transform(DipVarVarX.begin(), DipVarVarX.end(), DipVarVarX.begin(), [dt](float &c){ return c/(dt*dt); });
-	transform(DipVarY.begin(), DipVarY.end(), DipVarY.begin(), [dt](float &c){ return c/dt; });
-	transform(DipVarVarY.begin(), DipVarVarY.end(), DipVarVarY.begin(), [dt](float &c){ return c/(dt*dt); });
+	transform(DipVarX.begin(), DipVarX.end(), DipVarX.begin(), [dt](const float &c){ return c/dt; });
+	transform(DipVarVarX.begin(), DipVarVarX.end(), DipVarVarX.begin(), [dt](const float &c){ return c/(dt*dt); });
+	transform(DipVarY.begin(), DipVarY.end(), DipVarY.begin(), [dt](const float &c){ return c/dt; });
+	transform(DipVarVarY.begin(), DipVarVarY.end(), DipVarVarY.begin(), [dt](const float &c){ return c/(dt*dt); });
 }
 
 
@@ -145,8 +145,8 @@ float ElectroAnalysis::OhmPower(const GrapheneFluid1D& graphene){
 float ElectroAnalysis::OhmPower(const GrapheneFluid2D& graphene){
 	int size = graphene.SizeX()*graphene.SizeX();
 	float square_current_density[size];
-	float jx,jy;
 	for(int c=0;c<size;c++){
+		float jx,jy;
 		jx=graphene.CurX[c];
 		jy=graphene.CurY[c];
 		square_current_density[c] = jx*jx+jy*jy;
@@ -157,13 +157,12 @@ float ElectroAnalysis::OhmPower(const GrapheneFluid2D& graphene){
 float ElectroAnalysis::ElectricDipoleX(const GrapheneFluid2D &graphene) {
 	int size = graphene.SizeX()*graphene.SizeY();
 	float vector[size];
-	float rx;
 	for(int c=0;c<size;c++){
 		div_t divresult;
 		divresult = div (c,graphene.SizeX());
 		auto i=static_cast<float>(divresult.rem);
+		float rx;
 		rx = i*graphene.GetDx()-0.5f*graphene.GetLengthX();
-
 		vector[c] = rx*graphene.Den[c];
 	}
 	return Integral_2_D(graphene.SizeX(), graphene.SizeY(), graphene.GetDx(), graphene.GetDy(), vector);
@@ -171,11 +170,11 @@ float ElectroAnalysis::ElectricDipoleX(const GrapheneFluid2D &graphene) {
 float ElectroAnalysis::ElectricDipoleY(const GrapheneFluid2D &graphene) {
 	int size = graphene.SizeX()*graphene.SizeY();
 	float vector[size];
-	float ry;
 	for(int c=0;c<size;c++){
 		div_t divresult;
 		divresult = div (c,graphene.SizeX());
 		auto j=static_cast<float>(divresult.quot);
+		float ry;
 		ry = j*graphene.GetDy()-0.5f*graphene.GetLengthY();
 		vector[c] = ry*graphene.Den[c];
 	}
@@ -199,8 +198,8 @@ float ElectroAnalysis::DrainToSourceVoltage(const GrapheneFluid2D& graphene) {
 float ElectroAnalysis::SourceCurrent(const GrapheneFluid2D& graphene) {
 	int size1d = graphene.SizeY();
 	float vector[size1d];
-	int pos;
 	for(int j=0;j<size1d;j++){
+		int pos;
 		pos=j*graphene.SizeX();
 		vector[j] = graphene.CurX[pos];
 	}
@@ -210,8 +209,8 @@ float ElectroAnalysis::SourceCurrent(const GrapheneFluid2D& graphene) {
 float ElectroAnalysis::DrainCurrent(const GrapheneFluid2D& graphene) {
 	int size1d = graphene.SizeY();
 	float vector[size1d];
-	int pos;
 	for(int j=0;j<size1d;j++){
+		int pos;
 		pos=(j+1)*graphene.SizeX()-1;
 		vector[j] = graphene.CurX[pos];
 	}
@@ -233,6 +232,5 @@ void ElectroAnalysis::BannerDisplay(const GrapheneFluid2D &graphene) {
 	}
 	cout << "Collision rate \t\033[1m\316\275\t" << graphene.GetColFreq()<< " v\342\202\200/L\033[0m\n";
 	cout << "Cyclotron frequency \t\033[1m\317\211c\t" << graphene.GetCycFreq() << " v\342\202\200/L\n\033[0m\n";
-
 }
 

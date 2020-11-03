@@ -25,6 +25,7 @@ private:
 	vector<float> PowOhm;
 	vector<float> EngCap;
 	vector<float> PowCap;
+
 public:
 	void CloseElectroFile();
 	void CreateElectroFile(const GrapheneFluid1D& graphene);

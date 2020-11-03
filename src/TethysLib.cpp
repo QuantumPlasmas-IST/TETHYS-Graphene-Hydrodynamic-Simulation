@@ -239,7 +239,6 @@ TethysBase::TethysBase(int size_nx, int size_ny, int dimension){
 	GrpDen = nullptr;
 	GrpVelX = nullptr;
 	GrpVelY = nullptr;
-
 }
 
 

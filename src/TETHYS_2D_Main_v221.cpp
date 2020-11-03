@@ -11,7 +11,6 @@ using namespace std;
 
 
 int main(int argc, char **argv){
-
 	SetUpParameters parameters(argc, argv);
 	parameters.DefineGeometry();
 
@@ -85,7 +84,6 @@ int main(int argc, char **argv){
 			graph.SaveSnapShot();
 		}
 		graph.WriteFluidFile(t);
-
 	}
 	//Record atributes on hdf5 file
 	if(parameters.SaveMode) {
