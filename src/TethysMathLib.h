@@ -14,8 +14,8 @@ float Sound_Velocity_Anisotropy(float x, float y, float s);
 
 void Convolve_Gauss(unsigned int type, unsigned int m, float t, const float * in, float * out, unsigned long size);
 //void Convolve_Gauss(int type, float m, float t, float * in, float * out, int size);
-constexpr float Gauss_Kernel(int pos , float t); //
-constexpr float Gauss_Kernel_Derivative(int pos , float t); //
+float Gauss_Kernel(int pos , float t); //
+float Gauss_Kernel_Derivative(int pos , float t); //
 float Signal_Average(int n, float dt, const float * f);
 float Integral_1_D(int n, float ds, const float * f);
 float Integral_2_D(int n, int m, float dx, float dy, const float * f);

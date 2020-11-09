@@ -77,12 +77,12 @@ float Signal_Average(int n, float dt, const float * f){
 	avg = avg/(static_cast<float>(n) * dt);
 	return avg;
 }
-constexpr float Gauss_Kernel(int position , float t){
+float Gauss_Kernel(int position , float t){
 	auto pos=static_cast<float>(position);
 	return exp(-0.5f * pos * pos / t) / (sqrt(2.0f * MAT_PI * t));
 }
 
-constexpr float Gauss_Kernel_Derivative(int position , float t){
+float Gauss_Kernel_Derivative(int position , float t){
 	auto pos=static_cast<float>(position);
 	return (-pos * exp(-0.5f * pos * pos / t) / t) / (sqrt(2.0f * MAT_PI * t));
 }
