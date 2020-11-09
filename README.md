@@ -13,11 +13,16 @@ Implemented for in 1D+1 and 2D+1 for density and velocity fields.
 
 ## Simplified flowchart of the code
 
-![Flowchart](/images/CodeFlowchart.png)
+![Flowchart](./images/FlowchartTETHYS_2D.png)
+![Flowchart](./images/FlowchartTETHYS_ELEC_2D.png)
 
 ## Requirements 
 
 * gcc compiler 
+
+* cmake (version 3.16)
+
+  To generate the makefiles
 
 * HDF5 libraries 
 
@@ -33,7 +38,7 @@ Implemented for in 1D+1 and 2D+1 for density and velocity fields.
 
 ## Class Hierarchy
 
-![Classes](/images/class_diagram_fluid+bc.svg)
+![Classes](./images/UML_Class_Diagram.png)
 
 ## Style guide
 
