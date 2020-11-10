@@ -30,7 +30,7 @@ int main(int argc, char **argv){
 	/*.........Fixed or variable vel_snd value........................*/
 	graph.SetSound();
 	//graph.SetSimulationTime();
-	graph.SetTmax(2.0f);
+	graph.SetTmax(1.0f);
 	/*................................................................*/
 
 	/*.........Output files and streams...............................*/
@@ -72,7 +72,7 @@ int main(int argc, char **argv){
 			graph.ParabolicOperatorWeightedExplicit19();
 			boundary_condition.DyakonovShurBc(graph);
 			boundary_condition.YFree(graph);
-/*
+			/*
 			boundary_condition.YClosedNoSlip(graph);
 			boundary_condition.DensityLeft(graph, 1.0f);
 			boundary_condition.MassFluxXLeft(graph, 1.0f);
@@ -85,7 +85,7 @@ int main(int argc, char **argv){
 		if (parameters.SaveMode  && graph.Snapshot()) {
 			graph.SaveSnapShot();
 		}
-		graph.WriteFluidFile(t);
+		graph.WriteFluidFile(t); //TODO we caould probably save less points of the the fluid file
 	}
 	//Record atributes on hdf5 file
 	if(parameters.SaveMode) {
