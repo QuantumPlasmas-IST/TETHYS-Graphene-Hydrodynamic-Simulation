@@ -487,7 +487,7 @@ void Fluid2D:: ParabolicOperatorFtcs() {
 			flx_y_old=FlxY[kp];
 			sqrtn_0=sqrt(Den[kp]);
 			FlxX[kp] = flx_x_old + lap_flxX[kp] + dt * ( -1.0f*cyc_freq * flx_y_old / sqrtn_0);
-			FlxY[kp] = flx_y_old + lap_flxY[kp] + dt * (cyc_freq * flx_x_old / sqrtn_0);
+			FlxY[kp] = flx_y_old + lap_flxY[kp] + dt * (       cyc_freq * flx_x_old / sqrtn_0);
 		}
 	}
 }
@@ -500,8 +500,8 @@ void Fluid2D::ParabolicOperatorWeightedExplicit19() {
 			flx_x_old=FlxX[kp];
 			flx_y_old=FlxY[kp];
 			sqrtn_0=sqrt(Den[kp]);
-			FlxX[kp] = flx_x_old + lap_flxX[kp] -0.1f*lap_flxY[kp] + dt * ( -1.0f*cyc_freq * flx_y_old / sqrtn_0);
-			FlxY[kp] = flx_y_old + lap_flxY[kp] +0.1f*lap_flxX[kp] + dt * (cyc_freq * flx_x_old / sqrtn_0);
+			FlxX[kp] = flx_x_old + lap_flxX[kp] + dt * ( -1.0f*cyc_freq * flx_y_old / sqrtn_0);
+			FlxY[kp] = flx_y_old + lap_flxY[kp] + dt * (       cyc_freq * flx_x_old / sqrtn_0);
 		}
 	}
 }
