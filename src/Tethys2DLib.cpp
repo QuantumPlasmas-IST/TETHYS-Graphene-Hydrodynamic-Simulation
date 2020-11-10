@@ -398,7 +398,7 @@ float  GrapheneFluid2D::MassFluxYFluxY(float n,__attribute__((unused)) float flx
 }
 
 
-void GrapheneFluid2D::VelocityLaplacianFtcs() {
+void Fluid2D::VelocityLaplacianFtcs() {
 
 	this->MassFluxToVelocity();
 
@@ -439,7 +439,7 @@ void GrapheneFluid2D::VelocityLaplacianFtcs() {
 	}
 }
 
-void GrapheneFluid2D::VelocityLaplacianWeighted19() {
+void Fluid2D::VelocityLaplacianWeighted19() {
 	this->MassFluxToVelocity();
 
 	int center, north, south, east, west, northeast, northwest,southeast, southwest ;
@@ -511,7 +511,7 @@ void GrapheneFluid2D::MagneticSourceSemiAnalytic(){
 	}		
 }
 
-void GrapheneFluid2D:: ParabolicOperatorFtcs() {
+void Fluid2D:: ParabolicOperatorFtcs() {
 	if(kin_vis !=0.0f) { //we should only spend time on the laplacians if we are to use some viscosity
 		this->VelocityLaplacianFtcs();
 	}
@@ -529,7 +529,7 @@ void GrapheneFluid2D:: ParabolicOperatorFtcs() {
 	}
 }
 
-void GrapheneFluid2D::ParabolicOperatorWeightedExplicit19() {
+void Fluid2D::ParabolicOperatorWeightedExplicit19() {
 	this->VelocityLaplacianWeighted19();
 	//float sx=kin_vis*dt/(dx*dx);
 	//float sy=kin_vis*dt/(dy*dy);

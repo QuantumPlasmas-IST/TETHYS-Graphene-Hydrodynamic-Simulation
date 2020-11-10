@@ -56,6 +56,12 @@ class Fluid2D : public TethysBase
 		void SaveSound();
 		int GetSnapshotStep() const;
 		int GetSnapshotFreq() const;
+
+
+	void VelocityLaplacianFtcs();
+	void VelocityLaplacianWeighted19();
+	void ParabolicOperatorFtcs();       // Forward Time Centered Space method for the viscous terms
+	void ParabolicOperatorWeightedExplicit19();       // Forward Time Centered Space method for the viscous terms
 };
 
 class GrapheneFluid2D : public Fluid2D{
@@ -78,10 +84,7 @@ class GrapheneFluid2D : public Fluid2D{
 
 		void MagneticSourceSemiAnalytic(); // Semi analytic method for the magnetic interaction
 		//void MagneticSourceFtcs();  // Forward Time Centered Space method for the magnetic interaction
-		void VelocityLaplacianFtcs();
-		void VelocityLaplacianWeighted19();
-		void ParabolicOperatorFtcs();       // Forward Time Centered Space method for the viscous terms
-		void ParabolicOperatorWeightedExplicit19();       // Forward Time Centered Space method for the viscous terms
+
 
 };
 
