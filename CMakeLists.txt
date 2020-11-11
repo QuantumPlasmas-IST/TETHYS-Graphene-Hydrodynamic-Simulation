@@ -8,12 +8,13 @@ include_directories(./src)
 
 find_package(HDF5 REQUIRED COMPONENTS CXX)
 
-find_package(GSL REQUIRED)
-link_libraries(GSL::gsl GSL::gslcblas)
+#find_package(GSL REQUIRED)
+#link_libraries(GSL::gsl GSL::gslcblas)
 
 
 set(CMAKE_CXX_FLAGS "-Wall -Wextra -Wno-unused-parameter -O2")
-set(GSL_FLAGS "-lgsl -lgslcblas -lm")
+#set(GSL_FLAGS "-lgsl -lm")
+set(BLAS_FLAGS "-llapack -lblas -llapacke -lm")
 
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -g ")
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=leak -g ")
