@@ -145,8 +145,12 @@ void BoundaryCondition::YClosedNoSlip(Fluid2D& fluid_class){
 	int nx=fluid_class.SizeX();
 	int ny=fluid_class.SizeY();
 	for (int i=0; i < nx; i++){
-		int bottom=i; //i+0*nx
-		int top= i + (ny - 1) * nx;
+		//int j_top = (ny - 1);
+		//int j_bot = 0;
+		int j_top = top_edge[i];
+		int j_bot = bottom_edge[i];
+		int bottom=i + j_bot * nx ; //i+0*nx
+		int top= i + j_top * nx;
 		fluid_class.Den[bottom] = fluid_class.Den[bottom + nx];
 		fluid_class.FlxX[bottom] =  0.0f;
 		fluid_class.FlxY[bottom] =  0.0f;
@@ -156,7 +160,31 @@ void BoundaryCondition::YClosedNoSlip(Fluid2D& fluid_class){
 	}
 }
 
+void BoundaryCondition::SetBottomEdge(Fluid2D &fluid_class, float slope) {
+	int nx=fluid_class.SizeX();
+	int ny=fluid_class.SizeY();
+	bottom_edge = new int[nx]();
+	for(int i=0;i<nx;i++){
+		for(int j=0;j<ny/2;j++) {
+			if(abs(j-slope*i)<=0.5f){
+				bottom_edge[i] = j;
+			}
+		}
+	}
+}
 
+void BoundaryCondition::SetTopEdge(Fluid2D &fluid_class, float slope) {
+	int nx=fluid_class.SizeX();
+	int ny=fluid_class.SizeY();
+	top_edge = new int[nx]();
+	for(int i=0;i<nx;i++){
+		for(int j=ny-1;j>ny/2;j--) {
+			if(abs(j-(ny-1)+slope*i)<=0.5f){
+				top_edge[i] = j;
+			}
+		}
+	}
+}
 
 
 void DirichletBoundaryCondition::Density(Fluid1D& fluid_class, float left, float right){

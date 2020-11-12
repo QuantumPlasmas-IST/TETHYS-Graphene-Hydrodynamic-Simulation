@@ -51,7 +51,8 @@ int main(int argc, char **argv){
 	////////////////////////////////////////////////////////////////////
 	cout << "\033[1;7;5;33m Program Running \033[0m"<<endl;
 
-
+	boundary_condition.SetBottomEdge(graph,0.0f);
+	boundary_condition.SetTopEdge(graph,0.0f);
 
 	while (t <= graph.GetTmax() ){
 		t += dt;
@@ -59,7 +60,8 @@ int main(int argc, char **argv){
 
 		graph.Richtmyer();
 		boundary_condition.DyakonovShurBc(graph);
-		boundary_condition.YFree(graph);
+		//boundary_condition.YFree(graph);
+		boundary_condition.YClosedNoSlip(graph);
 		/*
 		boundary_condition.YClosedNoSlip(graph);
 		boundary_condition.DensityLeft(graph, 1.0f);

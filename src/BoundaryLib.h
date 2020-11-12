@@ -7,9 +7,16 @@
 #include "Tethys1DLib.h"
 #include "Tethys2DLib.h"
 
+//TODO review the entire boundary class
+
 /*Base class for general boundary conditions*/
 class BoundaryCondition {
+	protected:
+		int * bottom_edge;
+		int * top_edge;
 	public :
+		void SetTopEdge(Fluid2D &fluid_class, float slope);
+		void SetBottomEdge(Fluid2D &fluid_class, float slope);
 		void XFree(Fluid1D& fluid_class);           // open boundaries at x=0 and x=L for all variables and zero tangent velocity
 		void XFree(Fluid2D& fluid_class);           // open boundaries at x=0 and x=L for all variables and zero tangent velocity
 		void XFreeLeft(Fluid2D& fluid_class);       // open boundaries at x=0 for all variables and zero tangent velocity Vy=0
