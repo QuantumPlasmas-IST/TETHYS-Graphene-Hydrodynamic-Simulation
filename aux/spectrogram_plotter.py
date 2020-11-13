@@ -1,7 +1,7 @@
 # import required libraries
+import glob
 import numpy as np
 import matplotlib.pyplot as plt
-import glob
 
 # Read file
 for filename in glob.glob("preview_*.dat"):
@@ -32,4 +32,3 @@ for filename in glob.glob("preview_*.dat"):
 	#fig_name = 'psd_' + label + '.png'
 	#plt.savefig(fig_name, quality=100)
 	#plt.close("all")
-
