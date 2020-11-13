@@ -35,6 +35,26 @@ Implemented for in 1D+1 and 2D+1 for density and velocity fields.
 * Gnuplot & Python
 
   Responsible for the plotting
+  
+## Usage   
+### Compilation
+For the compilation of the source code a makefile can ge automatically generated with cmake. It is generally a sensible idea to create a empty directory to hold the executable files
+
+```console
+$ mkdir build
+$ cd build
+```
+And then, for the compilation itself. 
+```console
+$ cmake ..
+$ make all
+```
+
+### Running a simulation
+
+```console
+$ ./TETHYS_2D vel_snd vel_fer col vis cyc save_mode aspect_ratio
+```
 
 ## Class Hierarchy
 
@@ -63,7 +83,6 @@ Standard form of numeric *major.minor.patch* starting with the initial commit 1.
   <br>&emsp;1.3.2 Viscosity term for Reynolds >10 implemented. 
   <br>&emsp;1.3.3 New class hierarchy on 1D algorithms. 
   <br>&emsp;1.3.4 Boundary conditions implemented as a separate class
-
 
 2.0.0 Two dimensional code implementation. 1D version maintained for fast/simpler simulations. 
   <br>&emsp;2.0.1 New class hierarchy on 2D algorithms. New organization of header files
