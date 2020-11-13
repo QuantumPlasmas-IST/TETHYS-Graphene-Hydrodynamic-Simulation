@@ -1,9 +1,8 @@
 # import required libraries
+import glob
 import h5py as h5
 import numpy as np
 import matplotlib.pyplot as plt
-import glob
-
 
 # Read H5 file
 for filename in glob.glob("*.h5"):
