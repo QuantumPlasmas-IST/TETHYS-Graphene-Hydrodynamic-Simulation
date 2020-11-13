@@ -7,12 +7,10 @@ float Sound_Velocity_Anisotropy(float x, float s) {
 }
 float Sound_Velocity_Anisotropy(float x, float y, float s) {
 	float s_mod;
-	//float slope=0.05;
+	float slope=0.05;
 	//s_mod = s * (1.0f - slope * x);
-	//s_mod = s + 0.2f*pow(2.0f + cos(25.0f*x/MAT_PI),2.0f)/8.0f;
+	s_mod = s * (0.025f*(tanh(-30.0f*(x - .5f))) + .975f);
 
-	//s_mod=s+0.1f*abs(sin(3.0f*MAT_PI*x)*sin(3.0f*MAT_PI*y));
-	s_mod=s;//+1.0f*abs(sin(3.0f*MAT_PI*x));
 	return s_mod;
 }
 

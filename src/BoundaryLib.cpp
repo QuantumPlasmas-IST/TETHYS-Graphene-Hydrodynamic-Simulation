@@ -131,36 +131,53 @@ void BoundaryCondition::YClosedFreeSlip(Fluid2D& fluid_class){
 	int nx=fluid_class.SizeX();
 	int ny=fluid_class.SizeY();
 	for (int i=0; i < nx; i++){
-		int bottom=i; //i+0*nx
-		int top= i + (ny - 1) * nx;
-		fluid_class.Den[bottom] = fluid_class.Den[bottom + nx];
-		fluid_class.FlxX[bottom] = fluid_class.FlxX[top - nx];
-		fluid_class.FlxY[bottom] = 0.0f;
-		fluid_class.Den[top] = fluid_class.Den[top - nx];
-		fluid_class.FlxX[top] = fluid_class.FlxX[bottom + nx];
-		fluid_class.FlxY[top] =  0.0f;
-	}
-}
-void BoundaryCondition::YClosedNoSlip(Fluid2D& fluid_class){
-	int nx=fluid_class.SizeX();
-	int ny=fluid_class.SizeY();
-	for (int i=0; i < nx; i++){
-		//int j_top = (ny - 1);
-		//int j_bot = 0;
+		//int bottom=i; //i+0*nx
+		//int top= i + (ny - 1) * nx;
 		int j_top = top_edge[i];
 		int j_bot = bottom_edge[i];
 		int bottom=i + j_bot * nx ; //i+0*nx
 		int top= i + j_top * nx;
 		fluid_class.Den[bottom] = fluid_class.Den[bottom + nx];
-		fluid_class.FlxX[bottom] =  0.0f;
-		fluid_class.FlxY[bottom] =  0.0f;
 		fluid_class.Den[top] = fluid_class.Den[top - nx];
-		fluid_class.FlxX[top] =  0.0f;
-		fluid_class.FlxY[top] =  0.0f;
+
+		fluid_class.FlxX[bottom] = fluid_class.FlxX[top - nx];
+		fluid_class.FlxY[bottom] = slope*fluid_class.FlxX[top - nx];
+		fluid_class.FlxX[top] = fluid_class.FlxX[bottom + nx];
+		fluid_class.FlxY[top] =  -1.0f*slope*fluid_class.FlxX[bottom + nx];
+
+		for(int j=0;j<j_bot;j++){
+			fluid_class.Den[i+j*nx] = fluid_class.Den[bottom + nx];
+			fluid_class.FlxX[i+j*nx] = 0.0f;
+			fluid_class.FlxY[i+j*nx] = 0.0f;
+		}
+		for(int j=ny-1;j>j_top;j--){
+			fluid_class.Den[i+j*nx] = fluid_class.Den[top-nx];
+			fluid_class.FlxX[i+j*nx] = 0.0f;
+			fluid_class.FlxY[i+j*nx] = 0.0f;
+		}
+
+	}
+}
+void BoundaryCondition::YClosedNoSlip(Fluid2D& fluid_class){
+	int nx=fluid_class.SizeX();
+//	int ny=fluid_class.SizeY();
+	for (int i=0; i < nx; i++) {
+		//int j_top = (ny - 1);
+		//int j_bot = 0;
+		int j_top = top_edge[i];
+		int j_bot = bottom_edge[i];
+		int bottom = i + j_bot * nx; //i+0*nx
+		int top = i + j_top * nx;
+		fluid_class.Den[bottom] = fluid_class.Den[bottom + nx];
+		fluid_class.FlxX[bottom] = 0.0f;
+		fluid_class.FlxY[bottom] = 0.0f;
+		fluid_class.Den[top] = fluid_class.Den[top - nx];
+		fluid_class.FlxX[top] = 0.0f;  //TODO os pontos acima de top e abaixo de bottom tb devem ser colocados a zero uma vez que são apanhados quer nos laplacianos quer no calculo das redes mid
+		fluid_class.FlxY[top] = 0.0f;
 	}
 }
 
-void BoundaryCondition::SetBottomEdge(Fluid2D &fluid_class, float slope) {
+void BoundaryCondition::SetBottomEdge(Fluid2D &fluid_class) {
 	int nx=fluid_class.SizeX();
 	int ny=fluid_class.SizeY();
 	bottom_edge = new int[nx]();
@@ -168,12 +185,13 @@ void BoundaryCondition::SetBottomEdge(Fluid2D &fluid_class, float slope) {
 		for(int j=0;j<ny/2;j++) {
 			if(abs(j-slope*i)<=0.5f){
 				bottom_edge[i] = j;
+				//bottom_edge[nx-1-i] = j;
 			}
 		}
 	}
 }
 
-void BoundaryCondition::SetTopEdge(Fluid2D &fluid_class, float slope) {
+void BoundaryCondition::SetTopEdge(Fluid2D &fluid_class) {
 	int nx=fluid_class.SizeX();
 	int ny=fluid_class.SizeY();
 	top_edge = new int[nx]();
@@ -181,10 +199,15 @@ void BoundaryCondition::SetTopEdge(Fluid2D &fluid_class, float slope) {
 		for(int j=ny-1;j>ny/2;j--) {
 			if(abs(j-(ny-1)+slope*i)<=0.5f){
 				top_edge[i] = j;
+				//top_edge[nx-1-i] = j;
 			}
 		}
 	}
 }
+
+void BoundaryCondition::SetSlope(float BoundarySlope) {slope=BoundarySlope;}
+
+float BoundaryCondition::GetSlope() {return slope;}
 
 
 void DirichletBoundaryCondition::Density(Fluid1D& fluid_class, float left, float right){
@@ -361,13 +384,16 @@ void DyakonovShurBoundaryCondition::DyakonovShurBc(GrapheneFluid2D& fluid_class)
 	int nx=fluid_class.SizeX();
 	int ny=fluid_class.SizeY();
 	 
-	for(int j=0; j < ny; j++){
-		fluid_class.Den[0 + j * nx]=1.0f;			//constant density at x=0
-		fluid_class.Den[nx - 1 + j * nx]=fluid_class.Den[nx - 2 + j * nx]; 			//free density at x=L
-		fluid_class.FlxX[0 + j * nx] = fluid_class.FlxX[1 + j * nx] * pow(fluid_class.Den[1 + j * nx], -1.5f);			//free flux at x=0
-		fluid_class.FlxX[nx - 1 + j * nx] = sqrt(fluid_class.Den[nx - 1 + j * nx]);	//constant current at x=L (flux equals mass)
-		fluid_class.FlxY[0 + j * nx] = 0.0f; 					//flux only on x at x=0
-		fluid_class.FlxY[nx - 1 + j * nx] = 0.0f ;					//idem at x=L
+	for(int j=0; j < ny; j++) {
+		fluid_class.Den[0 + j * nx] = 1.0f;            //constant density at x=0
+		fluid_class.FlxX[0 + j * nx] =
+				fluid_class.FlxX[1 + j * nx] * pow(fluid_class.Den[1 + j * nx], -1.5f);            //free flux at x=0
+		fluid_class.FlxY[0 + j * nx] = 0.0f;                    //flux only on x at x=0
+
+		fluid_class.Den[nx - 1 + j * nx] = fluid_class.Den[nx - 2 + j * nx];            //free density at x=L
+		fluid_class.FlxX[nx - 1 + j * nx] = sqrt(fluid_class.Den[nx - 1 + j * nx]);    //constant current at x=L (flux equals mass)
+		fluid_class.FlxY[nx - 1 + j * nx] = 0.0f;                    //idem at x=L
+
 	}	
 }
 
