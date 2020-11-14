@@ -144,7 +144,7 @@ void BoundaryCondition::YClosedFreeSlip(Fluid2D& fluid_class){
 		fluid_class.FlxY[bottom] = slope*fluid_class.FlxX[top - nx];
 		fluid_class.FlxX[top] = fluid_class.FlxX[bottom + nx];
 		fluid_class.FlxY[top] =  -1.0f*slope*fluid_class.FlxX[bottom + nx];
-
+/*
 		for(int j=0;j<j_bot;j++){
 			fluid_class.Den[i+j*nx] = fluid_class.Den[bottom + nx];
 			fluid_class.FlxX[i+j*nx] = 0.0f;
@@ -155,7 +155,7 @@ void BoundaryCondition::YClosedFreeSlip(Fluid2D& fluid_class){
 			fluid_class.FlxX[i+j*nx] = 0.0f;
 			fluid_class.FlxY[i+j*nx] = 0.0f;
 		}
-
+*/
 	}
 }
 void BoundaryCondition::YClosedNoSlip(Fluid2D& fluid_class){

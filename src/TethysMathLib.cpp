@@ -7,10 +7,11 @@ float Sound_Velocity_Anisotropy(float x, float s) {
 }
 float Sound_Velocity_Anisotropy(float x, float y, float s) {
 	float s_mod;
-	float slope=0.05;
+	//float slope=0.05;
 	//s_mod = s * (1.0f - slope * x);
-	s_mod = s * (0.025f*(tanh(-30.0f*(x - .5f))) + .975f);
-
+	s_mod=s;
+	//s_mod = s * (0.025f*(tanh(-30.0f*(x - .5f))) + .975f);
+	//s_mod = (StairCaseFunction(x,0.33f,20.0f)*0.33f - 3.0f) + 20.0f;
 	return s_mod;
 }
 
@@ -104,4 +105,8 @@ void Convolve_Gauss(unsigned int type, unsigned int m, float t, const float * in
 			}
 		}
 	}
+}
+
+float StairCaseFunction(float x, float step_width, float smoothness) {
+	return (0.5f*tanh(smoothness*((-(x - 1.0f)/step_width - floor(-(x - 1.0f)/step_width)) - 0.5f))/tanh(0.5f*smoothness) + 0.5f +floor(-(x - 1.0f)/step_width));
 }

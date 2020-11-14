@@ -12,6 +12,8 @@ using namespace std;
 float Sound_Velocity_Anisotropy(float x, float s);
 float Sound_Velocity_Anisotropy(float x, float y, float s);
 
+float StairCaseFunction(float x,float step_width,float smoothness);
+
 void Convolve_Gauss(unsigned int type, unsigned int m, float t, const float * in, float * out, unsigned long size);
 //void Convolve_Gauss(int type, float m, float t, float * in, float * out, int size);
 float Gauss_Kernel(int pos , float t); //

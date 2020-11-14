@@ -30,7 +30,7 @@ int main(int argc, char **argv){
 	/*.........Fixed or variable vel_snd value........................*/
 	graph.SetSound();
 	//graph.SetSimulationTime();
-	graph.SetTmax(1.0f);
+	graph.SetTmax(6.0f);
 	/*................................................................*/
 
 	/*.........Output files and streams...............................*/
@@ -51,7 +51,7 @@ int main(int argc, char **argv){
 	////////////////////////////////////////////////////////////////////
 	cout << "\033[1;7;5;33m Program Running \033[0m"<<endl;
 
-	boundary_condition.SetSlope(0.1f);
+	boundary_condition.SetSlope(0.0f);
 	boundary_condition.SetBottomEdge(graph);
 	boundary_condition.SetTopEdge(graph);
 
