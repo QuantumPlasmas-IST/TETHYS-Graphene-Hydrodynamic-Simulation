@@ -37,6 +37,8 @@ int main(int argc, char **argv){
 	graph.CreateFluidFile();
 	graph.CreateHdf5File();
 
+
+
 	if(parameters.SaveMode){
 		graph.SaveSound();
 	}
