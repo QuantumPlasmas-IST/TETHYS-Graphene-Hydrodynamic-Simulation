@@ -24,7 +24,7 @@ Implemented for in 1D+1 and 2D+1 for density and velocity fields.
 
   To generate the makefiles
 
-* HDF5 libraries 
+* HDF5 libraries (version 1.8.20) 
 
   For the writing of the complete data.
 
