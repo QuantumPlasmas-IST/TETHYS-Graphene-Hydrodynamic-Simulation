@@ -58,6 +58,7 @@ int main(int argc, char **argv){
 	boundary_condition.SetTopEdge(graph);
 
 	while (t <= graph.GetTmax() ){
+
 		t += dt;
 		GrapheneFluid2D::TimeStepCounter++;
 

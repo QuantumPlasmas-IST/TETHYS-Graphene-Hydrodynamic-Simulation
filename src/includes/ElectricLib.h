@@ -19,6 +19,7 @@ private:
 	vector<float> DipVarVarX;
 	vector<float> DipVarVarY;
 	vector<float> AvgCurDS;
+	vector<float> VoltDS;
 	vector<float> CurS;
 	vector<float> CurD;
 	vector<float> AvgCurHall;

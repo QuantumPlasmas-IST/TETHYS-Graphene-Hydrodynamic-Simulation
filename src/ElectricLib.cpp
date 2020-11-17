@@ -44,6 +44,7 @@ void ElectroAnalysis::ComputeElectroBase(float t, const GrapheneFluid2D& graphen
 	CurD.push_back(this->DrainCurrent(graphene));
 	CurS.push_back(this->SourceCurrent(graphene));
 	AvgCurDS.push_back(this->AverageDirectCurrent(graphene));
+	VoltDS.push_back(this->DrainToSourceVoltage(graphene));
 	AvgCurHall.push_back(this->AverageHallCurrent(graphene));
 	PowOhm.push_back(this->OhmPower(graphene));
 }
@@ -82,6 +83,7 @@ void ElectroAnalysis::WriteElectroFile() {
 			             << NetQ[i] << "\t"
 			             << AvgCurDS[i] << "\t"
 			             << AvgCurHall[i] << "\t"
+			             << VoltDS[i] << "\t"
 			             << CurD[i] << "\t"
 			             << CurS[i] << "\t"
 			             << PowOhm[i] << "\t"
@@ -192,7 +194,7 @@ void ElectroAnalysis::CloseElectroFile() {
 }
 
 float ElectroAnalysis::DrainToSourceVoltage(const GrapheneFluid2D& graphene) {
-	return 0;
+	return Integral_2_D(graphene.SizeX(), graphene.SizeY(), graphene.GetDx(), graphene.GetDy(), graphene.VelX );
 }
 
 float ElectroAnalysis::SourceCurrent(const GrapheneFluid2D& graphene) {
