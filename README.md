@@ -1,5 +1,5 @@
 # TETHYS - *Two-dimensional Emitter of THz, Hydrodynamic Simulation.*
-## Version 2.2.1
+## Version 2.3.0
 
 [![CodeScore](https://www.code-inspector.com/project/1694/score/svg)](https://www.code-inspector.com/project/1694/score/svg)
 [![CodeStatus](https://www.code-inspector.com/project/1694/status/svg)](https://www.code-inspector.com/project/1694/status/svg)
@@ -24,7 +24,7 @@ Implemented for in 1D+1 and 2D+1 for density and velocity fields.
 
   To generate the makefiles
 
-* HDF5 libraries 
+* HDF5 libraries (version 1.8.20) 
 
   For the writing of the complete data.
 
@@ -35,6 +35,26 @@ Implemented for in 1D+1 and 2D+1 for density and velocity fields.
 * Gnuplot & Python
 
   Responsible for the plotting
+  
+## Usage   
+### Compilation
+For the compilation of the source code a makefile can ge automatically generated with cmake. It is generally a sensible idea to create a empty directory to hold the executable files
+
+```console
+$ mkdir build
+$ cd build
+```
+And then, for the compilation itself. 
+```console
+$ cmake ..
+$ make all
+```
+
+### Running a simulation
+
+```console
+$ ./TETHYS_2D vel_snd vel_fer col vis cyc save_mode aspect_ratio
+```
 
 ## Class Hierarchy
 
@@ -64,7 +84,6 @@ Standard form of numeric *major.minor.patch* starting with the initial commit 1.
   <br>&emsp;1.3.3 New class hierarchy on 1D algorithms. 
   <br>&emsp;1.3.4 Boundary conditions implemented as a separate class
 
-
 2.0.0 Two dimensional code implementation. 1D version maintained for fast/simpler simulations. 
   <br>&emsp;2.0.1 New class hierarchy on 2D algorithms. New organization of header files
   <br>&emsp;2.0.2 Boundary conditions implemented as a separate class
@@ -72,7 +91,7 @@ Standard form of numeric *major.minor.patch* starting with the initial commit 1.
   <br>&emsp;2.1.0 Magnetic Field inclusion with _Godunov Splitting_ 
   <br>&emsp;2.2.0 Shear viscosity with FTCS method. Variable Aspect ratio 
   <br>&emsp;2.2.1 Momentum relaxation in 2D simulations
- 
+  <br>&emsp;2.3.0 (1.9) Weighted explicit method for viscous terms 
 ### Internal syntax
 
 | Type            | Style                                 | E.g.              |

@@ -9,10 +9,10 @@ float Sound_Velocity_Anisotropy(float x, float y, float s) {
 	float s_mod;
 	float slope=0.05;
 	//s_mod = s * (1.0f - slope * x);
-	//s_mod=s;
+	s_mod=s;
 	//s_mod = s * (0.025f*(tanh(-30.0f*(x - .5f))) + .975f);
 	//s_mod = (StairCaseFunction(x,0.5f,20.0f)*0.5f - 2.0f) + 20.0f;
-	s_mod = s*( 1.0f + slope*( (StairCaseFunction(x,1.0f,20.0f)-1.0f))  );
+	//s_mod = s*( 1.0f + slope*( (StairCaseFunction(x,1.0f,20.0f)-1.0f))  );
 	return s_mod;
 }
 
