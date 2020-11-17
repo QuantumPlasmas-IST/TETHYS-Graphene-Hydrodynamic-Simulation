@@ -9,19 +9,18 @@ using namespace H5;
 using namespace std;
 
 
-#ifndef MAT_PI
-#	define MAT_PI 3.14159265358979323846
-#endif
-
-Fluid2D::Fluid2D(int size_nx, int size_ny, const SetUpInput &input_parameters) : TethysBase{size_nx, size_ny, 2}{
-	Nx = size_nx;
-	Ny = size_ny;
-
+Fluid2D::Fluid2D(const SetUpParameters &input_parameters) : TethysBase{input_parameters.SizeX, input_parameters.SizeY, 2}{
+	Nx = input_parameters.SizeX;
+	Ny = input_parameters.SizeY;
+	lengX=input_parameters.Length;
+	lengY=input_parameters.Width;
+	dx = lengX / ( float ) ( Nx - 1 );
+	dy = lengY / ( float ) ( Ny - 1 );
 	vel_snd = input_parameters.SoundVelocity;//sound_velocity;
 	kin_vis = input_parameters.ShearViscosity;//shear_viscosity;
 
 	char buffer [50];
-	sprintf (buffer, "S=%.2fvis=%.2f", vel_snd, kin_vis);
+	sprintf (buffer, "S=%.2fvF=%.2fvis=%.2fl=%.2fwc=%.2f", vel_snd, vel_fer, kin_vis, col_freq,cyc_freq);
 	file_infix = buffer;
 	// main grid variables Nx*Ny
 	Den 		= new float[Nx * Ny]();
@@ -31,7 +30,7 @@ Fluid2D::Fluid2D(int size_nx, int size_ny, const SetUpInput &input_parameters) :
 	FlxY 		= new float[Nx * Ny]();
 	CurX 		= new float[Nx * Ny]();
 	CurY 		= new float[Nx * Ny]();
-	vel_snd_arr	= new float[Nx*Ny]();
+	vel_snd_arr	= new float[Nx * Ny]();
 
 	lap_flxX = new float[Nx*Ny](); //new grids for the laplacians
 	lap_flxY = new float[Nx*Ny](); //in fact they could be smaller but thiw way they are just 0 at the borders who do not evolve
@@ -42,42 +41,24 @@ Fluid2D::Fluid2D(int size_nx, int size_ny, const SetUpInput &input_parameters) :
 	flxY_mid	= new float[(Nx-1)*(Ny-1)]();
 	vel_snd_arr_mid	= new float[(Nx-1)*(Ny-1)]();
 }
-	
-Fluid2D::~Fluid2D(){
-	delete [] Den;
-	delete [] VelX;
-	delete [] VelY;
-	delete [] FlxX;
-	delete [] FlxY;
-	delete [] CurX;
-	delete [] CurY;
-	delete [] den_mid;
-	delete [] flxX_mid;
-	delete [] flxY_mid;
-	delete [] lap_flxX;
-	delete [] lap_flxY;
-	delete [] vel_snd_arr;
-}
 
-
+Fluid2D::~Fluid2D() = default;
 
 void Fluid2D::SetSound(){
 	for(int kp=0; kp<=Nx*Ny-1; kp++) { //correr a grelha principal evitando as fronteiras
 		div_t divresult;
 		divresult = div(kp, Nx);
-		int j = divresult.quot;
-		int i = divresult.rem;
+		auto j = static_cast<float>(divresult.quot);
+		auto i = static_cast<float>(divresult.rem);
 		vel_snd_arr[kp]= Sound_Velocity_Anisotropy(i*dx, j*dy , vel_snd);
 	}
 	for(int ks=0; ks<=Nx*Ny-Nx-Ny; ks++) { //correr todos os pontos da grelha secundaria
 		div_t divresult;
 		divresult = div(ks, Nx - 1);
-		int j = divresult.quot;
-		int i = divresult.rem;
+		auto j = static_cast<float>(divresult.quot);
+		auto i = static_cast<float>(divresult.rem);
 		vel_snd_arr_mid[ks]= Sound_Velocity_Anisotropy((i+0.5f)*dx, (j+0.5f)*dy , vel_snd);
 	}
-
-
 }
 
 
@@ -86,8 +67,7 @@ void Fluid2D::SetSound(){
 void Fluid2D::InitialCondRand(){
 	random_device rd;
 	float maxrand;
-	maxrand = (float) rd.max();
-	//srand (static_cast<unsigned int>(time(NULL)));
+	maxrand = (float) random_device::max();
 
 	for (int i = 0; i < Nx; i++ ){
 		for (int j=0; j<Ny; j++){
@@ -118,6 +98,13 @@ void Fluid2D::MassFluxToVelocity(){
 	for(int c=0; c <= Nx * Ny - 1; c++){
 		VelX[c]= FlxX[c] / Den[c];
 		VelY[c]= FlxY[c] / Den[c];
+		CurX[c] = VelX[c] * Den[c];
+		CurY[c] = VelY[c] * Den[c];
+	}
+}
+
+void Fluid2D::VelocityToCurrent() {
+	for(int c=0; c <= Nx * Ny - 1; c++){
 		CurX[c] = VelX[c] * Den[c];
 		CurY[c] = VelY[c] * Den[c];
 	}
@@ -333,7 +320,7 @@ void Fluid2D::SetSimulationTime(){
 
 
 
-GrapheneFluid2D::GrapheneFluid2D(int size_nx, int size_ny, SetUpInput &input_parameters): Fluid2D(size_nx, size_ny, input_parameters){
+GrapheneFluid2D::GrapheneFluid2D(SetUpParameters &input_parameters) : Fluid2D(input_parameters) {
 	vel_fer = input_parameters.FermiVelocity ;//fermi_velocity;
 	col_freq = input_parameters.CollisionFrequency ; // collision_frequency;
 	cyc_freq = input_parameters.CyclotronFrequency ; //cyclotron_frequency;
@@ -357,6 +344,8 @@ void GrapheneFluid2D::MassFluxToVelocity(){
 		CurY[c] = VelY[c] * Den[c];
 	}
 }
+
+
 
 
 
@@ -422,56 +411,26 @@ void GrapheneFluid2D::MagneticSourceSemiAnalytic(){
 	}		
 }
 
-void GrapheneFluid2D::ViscosityFtcs() {
-int north, south, east, west;
-float mass_den_center, mass_den_north, mass_den_south, mass_den_east, mass_den_west;
-
-
-//calculate laplacians
-	for (int kp = 1 + Nx; kp <= Nx * Ny - Nx - 2; kp++) { //correr a grelha principal evitando as fronteiras
-		div_t divresult;
-		divresult = div(kp, Nx);
-		int j = divresult.quot;
-		int i = divresult.rem;
-		if (kp % Nx != Nx - 1 && kp % Nx != 0) {
-			north = i + (j + 1) * Nx;
-			south = i + (j - 1) * Nx;
-			east = i + 1 + j * Nx;
-			west = i - 1 + j * Nx;
-			mass_den_center = pow(Den[kp], 1.5f);
-			mass_den_north = pow(Den[north], 1.5f);
-			mass_den_south = pow(Den[south], 1.5f);
-			mass_den_east = pow(Den[east], 1.5f);
-			mass_den_west = pow(Den[west], 1.5f);
-			lap_flxX[kp] =
-					(-4.0f * FlxX[kp] / mass_den_center + FlxX[north] / mass_den_north + FlxX[south] / mass_den_south + FlxX[east] / mass_den_east +
-					 FlxX[west] / mass_den_west) / (dx * dx);
-			lap_flxY[kp] =
-					(-4.0f * FlxY[kp] / mass_den_center + FlxY[north] / mass_den_north + FlxY[south] / mass_den_south + FlxY[east] / mass_den_east +
-					 FlxY[west] / mass_den_west) / (dx * dx);
-		}
+void GrapheneFluid2D:: ParabolicOperatorFtcs() {
+	if(kin_vis !=0.0f) { //we should only spend time on the laplacians if we are to use some viscosity
+		this->VelocityLaplacian();
 	}
 	//FTCS algorithm
 	float old_px,old_py,sqrtn_0;
-	//float	odd_vis=;
 	//float	odd_vis=0.0f;
 	for (int kp = 1 + Nx; kp <= Nx * Ny - Nx - 2; kp++) { //correr a grelha principal evitando as fronteiras
 		if (kp % Nx != Nx - 1 && kp % Nx != 0) {
 			old_px=FlxX[kp];
 			old_py=FlxY[kp];
 			sqrtn_0=sqrt(Den[kp]);
-			//FlxX[kp] = old_px + dt * (kin_vis * lap_flxX[kp] - odd_vis*lap_flxY[kp]);
-			//FlxY[kp] = old_py + dt * (kin_vis * lap_flxY[kp] + odd_vis*lap_flxX[kp]);
-			//FlxX[kp] = old_px + dt * (kin_vis * lap_flxX[kp] -cyc_freq * old_py / sqrtn_0);
-			//FlxY[kp] = old_py + dt * (kin_vis * lap_flxY[kp] +cyc_freq * old_px / sqrtn_0);
-			FlxX[kp] = old_px + dt * (kin_vis * lap_flxX[kp] +col_freq*old_px*0.0f -cyc_freq * old_py / sqrtn_0);
-			FlxY[kp] = old_py + dt * (kin_vis * lap_flxY[kp] +col_freq*old_px*0.0f +cyc_freq * old_px / sqrtn_0);
+			FlxX[kp] = old_px + dt * (kin_vis * lap_flxX[kp] - cyc_freq * old_py / sqrtn_0);
+			FlxY[kp] = old_py + dt * (kin_vis * lap_flxY[kp] + cyc_freq * old_px / sqrtn_0);
 		}
 	}
 }
 
 
-
+/*
 void GrapheneFluid2D::MagneticSourceFtcs(){
 	float px_0,py_0,sqrtn_0;
 	for(int kp=1+Nx; kp<=Nx*Ny-Nx-2; kp++){ //correr a grelha principal evitando as fronteiras
@@ -484,7 +443,7 @@ void GrapheneFluid2D::MagneticSourceFtcs(){
 		}
 	}
 }
-
+*/
 float GrapheneFluid2D::DensitySource(__attribute__((unused)) float n,__attribute__((unused)) float flx_x,__attribute__((unused)) float flx_y,__attribute__((unused)) float mass,__attribute__((unused)) float s) {
 	return 0.0f;
 }
@@ -495,18 +454,56 @@ float GrapheneFluid2D::MassFluxYSource(__attribute__((unused)) float n,__attribu
 	return -1.0f*col_freq*flx_y;
 }
 
-
+//GrapheneFluid2D::~GrapheneFluid2D() = default;
+GrapheneFluid2D::~GrapheneFluid2D(){
+delete[] Den;
+delete[] VelX;
+delete[] VelY;
+delete[] FlxX;
+delete[] FlxY;
+delete[] CurX;
+delete[] CurY;
+delete[] den_mid;
+delete[] flxX_mid;
+delete[] flxY_mid;
+delete[] lap_flxX;
+delete[] lap_flxY;
+delete[] vel_snd_arr;
+delete[] vel_snd_arr_mid;
+}
 
 void Fluid2D::SaveSound() {
-	const FloatType      hdf5_float(PredType::NATIVE_FLOAT);
-	DataSet dataset_vel_snd = GrpDat->createDataSet("Sound velocicity", hdf5_float, *DataspaceVelSnd);
-	dataset_vel_snd.write(vel_snd_arr, hdf5_float);
+	DataSet dataset_vel_snd = GrpDat->createDataSet("Sound velocicity", HDF5FLOAT, *DataspaceVelSnd);
+	dataset_vel_snd.write(vel_snd_arr, HDF5FLOAT);
 	dataset_vel_snd.close();
 }
 
+void Fluid2D::ReadSnapShot(const H5std_string &snap_name) {
+	DataSet dataset_den = GrpDen->openDataSet( snap_name );
+	DataSet dataset_vel_x  = GrpVelX->openDataSet( snap_name );
+	DataSet dataset_vel_y = GrpVelY->openDataSet( snap_name );
+	DataSpace dataspace = dataset_den.getSpace(); // Get dataspace of the dataset.
+	if(dataset_den.attrExists ("time")){
+		Attribute attr_time = dataset_den.openAttribute("time");
+		attr_time.read(attr_time.getDataType(), &TimeStamp);
+	}else{
+		TimeStamp+=1.0f;
+	}
+	if(dataset_den.attrExists ("time step")){
+		Attribute attr_counter = dataset_den.openAttribute("time step");
+		attr_counter.read(attr_counter.getDataType(), &TimeStepCounter);
+	}else{
+		TimeStepCounter++;
+	}
+	dataset_den.read( Den, PredType::NATIVE_FLOAT,   dataspace );
+	dataset_vel_x.read( VelX, PredType::NATIVE_FLOAT,   dataspace );
+	dataset_vel_y.read( VelY, PredType::NATIVE_FLOAT,   dataspace );
+	dataset_den.close();
+	dataset_vel_x.close();
+	dataset_vel_y.close();
+}
+
 void Fluid2D::SaveSnapShot() {
-	const FloatType      hdf5_float(PredType::NATIVE_FLOAT);
-	const IntType        hdf5_int(PredType::NATIVE_INT);
 	hsize_t dim_atr[1] = { 1 };
 	DataSpace atr_dataspace = DataSpace (1, dim_atr );
 
@@ -515,45 +512,40 @@ void Fluid2D::SaveSnapShot() {
 
 	this->MassFluxToVelocity();
 	string str_time = to_string(TimeStepCounter / snapshot_step);
+	str_time.insert(str_time.begin(), 5 - str_time.length(), '0');
 	string name_dataset = "snapshot_" + str_time;
 
-//	cout << TimeStepCounter <<"\t"<<name_dataset <<endl;
-
-
-	DataSet dataset_den = GrpDen->createDataSet(name_dataset, hdf5_float, *DataspaceDen);
-	Attribute atr_step_den = dataset_den.createAttribute("time step", hdf5_int, atr_dataspace);
-	Attribute atr_time_den = dataset_den.createAttribute("time", hdf5_float, atr_dataspace);
-	float currenttime=TimeStepCounter * dt;
-	atr_step_den.write( hdf5_int, &TimeStepCounter);
-	atr_time_den.write( hdf5_float , &currenttime);
+	DataSet dataset_den = GrpDen->createDataSet(name_dataset, HDF5FLOAT, *DataspaceDen);
+	Attribute atr_step_den = dataset_den.createAttribute("time step", HDF5INT, atr_dataspace);
+	Attribute atr_time_den = dataset_den.createAttribute("time", HDF5FLOAT, atr_dataspace);
+	float currenttime=static_cast<float>(TimeStepCounter) * dt;
+	atr_step_den.write(HDF5INT, &TimeStepCounter);
+	atr_time_den.write(HDF5FLOAT , &currenttime);
 	atr_step_den.close();
 	atr_time_den.close();
 
-
-	dataset_den.write(Den, hdf5_float);
+	dataset_den.write(Den, HDF5FLOAT);
 	dataset_den.close();
 
-
-	DataSet dataset_vel_x = GrpVelX->createDataSet(name_dataset, hdf5_float, *DataspaceVelX);
-	Attribute atr_step_vel_x = dataset_vel_x.createAttribute("time step", hdf5_int, atr_dataspace);
-	Attribute atr_time_vel_x = dataset_vel_x.createAttribute("time", hdf5_float, atr_dataspace);
-	dataset_vel_x.write(VelX, hdf5_float);
+	DataSet dataset_vel_x = GrpVelX->createDataSet(name_dataset, HDF5FLOAT, *DataspaceVelX);
+	Attribute atr_step_vel_x = dataset_vel_x.createAttribute("time step", HDF5INT, atr_dataspace);
+	Attribute atr_time_vel_x = dataset_vel_x.createAttribute("time", HDF5FLOAT, atr_dataspace);
+	dataset_vel_x.write(VelX, HDF5FLOAT);
 	dataset_vel_x.close();
-	atr_step_vel_x.write( hdf5_int, &TimeStepCounter);
-	atr_time_vel_x.write( hdf5_float , &currenttime);
+	atr_step_vel_x.write(HDF5INT, &TimeStepCounter);
+	atr_time_vel_x.write(HDF5FLOAT , &currenttime);
 	atr_step_vel_x.close();
 	atr_time_vel_x.close();
 
-	DataSet dataset_vel_y = GrpVelY->createDataSet(name_dataset, hdf5_float, *DataspaceVelY);
-	Attribute atr_step_vel_y = dataset_vel_y.createAttribute("time step", hdf5_int, atr_dataspace);
-	Attribute atr_time_vel_y = dataset_vel_y.createAttribute("time", hdf5_float, atr_dataspace);
-	dataset_vel_y.write(VelY, hdf5_float);
+	DataSet dataset_vel_y = GrpVelY->createDataSet(name_dataset, HDF5FLOAT, *DataspaceVelY);
+	Attribute atr_step_vel_y = dataset_vel_y.createAttribute("time step", HDF5INT, atr_dataspace);
+	Attribute atr_time_vel_y = dataset_vel_y.createAttribute("time", HDF5FLOAT, atr_dataspace);
+	dataset_vel_y.write(VelY, HDF5FLOAT);
 	dataset_vel_y.close();
-	atr_step_vel_y.write( hdf5_int, &TimeStepCounter);
-	atr_time_vel_y.write( hdf5_float , &currenttime);
+	atr_step_vel_y.write(HDF5INT, &TimeStepCounter);
+	atr_time_vel_y.write(HDF5FLOAT , &currenttime);
 	atr_step_vel_y.close();
 	atr_time_vel_y.close();
-
 }
 
 int Fluid2D::GetSnapshotStep() const { return snapshot_step;}
@@ -578,4 +570,35 @@ float Fluid2D::MassFluxXSource(__attribute__((unused)) float n,__attribute__((un
 }
 float Fluid2D::MassFluxYSource(__attribute__((unused)) float n,__attribute__((unused)) float flx_x,__attribute__((unused)) float flx_y,__attribute__((unused)) float mass,__attribute__((unused)) float s) {
 	return 0.0f;
+}
+
+void Fluid2D::VelocityLaplacian() {
+	int north, south, east, west;
+	float mass_den_center, mass_den_north, mass_den_south, mass_den_east, mass_den_west;
+
+
+//calculate laplacians
+	for (int kp = 1 + Nx; kp <= Nx * Ny - Nx - 2; kp++) { //correr a grelha principal evitando as fronteiras
+		div_t divresult;
+		divresult = div(kp, Nx);
+		int j = divresult.quot;
+		int i = divresult.rem;
+		if (kp % Nx != Nx - 1 && kp % Nx != 0){
+			north = i + (j + 1) * Nx;
+			south = i + (j - 1) * Nx;
+			east = i + 1 + j * Nx;
+			west = i - 1 + j * Nx;
+			mass_den_center = pow(Den[kp], 1.5f);
+			mass_den_north = pow(Den[north], 1.5f);
+			mass_den_south = pow(Den[south], 1.5f);
+			mass_den_east = pow(Den[east], 1.5f);
+			mass_den_west = pow(Den[west], 1.5f);
+			lap_flxX[kp] =
+					(-4.0f * FlxX[kp] / mass_den_center + FlxX[north] / mass_den_north + FlxX[south] / mass_den_south + FlxX[east] / mass_den_east +
+					 FlxX[west] / mass_den_west) / (dx * dx);
+			lap_flxY[kp] =
+					(-4.0f * FlxY[kp] / mass_den_center + FlxY[north] / mass_den_north + FlxY[south] / mass_den_south + FlxY[east] / mass_den_east +
+					 FlxY[west] / mass_den_west) / (dx * dx);
+		}
+	}
 }

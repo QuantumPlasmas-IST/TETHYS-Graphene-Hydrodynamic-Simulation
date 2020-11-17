@@ -1,18 +1,11 @@
 #include "Tethys1DLib.h"
 
-#ifndef MAT_PI
-#	define MAT_PI 3.14159265358979323846
-#endif
-
-#ifndef MAT_EULER
-#	define MAT_EULER 2.71828182845905
-#endif
 
 using namespace H5;
 using namespace std;
 
 
-GrapheneFluid1D::GrapheneFluid1D(int size_n,  SetUpInput &input_parameters): Fluid1D(size_n, input_parameters){
+GrapheneFluid1D::GrapheneFluid1D(SetUpParameters &input_parameters) : Fluid1D(input_parameters) {
 	vel_fer = input_parameters.FermiVelocity;
 	col_freq = input_parameters.CollisionFrequency;
 	char buffer [50];
@@ -22,39 +15,41 @@ GrapheneFluid1D::GrapheneFluid1D(int size_n,  SetUpInput &input_parameters): Flu
 
 /*....................................................................*/	
 /*.......... 1 Dimensional Fluid Class ...............................*/	
-/*....................................................................*/	
-Fluid1D::Fluid1D(int size_nx, const SetUpInput &input_parameters): TethysBase{size_nx, 0, 1}{
-	Nx = size_nx;
+/*....................................................................*/
+Fluid1D::Fluid1D(const SetUpParameters &input_parameters) : TethysBase{input_parameters.SizeX, 0, 1}{
+	Nx = input_parameters.SizeX;
 	vel_snd = input_parameters.SoundVelocity;
 	kin_vis = input_parameters.ShearViscosity;
 	char buffer [50];
 	sprintf (buffer, "S=%.2fvis=%.2f", vel_snd, kin_vis);
 	file_infix = buffer;
-	Den = new float[size_nx]();
-	Vel = new float[size_nx]();
-	GradVel= new float[size_nx]();
-	Cur = new float[size_nx]();
-	DenCor = new float[size_nx]();
-	VelCor = new float[size_nx]();
-	CurCor = new float[size_nx]();
-	den_mid = new float[size_nx - 1]();
-	vel_mid = new float[size_nx - 1]();
-	grad_vel_mid = new float[size_nx - 1]();
-	vel_snd_arr = new float[size_nx - 1]();
+	Den = new float[Nx]();
+	Vel = new float[Nx]();
+	GradVel= new float[Nx]();
+	Cur = new float[Nx]();
+	DenCor = new float[Nx]();
+	VelCor = new float[Nx]();
+	CurCor = new float[Nx]();
+	den_mid = new float[Nx - 1]();
+	vel_mid = new float[Nx - 1]();
+	grad_vel_mid = new float[Nx - 1]();
+	vel_snd_arr = new float[Nx - 1]();
 }	
-	
-Fluid1D::~Fluid1D(){
-	delete [] Den;
-	delete [] Vel ;
-	delete [] Cur ;
-	delete [] den_mid ;
-	delete [] vel_mid ;
-	delete [] DenCor ;
-	delete [] VelCor ;
-	delete [] CurCor ;
-	delete [] vel_snd_arr ;
-	delete [] GradVel ;
-	delete [] grad_vel_mid ;
+
+Fluid1D::~Fluid1D() = default;
+
+GrapheneFluid1D::~GrapheneFluid1D(){
+	delete Den;
+	delete Vel ;
+	delete Cur ;
+	delete den_mid ;
+	delete vel_mid ;
+	delete DenCor ;
+	delete VelCor ;
+	delete CurCor ;
+	delete vel_snd_arr ;
+	delete GradVel ;
+	delete grad_vel_mid ;
 }
 
 float  Fluid1D::DensityFlux(float n,float v, __attribute__((unused)) float s){
@@ -85,14 +80,14 @@ void Fluid1D::SetSimulationTime(){
 		
 void Fluid1D::SetSound(){
 	for(int i = 0; i<Nx-1  ;i++){
-		vel_snd_arr[i]= Sound_Velocity_Anisotropy(i*dx, vel_snd);
+		vel_snd_arr[i]= Sound_Velocity_Anisotropy( static_cast<float>(i)*dx, vel_snd);
 	}
 }
 		
 void Fluid1D::InitialCondRand(){
 	random_device rd;
 	float maxrand;
-	maxrand = (float) rd.max();
+	maxrand = (float) random_device::max();
 
 	for (int i = 0; i < Nx; i++ ){
 		float noise = (float) rd()/ maxrand ;
@@ -105,7 +100,7 @@ void Fluid1D::InitialCondTest(){
 	//float sigma=dx*Nx/10.0f;
 	for (int i = 0; i < Nx; i++ ){
 		//Vel[i] = 0.4f*exp(-0.5f*((i*dx-mean)*(i*dx-mean)/(sigma*sigma)))/sigma;
-		Vel[i] = 1.0f+tanh(10.0f*(dx*i-0.5f));
+		Vel[i] = 1.0f+tanh(10.0f*(dx*static_cast<float>(i)-0.5f));
 	}
 }
 
@@ -196,7 +191,7 @@ float GrapheneFluid1D::DensityFlux(float n,float v,float __attribute__((unused))
 	f_1 = n * v;
 	return f_1;
 }
-float GrapheneFluid1D::VelocityFlux(float n,float v,float dv,float s){
+float GrapheneFluid1D::VelocityFlux(float n,float v,__attribute__((unused))float dv,float s){
 	float f_2;
 	try {
 		if(n<0 || !isfinite(n)){
@@ -233,8 +228,6 @@ bool Fluid1D::Snapshot() const {
 
 
 void Fluid1D::SaveSnapShot(){
-	const FloatType      hdf5_float(PredType::NATIVE_FLOAT);
-	const IntType        hdf5_int(PredType::NATIVE_INT);
 	hsize_t dim_atr[1] = { 1 };
 	DataSpace atr_dataspace = DataSpace (1, dim_atr );
 
@@ -244,25 +237,25 @@ void Fluid1D::SaveSnapShot(){
 	string name_dataset = "snapshot_" + str_time;
 
 
-	DataSet dataset_den = GrpDen->createDataSet(name_dataset, hdf5_float, *DataspaceDen);
-	Attribute atr_step_den = dataset_den.createAttribute("time step", hdf5_int, atr_dataspace);
-	Attribute atr_time_den = dataset_den.createAttribute("time", hdf5_float, atr_dataspace);
-	float currenttime=TimeStepCounter * dt;
-	atr_step_den.write( hdf5_int, &TimeStepCounter);
-	atr_time_den.write( hdf5_float , &currenttime);
+	DataSet dataset_den = GrpDen->createDataSet(name_dataset, HDF5FLOAT, *DataspaceDen);
+	Attribute atr_step_den = dataset_den.createAttribute("time step", HDF5INT, atr_dataspace);
+	Attribute atr_time_den = dataset_den.createAttribute("time", HDF5FLOAT, atr_dataspace);
+	float currenttime= static_cast<float>(TimeStepCounter) * dt;
+	atr_step_den.write(HDF5INT, &TimeStepCounter);
+	atr_time_den.write(HDF5FLOAT , &currenttime);
 	atr_step_den.close();
 	atr_time_den.close();
-	dataset_den.write(Den, hdf5_float);
+	dataset_den.write(Den, HDF5FLOAT);
 	dataset_den.close();
 
-	DataSet dataset_vel_x = GrpVelX->createDataSet(name_dataset, hdf5_float, *DataspaceVelX);
-	Attribute atr_step_vel_x = dataset_vel_x.createAttribute("time step", hdf5_int, atr_dataspace);
-	Attribute atr_time_vel_x = dataset_vel_x.createAttribute("time", hdf5_float, atr_dataspace);
-	atr_step_vel_x.write( hdf5_int, &TimeStepCounter);
-	atr_time_vel_x.write( hdf5_float , &currenttime);
+	DataSet dataset_vel_x = GrpVelX->createDataSet(name_dataset, HDF5FLOAT, *DataspaceVelX);
+	Attribute atr_step_vel_x = dataset_vel_x.createAttribute("time step", HDF5INT, atr_dataspace);
+	Attribute atr_time_vel_x = dataset_vel_x.createAttribute("time", HDF5FLOAT, atr_dataspace);
+	atr_step_vel_x.write(HDF5INT, &TimeStepCounter);
+	atr_time_vel_x.write(HDF5FLOAT , &currenttime);
 	atr_step_vel_x.close();
 	atr_time_vel_x.close();
-	dataset_vel_x.write(Vel, hdf5_float);
+	dataset_vel_x.write(Vel, HDF5FLOAT);
 	dataset_vel_x.close();
 }
 

@@ -3,6 +3,7 @@
 
 #include <H5Cpp.h>
 #include "TethysLib.h"
+#include "TethysMathLib.h"
 using namespace H5;
 using namespace std;
 
@@ -17,6 +18,7 @@ class Fluid1D : public TethysBase{
 		std::ofstream data_preview; // file stream for simplified .dat file output
 		int snapshot_per_period = 10;
 		int snapshot_step = 1;
+
 public :
 		float * Den ;       // number density
 		float * Vel ;       // fluid velocity
@@ -25,7 +27,7 @@ public :
 		float * DenCor;     // corrected i.e. smoothed quantities
 		float * VelCor ;
 		float * CurCor ;
-		Fluid1D(int size_nx, const SetUpInput &input_parameters);
+		explicit Fluid1D(const SetUpParameters &input_parameters);
 		~Fluid1D();
 		bool Snapshot() const;
 		void Smooth(int width);     // smoothing moving average filter to obtain the "Cor" version of the quantities
@@ -47,7 +49,8 @@ public :
 };
 class GrapheneFluid1D : public Fluid1D{
 	public :
-		GrapheneFluid1D(int size_n,  SetUpInput &input_parameters);
+		explicit GrapheneFluid1D(SetUpParameters &input_parameters);
+		~GrapheneFluid1D();
 		/*Override CFL condition to the case of graphene equations */
 		void CflCondition() override;
 		/*Override fluxes and sources to specifics of graphene physics*/

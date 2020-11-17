@@ -6,6 +6,7 @@
 #include <cmath>
 #include <cstdlib>
 #include <iostream>
+#include <iomanip>
 #include <fstream>
 #include <ctime>
 #include <algorithm>
@@ -17,43 +18,32 @@
 using namespace std;
 using namespace H5;
 
+#ifndef MAT_PI
+#	define MAT_PI 3.14159265358979f
+#endif
 
-//TODO REVER A NECESSIDADES DESTAS FUNCOES:
-//void Convolve_Gauss(int type, float m, float t, float * in, float * out, int size);
-//constexpr float Gauss_Kernel(int position , float t); //
-//constexpr float Gauss_Kernel_Derivative(int position , float t); //
-//void Record_Log_File(float vel_snd, float vel_fer, float col_freq, float dt, float dx, float dy, float tmax);
+#ifndef MAT_EULER
+#	define MAT_EULER 2.71828182845905f
+#endif
 
-//float Signal_Average(int n, float dt, const float * f);
-float Integral_1_D(int n, float ds, const float * f);
-float Integral_2_D(int n, int m, float dx, float dy, const float * f);
-
-//void Extrema_Finding(float * vec_in, int n, float sound, float dt, float & sat, float  & tau, float & error, const std::string& extremafile);
-
-//-----------------------------------
-
-
-/* Functions to implement the spatial variation of the sound velocity S(x) in 1D or S(x,y) in 2D
- * corresponding to a variation of substrat permitivitty or even the description of a multi gated system.
- * */
-float Sound_Velocity_Anisotropy(float x, float s);
-float Sound_Velocity_Anisotropy(float x, float y, float s);
-/*....................................................................................................................*/
-
-
-/* Average moving filter for the smoothing of 1D simulation, suppressing the spurious oscillations inherent to the 2nd order solver*/
-void Average_Filter(const float * vec_in, float * vec_out, int size , int width );
+const FloatType      HDF5FLOAT(PredType::NATIVE_FLOAT);
+const IntType        HDF5INT(PredType::NATIVE_INT);
 
 
 /*
  * Struct to pass the initialization
  * */
-
-class SetUpInput {
+class SetUpParameters {
 	public:
-		SetUpInput(int argc, char ** argv);
-		~SetUpInput() = default;
+		SetUpParameters();
+		SetUpParameters(int argc, char ** argv);
+		SetUpParameters(float sound, float fermi, float coll, float visco, float cyclo, int mode, float aspect);
+		~SetUpParameters() = default;
 		int SaveMode;
+		int SizeX;
+		int SizeY;
+		float Length=1.0f;
+		float Width=1.0f;
 		float AspectRatio=1.0f;
 		float SoundVelocity;
 		float FermiVelocity;
@@ -61,6 +51,8 @@ class SetUpInput {
 		float ShearViscosity;
 		float CyclotronFrequency;
 		void ExceptionsChecking() const;
+		void DefineGeometry();
+		void ParametersFromHdf5File(const std::string& hdf5name);
 };
 
 
@@ -84,13 +76,14 @@ class TethysBase {
 		float col_freq =0.0f;   // colision frequency parameter
 		std::string file_infix; // base name for the output files
 		float Tmax=10;          // total time of simulation
-		bool HDF5fileCreated = false;   // flag to indicate the if the HDF5 file was created in the case the user choose the full output option
 
 	public:
 		TethysBase(int size_nx, int size_ny, int dimensions); // class constructor initializes Nx, Ny, RANK and file_infix
-		~TethysBase();  // class destructor if the the flag HDF5fileCreated=TRUE it deletes the dataspaces and hdf5 files
+		~TethysBase();  // class destructor if the the flag HDF5fileOpen=TRUE it deletes the dataspaces and hdf5 files
 
+		static bool HDF5fileOpen;
 		static int TimeStepCounter;
+		static float TimeStamp;
 
 		H5File* Hdf5File ;  // hdf5 file handler
 		Group* GrpDat ;     // group for the simulated data: Attributes; Density; Velocity X; Velocity Y
@@ -136,12 +129,15 @@ class TethysBase {
 		float RealFreq() const;
 
 
-	std::string GetInfix() const;   // getter method for file name infix
+		std::string GetInfix() const;   // getter method for file name infix
+
+
 		void CreateHdf5File();          // creates the HDF5 files with the necessary structure
+		void OpenHdf5File(const std::string& hdf5name); // opens an existing HDF5 file with the necessary structure
 		void CloseHdf5File() const;           // closes the HDF5 file
 		void WriteAttributes();          // saves the simulation attributes (either physical and simulation parameters)
 
-		void BannerDisplay(); // launches the initial ASCII art banner
+		void BannerDisplay() const; // launches the initial ASCII art banner
 		void WelcomeScreen() const; //launches screen with the relevant info
 };
 #endif

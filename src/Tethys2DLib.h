@@ -3,6 +3,7 @@
 
 #include <H5Cpp.h>
 #include "TethysLib.h"
+#include "TethysMathLib.h"
 
 using namespace H5;
 
@@ -11,14 +12,14 @@ class Fluid2D : public TethysBase
 {
 	protected:
 		float * vel_snd_arr;    // array for saving the (potentially varying) S(x,y) function at main grid
-		float * vel_snd_arr_mid;    // array for saving the (potentially varying) S(x,y) function at auxiliary grid
+		float * vel_snd_arr_mid;// array for saving the (potentially varying) S(x,y) function at auxiliary grid
 		float * den_mid ;       // mid or auxiliary grids defined with (Nx-1)*(Ny-1) size
 		float * flxX_mid ;
 		float * flxY_mid ;
 		float * lap_flxX ;      // mass density flux laplacian component x
 		float * lap_flxY ;      // mass density flux laplacian component y
 		std::ofstream data_preview; // file stream for simplified .dat file output
-		int snapshot_per_period = 10;
+		int snapshot_per_period = 20;
 		int snapshot_step = 1;
 	public :
 		float * Den ;       // number density
@@ -28,7 +29,7 @@ class Fluid2D : public TethysBase
 		float * FlxY ;      // mass density flux y component
 		float * CurX ;      // current density x component
 		float * CurY ;      // current density y component
-		Fluid2D(int size_nx, int size_ny, const SetUpInput &input_parameters);
+		explicit Fluid2D(const SetUpParameters &input_parameters);
 		~Fluid2D();
 		bool Snapshot() const;
 		void SetSound();     // Applies the anisotropy to the sound velocity array
@@ -47,9 +48,12 @@ class Fluid2D : public TethysBase
 		virtual float MassFluxYFluxY(float n, float flx_x, float flx_y,__attribute__((unused)) float mass, float s); // velocity Y component equation (momentum equation) conserved flux Y component
 		virtual float MassFluxYSource(__attribute__((unused))float n, float flx_x,__attribute__((unused)) float flx_y,__attribute__((unused)) float mass,__attribute__((unused)) float s);
 		virtual void MassFluxToVelocity(); // Converts the mass flux density p=mnv to velocity
+		void VelocityToCurrent(); // Converts the mass flux density p=mnv to velocity
+		void VelocityLaplacian();
 		void CreateFluidFile();     // create and open the simplified .dat file output
 		void WriteFluidFile(float t) ; // writes the line of time t on the simplified .dat file output
 		void SaveSnapShot();
+		void ReadSnapShot(const H5std_string &snap_name);
 		void SaveSound();
 		int GetSnapshotStep() const;
 		int GetSnapshotFreq() const;
@@ -57,8 +61,8 @@ class Fluid2D : public TethysBase
 
 class GrapheneFluid2D : public Fluid2D{
 	public :
-		GrapheneFluid2D(int size_nx, int size_ny, SetUpInput &input_parameters);
-
+		explicit GrapheneFluid2D(SetUpParameters &input_parameters);
+		~GrapheneFluid2D();
 		void CflCondition() override;
 		void SetSimulationTime() override;
 		void MassFluxToVelocity() override; // Converts the mass density flux back to velocity, in graphene  v = p n^{-3/2}
@@ -73,11 +77,9 @@ class GrapheneFluid2D : public Fluid2D{
 		float MassFluxYFluxY(float n, float flx_x, float flx_y,float mass, float s) override;
 		float MassFluxYSource(float n, float flx_x, float flx_y, float mass, float s)override;
 
-
-
 		void MagneticSourceSemiAnalytic(); // Semi analytic method for the magnetic interaction
-		void MagneticSourceFtcs();  // Forward Time Centered Space method for the magnetic interaction
-		void ViscosityFtcs();       // Forward Time Centered Space method for the viscous terms
+		//void MagneticSourceFtcs();  // Forward Time Centered Space method for the magnetic interaction
+		void ParabolicOperatorFtcs();       // Forward Time Centered Space method for the viscous terms
 };
 
 
