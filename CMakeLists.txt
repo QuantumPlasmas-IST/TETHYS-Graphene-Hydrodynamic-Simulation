@@ -3,14 +3,15 @@ project(Hydrodynamic_Simulation)
 
 set(CMAKE_CXX_STANDARD 14)
 
-include_directories(src)
-include_directories(./src)
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/lib")
+
+include_directories(src/)
+include_directories(src/includes)
 
 find_package(HDF5 REQUIRED COMPONENTS CXX)
 
 #find_package(GSL REQUIRED)
 #link_libraries(GSL::gsl GSL::gslcblas)
-
 
 set(CMAKE_CXX_FLAGS "-Wall -Wextra -Wno-unused-parameter -O2")
 #set(GSL_FLAGS "-lgsl -lm")
@@ -22,39 +23,23 @@ set(BLAS_FLAGS "-llapack -lblas -llapacke -lm")
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=undefined -g ")
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=memory -g ")
 
-add_executable(TETHYS_1D
-        src/BoundaryLib.cpp
-        src/BoundaryLib.h
-        src/ElectricLib.cpp
-        src/ElectricLib.h
+add_executable(TETHYS_1D src/TETHYS_1D_Main_v134.cpp)
+add_executable(TETHYS_2D src/TETHYS_2D_Main_v221.cpp)
+add_executable(TETHYS_ELEC_2D src/TETHYS_2D_ElectronicAnalysis.cpp)
+
+add_library(tethys_library STATIC
+        src/TethysLib.cpp
+        src/Tethys2DLib.cpp
         src/Tethys1DLib.cpp
-        src/Tethys1DLib.h
-        src/TETHYS_1D_Main_v134.cpp
-        src/TethysLib.cpp
-        src/TethysLib.h src/TethysMathLib.h src/TethysMathLib.cpp)
-
-add_executable(TETHYS_2D
+        src/TethysMathLib.cpp
         src/BoundaryLib.cpp
-        src/BoundaryLib.h
-        src/ElectricLib.cpp
-        src/ElectricLib.h
-        src/Tethys2DLib.cpp
-        src/Tethys2DLib.h
-        src/TETHYS_2D_Main_v221.cpp
-        src/TethysLib.cpp
-        src/TethysLib.h src/TethysMathLib.h src/TethysMathLib.cpp)
+        src/ElectricLib.cpp)
 
-add_executable(TETHYS_ELEC_2D
-        src/ElectricLib.cpp
-        src/ElectricLib.h
-        src/Tethys2DLib.cpp
-        src/Tethys2DLib.h
-        src/TETHYS_2D_ElectronicAnalysis.cpp
-        src/TethysLib.cpp
-        src/TethysLib.h src/TethysMathLib.h src/TethysMathLib.cpp)
 
-add_executable(cblas
-        src/CBLAS_test.cpp)
+find_library (TETHYS_LIB tethys_library lib)
+target_link_libraries(TETHYS_1D LINK_PUBLIC ${TETHYS_LIB})
+target_link_libraries(TETHYS_2D LINK_PUBLIC ${TETHYS_LIB})
+target_link_libraries(TETHYS_ELEC_2D LINK_PUBLIC ${TETHYS_LIB})
 
 target_include_directories(TETHYS_1D PRIVATE ${HDF5_INCLUDE_DIRS})
 target_link_libraries(TETHYS_1D PRIVATE ${HDF5_CXX_LIBRARIES})
@@ -64,3 +49,5 @@ target_link_libraries(TETHYS_2D PRIVATE ${HDF5_CXX_LIBRARIES})
 
 target_include_directories(TETHYS_ELEC_2D PRIVATE ${HDF5_INCLUDE_DIRS})
 target_link_libraries(TETHYS_ELEC_2D PRIVATE ${HDF5_CXX_LIBRARIES})
+
+

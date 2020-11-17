@@ -1,6 +1,6 @@
-#include "Tethys1DLib.h"
-#include "BoundaryLib.h"
-#include "ElectricLib.h"
+#include "includes/Tethys1DLib.h"
+#include "includes/BoundaryLib.h"
+#include "includes/ElectricLib.h"
 #ifndef MAT_PI
 #	define MAT_PI 3.14159265358979323846
 #endif
