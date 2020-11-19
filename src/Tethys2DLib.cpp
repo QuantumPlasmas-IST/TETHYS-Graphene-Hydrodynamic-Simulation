@@ -5,7 +5,6 @@
 using namespace H5;
 using namespace std;
 
-
 Fluid2D::Fluid2D(const SetUpParameters &input_parameters) : TethysBase{input_parameters.SizeX, input_parameters.SizeY, 2}{
 	Nx = input_parameters.SizeX;
 	Ny = input_parameters.SizeY;
@@ -39,6 +38,7 @@ Fluid2D::Fluid2D(const SetUpParameters &input_parameters) : TethysBase{input_par
 	vel_snd_arr_mid	= new float[(Nx-1)*(Ny-1)]();
 }
 
+
 Fluid2D::~Fluid2D() = default;
 
 void Fluid2D::SetSound(){
@@ -59,8 +59,6 @@ void Fluid2D::SetSound(){
 }
 
 
-
-
 void Fluid2D::InitialCondRand(){
 	random_device rd;
 	float maxrand;
@@ -73,6 +71,7 @@ void Fluid2D::InitialCondRand(){
 		}
 	}
 }
+
 
 void Fluid2D::InitialCondTest(){
 	for (int i = 0; i < Nx; i++ ){
@@ -100,12 +99,14 @@ void Fluid2D::MassFluxToVelocity(){
 	}
 }
 
+
 void Fluid2D::VelocityToCurrent() {
 	for(int c=0; c <= Nx * Ny - 1; c++){
 		CurX[c] = VelX[c] * Den[c];
 		CurY[c] = VelY[c] * Den[c];
 	}
 }
+
 
 void Fluid2D::Richtmyer(){
 		int northeast,northwest,southeast,southwest;
@@ -244,6 +245,7 @@ void Fluid2D::Richtmyer(){
 		}
 }
 
+
 void Fluid2D::CflCondition(){
 		dx = lengX / ( float ) ( Nx - 1 );
 		dy = lengY / ( float ) ( Ny - 1 );
@@ -251,45 +253,53 @@ void Fluid2D::CflCondition(){
 }
 
 
-
 float  Fluid2D::DensityFluxX(__attribute__((unused)) float n, float flx_x, __attribute__((unused)) float flx_y, __attribute__((unused)) float mass, __attribute__((unused)) float s){
 	float f_1;
 	f_1 = flx_x;
 	return f_1;
 }
+
+
 float  Fluid2D::DensityFluxY(__attribute__((unused)) float n, __attribute__((unused)) float flx_x, float flx_y, __attribute__((unused)) float mass, __attribute__((unused)) float s){
 	float f_1;
 	f_1 = flx_y;
 	return f_1;
 }
 
+
 float  Fluid2D::MassFluxXFluxX(float n,float flx_x,__attribute__((unused)) float flx_y,__attribute__((unused)) float mass,__attribute__((unused))  float s){
 	float f_2;
 	f_2 = flx_x * flx_x / n + n;
 	return f_2;
 }
+
+
 float  Fluid2D::MassFluxXFluxY(float n,float flx_x, float flx_y,__attribute__((unused)) float mass,__attribute__((unused))  float s){
 	float f_2;
 	f_2 = flx_x * flx_y / n;
 	return f_2;
 }
+
+
 float  Fluid2D::MassFluxYFluxX(float n,float flx_x, float flx_y,__attribute__((unused)) float mass,__attribute__((unused))  float s){
 	float f_3;
 	f_3 = flx_x * flx_y / n;
 	return f_3;
 }
+
+
 float  Fluid2D::MassFluxYFluxY(float n, __attribute__((unused)) float flx_x, float flx_y,__attribute__((unused)) float mass,__attribute__((unused))  float s){
 	float f_3;
 	f_3 = flx_y * flx_y / n + n;
 	return f_3;
 }
 
-
 void Fluid2D::CreateFluidFile(){
 	std::string previewfile = "preview_2D_" + file_infix + ".dat" ;
 	data_preview.open (previewfile);
 	data_preview << scientific; 
 }
+
 
 void Fluid2D::WriteFluidFile(float t){
 	int j=Ny/2;
@@ -311,11 +321,10 @@ void Fluid2D::WriteFluidFile(float t){
 	}
 }
 
+
 void Fluid2D::SetSimulationTime(){
 	Tmax=5.0f+0.02f*vel_snd+20.0f/vel_snd;
 }
-
-
 
 
 GrapheneFluid2D::GrapheneFluid2D(SetUpParameters &input_parameters) : Fluid2D(input_parameters) {
@@ -334,6 +343,7 @@ void GrapheneFluid2D::SetSimulationTime(){
 	this->SetTmax(5.0f+0.02f*s+20.0f/s);
 }
 
+
 void GrapheneFluid2D::MassFluxToVelocity(){
 	for(int c=0; c <= Nx * Ny - 1; c++){
 		VelX[c]= FlxX[c] * pow(Den[c], -1.5f);
@@ -342,9 +352,6 @@ void GrapheneFluid2D::MassFluxToVelocity(){
 		//CurY[c] = VelY[c] * Den[c];
 	}
 }
-
-
-
 
 
 void GrapheneFluid2D::CflCondition(){ // Eventual redefinition
@@ -368,32 +375,42 @@ void GrapheneFluid2D::CflCondition(){ // Eventual redefinition
 
 }	
 
+
 float  GrapheneFluid2D::DensityFluxX(float n,float flx_x, __attribute__((unused)) float flx_y, __attribute__((unused)) float mass,__attribute__((unused))  float s){
 	float f_1;
 	f_1 = flx_x / sqrt(n);
 	return f_1;
 }
+
+
 float  GrapheneFluid2D::DensityFluxY(float n,__attribute__((unused)) float flx_x, float flx_y, __attribute__((unused)) float mass,__attribute__((unused))  float s){
 	float f_1;
 	f_1 = flx_y / sqrt(n);
 	return f_1;
 }
 
+
 float  GrapheneFluid2D::MassFluxXFluxX(float n,float flx_x,__attribute__((unused)) float flx_y,float mass, float s){
 	float f_2;
 	f_2 = flx_x * flx_x / mass + vel_fer * vel_fer * mass / 3.0f + 0.5f * s * s * n * n;
 	return f_2;
 }
+
+
 float  GrapheneFluid2D::MassFluxXFluxY(__attribute__((unused)) float n,float flx_x, float flx_y,float mass,__attribute__((unused)) float s){
 	float f_2;
 	f_2 = flx_x * flx_y / mass;
 	return f_2;
 }
+
+
 float  GrapheneFluid2D::MassFluxYFluxX(__attribute__((unused)) float n,float flx_x, float flx_y,float mass,__attribute__((unused)) float s){
 	float f_3;
 	f_3 = flx_x * flx_y / mass;
 	return f_3;
 }
+
+
 float  GrapheneFluid2D::MassFluxYFluxY(float n,__attribute__((unused)) float flx_x, float flx_y,float mass, float s){
 	float f_3;
 	f_3 = flx_y * flx_y / mass + vel_fer * vel_fer * mass / 3.0f + 0.5f * s * s * n * n;
@@ -424,6 +441,7 @@ void Fluid2D::VelocityLaplacianFtcs() {
 		}
 	}
 }
+
 
 void Fluid2D::VelocityLaplacianWeighted19() {
 	this->MassFluxToVelocity();
@@ -473,6 +491,7 @@ void GrapheneFluid2D::MagneticSourceSemiAnalytic(){
 	}		
 }
 
+
 void Fluid2D:: ParabolicOperatorFtcs() {
 	this->VelocityLaplacianFtcs();
 	//FTCS algorithm
@@ -489,6 +508,7 @@ void Fluid2D:: ParabolicOperatorFtcs() {
 	}
 }
 
+
 void Fluid2D::ParabolicOperatorWeightedExplicit19() {
 	this->VelocityLaplacianWeighted19();
 	float flx_x_old,flx_y_old,sqrtn_0;
@@ -502,6 +522,7 @@ void Fluid2D::ParabolicOperatorWeightedExplicit19() {
 		}
 	}
 }
+
 
 /*
 void GrapheneFluid2D::MagneticSourceFtcs(){
@@ -517,33 +538,39 @@ void GrapheneFluid2D::MagneticSourceFtcs(){
 	}
 }
 */
+
+
 float GrapheneFluid2D::DensitySource(__attribute__((unused)) float n,__attribute__((unused)) float flx_x,__attribute__((unused)) float flx_y,__attribute__((unused)) float mass,__attribute__((unused)) float s) {
 	return 0.0f;
 }
+
+
 float GrapheneFluid2D::MassFluxXSource(__attribute__((unused)) float n, float flx_x,__attribute__((unused)) float flx_y,__attribute__((unused)) float mass,__attribute__((unused)) float s) {
 	return -1.0f*col_freq*flx_x;
 }
+
+
 float GrapheneFluid2D::MassFluxYSource(__attribute__((unused)) float n,__attribute__((unused)) float flx_x, float flx_y,__attribute__((unused)) float mass,__attribute__((unused)) float s) {
 	return -1.0f*col_freq*flx_y;
 }
 
-GrapheneFluid2D::~GrapheneFluid2D(){
-delete[] Den;
-delete[] VelX;
-delete[] VelY;
-delete[] FlxX;
-delete[] FlxY;
-delete[] CurX;
-delete[] CurY;
-delete[] den_mid;
-delete[] flxX_mid;
-delete[] flxY_mid;
-delete[] lap_flxX;
-delete[] lap_flxY;
-delete[] vel_snd_arr;
-delete[] vel_snd_arr_mid;
-}
 
+GrapheneFluid2D::~GrapheneFluid2D(){
+    delete[] Den;
+    delete[] VelX;
+    delete[] VelY;
+    delete[] FlxX;
+    delete[] FlxY;
+    delete[] CurX;
+    delete[] CurY;
+    delete[] den_mid;
+    delete[] flxX_mid;
+    delete[] flxY_mid;
+    delete[] lap_flxX;
+    delete[] lap_flxY;
+    delete[] vel_snd_arr;
+    delete[] vel_snd_arr_mid;
+}
 
 
 void Fluid2D::SaveSound() {
@@ -551,6 +578,7 @@ void Fluid2D::SaveSound() {
 	dataset_vel_snd.write(vel_snd_arr, HDF5FLOAT);
 	dataset_vel_snd.close();
 }
+
 
 void Fluid2D::ReadSnapShot(const H5std_string &snap_name) {
 	DataSet dataset_den = GrpDen->openDataSet( snap_name );
@@ -576,6 +604,7 @@ void Fluid2D::ReadSnapShot(const H5std_string &snap_name) {
 	dataset_vel_x.close();
 	dataset_vel_y.close();
 }
+
 
 void Fluid2D::SaveSnapShot() {
 	hsize_t dim_atr[1] = { 1 };
@@ -623,8 +652,10 @@ void Fluid2D::SaveSnapShot() {
 	atr_time_vel_y.close();
 }
 
+
 int Fluid2D::GetSnapshotStep() const { return snapshot_step;}
 int Fluid2D::GetSnapshotFreq() const {return snapshot_per_period;}
+
 
 bool Fluid2D::Snapshot() const {
 	bool state;
@@ -636,13 +667,27 @@ bool Fluid2D::Snapshot() const {
 	return state;
 }
 
+
 float Fluid2D::DensitySource(__attribute__((unused)) float n, __attribute__((unused)) float flx_x,__attribute__((unused)) float flx_y,__attribute__((unused)) float mass,__attribute__((unused)) float s) {
 	return 0.0f;
 }
 
+
 float Fluid2D::MassFluxXSource(__attribute__((unused)) float n,__attribute__((unused)) float flx_x,__attribute__((unused)) float flx_y,__attribute__((unused)) float mass,__attribute__((unused)) float s) {
 	return 0.0f;
 }
+
+
 float Fluid2D::MassFluxYSource(__attribute__((unused)) float n,__attribute__((unused)) float flx_x,__attribute__((unused)) float flx_y,__attribute__((unused)) float mass,__attribute__((unused)) float s) {
 	return 0.0f;
 }
+
+float Fluid2D::EnergyFluxX(float n, float flx_x, float flx_y) {
+
+}
+
+float Fluid2D::EnergyFluxY(float n, float flx_x, float flx_y) {
+
+}
+
+

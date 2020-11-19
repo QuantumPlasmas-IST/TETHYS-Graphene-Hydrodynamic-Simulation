@@ -21,6 +21,7 @@ class Fluid2D : public TethysBase
 		std::ofstream data_preview; // file stream for simplified .dat file output
 		int snapshot_per_period = 20;
 		int snapshot_step = 1;
+
 	public :
 		float * Den ;       // number density
 		float * VelX ;      // fluid velocity x component
@@ -32,11 +33,11 @@ class Fluid2D : public TethysBase
 		explicit Fluid2D(const SetUpParameters &input_parameters);
 		~Fluid2D();
 		bool Snapshot() const;
-		void SetSound();     // Applies the anisotropy to the sound velocity array
+		void SetSound();                    // Applies the anisotropy to the sound velocity array
 		virtual void SetSimulationTime();   // Finds and set the appropriate simulation time that is 1) Longer than the saturation time 2) Contains enough oscillation periods in the saturated region
 		void InitialCondRand();             // Initial condition, zero velocity and constant density with 0.5% white noise
 		void InitialCondTest();             // Initial condition for testing and debugging
-		virtual void CflCondition();    // Calculates dx and imposes Courant–Friedrichs–Lewy condition to dt
+		virtual void CflCondition();        // Calculates dx and imposes Courant–Friedrichs–Lewy condition to dt
 		void Richtmyer();                   // Central Algorithm for solving the hyperbolic conservation law
 		virtual float DensityFluxX(__attribute__((unused)) float n, float flx_x, __attribute__((unused)) float flx_y, __attribute__((unused)) float mass, __attribute__((unused)) float s); // density equation (continuity equation) conserved flux X component
 		virtual float DensityFluxY(__attribute__((unused)) float n, __attribute__((unused)) float flx_x, float flx_y, __attribute__((unused)) float mass, __attribute__((unused)) float s); // density equation (continuity equation) conserved flux Y component
@@ -48,7 +49,28 @@ class Fluid2D : public TethysBase
 		virtual float MassFluxYFluxY(float n, float flx_x, float flx_y,__attribute__((unused)) float mass, float s); // velocity Y component equation (momentum equation) conserved flux Y component
 		virtual float MassFluxYSource(__attribute__((unused))float n, float flx_x,__attribute__((unused)) float flx_y,__attribute__((unused)) float mass,__attribute__((unused)) float s);
 		virtual void MassFluxToVelocity(); // Converts the mass flux density p=mnv to velocity
-		void VelocityToCurrent(); // Converts the mass flux density p=mnv to velocity
+		void VelocityToCurrent(); // Converts the mass f  delete[] Den;
+
+		float energ;
+		float energ_mid;
+		virtual float EnergyFluxX(float n, float flx_x, float flx_y);
+		virtual float EnergyFluxY(float n, float flx_x, float flx_y);
+
+
+    delete[] VelX;
+    delete[] VelY;
+    delete[] FlxX;
+    delete[] FlxY;
+    delete[] CurX;
+    delete[] CurY;
+    delete[] den_mid;
+    delete[] flxX_mid;
+    delete[] flxY_mid;
+    delete[] lap_flxX;
+    delete[] lap_flxY;
+    delete[] vel_snd_arr;
+    delete[] vel_snd_arr_mid;
+lux density p=mnv to velocity
 		void CreateFluidFile();     // create and open the simplified .dat file output
 		void WriteFluidFile(float t) ; // writes the line of time t on the simplified .dat file output
 		void SaveSnapShot();
@@ -56,7 +78,6 @@ class Fluid2D : public TethysBase
 		void SaveSound();
 		int GetSnapshotStep() const;
 		int GetSnapshotFreq() const;
-
 
 	void VelocityLaplacianFtcs();
 	void VelocityLaplacianWeighted19();
@@ -81,12 +102,11 @@ class GrapheneFluid2D : public Fluid2D{
 		float MassFluxYFluxX(float n, float flx_x, float flx_y,float mass, float s) override;
 		float MassFluxYFluxY(float n, float flx_x, float flx_y,float mass, float s) override;
 		float MassFluxYSource(float n, float flx_x, float flx_y, float mass, float s)override;
+        float EnergyFluxX(float n, float flx_x, float flx_y)override;
+        float EnergyFluxY(float n, float flx_x, float flx_y)override;
 
 		void MagneticSourceSemiAnalytic(); // Semi analytic method for the magnetic interaction
 		//void MagneticSourceFtcs();  // Forward Time Centered Space method for the magnetic interaction
-
-
 };
-
 
 #endif

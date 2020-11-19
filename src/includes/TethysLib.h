@@ -128,9 +128,7 @@ class TethysBase {
 		float PhaseVel() const;
 		float RealFreq() const;
 
-
 		std::string GetInfix() const;   // getter method for file name infix
-
 
 		void CreateHdf5File();          // creates the HDF5 files with the necessary structure
 		void OpenHdf5File(const std::string& hdf5name); // opens an existing HDF5 file with the necessary structure
