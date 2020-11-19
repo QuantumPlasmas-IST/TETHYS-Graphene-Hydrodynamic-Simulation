@@ -7,6 +7,8 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/lib")
 
 include_directories(src/)
 include_directories(src/includes)
+include_directories(/usr/include/hdf5/serial/)
+
 
 find_package(HDF5 REQUIRED COMPONENTS CXX)
 

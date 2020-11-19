@@ -1,9 +1,6 @@
 // 2D version
 
-
-
 #include "includes/Tethys2DLib.h"
-
 
 using namespace H5;
 using namespace std;
