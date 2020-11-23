@@ -408,10 +408,11 @@ float  GrapheneFluid2D::MassFluxYFluxY(float n,__attribute__((unused)) float flx
 
 void Fluid2D::VelocityLaplacianFtcs() {
 	this->MassFluxToVelocity();
-	int north, south, east, west;
+
 //calculate laplacians
-#pragma omp parallel for
+#pragma omp parallel for default(none) shared(lap_flxX,lap_flxY,VelX,VelY,Nx,Ny)
 	for (int kp = 1 + Nx; kp <= Nx * Ny - Nx - 2; kp++) { //correr a grelha principal evitando as fronteiras
+		int north, south, east, west;
 		div_t divresult;
 		divresult = div(kp, Nx);
 		int j = divresult.quot;
@@ -433,11 +434,11 @@ void Fluid2D::VelocityLaplacianFtcs() {
 
 void Fluid2D::VelocityLaplacianWeighted19() {
 	this->MassFluxToVelocity();
-	int north, south, east, west, northeast, northwest,southeast, southwest ;
 	float sx=kin_vis*dt/(dx*dx);
 	float sy=kin_vis*dt/(dy*dy);
-#pragma omp parallel for
+#pragma omp parallel for default(none) shared(lap_flxX,lap_flxY,VelX,VelY,sx,sy)
 	for (int kp = 1 + Nx; kp <= Nx * Ny - Nx - 2; kp++) { //correr a grelha principal evitando as fronteiras
+		int north, south, east, west, northeast, northwest,southeast, southwest ;
 		div_t divresult;
 		divresult = div(kp, Nx);
 		int j = divresult.quot;
@@ -483,9 +484,11 @@ void GrapheneFluid2D::MagneticSourceSemiAnalytic(){
 void Fluid2D:: ParabolicOperatorFtcs() {
 	this->VelocityLaplacianFtcs();
 	//FTCS algorithm
-	float flx_x_old,flx_y_old,sqrtn_0;
+
 	//float	odd_vis=0.0f;
+#pragma omp parallel for default(none) shared(Nx,Ny,FlxX,FlxY,lap_flxX,lap_flxY,dt,cyc_freq)
 	for (int kp = 1 + Nx; kp <= Nx * Ny - Nx - 2; kp++) { //correr a grelha principal evitando as fronteiras
+		float flx_x_old,flx_y_old,sqrtn_0;
 		if (kp % Nx != Nx - 1 && kp % Nx != 0) {
 			flx_x_old=FlxX[kp];
 			flx_y_old=FlxY[kp];
@@ -498,9 +501,10 @@ void Fluid2D:: ParabolicOperatorFtcs() {
 
 void Fluid2D::ParabolicOperatorWeightedExplicit19() {
 	this->VelocityLaplacianWeighted19();
-	float flx_x_old,flx_y_old,sqrtn_0;
-#pragma omp parallel for
+
+#pragma omp parallel for default(none) shared(Nx,Ny,FlxX,FlxY,lap_flxX,lap_flxY,dt,cyc_freq)
 	for (int kp = 1 + Nx; kp <= Nx * Ny - Nx - 2; kp++) { //correr a grelha principal evitando as fronteiras
+		float flx_x_old,flx_y_old,sqrtn_0;
 		if (kp % Nx != Nx - 1 && kp % Nx != 0) {
 			flx_x_old=FlxX[kp];
 			flx_y_old=FlxY[kp];
