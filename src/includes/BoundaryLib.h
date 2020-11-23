@@ -19,7 +19,7 @@ class BoundaryCondition {
 		void SetTopEdge(Fluid2D &fluid_class);
 		void SetBottomEdge(Fluid2D &fluid_class);
 		void SetSlope(float BoundarySlope);
-		float GetSlope();
+		float GetSlope() const;
 		void XFree(Fluid1D& fluid_class);           // open boundaries at x=0 and x=L for all variables and zero tangent velocity
 		void XFree(Fluid2D& fluid_class);           // open boundaries at x=0 and x=L for all variables and zero tangent velocity
 		void XFreeLeft(Fluid2D& fluid_class);       // open boundaries at x=0 for all variables and zero tangent velocity Vy=0

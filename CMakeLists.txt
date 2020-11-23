@@ -14,6 +14,13 @@ find_package(HDF5 REQUIRED COMPONENTS CXX)
 #link_libraries(GSL::gsl GSL::gslcblas)
 
 set(CMAKE_CXX_FLAGS "-Wall -Wextra -Wno-unused-parameter -O2")
+FIND_PACKAGE(OpenMP REQUIRED)
+if(OPENMP_FOUND)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_C_FLAGS}")
+endif()
+
+
+
 #set(GSL_FLAGS "-lgsl -lm")
 set(BLAS_FLAGS "-llapack -lblas -llapacke -lm")
 

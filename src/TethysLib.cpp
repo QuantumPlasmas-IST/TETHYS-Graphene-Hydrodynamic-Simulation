@@ -36,12 +36,19 @@ void TethysBase::WelcomeScreen() const {
 	if (kin_vis != 0.0) {
 		if (2.0f * kin_vis * dt > 0.95 * dx * dx * dy * dy / (dx * dx + dy * dy)) {
 			cout << "Reynolds n. \t\033[1mRe\t" << 1.0 / kin_vis
-			     << "\033[0m \033[1;5;7;31m WARNING ftcs scheme may not converge.  \033[0m" << endl;
+			     << "\033[0m \033[1;5;7;31m WARNING high viscosity regime \316\224t was adjusted.  \033[0m" << endl;
 		} else {
 			cout << "Reynolds n. \t\033[1mRe\t" << 1.0 / kin_vis << "\033[0m\n";
 		}
 	}
-	cout << "Collision rate \t\033[1m\316\275\t" << col_freq << " v\342\202\200/L\033[0m\n";
+	if (col_freq != 0.0) {
+		if (col_freq >= 0.75){
+			cout << "Collision rate \t\033[1m\316\275\t" << col_freq << " v\342\202\200/L\033[0m";
+			cout << "\033[1;5;7;31m WARNING Dyakonov-Shur plasmons expected to decay.  \033[0m" << endl;
+		}else {
+			cout << "Collision rate \t\033[1m\316\275\t" << col_freq << " v\342\202\200/L\033[0m\n";
+		}
+	}
 	cout << "Cyclotron frequency \t\033[1m\317\211c\t" << cyc_freq << " v\342\202\200/L\n\033[0m\n";
 	cout << "Theoretical frequency \033[1m\317\211=\317\211'+i\317\211''\033[0m\n";
 	cout << "\033[1m\317\211'\t" << this->RealFreq() << " v\342\202\200/L\t2\317\200/\317\211'\t" << 2.0 * MAT_PI /

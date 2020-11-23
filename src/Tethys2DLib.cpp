@@ -68,12 +68,10 @@ void Fluid2D::InitialCondRand(){
 	random_device rd;
 	float maxrand;
 	maxrand = (float) random_device::max();
-
-	for (int i = 0; i < Nx; i++ ){
-		for (int j=0; j<Ny; j++){
+#pragma omp parallel for default(shared)
+	for (int c = 0; c < Nx*Ny; c++ ){
 		float noise =  (float) rd()/maxrand ; //(float) rand()/ (float) RAND_MAX ;
-			Den[i + j * Nx] = 1.0f + 0.005f * (noise - 0.5f);
-		}
+		Den[c] = 1.0f + 0.005f * (noise - 0.5f);
 	}
 }
 
@@ -95,6 +93,7 @@ void Fluid2D::InitialCondTest(){
 
 
 void Fluid2D::MassFluxToVelocity(){
+#pragma omp parallel for default(shared)
 	for(int c=0; c <= Nx * Ny - 1; c++){
 		VelX[c]= FlxX[c] / Den[c];
 		VelY[c]= FlxY[c] / Den[c];
@@ -104,6 +103,7 @@ void Fluid2D::MassFluxToVelocity(){
 }
 
 void Fluid2D::VelocityToCurrent() {
+#pragma omp parallel for default(shared)
 	for(int c=0; c <= Nx * Ny - 1; c++){
 		CurX[c] = VelX[c] * Den[c];
 		CurY[c] = VelY[c] * Den[c];
@@ -111,6 +111,7 @@ void Fluid2D::VelocityToCurrent() {
 }
 
 void Fluid2D::Richtmyer(){
+	//TODO OPENMP separar por exemplo densidade fluxo x e fluxo y para cada core
 		int northeast,northwest,southeast,southwest;
 		float den_north, den_south ,den_east ,den_west, px_north, px_south, px_east, px_west, py_north, py_south, py_east, py_west,m_east,m_west,m_north,m_south;
 		float  sound_north, sound_south ,sound_east ,sound_west;
@@ -338,6 +339,7 @@ void GrapheneFluid2D::SetSimulationTime(){
 }
 
 void GrapheneFluid2D::MassFluxToVelocity(){
+#pragma omp parallel for default(shared)
 	for(int c=0; c <= Nx * Ny - 1; c++){
 		VelX[c]= FlxX[c] * pow(Den[c], -1.5f);
 		VelY[c]= FlxY[c] * pow(Den[c], -1.5f);
@@ -408,6 +410,7 @@ void Fluid2D::VelocityLaplacianFtcs() {
 	this->MassFluxToVelocity();
 	int north, south, east, west;
 //calculate laplacians
+#pragma omp parallel for
 	for (int kp = 1 + Nx; kp <= Nx * Ny - Nx - 2; kp++) { //correr a grelha principal evitando as fronteiras
 		div_t divresult;
 		divresult = div(kp, Nx);
@@ -433,6 +436,7 @@ void Fluid2D::VelocityLaplacianWeighted19() {
 	int north, south, east, west, northeast, northwest,southeast, southwest ;
 	float sx=kin_vis*dt/(dx*dx);
 	float sy=kin_vis*dt/(dy*dy);
+#pragma omp parallel for
 	for (int kp = 1 + Nx; kp <= Nx * Ny - Nx - 2; kp++) { //correr a grelha principal evitando as fronteiras
 		div_t divresult;
 		divresult = div(kp, Nx);
@@ -495,6 +499,7 @@ void Fluid2D:: ParabolicOperatorFtcs() {
 void Fluid2D::ParabolicOperatorWeightedExplicit19() {
 	this->VelocityLaplacianWeighted19();
 	float flx_x_old,flx_y_old,sqrtn_0;
+#pragma omp parallel for
 	for (int kp = 1 + Nx; kp <= Nx * Ny - Nx - 2; kp++) { //correr a grelha principal evitando as fronteiras
 		if (kp % Nx != Nx - 1 && kp % Nx != 0) {
 			flx_x_old=FlxX[kp];

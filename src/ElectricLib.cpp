@@ -36,6 +36,8 @@ void ElectroAnalysis::WriteElectroFile(float t,const GrapheneFluid1D& graphene){
 	data_electro << t << "\t" << q_net << "\t" << i_avg << "\t" << q_net * q_net * 0.5 << "\t" << p_ohm << "\t" << dipole << "\t" << dipole_var << "\n";
 }
 
+// TODO rever as definicoes dos integrais principalmente nos valores medios a ver se nao falta multiplicar nennum pelo aspect ratio6015
+
 void ElectroAnalysis::ComputeElectroBase(float t, const GrapheneFluid2D& graphene){
 	TmpArr.push_back(t);
 	NetQ.push_back(this->NetCharge(graphene));

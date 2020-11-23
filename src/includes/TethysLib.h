@@ -15,6 +15,8 @@
 #include <exception>
 
 #include <H5Cpp.h>
+#include <omp.h>
+
 using namespace std;
 using namespace H5;
 
