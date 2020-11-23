@@ -81,9 +81,9 @@ class TethysBase {
 
 	public:
 		TethysBase(int size_nx, int size_ny, int dimensions); // class constructor initializes Nx, Ny, RANK and file_infix
-		~TethysBase();  // class destructor if the the flag HDF5fileOpen=TRUE it deletes the dataspaces and hdf5 files
+		~TethysBase();  // class destructor if the the flag Hdf5FileOpen=TRUE it deletes the dataspaces and hdf5 files
 
-		static bool HDF5fileOpen;
+		static bool Hdf5FileOpen;
 		static int TimeStepCounter;
 		static float TimeStamp;
 
@@ -139,7 +139,7 @@ class TethysBase {
 		void CloseHdf5File() const;           // closes the HDF5 file
 		void WriteAttributes();          // saves the simulation attributes (either physical and simulation parameters)
 
-		void BannerDisplay() const; // launches the initial ASCII art banner
+		static void BannerDisplay() ; // launches the initial ASCII art banner
 		void WelcomeScreen() const; //launches screen with the relevant info
 };
 #endif

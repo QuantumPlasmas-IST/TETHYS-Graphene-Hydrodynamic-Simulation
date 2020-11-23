@@ -11,7 +11,7 @@ using namespace std;
 /*....................................................................*/
 /*........ General Functions .........................................*/
 /*....................................................................*/
-void TethysBase::BannerDisplay() const {
+void TethysBase::BannerDisplay() {
 cout<<"\n" ;
 	cout<<"╔═════════════════════════════════════════════════════════════════════════╗\n";
 	cout<<"║\033[2m  ▆▆▆▆▆▆▆▆▆▆▆ ▆▆▆▆▆▆▆▆▆▆  ▆▆▆▆▆▆▆▆▆▆▆ ▆▆▆▆▆ ▆▆▆▆▆ ▆▆▆▖   ▗▆▆▆ ▗▆▆▆▆▆▆▆▖  \033[0m║\n";
@@ -180,7 +180,7 @@ void TethysBase::WriteAttributes(){
 
 
 TethysBase::~TethysBase(){
-	if(HDF5fileOpen) {
+	if(Hdf5FileOpen) {
 		this->CloseHdf5File();
 		delete GrpDat;
 		delete GrpDen;
@@ -203,7 +203,7 @@ TethysBase::~TethysBase(){
 
 
 
-bool TethysBase::HDF5fileOpen=false;
+bool TethysBase::Hdf5FileOpen=false;
 int TethysBase::TimeStepCounter=0;
 float TethysBase::TimeStamp=0.0f;
 
@@ -251,7 +251,7 @@ TethysBase::TethysBase(int size_nx, int size_ny, int dimension){
 
 void TethysBase::CreateHdf5File(){
 	std::string hdf5name;
-	TethysBase::HDF5fileOpen=true;
+	TethysBase::Hdf5FileOpen=true;
 	if(RANK==1){
 		hdf5name = "hdf5_1D_" + this->GetInfix() + ".h5" ;
 	}
@@ -270,7 +270,7 @@ void TethysBase::CreateHdf5File(){
 
 
 void TethysBase::OpenHdf5File(const std::string& hdf5name){
-	TethysBase::HDF5fileOpen=true;
+	TethysBase::Hdf5FileOpen=true;
 	Hdf5File = new H5File(hdf5name, H5F_ACC_RDONLY );
 	GrpDat = new Group(Hdf5File->openGroup("/Data" ));
 	GrpDen = new Group(Hdf5File->openGroup("/Data/Density" ));

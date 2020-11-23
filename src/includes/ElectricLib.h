@@ -33,27 +33,27 @@ public:
 	void CreateElectroFile(const string &infix_string);
 	void WriteElectroFile(float t,const GrapheneFluid1D& graphene);
 	void WriteElectroFile();
-	float NetCharge(const GrapheneFluid1D& graphene);
-	float NetCharge(const GrapheneFluid2D& graphene);
-	float OhmPower(const GrapheneFluid1D& graphene);
-	float OhmPower(const GrapheneFluid2D& graphene);
-	float AverageCurrent(const GrapheneFluid1D& graphene);
-	float AverageHallCurrent(const GrapheneFluid2D& graphene);
-	float AverageDirectCurrent(const GrapheneFluid2D& graphene);
-	float DrainCurrent(const GrapheneFluid2D& graphene);
-	float SourceCurrent(const GrapheneFluid2D& graphene);
-	float DrainToSourceVoltage(const GrapheneFluid2D& graphene);
-	float ElectricDipole(const GrapheneFluid1D& graphene);
-	float ElectricDipoleX(const GrapheneFluid2D& graphene);
-	float ElectricDipoleY(const GrapheneFluid2D& graphene);
-	float ElectricDipoleVariation(const GrapheneFluid1D& graphene);
-	float ElectricDipoleVariationX(const GrapheneFluid2D& graphene);
-	float ElectricDipoleVariationY(const GrapheneFluid2D& graphene);
+	static float NetCharge(const GrapheneFluid1D& graphene);
+	static float NetCharge(const GrapheneFluid2D& graphene);
+	static float OhmPower(const GrapheneFluid1D& graphene);
+	static float OhmPower(const GrapheneFluid2D& graphene);
+	static float AverageCurrent(const GrapheneFluid1D& graphene);
+	static float AverageHallCurrent(const GrapheneFluid2D& graphene);
+	static float AverageDirectCurrent(const GrapheneFluid2D& graphene);
+	static float DrainCurrent(const GrapheneFluid2D& graphene);
+	static float SourceCurrent(const GrapheneFluid2D& graphene);
+	static float DrainToSourceVoltage(const GrapheneFluid2D& graphene);
+	static float ElectricDipole(const GrapheneFluid1D& graphene);
+	static float ElectricDipoleX(const GrapheneFluid2D& graphene);
+	static float ElectricDipoleY(const GrapheneFluid2D& graphene);
+	static float ElectricDipoleVariation(const GrapheneFluid1D& graphene);
+	static float ElectricDipoleVariationX(const GrapheneFluid2D& graphene);
+	static float ElectricDipoleVariationY(const GrapheneFluid2D& graphene);
 
 	void ComputeElectroBase(float t, const GrapheneFluid2D &graphene);
 	void ComputeElectroDerived();
 
-	void BannerDisplay(const GrapheneFluid2D &graphene);
+	static void BannerDisplay(const GrapheneFluid2D &graphene);
 };
 
 #endif
