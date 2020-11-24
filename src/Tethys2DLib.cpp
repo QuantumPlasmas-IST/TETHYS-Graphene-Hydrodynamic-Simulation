@@ -150,10 +150,15 @@ void Fluid2D::Richtmyer(){
 
 
 			//posso definir aqui a "massa" nos 4 ponto s cardeais
-			m_east=pow(den_east,1.5f); // e assim sucessivamente m_west m_north m_south que depois sao reutilizadeas nos 12 fluxos
+			/*m_east=pow(den_east,1.5f); // e assim sucessivamente m_west m_north m_south que depois sao reutilizadeas nos 12 fluxos
 			m_west=pow(den_west,1.5f);
 			m_north=pow(den_north,1.5f);
-			m_south=pow(den_south,1.5f);
+			m_south=pow(den_south,1.5f);*/
+
+			m_east=sqrt(den_east*den_east*den_east); // e assim sucessivamente m_west m_north m_south que depois sao reutilizadeas nos 12 fluxos
+			m_west=sqrt(den_west*den_west*den_west);
+			m_north=sqrt(den_north*den_north*den_north);
+			m_south=sqrt(den_south*den_south*den_south);
 
 			float den_avg = 0.25f * (Den[southwest] + Den[southeast] + Den[northwest] + Den[northeast]);
 			float flx_x_avg = 0.25f * (FlxX[southwest] + FlxX[southeast] + FlxX[northwest] + FlxX[northeast]);
@@ -183,6 +188,7 @@ void Fluid2D::Richtmyer(){
 						MassFluxYFluxY(den_south, px_south, py_south,m_south,sound_south))//;
 					+0.5f*dt*MassFluxYSource(den_avg, flx_x_avg, flx_y_avg, 0.0f, 0.0f);
 		}
+
 		for(int kp=1+Nx; kp<=Nx*Ny-Nx-2; kp++){ //correr a grelha principal evitando as fronteiras
 			div_t divresult;
 			divresult = div (kp,Nx);
@@ -217,10 +223,16 @@ void Fluid2D::Richtmyer(){
 				py_west = 0.5f*(flxY_mid[northwest]+flxY_mid[southwest]);
 
 				//posso definir aqui a "massa" nos 4 ponto s cardeais
-				m_east=pow(den_east,1.5f); // e assim sucessivamente m_west m_north m_south que depois sao reutilizadeas nos 12 fluxos
+				/*m_east=pow(den_east,1.5f); // e assim sucessivamente m_west m_north m_south que depois sao reutilizadeas nos 12 fluxos
 				m_west=pow(den_west,1.5f);
 				m_north=pow(den_north,1.5f);
-				m_south=pow(den_south,1.5f);
+				m_south=pow(den_south,1.5f);*/
+
+				m_east=sqrt(den_east*den_east*den_east);
+				m_west=sqrt(den_west*den_west*den_west);
+				m_north=sqrt(den_north*den_north*den_north);
+				m_south=sqrt(den_south*den_south*den_south);
+
 				float den_old = Den[kp];
 				float flx_x_old = FlxX[kp];
 				float flx_y_old = FlxY[kp];
@@ -341,9 +353,13 @@ void GrapheneFluid2D::SetSimulationTime(){
 
 void GrapheneFluid2D::MassFluxToVelocity(){
 //#pragma omp parallel for default(none) shared(VelX,VelY,FlxX,FlxY,Den,Nx,Ny)
+float den;
 	for(int c=0; c <= Nx * Ny - 1; c++){
-		VelX[c]= FlxX[c] * pow(Den[c], -1.5f);
-		VelY[c]= FlxY[c] * pow(Den[c], -1.5f);
+//		VelX[c]= FlxX[c] * pow(Den[c], -1.5f);
+//		VelY[c]= FlxY[c] * pow(Den[c], -1.5f);
+den=Den[c];
+		VelX[c]= FlxX[c] / sqrt(den*den*den);
+		VelY[c]= FlxY[c] / sqrt(den*den*den);
 		//CurX[c] = VelX[c] * Den[c];
 		//CurY[c] = VelY[c] * Den[c];
 	}
@@ -411,7 +427,7 @@ void Fluid2D::VelocityLaplacianFtcs() {
 	this->MassFluxToVelocity();
 
 //calculate laplacians
-#pragma omp parallel for default(none) shared(lap_flxX,lap_flxY,VelX,VelY,Nx,Ny)
+#pragma omp parallel for  default(none) shared(lap_flxX,lap_flxY,VelX,VelY,Nx,Ny)
 	for (int kp = 1 + Nx; kp <= Nx * Ny - Nx - 2; kp++) { //correr a grelha principal evitando as fronteiras
 		int north, south, east, west;
 		div_t divresult;
@@ -506,7 +522,6 @@ void Fluid2D:: ParabolicOperatorFtcs() {
 
 void Fluid2D::ParabolicOperatorWeightedExplicit19() {
 	this->VelocityLaplacianWeighted19();
-
 #pragma omp parallel for default(none) shared(Nx,Ny,FlxX,FlxY,lap_flxX,lap_flxY,dt,cyc_freq)
 	for (int kp = 1 + Nx; kp <= Nx * Ny - Nx - 2; kp++) { //correr a grelha principal evitando as fronteiras
 		float flx_x_old,flx_y_old,sqrtn_0;
