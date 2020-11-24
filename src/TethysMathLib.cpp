@@ -7,17 +7,17 @@ float Sound_Velocity_Anisotropy(float x, float s) {
 }
 float Sound_Velocity_Anisotropy(float x, float y, float s) {
 	float s_mod;
-	float slope=0.05;
-	//s_mod = s * (1.0f - slope * x);
+	//float slope=0.05;
+	//s_mod = s * (1.0f - Slope * x);
 	s_mod=s;
 	//s_mod = s * (0.025f*(tanh(-30.0f*(x - .5f))) + .975f);
 	//s_mod = (Stair_Case_Function(x,0.5f,20.0f)*0.5f - 2.0f) + 20.0f;
-	//s_mod = s*( 1.0f + slope*( (Stair_Case_Function(x,1.0f,20.0f)-1.0f))  );
+	//s_mod = s*( 1.0f + Slope*( (Stair_Case_Function(x,1.0f,20.0f)-1.0f))  );
 	return s_mod;
 }
 
-// ( ( (StairCase[x, 1/n, 20] - n)/n)*slope + 1)*60
-//s*( 1.0f + slope*( (Stair_Case_Function(x,1/n,20)-n)/n)  )
+// ( ( (StairCase[x, 1/n, 20] - n)/n)*Slope + 1)*60
+//s*( 1.0f + Slope*( (Stair_Case_Function(x,1/n,20)-n)/n)  )
 
 float Integral_1_D(int n, float ds, const float * f){
 	float itg=0.0;

@@ -44,7 +44,7 @@ int main(int argc, char **argv){
 	}
 	/*................................................................*/
 
-	graph.BannerDisplay();
+	GrapheneFluid2D::BannerDisplay();
 	graph.WelcomeScreen();
 
 	////////////////////////////////////////////////////////////////////
@@ -63,10 +63,10 @@ int main(int argc, char **argv){
 		GrapheneFluid2D::TimeStepCounter++;
 
 		graph.Richtmyer();
-		boundary_condition.DyakonovShurBc(graph);
+		DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
 		//boundary_condition.YFree(graph);
 		//boundary_condition.YClosedNoSlip(graph);
-		boundary_condition.YClosedFreeSlip(graph);
+		DyakonovShurBoundaryCondition::YClosedFreeSlip(graph);
 		/*
 		boundary_condition.YClosedNoSlip(graph);
 		boundary_condition.DensityLeft(graph, 1.0f);
@@ -77,10 +77,10 @@ int main(int argc, char **argv){
 		if(graph.GetKinVis()!=0.0f || graph.GetCycFreq()!=0.0f) {
 			//graph.ParabolicOperatorFtcs();
 			graph.ParabolicOperatorWeightedExplicit19();
-			boundary_condition.DyakonovShurBc(graph);
+			DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
 			//boundary_condition.YFree(graph);
 			//boundary_condition.YClosedNoSlip(graph);
-			boundary_condition.YClosedFreeSlip(graph);
+			DyakonovShurBoundaryCondition::YClosedFreeSlip(graph);
 
 
 			/*

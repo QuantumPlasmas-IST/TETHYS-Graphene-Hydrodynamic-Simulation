@@ -12,14 +12,14 @@
 /*Base class for general boundary conditions*/
 class BoundaryCondition {
 	protected:
-		int * bottom_edge;
-		int * top_edge;
-		float  slope=0.0f;
+		static int * bottom_edge;
+		static int * top_edge;
+		static float  Slope;
 	public :
-		void SetTopEdge(Fluid2D &fluid_class);
-		void SetBottomEdge(Fluid2D &fluid_class);
-		void SetSlope(float boundary_slope);
-		float GetSlope() const;
+		static void SetTopEdge(Fluid2D &fluid_class);
+		static void SetBottomEdge(Fluid2D &fluid_class);
+		static void SetSlope(float boundary_slope);
+		static float GetSlope() ;
 		static void XFree(Fluid1D& fluid_class);           // open boundaries at x=0 and x=L for all variables and zero tangent velocity
 		static void XFree(Fluid2D& fluid_class);           // open boundaries at x=0 and x=L for all variables and zero tangent velocity
 		static void XFreeLeft(Fluid2D& fluid_class);       // open boundaries at x=0 for all variables and zero tangent velocity Vy=0
@@ -30,8 +30,8 @@ class BoundaryCondition {
 		static void YFreeTop(Fluid2D& fluid_class);        // open boundaries at y=W for all variables
 		static void YFreeBottom(Fluid2D& fluid_class);     // open boundaries at y=0 for all variables
 		static void YPeriodic(Fluid2D& fluid_class);       // periodic boundaries u(y=0)=u(y=W) for all variables
-		void YClosedFreeSlip(Fluid2D& fluid_class); // zero flux across y=0 and y=W and free tangent velocity Vx
-		void YClosedNoSlip(Fluid2D& fluid_class);   // zero flux across y=0 and y=W and zero tangent velocity Vx=0
+		static void YClosedFreeSlip(Fluid2D& fluid_class); // zero flux across y=0 and y=W and free tangent velocity Vx
+		static void YClosedNoSlip(Fluid2D& fluid_class);   // zero flux across y=0 and y=W and zero tangent velocity Vx=0
 };
 
 

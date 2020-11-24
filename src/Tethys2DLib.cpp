@@ -68,9 +68,10 @@ void Fluid2D::InitialCondRand(){
 	random_device rd;
 	float maxrand;
 	maxrand = (float) random_device::max();
-#pragma omp parallel for default(none) shared(Nx,Ny,maxrand,rd)
+//#pragma omp parallel for default(none) shared(Nx,Ny,maxrand,rd)
 	for (int c = 0; c < Nx*Ny; c++ ){
-		float noise =  (float) rd()/maxrand ; //(float) rand()/ (float) RAND_MAX ;
+		float noise;
+		noise =  (float) rd()/maxrand ; //(float) rand()/ (float) RAND_MAX ;
 		Den[c] = 1.0f + 0.005f * (noise - 0.5f);
 	}
 }
@@ -93,7 +94,7 @@ void Fluid2D::InitialCondTest(){
 
 
 void Fluid2D::MassFluxToVelocity(){
-#pragma omp parallel for default(none) shared(VelX,VelY,FlxX,FlxY,Den)
+//#pragma omp parallel for default(none) shared(VelX,VelY,FlxX,FlxY,Den)
 	for(int c=0; c <= Nx * Ny - 1; c++){
 		VelX[c]= FlxX[c] / Den[c];
 		VelY[c]= FlxY[c] / Den[c];
@@ -103,7 +104,7 @@ void Fluid2D::MassFluxToVelocity(){
 }
 
 void Fluid2D::VelocityToCurrent() {
-#pragma omp parallel for default(none) shared(Nx,Ny,VelX,VelY,CurX,CurY,Den)
+//#pragma omp parallel for default(none) shared(Nx,Ny,VelX,VelY,CurX,CurY,Den)
 	for(int c=0; c <= Nx * Ny - 1; c++){
 		CurX[c] = VelX[c] * Den[c];
 		CurY[c] = VelY[c] * Den[c];
@@ -339,7 +340,7 @@ void GrapheneFluid2D::SetSimulationTime(){
 }
 
 void GrapheneFluid2D::MassFluxToVelocity(){
-#pragma omp parallel for default(none) shared(VelX,VelY,FlxX,FlxY,Den,Nx,Ny)
+//#pragma omp parallel for default(none) shared(VelX,VelY,FlxX,FlxY,Den,Nx,Ny)
 	for(int c=0; c <= Nx * Ny - 1; c++){
 		VelX[c]= FlxX[c] * pow(Den[c], -1.5f);
 		VelY[c]= FlxY[c] * pow(Den[c], -1.5f);
