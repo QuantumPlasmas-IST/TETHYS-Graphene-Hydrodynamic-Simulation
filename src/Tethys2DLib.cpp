@@ -113,11 +113,19 @@ void Fluid2D::VelocityToCurrent() {
 
 void Fluid2D::Richtmyer(){
 	//TODO OPENMP separar por exemplo densidade fluxo x e fluxo y para cada core
-		int northeast,northwest,southeast,southwest;
-		float den_north, den_south ,den_east ,den_west, px_north, px_south, px_east, px_west, py_north, py_south, py_east, py_west,m_east,m_west,m_north,m_south;
-		float  sound_north, sound_south ,sound_east ,sound_west;
+//		int northeast,northwest,southeast,southwest;
+//		float den_north, den_south ,den_east ,den_west, px_north, px_south, px_east, px_west, py_north, py_south, py_east, py_west,m_east,m_west,m_north,m_south;
+//		float  sound_north, sound_south ,sound_east ,sound_west;
 		//k=i+j*Nx
+
+
+#pragma omp parallel for default(none) shared(Nx,Ny,FlxX,FlxY,Den,flxX_mid,flxY_mid,den_mid,vel_snd_arr,dt,dx)
 		for(int ks=0; ks<=Nx*Ny-Nx-Ny; ks++){ //correr todos os pontos da grelha secundaria de den_mid
+
+			int northeast,northwest,southeast,southwest;
+			float den_north, den_south ,den_east ,den_west, px_north, px_south, px_east, px_west, py_north, py_south, py_east, py_west,m_east,m_west,m_north,m_south;
+			float  sound_north, sound_south ,sound_east ,sound_west;
+
 			div_t divresult;
 			divresult = div (ks,Nx-1);
 			int j=divresult.quot;
@@ -163,6 +171,7 @@ void Fluid2D::Richtmyer(){
 			float den_avg = 0.25f * (Den[southwest] + Den[southeast] + Den[northwest] + Den[northeast]);
 			float flx_x_avg = 0.25f * (FlxX[southwest] + FlxX[southeast] + FlxX[northwest] + FlxX[northeast]);
 			float flx_y_avg = 0.25f * (FlxY[southwest] + FlxY[southeast] + FlxY[northwest] + FlxY[northeast]);
+
 			den_mid[ks] = den_avg
 					-0.5f*(dt/dx)*(
 						DensityFluxX(den_east, px_east, py_east,m_east,sound_east)-
@@ -171,6 +180,8 @@ void Fluid2D::Richtmyer(){
 						DensityFluxY(den_north, px_north, py_north,m_north,sound_north)-
 						DensityFluxY(den_south, px_south, py_south,m_south,sound_south))//;
 					+0.5f*dt*DensitySource(den_avg, flx_x_avg, flx_y_avg, 0.0f, 0.0f);
+
+
 			flxX_mid[ks] = flx_x_avg
 					-0.5f*(dt/dx)*(
 						MassFluxXFluxX(den_east, px_east, py_east,m_east,sound_east)-
@@ -179,6 +190,7 @@ void Fluid2D::Richtmyer(){
 						MassFluxXFluxY(den_north, px_north, py_north,m_north,sound_north)-
 						MassFluxXFluxY(den_south, px_south, py_south,m_south,sound_south))//;
 					+0.5f*dt*MassFluxXSource(den_avg, flx_x_avg, flx_y_avg, 0.0f, 0.0f);
+
 			flxY_mid[ks] = flx_y_avg
 					-0.5f*(dt/dx)*(
 						MassFluxYFluxX(den_east, px_east, py_east,m_east,sound_east)-
@@ -187,9 +199,16 @@ void Fluid2D::Richtmyer(){
 						MassFluxYFluxY(den_north, px_north, py_north,m_north,sound_north)-
 						MassFluxYFluxY(den_south, px_south, py_south,m_south,sound_south))//;
 					+0.5f*dt*MassFluxYSource(den_avg, flx_x_avg, flx_y_avg, 0.0f, 0.0f);
+
 		}
 
+#pragma omp parallel for default(none) shared(Nx,Ny,FlxX,FlxY,Den,flxX_mid,flxY_mid,den_mid,vel_snd_arr_mid,dt,dx)
 		for(int kp=1+Nx; kp<=Nx*Ny-Nx-2; kp++){ //correr a grelha principal evitando as fronteiras
+
+			int northeast,northwest,southeast,southwest;
+			float den_north, den_south ,den_east ,den_west, px_north, px_south, px_east, px_west, py_north, py_south, py_east, py_west,m_east,m_west,m_north,m_south;
+			float  sound_north, sound_south ,sound_east ,sound_west;
+
 			div_t divresult;
 			divresult = div (kp,Nx);
 			int j=divresult.quot;
