@@ -18,7 +18,7 @@ int main(int argc, char **argv){
 	float dt;		// time step
 
 	GrapheneFluid2D graph(parameters);
-	DyakonovShurBoundaryCondition boundary_condition;
+//	DyakonovShurBoundaryCondition boundary_condition;
 	//RobinBoundaryCondition boundary_condition;
 	//DirichletBoundaryCondition boundary_condition;
 
@@ -96,7 +96,9 @@ int main(int argc, char **argv){
 		if (parameters.SaveMode  && graph.Snapshot()) {
 			graph.SaveSnapShot();
 		}
-		graph.WriteFluidFile(t); //TODO we caould probably save less points of the the fluid file
+		if(static_cast<int>(fmod(t/dt,2.0f))){
+			graph.WriteFluidFile(t);
+		}
 	}
 	//Record atributes on hdf5 file
 	if(parameters.SaveMode) {

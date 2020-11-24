@@ -21,7 +21,7 @@ int main(int argc, char **argv){
 
 	SetUpParameters parameters(argc, argv);
 	GrapheneFluid1D graph(parameters);
-	DyakonovShurBoundaryCondition boundary_condition;
+	//DyakonovShurBoundaryCondition boundary_condition;
 
 	GrapheneFluid1D::BannerDisplay();
 	/*......CFL routine to determine dt...............................*/
