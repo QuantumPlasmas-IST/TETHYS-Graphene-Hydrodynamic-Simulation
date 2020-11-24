@@ -12,8 +12,8 @@
 /*Base class for general boundary conditions*/
 class BoundaryCondition {
 	protected:
-		static int * bottom_edge;
-		static int * top_edge;
+		static int * BottomEdge;
+		static int * TopEdge;
 		static float  Slope;
 	public :
 		static void SetTopEdge(Fluid2D &fluid_class);

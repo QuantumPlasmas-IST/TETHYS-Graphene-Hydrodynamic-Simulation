@@ -53,9 +53,9 @@ int main(int argc, char **argv){
 	////////////////////////////////////////////////////////////////////
 	cout << "\033[1;7;5;33m Program Running \033[0m"<<endl;
 
-	boundary_condition.SetSlope(0.0f);
-	boundary_condition.SetBottomEdge(graph);
-	boundary_condition.SetTopEdge(graph);
+	DyakonovShurBoundaryCondition::SetSlope(0.0f);
+	DyakonovShurBoundaryCondition::SetBottomEdge(graph);
+	DyakonovShurBoundaryCondition::SetTopEdge(graph);
 
 	while (t <= graph.GetTmax() ){
 

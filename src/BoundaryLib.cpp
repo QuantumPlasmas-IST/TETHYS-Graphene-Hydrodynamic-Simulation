@@ -15,8 +15,8 @@ using namespace std;
 
 float  BoundaryCondition::Slope=0.0f;
 
-int * BoundaryCondition::bottom_edge=nullptr;
-int * BoundaryCondition::top_edge=nullptr;
+int * BoundaryCondition::BottomEdge=nullptr;
+int * BoundaryCondition::TopEdge=nullptr;
 
 
 void BoundaryCondition::XFree(Fluid1D& fluid_class){
@@ -160,9 +160,9 @@ void BoundaryCondition::YClosedFreeSlip(Fluid2D& fluid_class){
 		//int bottom=i; //i+0*nx
 		//int top= i + (ny - 1) * nx;
 		int j_top;
-		j_top = top_edge[i];
+		j_top = TopEdge[i];
 		int j_bot;
-		j_bot = bottom_edge[i];
+		j_bot = BottomEdge[i];
 		int bottom;
 		bottom = i + j_bot * nx; //i+0*nx
 		int top;
@@ -196,9 +196,9 @@ void BoundaryCondition::YClosedNoSlip(Fluid2D& fluid_class){
 		//int j_top = (ny - 1);
 		//int j_bot = 0;
 		int j_top;
-		j_top = top_edge[i];
+		j_top = TopEdge[i];
 		int j_bot;
-		j_bot = bottom_edge[i];
+		j_bot = BottomEdge[i];
 		int bottom;
 		bottom = i + j_bot * nx; //i+0*nx
 		int top;
@@ -215,30 +215,37 @@ void BoundaryCondition::YClosedNoSlip(Fluid2D& fluid_class){
 void BoundaryCondition::SetBottomEdge(Fluid2D &fluid_class) {
 	int nx=fluid_class.SizeX();
 	int ny=fluid_class.SizeY();
-	bottom_edge = new int[nx]();
+	BottomEdge = new int[nx]();
 	for(int i=0;i<nx;i++){
 		for(int j=0;j<ny/2;j++) {
-			if(abs(j - Slope * i) <= 0.5f){
-				bottom_edge[i] = j;
-				//bottom_edge[nx-1-i] = j;
+			if(abs(static_cast<float>(j) - Slope * static_cast<float>(i)) <= 0.5f){
+				BottomEdge[i] = j;
+				//BottomEdge[nx-1-i] = j;
 			}
 		}
 	}
 }
 
+
+
+
 void BoundaryCondition::SetTopEdge(Fluid2D &fluid_class) {
 	int nx=fluid_class.SizeX();
 	int ny=fluid_class.SizeY();
-	top_edge = new int[nx]();
+	TopEdge = new int[nx]();
 	for(int i=0;i<nx;i++){
 		for(int j=ny-1;j>ny/2;j--) {
-			if(abs(j - (ny-1) + Slope * i) <= 0.5f){
-				top_edge[i] = j;
-				//top_edge[nx-1-i] = j;
+			if(abs(static_cast<float>(j) - (ny-1) + Slope * static_cast<float>(i)) <= 0.5f){
+				TopEdge[i] = j;
+				//TopEdge[nx-1-i] = j;
 			}
 		}
 	}
 }
+
+
+
+
 
 void BoundaryCondition::SetSlope(float boundary_slope) { Slope=boundary_slope;}
 
