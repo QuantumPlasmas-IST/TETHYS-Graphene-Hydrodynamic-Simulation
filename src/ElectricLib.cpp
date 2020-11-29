@@ -48,7 +48,8 @@ void ElectroAnalysis::ComputeElectroBase(float t, const GrapheneFluid2D& graphen
 	AvgCurDS.push_back(ElectroAnalysis::AverageDirectCurrent(graphene));
 	VoltDS.push_back(ElectroAnalysis::DrainToSourceVoltage(graphene));
 	AvgCurHall.push_back(ElectroAnalysis::AverageHallCurrent(graphene));
-	PowOhm.push_back(ElectroAnalysis::OhmPower(graphene));
+	//PowOhm.push_back(3.0f); //TODO ohm power ta a dar merda
+	PowOhm.push_back(ElectroAnalysis::OhmPower(graphene)); //TODO ohm power ta a dar merda
 }
 
 
@@ -147,7 +148,7 @@ float ElectroAnalysis::OhmPower(const GrapheneFluid1D& graphene){
 }
 
 float ElectroAnalysis::OhmPower(const GrapheneFluid2D& graphene){
-	int size = graphene.SizeX()*graphene.SizeX();
+	int size = graphene.SizeX()*graphene.SizeY();
 	float square_current_density[size];
 	for(int c=0;c<size;c++){
 		float jx,jy;
@@ -156,6 +157,7 @@ float ElectroAnalysis::OhmPower(const GrapheneFluid2D& graphene){
 		square_current_density[c] = jx*jx+jy*jy;
 	}
 	return Integral_2_D(graphene.SizeX(), graphene.SizeY(), graphene.GetDx(), graphene.GetDy(), square_current_density);
+
 }
 
 float ElectroAnalysis::ElectricDipoleX(const GrapheneFluid2D &graphene) {

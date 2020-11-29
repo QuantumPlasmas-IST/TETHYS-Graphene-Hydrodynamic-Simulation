@@ -533,8 +533,8 @@ void Fluid2D:: ParabolicOperatorFtcs() {
 			flx_x_old=FlxX[kp];
 			flx_y_old=FlxY[kp];
 			sqrtn_0=sqrt(Den[kp]);
-			FlxX[kp] = flx_x_old + lap_flxX[kp] + dt * ( -1.0f*cyc_freq * flx_y_old / sqrtn_0);
-			FlxY[kp] = flx_y_old + lap_flxY[kp] + dt * (       cyc_freq * flx_x_old / sqrtn_0);
+			FlxX[kp] = flx_x_old + lap_flxX[kp];// + dt * ( -1.0f*cyc_freq * flx_y_old / sqrtn_0);
+			FlxY[kp] = flx_y_old + lap_flxY[kp];// + dt * (       cyc_freq * flx_x_old / sqrtn_0);
 		}
 	}
 }
@@ -548,9 +548,10 @@ void Fluid2D::ParabolicOperatorWeightedExplicit19() {
 			flx_x_old=FlxX[kp];
 			flx_y_old=FlxY[kp];
 			sqrtn_0=sqrt(Den[kp]);
-			FlxX[kp] = flx_x_old + lap_flxX[kp] + dt * ( -1.0f*cyc_freq * flx_y_old / sqrtn_0);
-			FlxY[kp] = flx_y_old + lap_flxY[kp] + dt * (       cyc_freq * flx_x_old / sqrtn_0);
+			FlxX[kp] = flx_x_old + lap_flxX[kp] ;//+ dt * ( -1.0f*cyc_freq * flx_y_old / sqrtn_0);
+			FlxY[kp] = flx_y_old + lap_flxY[kp] ;//+ dt * (       cyc_freq * flx_x_old / sqrtn_0);
 		}
+
 	}
 }
 
@@ -571,11 +572,11 @@ void GrapheneFluid2D::MagneticSourceFtcs(){
 float GrapheneFluid2D::DensitySource(__attribute__((unused)) float n,__attribute__((unused)) float flx_x,__attribute__((unused)) float flx_y,__attribute__((unused)) float mass,__attribute__((unused)) float s) {
 	return 0.0f;
 }
-float GrapheneFluid2D::MassFluxXSource(__attribute__((unused)) float n, float flx_x,__attribute__((unused)) float flx_y,__attribute__((unused)) float mass,__attribute__((unused)) float s) {
-	return -1.0f*col_freq*flx_x;
+float GrapheneFluid2D::MassFluxXSource(float n, float flx_x,float flx_y,__attribute__((unused)) float mass,__attribute__((unused)) float s) {
+	return -1.0f*col_freq*flx_x  - cyc_freq*flx_y/sqrt(n);
 }
-float GrapheneFluid2D::MassFluxYSource(__attribute__((unused)) float n,__attribute__((unused)) float flx_x, float flx_y,__attribute__((unused)) float mass,__attribute__((unused)) float s) {
-	return -1.0f*col_freq*flx_y;
+float GrapheneFluid2D::MassFluxYSource(float n, float flx_x, float flx_y,__attribute__((unused)) float mass,__attribute__((unused)) float s) {
+	return -1.0f*col_freq*flx_y  + cyc_freq*flx_x/sqrt(n);
 }
 
 GrapheneFluid2D::~GrapheneFluid2D(){

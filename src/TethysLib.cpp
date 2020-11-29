@@ -360,8 +360,8 @@ SetUpParameters::SetUpParameters(float sound, float fermi, float coll, float vis
 
 
 SetUpParameters::SetUpParameters(int argc, char ** argv) {
-	SizeX=201;
-	SizeY=201;
+	SizeX=101;
+	SizeY=101;
 	if(argc==7||argc==8){
 		try {
 			SoundVelocity = strtof(argv[1], nullptr);
@@ -468,25 +468,30 @@ void SetUpParameters::ParametersFromHdf5File(const std::string& hdf5name){
 	attr_col.close();
 	grp_dat->close();
 	hdf5_file->close();
+	this->DefineGeometry();
 }
 
 void SetUpParameters::DefineGeometry() {
 	if(AspectRatio>1.0f){
 		Length=1.0f*AspectRatio;
 		Width=1.0f;
-		SizeY=201;
+		//SizeY=201;
+		SizeY=151;
 		SizeX= static_cast<int>( static_cast<float>(SizeY-1)*AspectRatio)+1;
 	}
 	if(AspectRatio==1.0f){
 		Length=1.0f;
 		Width=1.0f;
-		SizeX=201;
-		SizeY=201;
+		//SizeX=201;
+		//SizeY=201;
+		SizeX=151;
+		SizeY=151;
 	}
 	if(AspectRatio<1.0f){
 		Length=1.0f;
 		Width=1.0f/AspectRatio;
-		SizeX=201;
+		//SizeX=201;
+		SizeX=151;
 		SizeY= static_cast<int>( static_cast<float>(SizeX - 1) / AspectRatio) + 1;
 	}
 }
