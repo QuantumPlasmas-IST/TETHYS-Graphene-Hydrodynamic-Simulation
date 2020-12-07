@@ -5,6 +5,8 @@ set(CMAKE_CXX_STANDARD 14)
 
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/lib")
 
+enable_testing()
+
 include_directories(src/)
 include_directories(src/includes)
 
@@ -19,8 +21,6 @@ if(OPENMP_FOUND)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_C_FLAGS}")
 endif()
 
-
-
 #set(GSL_FLAGS "-lgsl -lm")
 set(BLAS_FLAGS "-llapack -lblas -llapacke -lm")
 
@@ -31,8 +31,11 @@ set(BLAS_FLAGS "-llapack -lblas -llapacke -lm")
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=memory -g ")
 
 add_executable(TETHYS_1D src/TETHYS_1D_Main_v134.cpp)
+add_test(test1D TETHYS_1D 20 10 0.0 0.0 0.0 1 1)
 add_executable(TETHYS_2D src/TETHYS_2D_Main_v231.cpp)
+add_test(test2D TETHYS_2D 20 10 0.0 0.0 0.0 1 1)
 add_executable(TETHYS_ELEC_2D src/TETHYS_2D_ElectronicAnalysis.cpp)
+
 
 add_library(tethys_library STATIC
         src/TethysLib.cpp
@@ -56,5 +59,3 @@ target_link_libraries(TETHYS_2D PRIVATE ${HDF5_CXX_LIBRARIES})
 
 target_include_directories(TETHYS_ELEC_2D PRIVATE ${HDF5_INCLUDE_DIRS})
 target_link_libraries(TETHYS_ELEC_2D PRIVATE ${HDF5_CXX_LIBRARIES})
-
-
