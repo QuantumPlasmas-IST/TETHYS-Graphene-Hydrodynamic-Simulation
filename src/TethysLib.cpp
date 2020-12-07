@@ -187,11 +187,11 @@ TethysBase::~TethysBase(){
 		delete GrpVelX;
 		delete DataspaceDen;
 		delete DataspaceVelX;
-		delete DataspaceVelSndMid;
 		delete DataspaceVelSnd;
 		if (RANK == 2) {
 			delete GrpVelY;
 			delete DataspaceVelY;
+			delete DataspaceVelSndMid;
 		}
 		delete Hdf5File;
 	}
