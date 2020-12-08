@@ -32,8 +32,10 @@ const FloatType      HDF5FLOAT(PredType::NATIVE_FLOAT);
 const IntType        HDF5INT(PredType::NATIVE_INT);
 
 
-/*
- * Struct to pass the initialization
+/*!
+ * @brief Initialization class for the fluid classes.
+ *
+ * This class allows the initialization of the appropriate physical parameters either from inline arguments, prompt or reading them from an existing HDF5 file
  * */
 class SetUpParameters {
 	public:
@@ -52,14 +54,16 @@ class SetUpParameters {
 		float CollisionFrequency;
 		float ShearViscosity;
 		float CyclotronFrequency;
-		void ExceptionsChecking() const;
-		void DefineGeometry();
-		void ParametersFromHdf5File(const std::string& hdf5name);
+		void ExceptionsChecking() const; ///< Runs a checking on the physical feasibility of the parameters
+		void DefineGeometry(); ///< Set ups the 2D grid dimensions
+		void ParametersFromHdf5File(const std::string& hdf5name); ///< Imports the parameters from a saved HDF5 file
 };
 
 
-/* Base class from which the fluid and graphene fluid classes are derived
- * The setting of the dimensions and creation of the HDF5 file and its attributes is controlled from this class
+/*!
+ * @brief Base class from which the fluid and graphene fluid classes are derived
+ *
+ * The setting of the dimensions and creation of the HDF5 file and its attributes are controlled from this class
  * */
 class TethysBase {
 	protected:
@@ -80,67 +84,73 @@ class TethysBase {
 		float Tmax=10;          // total time of simulation
 
 	public:
-		TethysBase(int size_nx, int size_ny, int dimensions); // class constructor initializes Nx, Ny, RANK and file_infix
+		/*!
+		 Class constructor
+		 @param size_nx Number of grid points along x
+		 @param size_ny Number of grid points along y
+		 @param dimensions Dimensionality of the simulation
+		*/
+		TethysBase(int size_nx, int size_ny, int dimensions);
 		~TethysBase();  // class destructor if the the flag Hdf5FileOpen=TRUE it deletes the dataspaces and hdf5 files
 
 		static bool Hdf5FileOpen;
 		static int TimeStepCounter;
 		static float TimeStamp;
 
-		H5File* Hdf5File ;  // hdf5 file handler
-		Group* GrpDat ;     // group for the simulated data: Attributes; Density; Velocity X; Velocity Y
-		Group* GrpDen ;     // group for ALL Density snapshots
-		Group* GrpVelX ;    // group for ALL Velocity X snapshots
-		Group* GrpVelY ;    // group for ALL Velocity X snapshots
-		DataSpace* DataspaceVelSnd; // dataspace for the sound anisotropy
-		DataSpace* DataspaceVelSndMid; // dataspace for the sound anisotropy
-		DataSpace* DataspaceDen;    // dataspace for EACH Density snapshots
-		DataSpace* DataspaceVelX;   // dataspace for EACH Velocity X snapshots
-		DataSpace* DataspaceVelY;   // dataspace for EACH Velocity Y snapshots
+		H5File* Hdf5File ;  ///< hdf5 file handler
+		Group* GrpDat ;     ///< group for the simulated data: Attributes; Density; Velocity X; Velocity Y
+		Group* GrpDen ;     ///< group for ALL Density snapshots
+		Group* GrpVelX ;    ///< group for ALL Velocity X snapshots
+		Group* GrpVelY ;    ///< group for ALL Velocity X snapshots
+		DataSpace* DataspaceVelSnd; ///< dataspace for the sound anisotropy
+		DataSpace* DataspaceVelSndMid; ///< dataspace for the sound anisotropy
+		DataSpace* DataspaceDen;    ///< dataspace for EACH Density snapshots
+		DataSpace* DataspaceVelX;   ///< dataspace for EACH Velocity X snapshots
+		DataSpace* DataspaceVelY;   ///< dataspace for EACH Velocity Y snapshots
 
-		void SetTmax(float x);      // setter method for the total simulation time cf. GrapheneFluid2D::SetSimulationTime()
-		float GetTmax() const;      // getter method for the total simulation time
-		int SizeX() const;          // getter method for the number of simulation points along x
-		int SizeY() const;          // getter method for the number of simulation points along y
-		int Rank() const;           // getter method for the system dimensionality
+		void SetTmax(float x);      ///< setter method for the total simulation time cf. GrapheneFluid2D::SetSimulationTime()
+		float GetTmax() const;      ///< getter method for the total simulation time
+		int SizeX() const;          ///< getter method for the number of simulation points along x
+		int SizeY() const;          ///< getter method for the number of simulation points along y
+		int Rank() const;           ///< getter method for the system dimensionality
 
-		void SetVelSnd(float x);    // setter method for nominal S value
-		void SetKinVis(float x);    // setter method for kinetic shear viscosity
-		void SetColFreq(float x);   // setter method for collision frequency
-		void SetVelFer(float x);        // setter method for Fermi Velocity
-		void SetCycFreq(float x);        // setter method for cyclotron frequency
-		void SetDx(float x);        // setter method for spatial step x
-		void SetDy(float x);        // setter method for spatial step y
-		void SetDt(float x);        // setter method for temporal step
-		void SetLengthX(float x);   // setter method for total length along x
-		void SetLengthY(float x);   // setter method for total length along y
+		void SetVelSnd(float x);    ///< setter method for nominal S value
+		void SetKinVis(float x);    ///< setter method for kinetic shear viscosity
+		void SetColFreq(float x);   ///< setter method for collision frequency
+		void SetVelFer(float x);        ///< setter method for Fermi Velocity
+		void SetCycFreq(float x);        ///< setter method for cyclotron frequency
+		void SetDx(float x);        ///< setter method for spatial step x
+		void SetDy(float x);        ///< setter method for spatial step y
+		void SetDt(float x);        ///< setter method for temporal step
+		void SetLengthX(float x);   ///< setter method for total length along x
+		void SetLengthY(float x);   ///< setter method for total length along y
 
-		float GetVelSnd() const;    // getter method for nominal S value
-		float GetKinVis() const;    // getter method for kinetic shear viscosity
-		float GetColFreq() const;   // getter method for collision frequency
-		float GetVelFer() const;        // getter method for Fermi Velocity
-		float GetCycFreq() const;       // getter method for cyclotron frequency
-		float GetDx() const;        // getter method for spatial discretization x
-		float GetDy() const;        // getter method for spatial discretization y
-		float GetDt() const;        // getter method for time discretization
-		float GetLengthX() const;   // getter method for total length along x
-		float GetLengthY() const;   // getter method for total length along y
+		float GetVelSnd() const;    ///< getter method for nominal S value
+		float GetKinVis() const;    ///< getter method for kinetic shear viscosity
+		float GetColFreq() const;   ///< getter method for collision frequency
+		float GetVelFer() const;        ///< getter method for Fermi Velocity
+		float GetCycFreq() const;       ///< getter method for cyclotron frequency
+		float GetDx() const;        ///< getter method for spatial discretization x
+		float GetDy() const;        ///< getter method for spatial discretization y
+		float GetDt() const;        ///< getter method for time discretization
+		float GetLengthX() const;   ///< getter method for total length along x
+		float GetLengthY() const;   ///< getter method for total length along y
 
 		float ImagFreq() const;
 		float PhaseVel() const;
 		float RealFreq() const;
 
 
-		std::string GetInfix() const;   // getter method for file name infix
+		std::string GetInfix() const;   ///< getter method for file name infix
 
 
-		void CreateHdf5File();          // creates the HDF5 files with the necessary structure
-		void OpenHdf5File(const std::string& hdf5name); // opens an existing HDF5 file with the necessary structure
-		void CloseHdf5File() const;           // closes the HDF5 file
-		void WriteAttributes();          // saves the simulation attributes (either physical and simulation parameters)
+		void CreateHdf5File();          ///< creates the HDF5 files with the necessary structure
+		void OpenHdf5File(const std::string& hdf5name); ///< opens an existing HDF5 file with the necessary structure @param hdf5name HDF5 file name
+		void CloseHdf5File() const;           ///< closes the HDF5 file
+		void WriteAttributes();          ///< saves the simulation attributes (either physical and simulation parameters)
 
-		static void BannerDisplay() ; // launches the initial ASCII art banner
-		void WelcomeScreen() const; //launches screen with the relevant info
+		static void BannerDisplay() ; ///< launches the initial ASCII art banner
+		void WelcomeScreen() const; ///< launches screen with the relevant info
 };
 #endif
 
