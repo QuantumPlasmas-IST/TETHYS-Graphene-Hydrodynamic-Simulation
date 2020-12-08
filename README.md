@@ -3,9 +3,9 @@
 
 [![CodeScore](https://www.code-inspector.com/project/1694/score/svg)](https://www.code-inspector.com/project/1694/score/svg)
 [![CodeStatus](https://www.code-inspector.com/project/1694/status/svg)](https://www.code-inspector.com/project/1694/status/svg)
-[![CodeFactor](https://www.codefactor.io/repository/github/pcosme/hydrodynamic-simulation/badge?s=00232ac4455fd1f2e77fbc58fe3823f751721249)](https://www.codefactor.io/repository/github/pcosme/hydrodynamic-simulation)
-
-![.github/workflows/main.yml](https://github.com/pcosme/Hydrodynamic-Simulation/workflows/.github/workflows/main.yml/badge.svg)
+[![CodeFactor](https://www.codefactor.io/repository/github/pcosme/tethys-graphene-hydrodynamic-simulation/badge?s=13e31a6a03d6b485a3f259a2e963d8584e2b0054)](https://www.codefactor.io/repository/github/pcosme/tethys-graphene-hydrodynamic-simulation)
+![.github/workflows/main.yml](https://github.com/pcosme/TETHYS-Graphene-Hydrodynamic-Simulation/workflows/.github/workflows/main.yml/badge.svg)
+![](https://img.shields.io/github/license/pcosme/TETHYS-Graphene-Hydrodynamic-Simulation)
 
 ## Richtmyer method implementation
 Repository for the elaboration of the hydrodynamic model simulation. 
