@@ -111,8 +111,18 @@ class Fluid2D : public TethysBase
 		*
 		* */
 		void VelocityLaplacianWeighted19();
+		/*!
+		* @brief Forward Time Centered Space method for the viscous terms
+		*
+		*
+		* */
 		void ParabolicOperatorFtcs();       // Forward Time Centered Space method for the viscous terms
-		void ParabolicOperatorWeightedExplicit19();       // Forward Time Centered Space method for the viscous terms
+		/*!
+		* @brief // Forward Time Weighted (1,9) space method
+		*
+		*
+		* */
+		void ParabolicOperatorWeightedExplicit19(); // Forward Time Centered Space method for the viscous terms
 };
 
 class GrapheneFluid2D : public Fluid2D{

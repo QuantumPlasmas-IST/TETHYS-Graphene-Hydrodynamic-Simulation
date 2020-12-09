@@ -7,9 +7,14 @@
 ![.github/workflows/main.yml](https://github.com/pcosme/TETHYS-Graphene-Hydrodynamic-Simulation/workflows/.github/workflows/main.yml/badge.svg)
 ![](https://img.shields.io/github/license/pcosme/TETHYS-Graphene-Hydrodynamic-Simulation)
 ![](https://img.shields.io/github/languages/top/pcosme/TETHYS-Graphene-Hydrodynamic-Simulation)
-## Richtmyer method implementation
-Repository for the elaboration of the hydrodynamic model simulation. 
-Implemented for in 1D+1 and 2D+1 for density and velocity fields.
+
+## Documentation
+
+The full documentation can be looked up [here](./doc/html/index.html)
+
+<!--- ## Richtmyer method implementation --->
+<!--- Repository for the elaboration of the hydrodynamic model simulation. --->
+<!--- Implemented for in 1D+1 and 2D+1 for density and velocity fields. --->
 
 ## Simplified flowchart of the code
 
