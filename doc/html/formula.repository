@@ -269,3 +269,8 @@
 \_form#268=426x42:\[ f(x) = \frac{\tanh(a((-\frac{x-1}{w} - \lfloor-\frac{x-1}{w})\rfloor - 1/2))}{2\tanh(a/2)} + 1/2 +\lfloor-\frac{x-1}{w}\rfloor \]
 \_form#269=410x42:\[ f(x) = \frac{\tanh a(-\frac{x-1}{w} - \lfloor-\frac{x-1}{w})\rfloor - 1/2)}{2\tanh(a/2)} + 1/2 +\lfloor-\frac{x-1}{w}\rfloor \]
 \_form#270=410x42:\[ f(x) = \frac{\tanh a(-\frac{x-1}{w} - \lfloor-\frac{x-1}{w})\rfloor - 1/2)}{2\tanh a/2 } + 1/2 +\lfloor-\frac{x-1}{w}\rfloor \]
+\_form#271=127x39:\[ g(x) = \frac{1}{\sqrt{2\pi t}}e^{-\frac{x^2}{2t}} \]
+\_form#272=31x18:$ g(x) $
+\_form#273=150x36:\[ g'(x) = -\frac{x}{t\sqrt{2\pi t}}e^{-\frac{x^2}{2t}} \]
+\_form#274=34x18:$ g'(x) $
+\_form#275=10x8:$ x $

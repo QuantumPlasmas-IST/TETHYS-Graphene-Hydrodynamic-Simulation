@@ -1,14 +1,17 @@
+/************************************************************************************************\
+* Copyright (c) 2020 Pedro Cosme and João Santos                                                 *
+* Distributed under the MIT License (license terms are at http://opensource.org/licenses/MIT).   *
+\************************************************************************************************/
+/*!@file
+ * @brief Header file for general mathematical functions
+ */
+
 #ifndef TETHYSMATHLIB_H
 #define TETHYSMATHLIB_H
 
 #include <H5Cpp.h>
 #include "includes/TethysLib.h"
 
-/*! @file
- * @brief Header file for general mathematical functions
- *
- *
- * */
 
 using namespace std;
 
@@ -75,20 +78,24 @@ void Convolve_Gauss(unsigned int type, unsigned int m, float t, const float * in
 /*!
  * @brief Gaussian kernel function
  *
- * @param pos
- * @param t
+ * This function implements a gaussian kernel defined as @f[ g(x) = \frac{1}{\sqrt{2\pi t}}e^{-\frac{x^2}{2t}} @f]
  *
- * @return exp(-0.5f * pos * pos / t) / (sqrt(2.0f * MAT_PI * t));
+ * @param pos value of variable @f$ x @f$
+ * @param t standard deviation of gaussian kernel
+ *
+ * @return @f$ g(x) @f$
  * */
 float Gauss_Kernel(int pos , float t); //
 
 /*!
  * @brief Gaussian kernel function derivative
  *
- * @param pos
- * @param t
+ * This function implements the derivative of a gaussian kernel defined as @f[ g'(x) = -\frac{x}{t\sqrt{2\pi t}}e^{-\frac{x^2}{2t}} @f]
  *
- * @return (-pos * exp(-0.5f * pos * pos / t) / t) / (sqrt(2.0f * MAT_PI * t));
+ * @param pos value of variable @f$ x @f$
+ * @param t standard deviation of gaussian kernel
+ *
+ * @return @f$ g'(x) @f$
  * */
 float Gauss_Kernel_Derivative(int pos , float t); //
 

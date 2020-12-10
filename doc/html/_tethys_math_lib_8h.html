@@ -290,14 +290,17 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Gaussian kernel function. </p>
+<p>This function implements a gaussian kernel defined as </p><p class="formulaDsp">
+<img class="formulaDsp" alt="\[ g(x) = \frac{1}{\sqrt{2\pi t}}e^{-\frac{x^2}{2t}} \]" src="form_271.png" width="127" height="39"/>
+</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">pos</td><td></td></tr>
-    <tr><td class="paramname">t</td><td></td></tr>
+    <tr><td class="paramname">pos</td><td>value of variable <img class="formulaInl" alt="$ x $" src="form_275.png" width="10" height="8"/> </td></tr>
+    <tr><td class="paramname">t</td><td>standard deviation of gaussian kernel</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>exp(-0.5f * pos * pos / t) / (sqrt(2.0f * MAT_PI * t)); </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><img class="formulaInl" alt="$ g(x) $" src="form_272.png" width="31" height="18"/> </dd></dl>
 
 </div>
 </div>
@@ -328,14 +331,17 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Gaussian kernel function derivative. </p>
+<p>This function implements the derivative of a gaussian kernel defined as </p><p class="formulaDsp">
+<img class="formulaDsp" alt="\[ g'(x) = -\frac{x}{t\sqrt{2\pi t}}e^{-\frac{x^2}{2t}} \]" src="form_273.png" width="150" height="36"/>
+</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">pos</td><td></td></tr>
-    <tr><td class="paramname">t</td><td></td></tr>
+    <tr><td class="paramname">pos</td><td>value of variable <img class="formulaInl" alt="$ x $" src="form_275.png" width="10" height="8"/> </td></tr>
+    <tr><td class="paramname">t</td><td>standard deviation of gaussian kernel</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>(-pos * exp(-0.5f * pos * pos / t) / t) / (sqrt(2.0f * MAT_PI * t)); </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><img class="formulaInl" alt="$ g'(x) $" src="form_274.png" width="34" height="18"/> </dd></dl>
 
 </div>
 </div>

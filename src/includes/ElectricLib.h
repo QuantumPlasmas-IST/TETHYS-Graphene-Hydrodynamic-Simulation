@@ -1,3 +1,8 @@
+/************************************************************************************************\
+* Copyright (c) 2020 Pedro Cosme and João Santos                                                 *
+* Distributed under the MIT License (license terms are at http://opensource.org/licenses/MIT).   *
+\************************************************************************************************/
+
 #ifndef ELECTRICLIB_H
 #define ELECTRICLIB_H
 

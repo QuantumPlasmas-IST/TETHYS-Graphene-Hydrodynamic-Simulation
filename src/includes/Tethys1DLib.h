@@ -1,3 +1,8 @@
+/************************************************************************************************\
+* Copyright (c) 2020 Pedro Cosme and João Santos                                                 *
+* Distributed under the MIT License (license terms are at http://opensource.org/licenses/MIT).   *
+\************************************************************************************************/
+
 #ifndef TETHYS1DLIB_H
 #define TETHYS1DLIB_H
 
