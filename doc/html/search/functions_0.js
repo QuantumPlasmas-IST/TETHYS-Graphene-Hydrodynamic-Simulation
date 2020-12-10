@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['bannerdisplay_83',['BannerDisplay',['../class_tethys_base.html#a1391de0b137aab1f4e57bff8dc0fda95',1,'TethysBase']]]
+  ['average_5ffilter_108',['Average_Filter',['../_tethys_math_lib_8h.html#af54fd7fe8d92040437401923c707113e',1,'TethysMathLib.cpp']]]
 ];

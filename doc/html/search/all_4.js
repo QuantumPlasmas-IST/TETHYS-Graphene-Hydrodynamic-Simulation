@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['fluid1d_17',['Fluid1D',['../class_fluid1_d.html',1,'']]],
-  ['fluid2d_18',['Fluid2D',['../class_fluid2_d.html',1,'']]]
+  ['electroanalysis_20',['ElectroAnalysis',['../class_electro_analysis.html',1,'']]],
+  ['exceptionschecking_21',['ExceptionsChecking',['../class_set_up_parameters.html#a7fd725213bc8dbb7dc7b82b9397bd6cd',1,'SetUpParameters']]]
 ];

@@ -256,3 +256,16 @@
 \_form#255=7x16:$\ddag$
 \_form#256=47x18:$= \varepsilon/d_0$
 \_form#257=192x24:$1.17\times10^6 n_0^{1/4}C_g^{-1/2} ms^{-1}\dagger $
+\_form#258=36x18:$ \nabla^2 v_x $
+\_form#259=36x20:$ \nabla^2 v_y $
+\_form#260=385x34:\[\nabla^2 u = \frac{1}{\Delta x^2} ( -4u_{i,j}+u_{i-1,j}+u_{i+1,j}+u_{i,j-1}+u_{i,j+1} ) \]
+\_form#261=385x34:\[\nabla^2 u \approx \frac{1}{\Delta x^2} ( -4u_{i,j}+u_{i-1,j}+u_{i+1,j}+u_{i,j-1}+u_{i,j+1} ) \]
+\_form#262=49x18:$ f(x) = $
+\_form#263=13x8:$ w $
+\_form#264=8x8:$ a $
+\_form#265=31x18:$ f(x) $
+\_form#266=553x34:\[ f(x) = (1/2 tanh(a((-\frac{x-1}{w} - \lfloor-\frac{x-1}{w})\rfloor - 0.5))/tanh(a/2) + 1/2 +\lfloor-\frac{x-1}{w}\rfloor \]
+\_form#267=423x42:\[ f(x) = \frac{tanh(a((-\frac{x-1}{w} - \lfloor-\frac{x-1}{w})\rfloor - 0.5))}{2tanh(a/2)} + 1/2 +\lfloor-\frac{x-1}{w}\rfloor \]
+\_form#268=426x42:\[ f(x) = \frac{\tanh(a((-\frac{x-1}{w} - \lfloor-\frac{x-1}{w})\rfloor - 1/2))}{2\tanh(a/2)} + 1/2 +\lfloor-\frac{x-1}{w}\rfloor \]
+\_form#269=410x42:\[ f(x) = \frac{\tanh a(-\frac{x-1}{w} - \lfloor-\frac{x-1}{w})\rfloor - 1/2)}{2\tanh(a/2)} + 1/2 +\lfloor-\frac{x-1}{w}\rfloor \]
+\_form#270=410x42:\[ f(x) = \frac{\tanh a(-\frac{x-1}{w} - \lfloor-\frac{x-1}{w})\rfloor - 1/2)}{2\tanh a/2 } + 1/2 +\lfloor-\frac{x-1}{w}\rfloor \]

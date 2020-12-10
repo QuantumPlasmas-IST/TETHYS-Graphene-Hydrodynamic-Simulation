@@ -60,11 +60,7 @@ class SetUpParameters {
 };
 
 
-/*!
- * @brief Base class from which the fluid and graphene fluid classes are derived
- *
- * The setting of the dimensions and creation of the HDF5 file and its attributes are controlled from this class
- * */
+
 class TethysBase {
 	protected:
 		int   Nx ;          // Simulation region (dataset) dimensions
@@ -108,40 +104,40 @@ class TethysBase {
 		DataSpace* DataspaceVelX;   ///< dataspace for EACH Velocity X snapshots
 		DataSpace* DataspaceVelY;   ///< dataspace for EACH Velocity Y snapshots
 
-		void SetTmax(float x);      ///< setter method for the total simulation time cf. GrapheneFluid2D::SetSimulationTime()
-		float GetTmax() const;      ///< getter method for the total simulation time
-		int SizeX() const;          ///< getter method for the number of simulation points along x
-		int SizeY() const;          ///< getter method for the number of simulation points along y
-		int Rank() const;           ///< getter method for the system dimensionality
+		void SetTmax(float x);      ///< sets  the total simulation time cf. GrapheneFluid2D::SetSimulationTime()
+		float GetTmax() const;      ///< @returns   the total simulation time
+		int SizeX() const;          ///< @returns   the number of simulation points along x
+		int SizeY() const;          ///< @returns   the number of simulation points along y
+		int Rank() const;           ///< @returns   the system dimensionality
 
-		void SetVelSnd(float x);    ///< setter method for nominal S value
-		void SetKinVis(float x);    ///< setter method for kinetic shear viscosity
-		void SetColFreq(float x);   ///< setter method for collision frequency
-		void SetVelFer(float x);        ///< setter method for Fermi Velocity
-		void SetCycFreq(float x);        ///< setter method for cyclotron frequency
-		void SetDx(float x);        ///< setter method for spatial step x
-		void SetDy(float x);        ///< setter method for spatial step y
-		void SetDt(float x);        ///< setter method for temporal step
-		void SetLengthX(float x);   ///< setter method for total length along x
-		void SetLengthY(float x);   ///< setter method for total length along y
+		void SetVelSnd(float x);    ///< sets  nominal S value
+		void SetKinVis(float x);    ///< sets  kinetic shear viscosity
+		void SetColFreq(float x);   ///< sets  collision frequency
+		void SetVelFer(float x);        ///< sets  Fermi Velocity
+		void SetCycFreq(float x);        ///< sets  cyclotron frequency
+		void SetDx(float x);        ///< sets  spatial step x
+		void SetDy(float x);        ///< sets  spatial step y
+		void SetDt(float x);        ///< sets  temporal step
+		void SetLengthX(float x);   ///< sets  total length along x
+		void SetLengthY(float x);   ///< sets  total length along y
 
-		float GetVelSnd() const;    ///< getter method for nominal S value
-		float GetKinVis() const;    ///< getter method for kinetic shear viscosity
-		float GetColFreq() const;   ///< getter method for collision frequency
-		float GetVelFer() const;        ///< getter method for Fermi Velocity
-		float GetCycFreq() const;       ///< getter method for cyclotron frequency
-		float GetDx() const;        ///< getter method for spatial discretization x
-		float GetDy() const;        ///< getter method for spatial discretization y
-		float GetDt() const;        ///< getter method for time discretization
-		float GetLengthX() const;   ///< getter method for total length along x
-		float GetLengthY() const;   ///< getter method for total length along y
+		float GetVelSnd() const;    ///< @returns   nominal S value
+		float GetKinVis() const;    ///< @returns   kinetic shear viscosity
+		float GetColFreq() const;   ///< @returns   collision frequency
+		float GetVelFer() const;        ///< @returns   Fermi Velocity
+		float GetCycFreq() const;       ///< @returns   cyclotron frequency
+		float GetDx() const;        ///< @returns   spatial discretization x
+		float GetDy() const;        ///< @returns   spatial discretization y
+		float GetDt() const;        ///< @returns   time discretization
+		float GetLengthX() const;   ///< @returns   total length along x
+		float GetLengthY() const;   ///< @returns   total length along y
 
 		float ImagFreq() const;
 		float PhaseVel() const;
 		float RealFreq() const;
 
 
-		std::string GetInfix() const;   ///< getter method for file name infix
+		std::string GetInfix() const;   ///< @returns   file name infix
 
 
 		void CreateHdf5File();          ///< creates the HDF5 files with the necessary structure

@@ -1,4 +1,6 @@
 var searchData=
 [
-  ['quality_316',['quality',['../namespacehdf5__plotter.html#a8266af29425749ddf1440cde81114917',1,'hdf5_plotter.quality()'],['../namespacehdf5__velocity__stream__plotter.html#a590f7914d96f438e3456eda19e8a9b2c',1,'hdf5_velocity_stream_plotter.quality()'],['../namespacespectrogram.html#a5c4a3a9065520cf600c35b6072cefcdb',1,'spectrogram.quality()'],['../namespacespectrogram__plotter.html#ac2146fa78730b9331077d6feb072f4df',1,'spectrogram_plotter.quality()']]]
+  ['welcomescreen_93',['WelcomeScreen',['../class_tethys_base.html#a09c8bdf1de06b3135a76663a15d9eee2',1,'TethysBase']]],
+  ['writeattributes_94',['WriteAttributes',['../class_tethys_base.html#a3a1067aa322baf4411d9e1594c0d803e',1,'TethysBase']]],
+  ['writefluidfile_95',['WriteFluidFile',['../class_fluid2_d.html#a04d2b0931713bd8a0b50eeefe17d0fb8',1,'Fluid2D']]]
 ];

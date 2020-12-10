@@ -1,11 +1,8 @@
 var searchData=
 [
-  ['dataspaceden_7',['DataspaceDen',['../class_tethys_base.html#a08d5c23c776d74663f18ded55634215e',1,'TethysBase']]],
-  ['dataspacevelsnd_8',['DataspaceVelSnd',['../class_tethys_base.html#a30ac189283e3cd6160fc605103d38b42',1,'TethysBase']]],
-  ['dataspacevelsndmid_9',['DataspaceVelSndMid',['../class_tethys_base.html#a1cade88da54d5a29df989580b2fed63c',1,'TethysBase']]],
-  ['dataspacevelx_10',['DataspaceVelX',['../class_tethys_base.html#a46309648bbfc78d720c9f309d1594e2f',1,'TethysBase']]],
-  ['dataspacevely_11',['DataspaceVelY',['../class_tethys_base.html#a116f52ce2330dbc199b65541f66f3d88',1,'TethysBase']]],
-  ['definegeometry_12',['DefineGeometry',['../class_set_up_parameters.html#a1bc495bfea3804014293a3902442b344',1,'SetUpParameters']]],
-  ['dirichletboundarycondition_13',['DirichletBoundaryCondition',['../class_dirichlet_boundary_condition.html',1,'']]],
-  ['dyakonovshurboundarycondition_14',['DyakonovShurBoundaryCondition',['../class_dyakonov_shur_boundary_condition.html',1,'']]]
+  ['cflcondition_4',['CflCondition',['../class_fluid2_d.html#a0849f9a1c99d20660d7642f607d85006',1,'Fluid2D::CflCondition()'],['../class_graphene_fluid2_d.html#a81666cff0c4aa65cbc7063ea008b439d',1,'GrapheneFluid2D::CflCondition()']]],
+  ['closehdf5file_5',['CloseHdf5File',['../class_tethys_base.html#ac844588f99c93c793473e0ccab63f5c2',1,'TethysBase']]],
+  ['convolve_5fgauss_6',['Convolve_Gauss',['../_tethys_math_lib_8h.html#ae589c510fead11e516dc7277d315e482',1,'TethysMathLib.cpp']]],
+  ['createfluidfile_7',['CreateFluidFile',['../class_fluid2_d.html#a0828f2dfd620326e1dadbd674cbd442d',1,'Fluid2D']]],
+  ['createhdf5file_8',['CreateHdf5File',['../class_tethys_base.html#a5537afa522d57726a4d6835f87662c01',1,'TethysBase']]]
 ];

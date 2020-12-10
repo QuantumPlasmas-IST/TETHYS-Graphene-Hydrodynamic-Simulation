@@ -37,8 +37,10 @@ class Fluid2D : public TethysBase
 		explicit Fluid2D(const SetUpParameters &input_parameters);
 		~Fluid2D();
 		bool Snapshot() const;
+
+
 		void SetSound();     // Applies the anisotropy to the sound velocity array
-		virtual void SetSimulationTime();   // Finds and set the appropriate simulation time that is 1) Longer than the saturation time 2) Contains enough oscillation periods in the saturated region
+		virtual void SetSimulationTime();   ///< Finds and set the appropriate simulation time
 		void InitialCondRand();             ///< Initial condition, zero velocity and constant density with 0.5% white noise
 		void InitialCondTest();             // Initial condition for testing and debugging
 		/*!
@@ -48,16 +50,36 @@ class Fluid2D : public TethysBase
 		 * This in general will suffice for the tests and runs performed solely with the Fluid2D class.
 		 */
 		virtual void CflCondition();
+
+		/*!
+		 * @brief Richtmyer method to solve the hyperbolic fluid equations
+		 *
+		 * Central algorithm for solving the 2D hyperbolic conservation law equations @cite LeVeque1992.
+		 * The behaviour of this solver is controlled by the definitions of the appropriate flux and source functions, cf. the @ref twodrich "descriptive page"
+		 *
+		 *
+		 *
+		 * @see DensityFluxX
+		 * @see DensityFluxY
+		 * @see MassFluxXFluxX
+		 * @see MassFluxXFluxY
+		 * @see MassFluxYFluxX
+		 * @see MassFluxYFluxY
+		 * @see DensitySource
+		 * @see MassFluxXSource
+		 * @see MassFluxYSource
+		 *
+		 */
 		void Richtmyer();                   // Central Algorithm for solving the hyperbolic conservation law
-		virtual float DensityFluxX(__attribute__((unused)) float n, float flx_x, __attribute__((unused)) float flx_y, __attribute__((unused)) float mass, __attribute__((unused)) float s); // density equation (continuity equation) conserved flux X component
-		virtual float DensityFluxY(__attribute__((unused)) float n, __attribute__((unused)) float flx_x, float flx_y, __attribute__((unused)) float mass, __attribute__((unused)) float s); // density equation (continuity equation) conserved flux Y component
-		virtual float DensitySource(__attribute__((unused)) float n,__attribute__((unused)) float flx_x,__attribute__((unused)) float flx_y,__attribute__((unused)) float mass,__attribute__((unused)) float s);
-		virtual float MassFluxXFluxX(float n, float flx_x, float flx_y,__attribute__((unused)) float mass, float s); // velocity X component equation (momentum equation) conserved flux X component
-		virtual float MassFluxXFluxY(float n, float flx_x, float flx_y,__attribute__((unused)) float mass, float s); // velocity X component equation (momentum equation) conserved flux Y component
-		virtual float MassFluxXSource(__attribute__((unused))float n, float flx_x,__attribute__((unused)) float flx_y,__attribute__((unused)) float mass,__attribute__((unused)) float s);
-		virtual float MassFluxYFluxX(float n, float flx_x, float flx_y,__attribute__((unused)) float mass, float s); // velocity Y component equation (momentum equation) conserved flux X component
-		virtual float MassFluxYFluxY(float n, float flx_x, float flx_y,__attribute__((unused)) float mass, float s); // velocity Y component equation (momentum equation) conserved flux Y component
-		virtual float MassFluxYSource(__attribute__((unused))float n, float flx_x,__attribute__((unused)) float flx_y,__attribute__((unused)) float mass,__attribute__((unused)) float s);
+		virtual float DensityFluxX(__attribute__((unused)) float n, float flx_x, __attribute__((unused)) float flx_y, __attribute__((unused)) float mass, __attribute__((unused)) float s); ///< density equation (continuity equation) conserved flux X component
+		virtual float DensityFluxY(__attribute__((unused)) float n, __attribute__((unused)) float flx_x, float flx_y, __attribute__((unused)) float mass, __attribute__((unused)) float s); ///< density equation (continuity equation) conserved flux Y component
+		virtual float DensitySource(__attribute__((unused)) float n,__attribute__((unused)) float flx_x,__attribute__((unused)) float flx_y,__attribute__((unused)) float mass,__attribute__((unused)) float s); ///< density equation (continuity equation) source term
+		virtual float MassFluxXFluxX(float n, float flx_x, float flx_y,__attribute__((unused)) float mass, float s); ///< velocity X component equation (momentum equation) conserved flux X component
+		virtual float MassFluxXFluxY(float n, float flx_x, float flx_y,__attribute__((unused)) float mass, float s); ///< velocity X component equation (momentum equation) conserved flux Y component
+		virtual float MassFluxXSource(__attribute__((unused))float n, float flx_x,__attribute__((unused)) float flx_y,__attribute__((unused)) float mass,__attribute__((unused)) float s); ///< velocity X component equation (momentum equation) source term
+		virtual float MassFluxYFluxX(float n, float flx_x, float flx_y,__attribute__((unused)) float mass, float s); ///< velocity Y component equation (momentum equation) conserved flux X component
+		virtual float MassFluxYFluxY(float n, float flx_x, float flx_y,__attribute__((unused)) float mass, float s); ///< velocity Y component equation (momentum equation) conserved flux Y component
+		virtual float MassFluxYSource(__attribute__((unused))float n, float flx_x,__attribute__((unused)) float flx_y,__attribute__((unused)) float mass,__attribute__((unused)) float s); ///< velocity y component equation (momentum equation) source term
 
 		/*!
 		* @brief Converts the mass density flux to velocity on the entire simulation grid.
@@ -94,33 +116,49 @@ class Fluid2D : public TethysBase
 		 *
 		 * */
 		void SaveSnapShot();
-		void ReadSnapShot(const H5std_string &snap_name);
-		void SaveSound();
-		int GetSnapshotStep() const;
-		int GetSnapshotFreq() const;
 
 		/*!
-		 * @brief Calculates the velocity Laplacian for the FTCS method
+		 * @brief Imports snapshot to a Fluid2D class
 		 *
+		 * @param snap_name Name of the snapshot to import
+		 * */
+		void ReadSnapShot(const H5std_string &snap_name);
+
+		/*!
+		 * @brief Saves the grid of the spatial distribution of the parameter S at the output HDF5 file
 		 *
 		 * */
+		void SaveSound();
+		int GetSnapshotStep() const; ///< Returns the number of the present snapshot @return snapshot_step order number of the snapshot
+		int GetSnapshotFreq() const; ///< Returns the number of snapshots per period to record  @return snapshot_per_period number of the snapshots per period
+
+		/*!
+		 * @brief Calculates the velocity Laplacians for the FTCS method
+		 *
+		 * Them method computes both laplacians @f$ \nabla^2 v_x @f$ and @f$ \nabla^2 v_y @f$ using a five points second order stencil
+		 * @f[\nabla^2 u \approx \frac{1}{\Delta x^2} ( -4u_{i,j}+u_{i-1,j}+u_{i+1,j}+u_{i,j-1}+u_{i,j+1} )  @f]
+		 * @see ParabolicOperatorFtcs
+ 		 * */
 		void VelocityLaplacianFtcs();
 		/*!
-		* @brief Calculates the velocity Laplacian for the Weighted (1,9) method
+		* @brief Calculates the velocity Laplacians for the Weighted (1,9) method
 		*
+		* The method computes both laplacians @f$ \nabla^2 v_x @f$ and @f$ \nabla^2 v_y @f$ using a nine points fourth order stencil. More details can be found, instance in:
+		* <a href="https://digital.library.adelaide.edu.au/dspace/bitstream/2440/18689/2/02whole.pdf">this work</a>
 		*
+		* @see ParabolicOperatorWeightedExplicit19()
 		* */
 		void VelocityLaplacianWeighted19();
 		/*!
 		* @brief Forward Time Centered Space method for the viscous terms
 		*
-		*
+		* @see VelocityLaplacianFtcs()
 		* */
 		void ParabolicOperatorFtcs();       // Forward Time Centered Space method for the viscous terms
 		/*!
-		* @brief // Forward Time Weighted (1,9) space method
+		* @brief Forward Time Weighted (1,9) space method
 		*
-		*
+		* @see VelocityLaplacianWeighted19()
 		* */
 		void ParabolicOperatorWeightedExplicit19(); // Forward Time Centered Space method for the viscous terms
 };

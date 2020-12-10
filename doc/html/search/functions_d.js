@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['welcomescreen_128',['WelcomeScreen',['../class_tethys_base.html#a09c8bdf1de06b3135a76663a15d9eee2',1,'TethysBase']]],
-  ['writeattributes_129',['WriteAttributes',['../class_tethys_base.html#a3a1067aa322baf4411d9e1594c0d803e',1,'TethysBase']]],
-  ['writefluidfile_130',['WriteFluidFile',['../class_fluid2_d.html#a04d2b0931713bd8a0b50eeefe17d0fb8',1,'Fluid2D']]]
+  ['velocitylaplacianftcs_173',['VelocityLaplacianFtcs',['../class_fluid2_d.html#ac9b73b2951b4f9fe2b89abf668a7ecef',1,'Fluid2D']]],
+  ['velocitylaplacianweighted19_174',['VelocityLaplacianWeighted19',['../class_fluid2_d.html#a71844bf07d7eb5066a11544ea22b1bd8',1,'Fluid2D']]],
+  ['velocitytocurrent_175',['VelocityToCurrent',['../class_fluid2_d.html#ab9b2e2f426a97c587bb80332f4138e44',1,'Fluid2D']]]
 ];
