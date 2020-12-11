@@ -10,6 +10,7 @@
 
 ## Documentation
 
+
 The full documentation can be looked up [here](./doc/html/index.html)
 
 <!--- ## Richtmyer method implementation --->
