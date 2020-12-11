@@ -29,7 +29,7 @@ USING_HDF5_CMake.txt
 cmake-build-debug/
 venv/
 #Doxygen output
-./doc/html/
+#./doc/html/
 
 ###########################################
 # Github Template for C/C++
