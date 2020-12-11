@@ -1,4 +1,4 @@
-#include "TethysMathLib.h"
+#include "includes/TethysMathLib.h"
 
 using namespace std;
 
@@ -8,15 +8,16 @@ float Sound_Velocity_Anisotropy(float x, float s) {
 float Sound_Velocity_Anisotropy(float x, float y, float s) {
 	float s_mod;
 	//float slope=0.05;
-	//s_mod = s * (1.0f - slope * x);
-	//s_mod = s + 0.2f*pow(2.0f + cos(25.0f*x/MAT_PI),2.0f)/8.0f;
-
-	//s_mod=s+0.1f*abs(sin(3.0f*MAT_PI*x)*sin(3.0f*MAT_PI*y));
-	s_mod=s;//+1.0f*abs(sin(3.0f*MAT_PI*x));
+	//s_mod = s * (1.0f - Slope * x);
+	s_mod=s;
+	//s_mod = s * (0.025f*(tanh(-30.0f*(x - .5f))) + .975f);
+	//s_mod = (Stair_Case_Function(x,0.5f,20.0f)*0.5f - 2.0f) + 20.0f;
+	//s_mod = s*( 1.0f + Slope*( (Stair_Case_Function(x,1.0f,20.0f)-1.0f))  );
 	return s_mod;
 }
 
-
+// ( ( (StairCase[x, 1/n, 20] - n)/n)*Slope + 1)*60
+//s*( 1.0f + Slope*( (Stair_Case_Function(x,1/n,20)-n)/n)  )
 
 float Integral_1_D(int n, float ds, const float * f){
 	float itg=0.0;
@@ -106,4 +107,8 @@ void Convolve_Gauss(unsigned int type, unsigned int m, float t, const float * in
 			}
 		}
 	}
+}
+
+float Stair_Case_Function(float x, float step_width, float smoothness) {
+	return (0.5f*tanh(smoothness*((-(x - 1.0f)/step_width - floor(-(x - 1.0f)/step_width)) - 0.5f))/tanh(0.5f*smoothness) + 0.5f +floor(-(x - 1.0f)/step_width));
 }

@@ -1,5 +1,5 @@
-#include "Tethys2DLib.h"
-#include "ElectricLib.h"
+#include "includes/Tethys2DLib.h"
+#include "includes/ElectricLib.h"
 
 
 
@@ -20,7 +20,7 @@ int main(int argc, char **argv){
 	GrapheneFluid2D graph(parameters);
 	ElectroAnalysis elec;
 
-	elec.BannerDisplay(graph);
+	ElectroAnalysis::BannerDisplay(graph);
 
 	graph.OpenHdf5File(input_file_name);
 	for(hsize_t i=0; i < graph.GrpDen->getNumObjs(); i++){

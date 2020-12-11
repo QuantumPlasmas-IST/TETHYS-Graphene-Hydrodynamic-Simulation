@@ -1,4 +1,4 @@
-#include "ElectricLib.h"
+#include "includes/ElectricLib.h"
 
 #ifndef MAT_PI
 #    define MAT_PI 3.14159265358979323846
@@ -28,24 +28,27 @@ void ElectroAnalysis::CreateElectroFile(const string &infix_string){
 }
 
 void ElectroAnalysis::WriteElectroFile(float t,const GrapheneFluid1D& graphene){//TODO por em conformidade com o 2d talvez
-	float q_net = this->NetCharge(graphene);
-	float i_avg = this->AverageCurrent(graphene);
-	float p_ohm = this->OhmPower(graphene);
-	float dipole_var=this->ElectricDipoleVariation(graphene);
-	float dipole=this->ElectricDipole(graphene);
+	float q_net = ElectroAnalysis::NetCharge(graphene);
+	float i_avg = ElectroAnalysis::AverageCurrent(graphene);
+	float p_ohm = ElectroAnalysis::OhmPower(graphene);
+	float dipole_var=ElectroAnalysis::ElectricDipoleVariation(graphene);
+	float dipole=ElectroAnalysis::ElectricDipole(graphene);
 	data_electro << t << "\t" << q_net << "\t" << i_avg << "\t" << q_net * q_net * 0.5 << "\t" << p_ohm << "\t" << dipole << "\t" << dipole_var << "\n";
 }
 
+// TODO rever as definicoes dos integrais principalmente nos valores medios a ver se nao falta multiplicar nennum pelo aspect ratio6015
+
 void ElectroAnalysis::ComputeElectroBase(float t, const GrapheneFluid2D& graphene){
 	TmpArr.push_back(t);
-	NetQ.push_back(this->NetCharge(graphene));
-	DipX.push_back(this->ElectricDipoleX(graphene));
-	DipY.push_back(this->ElectricDipoleY(graphene));
-	CurD.push_back(this->DrainCurrent(graphene));
-	CurS.push_back(this->SourceCurrent(graphene));
-	AvgCurDS.push_back(this->AverageDirectCurrent(graphene));
-	AvgCurHall.push_back(this->AverageHallCurrent(graphene));
-	PowOhm.push_back(this->OhmPower(graphene));
+	NetQ.push_back(ElectroAnalysis::NetCharge(graphene));
+	DipX.push_back(ElectroAnalysis::ElectricDipoleX(graphene));
+	DipY.push_back(ElectroAnalysis::ElectricDipoleY(graphene));
+	CurD.push_back(ElectroAnalysis::DrainCurrent(graphene));
+	CurS.push_back(ElectroAnalysis::SourceCurrent(graphene));
+	AvgCurDS.push_back(ElectroAnalysis::AverageDirectCurrent(graphene));
+	VoltDS.push_back(ElectroAnalysis::DrainToSourceVoltage(graphene));
+	AvgCurHall.push_back(ElectroAnalysis::AverageHallCurrent(graphene));
+	PowOhm.push_back(ElectroAnalysis::OhmPower(graphene));
 }
 
 
@@ -82,6 +85,7 @@ void ElectroAnalysis::WriteElectroFile() {
 			             << NetQ[i] << "\t"
 			             << AvgCurDS[i] << "\t"
 			             << AvgCurHall[i] << "\t"
+			             << VoltDS[i] << "\t"
 			             << CurD[i] << "\t"
 			             << CurS[i] << "\t"
 			             << PowOhm[i] << "\t"
@@ -134,7 +138,7 @@ float ElectroAnalysis::ElectricDipole(const GrapheneFluid1D& graphene){
 }
 
 float ElectroAnalysis::OhmPower(const GrapheneFluid1D& graphene){
-	float itg=0.0;
+	float itg=0.0; //TODO corrigir esta matematica +e a dividir por raiz de n e nao por n
 	for(int j=1;j<graphene.SizeX()/2;j++){
 		itg += graphene.CurCor[2 * j - 2] * graphene.VelCor[2 * j - 2] + 4 * graphene.CurCor[2 * j - 1] * graphene.VelCor[2 * j - 1] + graphene.CurCor[2 * j] * graphene.VelCor[2 * j];
 	}
@@ -143,15 +147,16 @@ float ElectroAnalysis::OhmPower(const GrapheneFluid1D& graphene){
 }
 
 float ElectroAnalysis::OhmPower(const GrapheneFluid2D& graphene){
-	int size = graphene.SizeX()*graphene.SizeX();
+	int size = graphene.SizeX()*graphene.SizeY();
 	float square_current_density[size];
 	for(int c=0;c<size;c++){
 		float jx,jy;
 		jx=graphene.CurX[c];
 		jy=graphene.CurY[c];
-		square_current_density[c] = jx*jx+jy*jy;
+		square_current_density[c] = (jx*jx+jy*jy)/sqrt(graphene.Den[c]);
 	}
 	return Integral_2_D(graphene.SizeX(), graphene.SizeY(), graphene.GetDx(), graphene.GetDy(), square_current_density);
+
 }
 
 float ElectroAnalysis::ElectricDipoleX(const GrapheneFluid2D &graphene) {
@@ -192,7 +197,7 @@ void ElectroAnalysis::CloseElectroFile() {
 }
 
 float ElectroAnalysis::DrainToSourceVoltage(const GrapheneFluid2D& graphene) {
-	return 0;
+	return Integral_2_D(graphene.SizeX(), graphene.SizeY(), graphene.GetDx(), graphene.GetDy(), graphene.VelX );
 }
 
 float ElectroAnalysis::SourceCurrent(const GrapheneFluid2D& graphene) {
@@ -218,7 +223,7 @@ float ElectroAnalysis::DrainCurrent(const GrapheneFluid2D& graphene) {
 }
 
 void ElectroAnalysis::BannerDisplay(const GrapheneFluid2D &graphene) {
-	graphene.BannerDisplay();
+	GrapheneFluid2D::BannerDisplay();
 	cout<<"┌─────────────────────────────────────────────────────────────────────────┐\n";
 	cout<<"│                \033[3mComputation of the Electronic Quantities\033[0m                 │\n";
 	cout<<"└─────────────────────────────────────────────────────────────────────────┘\n";

@@ -1,4 +1,4 @@
-#include "TethysLib.h"
+#include "includes/TethysLib.h"
 
 
 using namespace H5;
@@ -11,7 +11,7 @@ using namespace std;
 /*....................................................................*/
 /*........ General Functions .........................................*/
 /*....................................................................*/
-void TethysBase::BannerDisplay() const {
+void TethysBase::BannerDisplay() {
 cout<<"\n" ;
 	cout<<"╔═════════════════════════════════════════════════════════════════════════╗\n";
 	cout<<"║\033[2m  ▆▆▆▆▆▆▆▆▆▆▆ ▆▆▆▆▆▆▆▆▆▆  ▆▆▆▆▆▆▆▆▆▆▆ ▆▆▆▆▆ ▆▆▆▆▆ ▆▆▆▖   ▗▆▆▆ ▗▆▆▆▆▆▆▆▖  \033[0m║\n";
@@ -36,12 +36,19 @@ void TethysBase::WelcomeScreen() const {
 	if (kin_vis != 0.0) {
 		if (2.0f * kin_vis * dt > 0.95 * dx * dx * dy * dy / (dx * dx + dy * dy)) {
 			cout << "Reynolds n. \t\033[1mRe\t" << 1.0 / kin_vis
-			     << "\033[0m \033[1;5;7;31m WARNING ftcs scheme may not converge.  \033[0m" << endl;
+			     << "\033[0m \033[1;5;7;31m WARNING high viscosity regime \316\224t was adjusted.  \033[0m" << endl;
 		} else {
 			cout << "Reynolds n. \t\033[1mRe\t" << 1.0 / kin_vis << "\033[0m\n";
 		}
 	}
-	cout << "Collision rate \t\033[1m\316\275\t" << col_freq << " v\342\202\200/L\033[0m\n";
+	if (col_freq != 0.0) {
+		if (col_freq >= 0.75){
+			cout << "Collision rate \t\033[1m\316\275\t" << col_freq << " v\342\202\200/L\033[0m";
+			cout << "\033[1;5;7;31m WARNING Dyakonov-Shur plasmons expected to decay.  \033[0m" << endl;
+		}else {
+			cout << "Collision rate \t\033[1m\316\275\t" << col_freq << " v\342\202\200/L\033[0m\n";
+		}
+	}
 	cout << "Cyclotron frequency \t\033[1m\317\211c\t" << cyc_freq << " v\342\202\200/L\n\033[0m\n";
 	cout << "Theoretical frequency \033[1m\317\211=\317\211'+i\317\211''\033[0m\n";
 	cout << "\033[1m\317\211'\t" << this->RealFreq() << " v\342\202\200/L\t2\317\200/\317\211'\t" << 2.0 * MAT_PI /
@@ -173,18 +180,18 @@ void TethysBase::WriteAttributes(){
 
 
 TethysBase::~TethysBase(){
-	if(HDF5fileOpen) {
+	if(Hdf5FileOpen) {
 		this->CloseHdf5File();
 		delete GrpDat;
 		delete GrpDen;
 		delete GrpVelX;
 		delete DataspaceDen;
 		delete DataspaceVelX;
-		delete DataspaceVelSndMid;
 		delete DataspaceVelSnd;
 		if (RANK == 2) {
 			delete GrpVelY;
 			delete DataspaceVelY;
+			delete DataspaceVelSndMid;
 		}
 		delete Hdf5File;
 	}
@@ -196,7 +203,7 @@ TethysBase::~TethysBase(){
 
 
 
-bool TethysBase::HDF5fileOpen=false;
+bool TethysBase::Hdf5FileOpen=false;
 int TethysBase::TimeStepCounter=0;
 float TethysBase::TimeStamp=0.0f;
 
@@ -244,7 +251,7 @@ TethysBase::TethysBase(int size_nx, int size_ny, int dimension){
 
 void TethysBase::CreateHdf5File(){
 	std::string hdf5name;
-	TethysBase::HDF5fileOpen=true;
+	TethysBase::Hdf5FileOpen=true;
 	if(RANK==1){
 		hdf5name = "hdf5_1D_" + this->GetInfix() + ".h5" ;
 	}
@@ -263,7 +270,7 @@ void TethysBase::CreateHdf5File(){
 
 
 void TethysBase::OpenHdf5File(const std::string& hdf5name){
-	TethysBase::HDF5fileOpen=true;
+	TethysBase::Hdf5FileOpen=true;
 	Hdf5File = new H5File(hdf5name, H5F_ACC_RDONLY );
 	GrpDat = new Group(Hdf5File->openGroup("/Data" ));
 	GrpDen = new Group(Hdf5File->openGroup("/Data/Density" ));
@@ -353,8 +360,8 @@ SetUpParameters::SetUpParameters(float sound, float fermi, float coll, float vis
 
 
 SetUpParameters::SetUpParameters(int argc, char ** argv) {
-	SizeX=201;
-	SizeY=201;
+	SizeX=101;
+	SizeY=101;
 	if(argc==7||argc==8){
 		try {
 			SoundVelocity = strtof(argv[1], nullptr);
@@ -461,25 +468,30 @@ void SetUpParameters::ParametersFromHdf5File(const std::string& hdf5name){
 	attr_col.close();
 	grp_dat->close();
 	hdf5_file->close();
+	this->DefineGeometry();
 }
 
 void SetUpParameters::DefineGeometry() {
 	if(AspectRatio>1.0f){
 		Length=1.0f*AspectRatio;
 		Width=1.0f;
-		SizeY=201;
+		//SizeY=201;
+		SizeY=151;
 		SizeX= static_cast<int>( static_cast<float>(SizeY-1)*AspectRatio)+1;
 	}
 	if(AspectRatio==1.0f){
 		Length=1.0f;
 		Width=1.0f;
-		SizeX=201;
-		SizeY=201;
+		//SizeX=201;
+		//SizeY=201;
+		SizeX=151;
+		SizeY=151;
 	}
 	if(AspectRatio<1.0f){
 		Length=1.0f;
 		Width=1.0f/AspectRatio;
-		SizeX=201;
+		//SizeX=201;
+		SizeX=151;
 		SizeY= static_cast<int>( static_cast<float>(SizeX - 1) / AspectRatio) + 1;
 	}
 }
