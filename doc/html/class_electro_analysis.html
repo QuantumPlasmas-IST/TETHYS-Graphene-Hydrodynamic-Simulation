@@ -236,11 +236,11 @@ static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 </div><div class="memdoc">
 
 <p>2D Integrator for the average drain-to-source current </p>
-<p>the average drain-to-source current \( I_{DS}=\frac{1}{L}\int_0^L I(x)\,dx \) with \( I(x) = \int_0^W ej_x \,dy \). Thus</p>
+<p>The average drain-to-source current \( I_{DS}=\frac{1}{L}\int_0^L I(x)\,dx \) with \( I(x) = \int_0^W ej_x \,dy \). Thus</p>
 <p class="formulaDsp">
-\[ I_{DS}= en_0L \int_0^{w}\int_0 j_x^*\,dx^*dy^* \]
+\[ I_{DS}= en_0v_0L \int_0^{w}\int_0 j_x^*\,dx^*dy^* \]
 </p>
-<p>This method computes the integral \( \int_0^{w}\int_0^1 j_x \,dxdy \) </p>
+<p> and the current prefactor is given by \( en_0v_0L\) This method computes the integral \( \int_0^{w}\int_0^1 j_x \,dxdy \) </p>
 
 </div>
 </div>
@@ -269,6 +269,10 @@ static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 </div><div class="memdoc">
 
 <p>Integrator for the average Hall current. </p>
+<p>The average Hall current is given by </p><p class="formulaDsp">
+\[ I_{Hall}= en_0v_0L \frac{L}{W}\int_0^{w}\int_0 j_y^*\,dx^*dy^* \]
+</p>
+<p> and the current prefactor is given by \( en_0v_0L\)</p>
 <p>This method computes the integral \( \int_0^{w}\int_0^1 j_y \,dxdy \) </p>
 
 </div>
