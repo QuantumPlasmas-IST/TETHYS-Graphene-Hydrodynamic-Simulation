@@ -138,7 +138,7 @@ float ElectroAnalysis::ElectricDipole(const GrapheneFluid1D& graphene){
 }
 
 float ElectroAnalysis::OhmPower(const GrapheneFluid1D& graphene){
-	float itg=0.0;
+	float itg=0.0; //TODO corrigir esta matematica +e a dividir por raiz de n e nao por n
 	for(int j=1;j<graphene.SizeX()/2;j++){
 		itg += graphene.CurCor[2 * j - 2] * graphene.VelCor[2 * j - 2] + 4 * graphene.CurCor[2 * j - 1] * graphene.VelCor[2 * j - 1] + graphene.CurCor[2 * j] * graphene.VelCor[2 * j];
 	}
@@ -153,7 +153,7 @@ float ElectroAnalysis::OhmPower(const GrapheneFluid2D& graphene){
 		float jx,jy;
 		jx=graphene.CurX[c];
 		jy=graphene.CurY[c];
-		square_current_density[c] = jx*jx+jy*jy;
+		square_current_density[c] = (jx*jx+jy*jy)/sqrt(graphene.Den[c]);
 	}
 	return Integral_2_D(graphene.SizeX(), graphene.SizeY(), graphene.GetDx(), graphene.GetDy(), square_current_density);
 

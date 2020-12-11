@@ -236,6 +236,10 @@ static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 </div><div class="memdoc">
 
 <p>2D Integrator for the average drain-to-source current </p>
+<p>the average drain-to-source current \( I_{DS}=\frac{1}{L}\int_0^L I(x)\,dx \) with \( I(x) = \int_0^W ej_x \,dy \). Thus</p>
+<p class="formulaDsp">
+\[ I_{DS}= en_0L \int_0^{w}\int_0 j_x^*\,dx^*dy^* \]
+</p>
 <p>This method computes the integral \( \int_0^{w}\int_0^1 j_x \,dxdy \) </p>
 
 </div>
@@ -698,7 +702,7 @@ static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <p class="formulaDsp">
 \[ P_\Omega = \int_0^W\int_0^L \frac{j_x^2+j_y^2}{\sigma}\,dxdy = \frac{e^2v_0^2n_0^2L^2}{\sigma_0} \int_0^w\int_0^1 \frac{{j_x^*}^2+{j_y^*}^2}{\sqrt{n^*}}\,dx^*dy^* \]
 </p>
-<p>This method computes the integral \( \int_0^{w}\int_0^1 j^2/sqrt{n} \,dxdy \) </p>
+<p>This method computes the integral \( \int_0^{w}\int_0^1 |j|^2/\sqrt{n} \,dxdy \) </p>
 
 </div>
 </div>

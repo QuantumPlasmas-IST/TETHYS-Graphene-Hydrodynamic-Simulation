@@ -76,7 +76,7 @@ public:
 	 *
 	 * @f[ P_\Omega = \int_0^W\int_0^L \frac{j_x^2+j_y^2}{\sigma}\,dxdy = \frac{e^2v_0^2n_0^2L^2}{\sigma_0} \int_0^w\int_0^1 \frac{{j_x^*}^2+{j_y^*}^2}{\sqrt{n^*}}\,dx^*dy^*  @f]
 	 *
-	 * This method computes the integral @f$ \int_0^{w}\int_0^1 j^2/sqrt{n} \,dxdy @f$
+	 * This method computes the integral @f$ \int_0^{w}\int_0^1 |j|^2/\sqrt{n} \,dxdy @f$
 	 * */
 	static float OhmPower(const GrapheneFluid2D& graphene);
 
@@ -90,6 +90,10 @@ public:
 	/*!
 	 * @brief Integrator for the average Hall current
 	 *
+	 * The average Hall current is given by
+     * @f[ I_{Hall}= en_0v_0L \frac{L}{W}\int_0^{w}\int_0 j_y^*\,dx^*dy^* @f]
+	 * and the current prefactor is given by @f$ en_0v_0L@f$
+	 *
 	 * This method computes the integral @f$ \int_0^{w}\int_0^1 j_y \,dxdy @f$
 	 * */
 	static float AverageHallCurrent(const GrapheneFluid2D& graphene);
@@ -97,6 +101,10 @@ public:
 	/*!
 	* @brief 2D Integrator for the average drain-to-source current
 	*
+	* The average  drain-to-source current @f$ I_{DS}=\frac{1}{L}\int_0^L I(x)\,dx @f$ with  @f$ I(x) = \int_0^W ej_x \,dy   @f$. Thus
+	 *
+	 * @f[ I_{DS}= en_0v_0L \int_0^{w}\int_0 j_x^*\,dx^*dy^* @f]
+	* and the current prefactor is given by @f$ en_0v_0L@f$
 	* This method computes the integral @f$ \int_0^{w}\int_0^1 j_x \,dxdy @f$
 	* */
 	static float AverageDirectCurrent(const GrapheneFluid2D& graphene);
