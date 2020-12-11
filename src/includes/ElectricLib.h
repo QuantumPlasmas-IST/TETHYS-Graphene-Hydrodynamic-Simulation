@@ -49,6 +49,7 @@ public:
 	/*!
 	 * @brief 1D Integrator for the total electric charge.
 	 *
+	 *
 	 * Computes the integral @f$ \int_0^1 n \,dx @f$
 	 * */
 	static float NetCharge(const GrapheneFluid1D& graphene);
@@ -56,100 +57,110 @@ public:
 	/*!
 	 * @brief 2D Integrator for the total electric charge.
 	 *
-	 * Computes the integral @f$ \int_0^{W/L}\int_0^1 n \,dxdy @f$
+	 * The total charge is given by
+	 * @f[ Q = e\int_0^W\int_0^L n\,dxdy = en_0L^2 \int_0^w\int_0^1 n^*\,dx^*dy^* @f] thus the charge prefactor is @f$ Q_0=en_0L^2 @f$. This method Computes the integral @f$ \int_0^{w}\int_0^1 n \,dxdy @f$
 	 * */
 	static float NetCharge(const GrapheneFluid2D& graphene);
 
 	/*!
 	 * @brief 1D Integrator for the dissipated Ohm power.
 	 *
-	 * Computes the integral @f$ \int_0^1 jv \,dx @f$
+	 * This method computes the integral @f$ \int_0^1 jv \,dx @f$
 	 * */
 	static float OhmPower(const GrapheneFluid1D& graphene);
 
 	/*!
 	 * @brief 2D Integrator for the dissipated Ohm power.
 	 *
-	 * Computes the integral @f$ \int_0^{W/L}\int_0^1 j^2 \,dxdy @f$
+	 * The dissipated Ohm power can be estimated with @f$ P_\Omega = J\cdot E @f$  nothing that @f$ J = \sigma E @f$  and @f$ \sigma=ne^2\tau/m^\star \doteq \sigma_0\sqrt{n^*}  @f$. Therefore,
+	 *
+	 * @f[ P_\Omega = \int_0^W\int_0^L \frac{j_x^2+j_y^2}{\sigma}\,dxdy = \frac{e^2v_0^2n_0^2L^2}{\sigma_0} \int_0^w\int_0^1 \frac{{j_x^*}^2+{j_y^*}^2}{\sqrt{n^*}}\,dx^*dy^*  @f]
+	 *
+	 * This method computes the integral @f$ \int_0^{w}\int_0^1 j^2/sqrt{n} \,dxdy @f$
 	 * */
 	static float OhmPower(const GrapheneFluid2D& graphene);
 
+	/*!
+	* @brief 1D Integrator for the average drain-to-source current
+	*
+	* This method computes the integral @f$ \int_0^1 j \,dx @f$
+	* */
 	static float AverageCurrent(const GrapheneFluid1D& graphene);
 
 	/*!
 	 * @brief Integrator for the average Hall current
 	 *
-	 * Computes the integral @f$ \int_0^{W/L}\int_0^1 j_y \,dxdy @f$
+	 * This method computes the integral @f$ \int_0^{w}\int_0^1 j_y \,dxdy @f$
 	 * */
 	static float AverageHallCurrent(const GrapheneFluid2D& graphene);
 
 	/*!
-	* @brief Integrator for the average drain-to-source current
+	* @brief 2D Integrator for the average drain-to-source current
 	*
-	* Computes the integral @f$ \int_0^{W/L}\int_0^1 j_x \,dxdy @f$
+	* This method computes the integral @f$ \int_0^{w}\int_0^1 j_x \,dxdy @f$
 	* */
 	static float AverageDirectCurrent(const GrapheneFluid2D& graphene);
 
 	/*!
 	* @brief Integrator for the local drain current
 	*
-	* Computes the integral @f$ \int_0^{W/L} j_x(L,y) \,dy @f$
+	* This method computes the integral @f$ \int_0^{w} j_x(1,y) \,dy @f$
 	* */
 	static float DrainCurrent(const GrapheneFluid2D& graphene);
 
 	/*!
 	* @brief Integrator for the local source current
 	*
-	* Computes the integral @f$ \int_0^{W/L} j_x(0,y) \,dy @f$
+	* This method computes the integral @f$ \int_0^{w} j_x(0,y) \,dy @f$
 	* */
 	static float SourceCurrent(const GrapheneFluid2D& graphene);
 
 	/*!
 	* @brief Integrator for the drain-to-source voltage
 	*
-	* Computes the integral @f$ \int_0^{W/L}\int_0^1 v_x(L,y) \,dxdy @f$
+	* This method computes the integral @f$ \int_0^{w}\int_0^1 v_x(1,y) \,dxdy @f$
 	* */
 	static float DrainToSourceVoltage(const GrapheneFluid2D& graphene);
 
 	/*!
 	* @brief 1D Integrator for the electric dipole moment
 	*
-	* Computes the integral @f$ \int_0^1 (x-1/2)n \,dx @f$
+	* This method computes the integral @f$ \int_0^1 (x-1/2)n \,dx @f$
 	* */
 	static float ElectricDipole(const GrapheneFluid1D& graphene);
 
 	/*!
 	* @brief 2D Integrator for the electric dipole moment x component
 	*
-	* Computes the integral @f$ \int_0^{W/L}\int_0^1 (x-1/2)n \,dxdy @f$
+	* This method computes the integral @f$ \int_0^{W/L}\int_0^1 (x-1/2)n \,dxdy @f$
 	* */
 	static float ElectricDipoleX(const GrapheneFluid2D& graphene);
 
 	/*!
 	* @brief  2D Integrator for the electric dipole moment y component
 	*
-	* Computes the integral @f$ \int_0^{W/L}\int_0^1 (y-W/2L)n \,dxdy @f$
+	* This method computes the integral @f$ \int_0^{w}\int_0^1 (y-w/2)n \,dxdy @f$
 	* */
 	static float ElectricDipoleY(const GrapheneFluid2D& graphene);
 
 	/*!
 	* @brief 1D Integrator for the electric dipole moment derivative
 	*
-	* Computes the integral @f$ \int_0^1 j \,dx @f$
+	* This method computes the integral @f$ \int_0^1 j \,dx @f$
 	* */
 	static float ElectricDipoleVariation(const GrapheneFluid1D& graphene);
 
 	/*!
 	* @brief 2D Integrator for the electric dipole moment derivative x component
 	*
-	* Computes the integral @f$ \int_0^{W/L}\int_0^1 j_x \,dxdy @f$
+	* This method computes the integral @f$ \int_0^{w}\int_0^1 j_x \,dxdy @f$
 	* */
 	static float ElectricDipoleVariationX(const GrapheneFluid2D& graphene);
 
 	/*!
 	* @brief 2D Integrator for the electric dipole moment derivative y component
 	*
-	* Computes the integral @f$ \int_0^{W/L}\int_0^1 j_y \,dxdy @f$
+	* This method computes the integral @f$ \int_0^{w}\int_0^1 j_y \,dxdy @f$
 	* */
 	static float ElectricDipoleVariationY(const GrapheneFluid2D& graphene);
 

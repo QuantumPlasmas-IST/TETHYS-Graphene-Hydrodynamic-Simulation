@@ -1,5 +1,6 @@
 var class_electro_analysis =
 [
+    [ "AverageCurrent", "class_electro_analysis.html#aaeca07a8afc1e0a48e0e50b9d8cff871", null ],
     [ "AverageDirectCurrent", "class_electro_analysis.html#ab05a06d907ab9f67636f0b99c50b9c99", null ],
     [ "AverageHallCurrent", "class_electro_analysis.html#a86ecd3eaead603a33defb594daaab2d6", null ],
     [ "BannerDisplay", "class_electro_analysis.html#a470cf84761b03341ddfd1ce15677af81", null ],

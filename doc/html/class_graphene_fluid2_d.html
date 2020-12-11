@@ -107,6 +107,11 @@ $(document).ready(function(){initNavTree('class_graphene_fluid2_d.html',''); ini
 <div class="title">GrapheneFluid2D Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p>Graphene electronic fluid class in two dimensions.  
+ <a href="class_graphene_fluid2_d.html#details">More...</a></p>
+
+<p><code>#include &lt;<a class="el" href="_tethys2_d_lib_8h_source.html">Tethys2DLib.h</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for GrapheneFluid2D:</div>
 <div class="dyncontent">
@@ -114,7 +119,7 @@ Inheritance diagram for GrapheneFluid2D:</div>
   <img src="class_graphene_fluid2_d.png" usemap="#GrapheneFluid2D_map" alt=""/>
   <map id="GrapheneFluid2D_map" name="GrapheneFluid2D_map">
 <area href="class_fluid2_d.html" title="Generalistic fluid class in two dimensions, mainly for testing purposes." alt="Fluid2D" shape="rect" coords="0,56,112,80"/>
-<area href="class_tethys_base.html" alt="TethysBase" shape="rect" coords="0,0,112,24"/>
+<area href="class_tethys_base.html" title="Base class for the fluid classes." alt="TethysBase" shape="rect" coords="0,0,112,24"/>
   </map>
 </div></div>
 <table class="memberdecls">
@@ -129,6 +134,42 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a371ecffc6d45083177869ae423175d61"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_graphene_fluid2_d.html#a371ecffc6d45083177869ae423175d61">MassFluxToVelocity</a> () override</td></tr>
 <tr class="memdesc:a371ecffc6d45083177869ae423175d61"><td class="mdescLeft">&#160;</td><td class="mdescRight">Converts the mass density flux to velocity on the entire simulation grid.  <a href="class_graphene_fluid2_d.html#a371ecffc6d45083177869ae423175d61">More...</a><br /></td></tr>
 <tr class="separator:a371ecffc6d45083177869ae423175d61"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a66b0f551a1154fbfc7fc07e5c0472222"><td class="memItemLeft" align="right" valign="top"><a id="a66b0f551a1154fbfc7fc07e5c0472222"></a>
+float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_graphene_fluid2_d.html#a66b0f551a1154fbfc7fc07e5c0472222">DensityFluxX</a> (float n, float flx_x, float flx_y, float mass, float s) override</td></tr>
+<tr class="memdesc:a66b0f551a1154fbfc7fc07e5c0472222"><td class="mdescLeft">&#160;</td><td class="mdescRight">density equation (continuity equation) conserved flux X component <br /></td></tr>
+<tr class="separator:a66b0f551a1154fbfc7fc07e5c0472222"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a63b9c58fbd6271ce2f90fa97cdf47e17"><td class="memItemLeft" align="right" valign="top"><a id="a63b9c58fbd6271ce2f90fa97cdf47e17"></a>
+float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_graphene_fluid2_d.html#a63b9c58fbd6271ce2f90fa97cdf47e17">DensityFluxY</a> (float n, float flx_x, float flx_y, float mass, float s) override</td></tr>
+<tr class="memdesc:a63b9c58fbd6271ce2f90fa97cdf47e17"><td class="mdescLeft">&#160;</td><td class="mdescRight">density equation (continuity equation) conserved flux Y component <br /></td></tr>
+<tr class="separator:a63b9c58fbd6271ce2f90fa97cdf47e17"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abc8542c820066a75cf5f761566ae2d68"><td class="memItemLeft" align="right" valign="top"><a id="abc8542c820066a75cf5f761566ae2d68"></a>
+float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_graphene_fluid2_d.html#abc8542c820066a75cf5f761566ae2d68">DensitySource</a> (float n, float flx_x, float flx_y, float mass, float s) override</td></tr>
+<tr class="memdesc:abc8542c820066a75cf5f761566ae2d68"><td class="mdescLeft">&#160;</td><td class="mdescRight">density equation (continuity equation) source term <br /></td></tr>
+<tr class="separator:abc8542c820066a75cf5f761566ae2d68"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a938936414146cefc2b229504c4630784"><td class="memItemLeft" align="right" valign="top"><a id="a938936414146cefc2b229504c4630784"></a>
+float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_graphene_fluid2_d.html#a938936414146cefc2b229504c4630784">MassFluxXFluxX</a> (float n, float flx_x, float flx_y, float mass, float s) override</td></tr>
+<tr class="memdesc:a938936414146cefc2b229504c4630784"><td class="mdescLeft">&#160;</td><td class="mdescRight">velocity X component equation (momentum equation) conserved flux X component <br /></td></tr>
+<tr class="separator:a938936414146cefc2b229504c4630784"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a268d76bde77722ee8f465adc9ed03677"><td class="memItemLeft" align="right" valign="top"><a id="a268d76bde77722ee8f465adc9ed03677"></a>
+float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_graphene_fluid2_d.html#a268d76bde77722ee8f465adc9ed03677">MassFluxXFluxY</a> (float n, float flx_x, float flx_y, float mass, float s) override</td></tr>
+<tr class="memdesc:a268d76bde77722ee8f465adc9ed03677"><td class="mdescLeft">&#160;</td><td class="mdescRight">velocity X component equation (momentum equation) conserved flux Y component <br /></td></tr>
+<tr class="separator:a268d76bde77722ee8f465adc9ed03677"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5cf068c3c9dc668aef49c37250a31997"><td class="memItemLeft" align="right" valign="top"><a id="a5cf068c3c9dc668aef49c37250a31997"></a>
+float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_graphene_fluid2_d.html#a5cf068c3c9dc668aef49c37250a31997">MassFluxXSource</a> (float n, float flx_x, float flx_y, float mass, float s) override</td></tr>
+<tr class="memdesc:a5cf068c3c9dc668aef49c37250a31997"><td class="mdescLeft">&#160;</td><td class="mdescRight">velocity X component equation (momentum equation) source term <br /></td></tr>
+<tr class="separator:a5cf068c3c9dc668aef49c37250a31997"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7235636cc369c12bfb648bee0f15006e"><td class="memItemLeft" align="right" valign="top"><a id="a7235636cc369c12bfb648bee0f15006e"></a>
+float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_graphene_fluid2_d.html#a7235636cc369c12bfb648bee0f15006e">MassFluxYFluxX</a> (float n, float flx_x, float flx_y, float mass, float s) override</td></tr>
+<tr class="memdesc:a7235636cc369c12bfb648bee0f15006e"><td class="mdescLeft">&#160;</td><td class="mdescRight">velocity Y component equation (momentum equation) conserved flux X component <br /></td></tr>
+<tr class="separator:a7235636cc369c12bfb648bee0f15006e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abaacb9adcce22b8077f4b6c18a1d0ae8"><td class="memItemLeft" align="right" valign="top"><a id="abaacb9adcce22b8077f4b6c18a1d0ae8"></a>
+float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_graphene_fluid2_d.html#abaacb9adcce22b8077f4b6c18a1d0ae8">MassFluxYFluxY</a> (float n, float flx_x, float flx_y, float mass, float s) override</td></tr>
+<tr class="memdesc:abaacb9adcce22b8077f4b6c18a1d0ae8"><td class="mdescLeft">&#160;</td><td class="mdescRight">velocity Y component equation (momentum equation) conserved flux Y component <br /></td></tr>
+<tr class="separator:abaacb9adcce22b8077f4b6c18a1d0ae8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a52706753acd81d56b01f217bdf19786f"><td class="memItemLeft" align="right" valign="top"><a id="a52706753acd81d56b01f217bdf19786f"></a>
+float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_graphene_fluid2_d.html#a52706753acd81d56b01f217bdf19786f">MassFluxYSource</a> (float n, float flx_x, float flx_y, float mass, float s) override</td></tr>
+<tr class="memdesc:a52706753acd81d56b01f217bdf19786f"><td class="mdescLeft">&#160;</td><td class="mdescRight">velocity y component equation (momentum equation) source term <br /></td></tr>
+<tr class="separator:a52706753acd81d56b01f217bdf19786f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_class_fluid2_d"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_class_fluid2_d')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="class_fluid2_d.html">Fluid2D</a></td></tr>
 <tr class="memitem:a8f0a90a0bba83b2ca5e246944bd92a87 inherit pub_methods_class_fluid2_d"><td class="memItemLeft" align="right" valign="top"><a id="a8f0a90a0bba83b2ca5e246944bd92a87"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_fluid2_d.html#a8f0a90a0bba83b2ca5e246944bd92a87">InitialCondRand</a> ()</td></tr>
@@ -358,7 +399,10 @@ DataSpace *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <tr class="memdesc:a116f52ce2330dbc199b65541f66f3d88 inherit pub_attribs_class_tethys_base"><td class="mdescLeft">&#160;</td><td class="mdescRight">dataspace for EACH Velocity Y snapshots <br /></td></tr>
 <tr class="separator:a116f52ce2330dbc199b65541f66f3d88 inherit pub_attribs_class_tethys_base"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Member Function Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Graphene electronic fluid class in two dimensions. </p>
+<p>The <a class="el" href="class_graphene_fluid2_d.html" title="Graphene electronic fluid class in two dimensions.">GrapheneFluid2D</a> class describes a fluid governed by the usual continuity and Cauchy momemtum equations, where the mass of the fluid element is <em>not</em> constant. It overrides class <a class="el" href="class_fluid2_d.html" title="Generalistic fluid class in two dimensions, mainly for testing purposes.">Fluid2D</a> necessary methods in order to describe the semi-classical electronic fluid. </p>
+</div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="a81666cff0c4aa65cbc7063ea008b439d"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a81666cff0c4aa65cbc7063ea008b439d">&#9670;&nbsp;</a></span>CflCondition()</h2>
 

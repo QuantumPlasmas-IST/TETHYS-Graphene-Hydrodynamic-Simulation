@@ -13,7 +13,12 @@ using namespace H5;
 using namespace std;
 
 
-
+/*!
+ * @brief Generalistic fluid class in one dimension, mainly for testing purposes.
+ *
+ * The Fluid1D class describes a regular newtonian compressible fluid governed by the usual continuity and Cauchy momemtum equations, where the mass of the fluid element is constant.
+ * It is maintained mainly for testing, the GrapheneFluid1D class is derived from it and overrides the necessary methods in order to describe the semi-classical electronic fluid.
+ * */
 class Fluid1D : public TethysBase{
 	protected:
 		float * vel_snd_arr;        // array for saving the (potentially varying) S(x) function
@@ -24,7 +29,7 @@ class Fluid1D : public TethysBase{
 		int snapshot_per_period = 10;
 		int snapshot_step = 1;
 
-public :
+	public :
 		float * Den ;       // number density
 		float * Vel ;       // fluid velocity
 		float * GradVel;    // fluid velocity gradient
@@ -52,6 +57,13 @@ public :
 		int GetSnapshotStep() const;
 		int GetSnapshotFreq() const;
 };
+
+/*!
+ * @brief Graphene electronic fluid class in one dimension.
+ *
+ * The GrapheneFluid1D class describes a  fluid governed by the usual continuity and Cauchy momemtum equations, where the mass of the fluid element is *not* constant.
+ * It overrides class Fluid1D necessary methods in order to describe the semi-classical electronic fluid.
+ * */
 class GrapheneFluid1D : public Fluid1D{
 	public :
 		explicit GrapheneFluid1D(SetUpParameters &input_parameters);

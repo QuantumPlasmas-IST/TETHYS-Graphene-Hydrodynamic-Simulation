@@ -76,6 +76,10 @@ class Fluid2D : public TethysBase
 		 *
 		 */
 		void Richtmyer();                   // Central Algorithm for solving the hyperbolic conservation law
+
+
+
+
 		virtual float DensityFluxX(__attribute__((unused)) float n, float flx_x, __attribute__((unused)) float flx_y, __attribute__((unused)) float mass, __attribute__((unused)) float s); ///< density equation (continuity equation) conserved flux X component
 		virtual float DensityFluxY(__attribute__((unused)) float n, __attribute__((unused)) float flx_x, float flx_y, __attribute__((unused)) float mass, __attribute__((unused)) float s); ///< density equation (continuity equation) conserved flux Y component
 		virtual float DensitySource(__attribute__((unused)) float n,__attribute__((unused)) float flx_x,__attribute__((unused)) float flx_y,__attribute__((unused)) float mass,__attribute__((unused)) float s); ///< density equation (continuity equation) source term
@@ -101,6 +105,8 @@ class Fluid2D : public TethysBase
 		@f[ \vec{j} = \vec{v}n @f]
 		* */
 		void VelocityToCurrent(); // Converts the mass flux density p=mnv to velocity
+
+
 		void CreateFluidFile();     ///< creates and opens the simplified .dat file output
 
 		/*!
@@ -168,6 +174,13 @@ class Fluid2D : public TethysBase
 		void ParabolicOperatorWeightedExplicit19(); // Forward Time Centered Space method for the viscous terms
 };
 
+
+/*!
+ * @brief Graphene electronic fluid class in two dimensions.
+ *
+ * The GrapheneFluid2D class describes a  fluid governed by the usual continuity and Cauchy momemtum equations, where the mass of the fluid element is *not* constant.
+ * It overrides class Fluid2D necessary methods in order to describe the semi-classical electronic fluid.
+ * */
 class GrapheneFluid2D : public Fluid2D{
 	public :
 		explicit GrapheneFluid2D(SetUpParameters &input_parameters);
@@ -202,15 +215,17 @@ class GrapheneFluid2D : public Fluid2D{
 		 * */
 		void MassFluxToVelocity() override; // Converts the mass density flux back to velocity, in graphene  v = p n^{-3/2}
 		/*Override fluxes and sources to specifics of graphene physics*/
-		float DensityFluxX(float n, float flx_x, float flx_y,float mass, float s) override;
-		float DensityFluxY(float n, float flx_x, float flx_y,float mass, float s) override;
-		float DensitySource(float n, float flx_x, float flx_y, float mass, float s)override;
-		float MassFluxXFluxX(float n, float flx_x, float flx_y,float mass, float s) override;
-		float MassFluxXFluxY(float n, float flx_x, float flx_y,float mass, float s) override;
-		float MassFluxXSource(float n, float flx_x, float flx_y, float mass, float s)override;
-		float MassFluxYFluxX(float n, float flx_x, float flx_y,float mass, float s) override;
-		float MassFluxYFluxY(float n, float flx_x, float flx_y,float mass, float s) override;
-		float MassFluxYSource(float n, float flx_x, float flx_y, float mass, float s)override;
+
+
+		float DensityFluxX(float n, float flx_x, float flx_y,float mass, float s) override;    ///< density equation (continuity equation) conserved flux X component
+		float DensityFluxY(float n, float flx_x, float flx_y,float mass, float s) override;    ///< density equation (continuity equation) conserved flux Y component
+		float DensitySource(float n, float flx_x, float flx_y, float mass, float s)override;   ///< density equation (continuity equation) source term
+		float MassFluxXFluxX(float n, float flx_x, float flx_y,float mass, float s) override;  ///< velocity X component equation (momentum equation) conserved flux X component
+		float MassFluxXFluxY(float n, float flx_x, float flx_y,float mass, float s) override;  ///< velocity X component equation (momentum equation) conserved flux Y component
+		float MassFluxXSource(float n, float flx_x, float flx_y, float mass, float s)override; ///< velocity X component equation (momentum equation) source term
+		float MassFluxYFluxX(float n, float flx_x, float flx_y,float mass, float s) override;  ///< velocity Y component equation (momentum equation) conserved flux X component
+		float MassFluxYFluxY(float n, float flx_x, float flx_y,float mass, float s) override;  ///< velocity Y component equation (momentum equation) conserved flux Y component
+		float MassFluxYSource(float n, float flx_x, float flx_y, float mass, float s)override; ///< velocity y component equation (momentum equation) source term
 
 		void MagneticSourceSemiAnalytic(); // Semi analytic method for the magnetic interaction
 		//void MagneticSourceFtcs();  // Forward Time Centered Space method for the magnetic interaction

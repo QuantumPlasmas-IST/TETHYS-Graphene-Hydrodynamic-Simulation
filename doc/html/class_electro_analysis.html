@@ -137,11 +137,14 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a6e0c8fd4d7dc776860bf5c8669552b2e"><td class="memItemLeft" align="right" valign="top">static float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_electro_analysis.html#a6e0c8fd4d7dc776860bf5c8669552b2e">OhmPower</a> (const <a class="el" href="class_graphene_fluid2_d.html">GrapheneFluid2D</a> &amp;graphene)</td></tr>
 <tr class="memdesc:a6e0c8fd4d7dc776860bf5c8669552b2e"><td class="mdescLeft">&#160;</td><td class="mdescRight">2D Integrator for the dissipated Ohm power.  <a href="class_electro_analysis.html#a6e0c8fd4d7dc776860bf5c8669552b2e">More...</a><br /></td></tr>
 <tr class="separator:a6e0c8fd4d7dc776860bf5c8669552b2e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaeca07a8afc1e0a48e0e50b9d8cff871"><td class="memItemLeft" align="right" valign="top">static float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_electro_analysis.html#aaeca07a8afc1e0a48e0e50b9d8cff871">AverageCurrent</a> (const <a class="el" href="class_graphene_fluid1_d.html">GrapheneFluid1D</a> &amp;graphene)</td></tr>
+<tr class="memdesc:aaeca07a8afc1e0a48e0e50b9d8cff871"><td class="mdescLeft">&#160;</td><td class="mdescRight">1D Integrator for the average drain-to-source current  <a href="class_electro_analysis.html#aaeca07a8afc1e0a48e0e50b9d8cff871">More...</a><br /></td></tr>
+<tr class="separator:aaeca07a8afc1e0a48e0e50b9d8cff871"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a86ecd3eaead603a33defb594daaab2d6"><td class="memItemLeft" align="right" valign="top">static float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_electro_analysis.html#a86ecd3eaead603a33defb594daaab2d6">AverageHallCurrent</a> (const <a class="el" href="class_graphene_fluid2_d.html">GrapheneFluid2D</a> &amp;graphene)</td></tr>
 <tr class="memdesc:a86ecd3eaead603a33defb594daaab2d6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Integrator for the average Hall current.  <a href="class_electro_analysis.html#a86ecd3eaead603a33defb594daaab2d6">More...</a><br /></td></tr>
 <tr class="separator:a86ecd3eaead603a33defb594daaab2d6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab05a06d907ab9f67636f0b99c50b9c99"><td class="memItemLeft" align="right" valign="top">static float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_electro_analysis.html#ab05a06d907ab9f67636f0b99c50b9c99">AverageDirectCurrent</a> (const <a class="el" href="class_graphene_fluid2_d.html">GrapheneFluid2D</a> &amp;graphene)</td></tr>
-<tr class="memdesc:ab05a06d907ab9f67636f0b99c50b9c99"><td class="mdescLeft">&#160;</td><td class="mdescRight">Integrator for the average drain-to-source current.  <a href="class_electro_analysis.html#ab05a06d907ab9f67636f0b99c50b9c99">More...</a><br /></td></tr>
+<tr class="memdesc:ab05a06d907ab9f67636f0b99c50b9c99"><td class="mdescLeft">&#160;</td><td class="mdescRight">2D Integrator for the average drain-to-source current  <a href="class_electro_analysis.html#ab05a06d907ab9f67636f0b99c50b9c99">More...</a><br /></td></tr>
 <tr class="separator:ab05a06d907ab9f67636f0b99c50b9c99"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad875636bfff27ca37ec981adef1956c7"><td class="memItemLeft" align="right" valign="top">static float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_electro_analysis.html#ad875636bfff27ca37ec981adef1956c7">DrainCurrent</a> (const <a class="el" href="class_graphene_fluid2_d.html">GrapheneFluid2D</a> &amp;graphene)</td></tr>
 <tr class="memdesc:ad875636bfff27ca37ec981adef1956c7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Integrator for the local drain current.  <a href="class_electro_analysis.html#ad875636bfff27ca37ec981adef1956c7">More...</a><br /></td></tr>
@@ -177,8 +180,37 @@ static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Class to obtain the macroscopic electrical quantities. </p>
-<p>The main simulation computes the time evolution of the mean field quantities of number density and velocity. From these the appropriate macroscopic quantities need to be derived in order to benchmark the numerical results with literature or experiments. This class provides the methods to compute such quantities from the data stored on the <a class="el" href="class_graphene_fluid1_d.html">GrapheneFluid1D</a> or <a class="el" href="class_graphene_fluid2_d.html">GrapheneFluid2D</a> classes. </p>
+<p>The main simulation computes the time evolution of the mean field quantities of number density and velocity. From these the appropriate macroscopic quantities need to be derived in order to benchmark the numerical results with literature or experiments. This class provides the methods to compute such quantities from the data stored on the <a class="el" href="class_graphene_fluid1_d.html" title="Graphene electronic fluid class in one dimension.">GrapheneFluid1D</a> or <a class="el" href="class_graphene_fluid2_d.html" title="Graphene electronic fluid class in two dimensions.">GrapheneFluid2D</a> classes. </p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
+<a id="aaeca07a8afc1e0a48e0e50b9d8cff871"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aaeca07a8afc1e0a48e0e50b9d8cff871">&#9670;&nbsp;</a></span>AverageCurrent()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">float ElectroAnalysis::AverageCurrent </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="class_graphene_fluid1_d.html">GrapheneFluid1D</a> &amp;&#160;</td>
+          <td class="paramname"><em>graphene</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>1D Integrator for the average drain-to-source current </p>
+<p>This method computes the integral \( \int_0^1 j \,dx \) </p>
+
+</div>
+</div>
 <a id="ab05a06d907ab9f67636f0b99c50b9c99"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ab05a06d907ab9f67636f0b99c50b9c99">&#9670;&nbsp;</a></span>AverageDirectCurrent()</h2>
 
@@ -203,8 +235,8 @@ static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 </table>
 </div><div class="memdoc">
 
-<p>Integrator for the average drain-to-source current. </p>
-<p>Computes the integral \( \int_0^{W/L}\int_0^1 j_x \,dxdy \) </p>
+<p>2D Integrator for the average drain-to-source current </p>
+<p>This method computes the integral \( \int_0^{w}\int_0^1 j_x \,dxdy \) </p>
 
 </div>
 </div>
@@ -233,7 +265,7 @@ static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 </div><div class="memdoc">
 
 <p>Integrator for the average Hall current. </p>
-<p>Computes the integral \( \int_0^{W/L}\int_0^1 j_y \,dxdy \) </p>
+<p>This method computes the integral \( \int_0^{w}\int_0^1 j_y \,dxdy \) </p>
 
 </div>
 </div>
@@ -277,7 +309,7 @@ static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">t</td><td>time of the snapshot </td></tr>
-    <tr><td class="paramname">graphene</td><td><a class="el" href="class_graphene_fluid2_d.html">GrapheneFluid2D</a> instance from where the quantities are computed </td></tr>
+    <tr><td class="paramname">graphene</td><td><a class="el" href="class_graphene_fluid2_d.html" title="Graphene electronic fluid class in two dimensions.">GrapheneFluid2D</a> instance from where the quantities are computed </td></tr>
   </table>
   </dd>
 </dl>
@@ -308,7 +340,7 @@ static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">t</td><td>time of the snapshot </td></tr>
-    <tr><td class="paramname">graphene</td><td><a class="el" href="class_graphene_fluid2_d.html">GrapheneFluid2D</a> instance from where the quantities are computed </td></tr>
+    <tr><td class="paramname">graphene</td><td><a class="el" href="class_graphene_fluid2_d.html" title="Graphene electronic fluid class in two dimensions.">GrapheneFluid2D</a> instance from where the quantities are computed </td></tr>
   </table>
   </dd>
 </dl>
@@ -340,7 +372,7 @@ static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 </div><div class="memdoc">
 
 <p>Integrator for the local drain current. </p>
-<p>Computes the integral \( \int_0^{W/L} j_x(L,y) \,dy \) </p>
+<p>This method computes the integral \( \int_0^{w} j_x(1,y) \,dy \) </p>
 
 </div>
 </div>
@@ -369,7 +401,7 @@ static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 </div><div class="memdoc">
 
 <p>Integrator for the drain-to-source voltage. </p>
-<p>Computes the integral \( \int_0^{W/L}\int_0^1 v_x(L,y) \,dxdy \) </p>
+<p>This method computes the integral \( \int_0^{w}\int_0^1 v_x(1,y) \,dxdy \) </p>
 
 </div>
 </div>
@@ -398,7 +430,7 @@ static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 </div><div class="memdoc">
 
 <p>1D Integrator for the electric dipole moment </p>
-<p>Computes the integral \( \int_0^1 (x-1/2)n \,dx \) </p>
+<p>This method computes the integral \( \int_0^1 (x-1/2)n \,dx \) </p>
 
 </div>
 </div>
@@ -427,7 +459,7 @@ static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 </div><div class="memdoc">
 
 <p>1D Integrator for the electric dipole moment derivative </p>
-<p>Computes the integral \( \int_0^1 j \,dx \) </p>
+<p>This method computes the integral \( \int_0^1 j \,dx \) </p>
 
 </div>
 </div>
@@ -456,7 +488,7 @@ static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 </div><div class="memdoc">
 
 <p>2D Integrator for the electric dipole moment derivative x component </p>
-<p>Computes the integral \( \int_0^{W/L}\int_0^1 j_x \,dxdy \) </p>
+<p>This method computes the integral \( \int_0^{w}\int_0^1 j_x \,dxdy \) </p>
 
 </div>
 </div>
@@ -485,7 +517,7 @@ static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 </div><div class="memdoc">
 
 <p>2D Integrator for the electric dipole moment derivative y component </p>
-<p>Computes the integral \( \int_0^{W/L}\int_0^1 j_y \,dxdy \) </p>
+<p>This method computes the integral \( \int_0^{w}\int_0^1 j_y \,dxdy \) </p>
 
 </div>
 </div>
@@ -514,7 +546,7 @@ static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 </div><div class="memdoc">
 
 <p>2D Integrator for the electric dipole moment x component </p>
-<p>Computes the integral \( \int_0^{W/L}\int_0^1 (x-1/2)n \,dxdy \) </p>
+<p>This method computes the integral \( \int_0^{W/L}\int_0^1 (x-1/2)n \,dxdy \) </p>
 
 </div>
 </div>
@@ -543,7 +575,7 @@ static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 </div><div class="memdoc">
 
 <p>2D Integrator for the electric dipole moment y component </p>
-<p>Computes the integral \( \int_0^{W/L}\int_0^1 (y-W/2L)n \,dxdy \) </p>
+<p>This method computes the integral \( \int_0^{w}\int_0^1 (y-w/2)n \,dxdy \) </p>
 
 </div>
 </div>
@@ -601,7 +633,10 @@ static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 </div><div class="memdoc">
 
 <p>2D Integrator for the total electric charge. </p>
-<p>Computes the integral \( \int_0^{W/L}\int_0^1 n \,dxdy \) </p>
+<p>The total charge is given by </p><p class="formulaDsp">
+\[ Q = e\int_0^W\int_0^L n\,dxdy = en_0L^2 \int_0^w\int_0^1 n^*\,dx^*dy^* \]
+</p>
+<p> thus the charge prefactor is \( Q_0=en_0L^2 \). This method Computes the integral \( \int_0^{w}\int_0^1 n \,dxdy \) </p>
 
 </div>
 </div>
@@ -630,7 +665,7 @@ static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 </div><div class="memdoc">
 
 <p>1D Integrator for the dissipated Ohm power. </p>
-<p>Computes the integral \( \int_0^1 jv \,dx \) </p>
+<p>This method computes the integral \( \int_0^1 jv \,dx \) </p>
 
 </div>
 </div>
@@ -659,7 +694,11 @@ static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 </div><div class="memdoc">
 
 <p>2D Integrator for the dissipated Ohm power. </p>
-<p>Computes the integral \( \int_0^{W/L}\int_0^1 j^2 \,dxdy \) </p>
+<p>The dissipated Ohm power can be estimated with \( P_\Omega = J\cdot E \) nothing that \( J = \sigma E \) and \( \sigma=ne^2\tau/m^\star \doteq \sigma_0\sqrt{n^*} \). Therefore,</p>
+<p class="formulaDsp">
+\[ P_\Omega = \int_0^W\int_0^L \frac{j_x^2+j_y^2}{\sigma}\,dxdy = \frac{e^2v_0^2n_0^2L^2}{\sigma_0} \int_0^w\int_0^1 \frac{{j_x^*}^2+{j_y^*}^2}{\sqrt{n^*}}\,dx^*dy^* \]
+</p>
+<p>This method computes the integral \( \int_0^{w}\int_0^1 j^2/sqrt{n} \,dxdy \) </p>
 
 </div>
 </div>
@@ -688,7 +727,7 @@ static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 </div><div class="memdoc">
 
 <p>Integrator for the local source current. </p>
-<p>Computes the integral \( \int_0^{W/L} j_x(0,y) \,dy \) </p>
+<p>This method computes the integral \( \int_0^{w} j_x(0,y) \,dy \) </p>
 
 </div>
 </div>
