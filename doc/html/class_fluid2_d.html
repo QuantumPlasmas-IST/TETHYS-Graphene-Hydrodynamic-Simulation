@@ -21,6 +21,13 @@
   $(document).ready(function() { init_search(); });
 /* @license-end */
 </script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    extensions: ["tex2jax.js"],
+    jax: ["input/TeX","output/HTML-CSS"],
+});
+</script>
+<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -127,7 +134,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="memdesc:a8f0a90a0bba83b2ca5e246944bd92a87"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initial condition, zero velocity and constant density with 0.5% white noise. <br /></td></tr>
 <tr class="separator:a8f0a90a0bba83b2ca5e246944bd92a87"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0849f9a1c99d20660d7642f607d85006"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_fluid2_d.html#a0849f9a1c99d20660d7642f607d85006">CflCondition</a> ()</td></tr>
-<tr class="memdesc:a0849f9a1c99d20660d7642f607d85006"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculates <img class="formulaInl" alt="$\Delta x$" src="form_0.png" width="18" height="10"/> and imposes Courant–Friedrichs–Lewy condition to <img class="formulaInl" alt="$\Delta t$" src="form_1.png" width="15" height="10"/>.  <a href="class_fluid2_d.html#a0849f9a1c99d20660d7642f607d85006">More...</a><br /></td></tr>
+<tr class="memdesc:a0849f9a1c99d20660d7642f607d85006"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculates \(\Delta x\) and imposes Courant–Friedrichs–Lewy condition to \(\Delta t\).  <a href="class_fluid2_d.html#a0849f9a1c99d20660d7642f607d85006">More...</a><br /></td></tr>
 <tr class="separator:a0849f9a1c99d20660d7642f607d85006"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa7ae65f347f5dd2f37c8f08d05dd4981"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_fluid2_d.html#aa7ae65f347f5dd2f37c8f08d05dd4981">Richtmyer</a> ()</td></tr>
 <tr class="memdesc:aa7ae65f347f5dd2f37c8f08d05dd4981"><td class="mdescLeft">&#160;</td><td class="mdescRight">Richtmyer method to solve the hyperbolic fluid equations.  <a href="class_fluid2_d.html#aa7ae65f347f5dd2f37c8f08d05dd4981">More...</a><br /></td></tr>
@@ -383,8 +390,8 @@ DataSpace *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 </table>
 </div><div class="memdoc">
 
-<p>Calculates <img class="formulaInl" alt="$\Delta x$" src="form_0.png" width="18" height="10"/> and imposes Courant–Friedrichs–Lewy condition to <img class="formulaInl" alt="$\Delta t$" src="form_1.png" width="15" height="10"/>. </p>
-<p>The method retrieves the spatial discretization <img class="formulaInl" alt="$\Delta x = L / N_x $" src="form_2.png" width="64" height="14"/> and then sets the time sted as <img class="formulaInl" alt="$\Delta t = \Delta x /10 $" src="form_3.png" width="68" height="14"/>. This in general will suffice for the tests and runs performed solely with the <a class="el" href="class_fluid2_d.html" title="Generalistic fluid class in two dimensions, mainly for testing purposes.">Fluid2D</a> class. </p>
+<p>Calculates \(\Delta x\) and imposes Courant–Friedrichs–Lewy condition to \(\Delta t\). </p>
+<p>The method retrieves the spatial discretization \(\Delta x = L / N_x \) and then sets the time sted as \(\Delta t = \Delta x /10 \). This in general will suffice for the tests and runs performed solely with the <a class="el" href="class_fluid2_d.html" title="Generalistic fluid class in two dimensions, mainly for testing purposes.">Fluid2D</a> class. </p>
 
 <p>Reimplemented in <a class="el" href="class_graphene_fluid2_d.html#a81666cff0c4aa65cbc7063ea008b439d">GrapheneFluid2D</a>.</p>
 
@@ -455,7 +462,7 @@ DataSpace *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 
 <p>Converts the mass density flux to velocity on the entire simulation grid. </p>
 <p>Since the mass of the fluid element is constant one needs only to perform the transformation </p><p class="formulaDsp">
-<img class="formulaDsp" alt="\[ \vec{v} = \frac{\vec{p}}{n} \]" src="form_17.png" width="34" height="28"/>
+\[ \vec{v} = \frac{\vec{p}}{n} \]
 </p>
  
 <p>Reimplemented in <a class="el" href="class_graphene_fluid2_d.html#a371ecffc6d45083177869ae423175d61">GrapheneFluid2D</a>.</p>
@@ -581,8 +588,8 @@ DataSpace *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 </div><div class="memdoc">
 
 <p>Calculates the velocity Laplacians for the FTCS method. </p>
-<p>Them method computes both laplacians <img class="formulaInl" alt="$ \nabla^2 v_x $" src="form_258.png" width="36" height="18"/> and <img class="formulaInl" alt="$ \nabla^2 v_y $" src="form_259.png" width="36" height="20"/> using a five points second order stencil </p><p class="formulaDsp">
-<img class="formulaDsp" alt="\[\nabla^2 u \approx \frac{1}{\Delta x^2} ( -4u_{i,j}+u_{i-1,j}+u_{i+1,j}+u_{i,j-1}+u_{i,j+1} ) \]" src="form_261.png" width="385" height="34"/>
+<p>Them method computes both laplacians \( \nabla^2 v_x \) and \( \nabla^2 v_y \) using a five points second order stencil </p><p class="formulaDsp">
+\[\nabla^2 u \approx \frac{1}{\Delta x^2} ( -4u_{i,j}+u_{i-1,j}+u_{i+1,j}+u_{i,j-1}+u_{i,j+1} ) \]
 </p>
  <dl class="section see"><dt>See also</dt><dd><a class="el" href="class_fluid2_d.html#a94334df8f6dfdccfbe5a7882c9a7cdf8" title="Forward Time Centered Space method for the viscous terms.">ParabolicOperatorFtcs</a> </dd></dl>
 
@@ -604,7 +611,7 @@ DataSpace *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 </div><div class="memdoc">
 
 <p>Calculates the velocity Laplacians for the Weighted (1,9) method. </p>
-<p>The method computes both laplacians <img class="formulaInl" alt="$ \nabla^2 v_x $" src="form_258.png" width="36" height="18"/> and <img class="formulaInl" alt="$ \nabla^2 v_y $" src="form_259.png" width="36" height="20"/> using a nine points fourth order stencil. More details can be found, instance in: <a href="https://digital.library.adelaide.edu.au/dspace/bitstream/2440/18689/2/02whole.pdf">this work</a></p>
+<p>The method computes both laplacians \( \nabla^2 v_x \) and \( \nabla^2 v_y \) using a nine points fourth order stencil. More details can be found, instance in: <a href="https://digital.library.adelaide.edu.au/dspace/bitstream/2440/18689/2/02whole.pdf">this work</a></p>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="class_fluid2_d.html#ad8d121c66fe669845ed6e706c1fd75e0" title="Forward Time Weighted (1,9) space method.">ParabolicOperatorWeightedExplicit19()</a> </dd></dl>
 
 </div>
@@ -626,7 +633,7 @@ DataSpace *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 
 <p>Converts velocity field to current density on the entire simulation grid. </p>
 <p>The method simply performs </p><p class="formulaDsp">
-<img class="formulaDsp" alt="\[ \vec{j} = \vec{v}n \]" src="form_18.png" width="38" height="15"/>
+\[ \vec{j} = \vec{v}n \]
 </p>
  
 </div>
@@ -649,11 +656,11 @@ DataSpace *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 
 <p>Writes the line of time t on the simplified .dat file output. </p>
 <p>As a way to easily access the main results of the simulation the simplified .dat file stores the following quantities by columns:</p><ol type="1">
-<li>Time <img class="formulaInl" alt="$t$" src="form_20.png" width="5" height="9"/></li>
-<li>Density at drain contact <img class="formulaInl" alt="$n(x=L)$" src="form_21.png" width="50" height="14"/></li>
-<li>Mass flux along x at drain contact <img class="formulaInl" alt="$p_x(x=L)$" src="form_22.png" width="55" height="14"/></li>
-<li>Density at source contact <img class="formulaInl" alt="$n_x(x=0) $" src="form_23.png" width="54" height="14"/></li>
-<li>Mass flux along x at source contact <img class="formulaInl" alt="$p_x(x=0) $" src="form_25.png" width="68" height="18"/> </li>
+<li>Time \(t\)</li>
+<li>Density at drain contact \(n(x=L)\)</li>
+<li>Mass flux along x at drain contact \(p_x(x=L)\)</li>
+<li>Density at source contact \(n_x(x=0) \)</li>
+<li>Mass flux along x at source contact \(p_x(x=0) \) </li>
 </ol>
 
 </div>

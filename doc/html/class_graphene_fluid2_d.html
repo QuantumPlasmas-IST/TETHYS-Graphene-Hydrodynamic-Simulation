@@ -21,6 +21,13 @@
   $(document).ready(function() { init_search(); });
 /* @license-end */
 </script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    extensions: ["tex2jax.js"],
+    jax: ["input/TeX","output/HTML-CSS"],
+});
+</script>
+<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -114,10 +121,10 @@ Inheritance diagram for GrapheneFluid2D:</div>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a81666cff0c4aa65cbc7063ea008b439d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_graphene_fluid2_d.html#a81666cff0c4aa65cbc7063ea008b439d">CflCondition</a> () override</td></tr>
-<tr class="memdesc:a81666cff0c4aa65cbc7063ea008b439d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculates <img class="formulaInl" alt="$\Delta x$" src="form_0.png" width="18" height="10"/> and imposes Courant–Friedrichs–Lewy condition to <img class="formulaInl" alt="$\Delta t$" src="form_1.png" width="15" height="10"/>.  <a href="class_graphene_fluid2_d.html#a81666cff0c4aa65cbc7063ea008b439d">More...</a><br /></td></tr>
+<tr class="memdesc:a81666cff0c4aa65cbc7063ea008b439d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculates \(\Delta x\) and imposes Courant–Friedrichs–Lewy condition to \(\Delta t\).  <a href="class_graphene_fluid2_d.html#a81666cff0c4aa65cbc7063ea008b439d">More...</a><br /></td></tr>
 <tr class="separator:a81666cff0c4aa65cbc7063ea008b439d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a729feac1056f13c7393e0a003c39affc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_graphene_fluid2_d.html#a729feac1056f13c7393e0a003c39affc">SetSimulationTime</a> () override</td></tr>
-<tr class="memdesc:a729feac1056f13c7393e0a003c39affc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the total simulation time in units of <img class="formulaInl" alt="$v_0/L$" src="form_9.png" width="28" height="14"/>.  <a href="class_graphene_fluid2_d.html#a729feac1056f13c7393e0a003c39affc">More...</a><br /></td></tr>
+<tr class="memdesc:a729feac1056f13c7393e0a003c39affc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the total simulation time in units of \(v_0/L\).  <a href="class_graphene_fluid2_d.html#a729feac1056f13c7393e0a003c39affc">More...</a><br /></td></tr>
 <tr class="separator:a729feac1056f13c7393e0a003c39affc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a371ecffc6d45083177869ae423175d61"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_graphene_fluid2_d.html#a371ecffc6d45083177869ae423175d61">MassFluxToVelocity</a> () override</td></tr>
 <tr class="memdesc:a371ecffc6d45083177869ae423175d61"><td class="mdescLeft">&#160;</td><td class="mdescRight">Converts the mass density flux to velocity on the entire simulation grid.  <a href="class_graphene_fluid2_d.html#a371ecffc6d45083177869ae423175d61">More...</a><br /></td></tr>
@@ -375,9 +382,9 @@ DataSpace *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 </table>
 </div><div class="memdoc">
 
-<p>Calculates <img class="formulaInl" alt="$\Delta x$" src="form_0.png" width="18" height="10"/> and imposes Courant–Friedrichs–Lewy condition to <img class="formulaInl" alt="$\Delta t$" src="form_1.png" width="15" height="10"/>. </p>
-<p>The method retrieves the spatial discretization <img class="formulaInl" alt="$\Delta x = L / N_x $" src="form_2.png" width="64" height="14"/> and then sets the time step as <img class="formulaInl" alt="$\Delta t = \Delta x/\lambda $" src="form_4.png" width="63" height="14"/> where <img class="formulaInl" alt="$\lambda$" src="form_5.png" width="8" height="10"/> is given by </p><p class="formulaDsp">
-<img class="formulaDsp" alt="\begin{*eqnarray} \lambda =1.2v_F \quad&amp;\mathrm{if}\quad S&lt;0.36v_F\\ \lambda =1.97S + 0.5 v_F \quad&amp;\mathrm{otherwise} \end{*eqnarray}" src="form_19.png" width="166" height="28"/>
+<p>Calculates \(\Delta x\) and imposes Courant–Friedrichs–Lewy condition to \(\Delta t\). </p>
+<p>The method retrieves the spatial discretization \(\Delta x = L / N_x \) and then sets the time step as \(\Delta t = \Delta x/\lambda \) where \(\lambda\) is given by </p><p class="formulaDsp">
+\begin{*eqnarray} \lambda =1.2v_F \quad&amp;\mathrm{if}\quad S&lt;0.36v_F\\ \lambda =1.97S + 0.5 v_F \quad&amp;\mathrm{otherwise} \end{*eqnarray}
 </p>
  
 <p>Reimplemented from <a class="el" href="class_fluid2_d.html#a0849f9a1c99d20660d7642f607d85006">Fluid2D</a>.</p>
@@ -409,7 +416,7 @@ DataSpace *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 
 <p>Converts the mass density flux to velocity on the entire simulation grid. </p>
 <p>Since the mass of the fluid element is not a constant the in the graphene electronic fluid, one needs to perform the transformation </p><p class="formulaDsp">
-<img class="formulaDsp" alt="\[ \vec{v} = \frac{\vec{p}}{n^{3/2}} \]" src="form_15.png" width="49" height="28"/>
+\[ \vec{v} = \frac{\vec{p}}{n^{3/2}} \]
 </p>
  
 <p>Reimplemented from <a class="el" href="class_fluid2_d.html#a4762be1385b9f38b05c1a5e50a857b32">Fluid2D</a>.</p>
@@ -439,12 +446,12 @@ DataSpace *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 </table>
 </div><div class="memdoc">
 
-<p>Sets the total simulation time in units of <img class="formulaInl" alt="$v_0/L$" src="form_9.png" width="28" height="14"/>. </p>
+<p>Sets the total simulation time in units of \(v_0/L\). </p>
 <p>The method predicts and set the maximum time for a typical Dyakonov-Shur instability simulation such that:</p><ol type="1">
 <li>It is larger than the usual saturation time</li>
 <li>After the saturation at least 10 oscillations occur</li>
 </ol>
-<p>Our tests concluded heuristically that such criteria can be met setting <img class="formulaInl" alt="$T_{max}=5+0.02S+20/S$" src="form_10.png" width="140" height="14"/> </p>
+<p>Our tests concluded heuristically that such criteria can be met setting \(T_{max}=5+0.02S+20/S\) </p>
 
 <p>Reimplemented from <a class="el" href="class_fluid2_d.html#a5ea97fb6a349c223123f92adcbf655d5">Fluid2D</a>.</p>
 

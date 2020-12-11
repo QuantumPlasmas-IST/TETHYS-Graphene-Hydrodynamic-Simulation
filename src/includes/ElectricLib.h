@@ -11,7 +11,14 @@
 #include "TethysMathLib.h"
 #include "Tethys1DLib.h"
 #include "Tethys2DLib.h"
-
+/*!
+ * @brief Class to obtain the macroscopic electrical quantities
+ *
+ * The main simulation computes the time evolution of the mean field quantities of number density and velocity.
+ * From these the appropriate macroscopic quantities need to be derived in order to benchmark the numerical results with literature or experiments.
+ * This class provides the methods to compute such quantities from the data stored on the GrapheneFluid1D or GrapheneFluid2D classes.
+ *
+ **/
 class ElectroAnalysis{
 private:
 	std::ofstream data_electro;
@@ -45,31 +52,37 @@ public:
 	 * Computes the integral @f$ \int_0^1 n \,dx @f$
 	 * */
 	static float NetCharge(const GrapheneFluid1D& graphene);
+
 	/*!
 	 * @brief 2D Integrator for the total electric charge.
 	 *
 	 * Computes the integral @f$ \int_0^{W/L}\int_0^1 n \,dxdy @f$
 	 * */
 	static float NetCharge(const GrapheneFluid2D& graphene);
+
 	/*!
 	 * @brief 1D Integrator for the dissipated Ohm power.
 	 *
 	 * Computes the integral @f$ \int_0^1 jv \,dx @f$
 	 * */
 	static float OhmPower(const GrapheneFluid1D& graphene);
+
 	/*!
 	 * @brief 2D Integrator for the dissipated Ohm power.
 	 *
 	 * Computes the integral @f$ \int_0^{W/L}\int_0^1 j^2 \,dxdy @f$
 	 * */
 	static float OhmPower(const GrapheneFluid2D& graphene);
+
 	static float AverageCurrent(const GrapheneFluid1D& graphene);
+
 	/*!
 	 * @brief Integrator for the average Hall current
 	 *
 	 * Computes the integral @f$ \int_0^{W/L}\int_0^1 j_y \,dxdy @f$
 	 * */
 	static float AverageHallCurrent(const GrapheneFluid2D& graphene);
+
 	/*!
 	* @brief Integrator for the average drain-to-source current
 	*
@@ -83,12 +96,14 @@ public:
 	* Computes the integral @f$ \int_0^{W/L} j_x(L,y) \,dy @f$
 	* */
 	static float DrainCurrent(const GrapheneFluid2D& graphene);
+
 	/*!
 	* @brief Integrator for the local source current
 	*
 	* Computes the integral @f$ \int_0^{W/L} j_x(0,y) \,dy @f$
 	* */
 	static float SourceCurrent(const GrapheneFluid2D& graphene);
+
 	/*!
 	* @brief Integrator for the drain-to-source voltage
 	*
@@ -102,12 +117,14 @@ public:
 	* Computes the integral @f$ \int_0^1 (x-1/2)n \,dx @f$
 	* */
 	static float ElectricDipole(const GrapheneFluid1D& graphene);
+
 	/*!
 	* @brief 2D Integrator for the electric dipole moment x component
 	*
 	* Computes the integral @f$ \int_0^{W/L}\int_0^1 (x-1/2)n \,dxdy @f$
 	* */
 	static float ElectricDipoleX(const GrapheneFluid2D& graphene);
+
 	/*!
 	* @brief  2D Integrator for the electric dipole moment y component
 	*
@@ -154,6 +171,7 @@ public:
 	 * @param graphene GrapheneFluid2D instance from where the quantities are computed
 	 * */
 	void ComputeElectroBase(float t, const GrapheneFluid2D &graphene);
+
 	/*!
 	 * @brief Computes the electric quantities that can not be obtained by direct integration.
 	 *

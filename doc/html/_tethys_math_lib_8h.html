@@ -21,6 +21,13 @@
   $(document).ready(function() { init_search(); });
 /* @license-end */
 </script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    extensions: ["tex2jax.js"],
+    jax: ["input/TeX","output/HTML-CSS"],
+});
+</script>
+<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -291,16 +298,16 @@ Functions</h2></td></tr>
 
 <p>Gaussian kernel function. </p>
 <p>This function implements a gaussian kernel defined as </p><p class="formulaDsp">
-<img class="formulaDsp" alt="\[ g(x) = \frac{1}{\sqrt{2\pi t}}e^{-\frac{x^2}{2t}} \]" src="form_271.png" width="127" height="39"/>
+\[ g(x) = \frac{1}{\sqrt{2\pi t}}e^{-\frac{x^2}{2t}} \]
 </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">pos</td><td>value of variable <img class="formulaInl" alt="$ x $" src="form_275.png" width="10" height="8"/> </td></tr>
+    <tr><td class="paramname">pos</td><td>value of variable \( x \) </td></tr>
     <tr><td class="paramname">t</td><td>standard deviation of gaussian kernel</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><img class="formulaInl" alt="$ g(x) $" src="form_272.png" width="31" height="18"/> </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>\( g(x) \) </dd></dl>
 
 </div>
 </div>
@@ -332,16 +339,16 @@ Functions</h2></td></tr>
 
 <p>Gaussian kernel function derivative. </p>
 <p>This function implements the derivative of a gaussian kernel defined as </p><p class="formulaDsp">
-<img class="formulaDsp" alt="\[ g'(x) = -\frac{x}{t\sqrt{2\pi t}}e^{-\frac{x^2}{2t}} \]" src="form_273.png" width="150" height="36"/>
+\[ g&#39;(x) = -\frac{x}{t\sqrt{2\pi t}}e^{-\frac{x^2}{2t}} \]
 </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">pos</td><td>value of variable <img class="formulaInl" alt="$ x $" src="form_275.png" width="10" height="8"/> </td></tr>
+    <tr><td class="paramname">pos</td><td>value of variable \( x \) </td></tr>
     <tr><td class="paramname">t</td><td>standard deviation of gaussian kernel</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><img class="formulaInl" alt="$ g'(x) $" src="form_274.png" width="34" height="18"/> </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>\( g&#39;(x) \) </dd></dl>
 
 </div>
 </div>
@@ -613,18 +620,18 @@ Functions</h2></td></tr>
 
 <p>Smooth staircase function. </p>
 <p>This function is defined as </p><p class="formulaDsp">
-<img class="formulaDsp" alt="\[ f(x) = \frac{\tanh a(-\frac{x-1}{w} - \lfloor-\frac{x-1}{w})\rfloor - 1/2)}{2\tanh a/2 } + 1/2 +\lfloor-\frac{x-1}{w}\rfloor \]" src="form_270.png" width="410" height="42"/>
+\[ f(x) = \frac{\tanh a(-\frac{x-1}{w} - \lfloor-\frac{x-1}{w})\rfloor - 1/2)}{2\tanh a/2 } + 1/2 +\lfloor-\frac{x-1}{w}\rfloor \]
 </p>
 <p> corresponding to a smooth descending staircase.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">x</td><td>position </td></tr>
-    <tr><td class="paramname">step_width</td><td>width of each step, <img class="formulaInl" alt="$ w $" src="form_263.png" width="13" height="8"/> </td></tr>
-    <tr><td class="paramname">smoothness</td><td>controls the smoothness of the jump, <img class="formulaInl" alt="$ a $" src="form_264.png" width="8" height="8"/></td></tr>
+    <tr><td class="paramname">step_width</td><td>width of each step, \( w \) </td></tr>
+    <tr><td class="paramname">smoothness</td><td>controls the smoothness of the jump, \( a \)</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><img class="formulaInl" alt="$ f(x) $" src="form_265.png" width="31" height="18"/> </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>\( f(x) \) </dd></dl>
 
 </div>
 </div>

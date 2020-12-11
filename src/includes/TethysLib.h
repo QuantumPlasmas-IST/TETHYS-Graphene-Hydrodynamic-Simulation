@@ -65,7 +65,12 @@ class SetUpParameters {
 };
 
 
-
+/*!
+ * @brief Base class for the fluid classes
+ *
+ * This base class, from which the subsequent fluid classes are derived, establish the dimensios of the simulation grid and manage the creation of the HDF5 structures
+ *
+ * */
 class TethysBase {
 	protected:
 		int   Nx ;          // Simulation region (dataset) dimensions

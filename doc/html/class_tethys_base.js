@@ -1,6 +1,7 @@
 var class_tethys_base =
 [
     [ "TethysBase", "class_tethys_base.html#a7fae425446696645240a31a10d59bd2d", null ],
+    [ "BannerDisplay", "class_tethys_base.html#a1391de0b137aab1f4e57bff8dc0fda95", null ],
     [ "CloseHdf5File", "class_tethys_base.html#ac844588f99c93c793473e0ccab63f5c2", null ],
     [ "CreateHdf5File", "class_tethys_base.html#a5537afa522d57726a4d6835f87662c01", null ],
     [ "GetColFreq", "class_tethys_base.html#a5619cc5121e2ed06f48d249f8d80d14d", null ],

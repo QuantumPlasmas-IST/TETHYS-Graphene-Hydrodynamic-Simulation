@@ -21,6 +21,13 @@
   $(document).ready(function() { init_search(); });
 /* @license-end */
 </script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    extensions: ["tex2jax.js"],
+    jax: ["input/TeX","output/HTML-CSS"],
+});
+</script>
+<script type="text/javascript" async="async" src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js"></script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -104,76 +111,76 @@ $(document).ready(function(){initNavTree('numericalmethods.html',''); initResiza
 <li class="level1"><a href="#twoddff">Two-dimensional Du Fort&ndash;Frankel method</a></li>
 </ul>
 </div>
-<div class="textblock"><p>The simulations of the model described before rely on the division of the problem into two separate routines &ndash; one for the hyperbolic part (convective and conserved terms) and a second one for the parabolic (viscous and source terms). Viewing the model as having the form <img class="formulaInl" alt="$\partial_t\vec{u}=\mathscr{L}_\text{conservation}(\vec{u})+\mathscr{L}_\text{dissipation}(\vec{u})$" src="form_55.png" width="273" height="18"/>, so that an operator splitting method could be used, uncoupling the two terms, for instance, for the mass flux equation one has: </p><p class="formulaDsp">
-<img class="formulaDsp" alt="\[ \frac{\partial \vec{p}}{\partial t}+\overbrace{\bm{\nabla}\!\cdot\!\left( \frac{ \vec{p}\otimes \vec{p}}{{n}^{3/2}} + v_F^2\frac{n^{3/2}}{3}\mathds{1}+S^2\frac{{n}^2}{2}\mathds{1}\right)}^{\mathscr{L}_\text{conservation}(\vec{p})}+\\ -\underbrace{\nu_s\nabla^2\frac{\vec{p}}{n^{3/2}} -\nu_o\nabla^2\frac{\vec{p}^\dagger}{n^{3/2}} +\omega_c\frac{\vec{p}\times\vec{\hat{z}}}{\sqrt{n}}}_{\mathscr{L}_\text{dissipation}(\vec{p})}=0. \]" src="form_91.png" width="562" height="93"/>
+<div class="textblock"><p>The simulations of the model described before rely on the division of the problem into two separate routines &ndash; one for the hyperbolic part (convective and conserved terms) and a second one for the parabolic (viscous and source terms). Viewing the model as having the form \(\partial_t\vec{u}=\mathscr{L}_\text{conservation}(\vec{u})+\mathscr{L}_\text{dissipation}(\vec{u})\), so that an operator splitting method could be used, uncoupling the two terms, for instance, for the mass flux equation one has: </p><p class="formulaDsp">
+\[ \frac{\partial \vec{p}}{\partial t}+\overbrace{\bm{\nabla}\!\cdot\!\left( \frac{ \vec{p}\otimes \vec{p}}{{n}^{3/2}} + v_F^2\frac{n^{3/2}}{3}\mathds{1}+S^2\frac{{n}^2}{2}\mathds{1}\right)}^{\mathscr{L}_\text{conservation}(\vec{p})}+\\ -\underbrace{\nu_s\nabla^2\frac{\vec{p}}{n^{3/2}} -\nu_o\nabla^2\frac{\vec{p}^\dagger}{n^{3/2}} +\omega_c\frac{\vec{p}\times\vec{\hat{z}}}{\sqrt{n}}}_{\mathscr{L}_\text{dissipation}(\vec{p})}=0. \]
 </p>
-<p>Then, if the solution, after a time <img class="formulaInl" alt="$t$" src="form_20.png" width="5" height="9"/>, for the conservation and dissipation operators is well approximated by the numerical evolution operators <img class="formulaInl" alt="$\Lambda^t_\text{con}$" src="form_56.png" width="33" height="20"/> and <img class="formulaInl" alt="$\Lambda^t_\text{dis}$" src="form_57.png" width="29" height="20"/>, respectively, the solution of the complete system is given by the Godunov splitting. This method is generally first order in time. One can, of course, invert the order of the operators and in fact the splitting error depends on the commutator <img class="formulaInl" alt="$[\mathscr{L}_\text{dis},\mathscr{L}_\text{con}]$" src="form_58.png" width="76" height="18"/>. For second order accuracy one can use Strang splitting where <img class="formulaInl" alt="$\vec{u}^{t_0+t}\approx\Lambda^{t/2}_\text{dis}\circ\Lambda^t_\text{con}\circ\Lambda^{t/2}_\text{dis}(\vec{u}^{t_0})$" src="form_59.png" width="215" height="24"/>. However, the performed test so far have not find significant accuracy or stability improvement when using the more computation time costly Strang splitting so we recommend to apply the simple Godunov algorithm: </p><p class="formulaDsp">
-<img class="formulaDsp" alt="\[ \vec{u}^{t_0+t}\approx\Lambda^t_\text{dis}\circ\Lambda^t_\text{con}(\vec{u}^{t_0}). \]" src="form_77.png" width="172" height="20"/>
+<p>Then, if the solution, after a time \(t\), for the conservation and dissipation operators is well approximated by the numerical evolution operators \(\Lambda^t_\text{con}\) and \(\Lambda^t_\text{dis}\), respectively, the solution of the complete system is given by the Godunov splitting. This method is generally first order in time. One can, of course, invert the order of the operators and in fact the splitting error depends on the commutator \([\mathscr{L}_\text{dis},\mathscr{L}_\text{con}]\). For second order accuracy one can use Strang splitting where \(\vec{u}^{t_0+t}\approx\Lambda^{t/2}_\text{dis}\circ\Lambda^t_\text{con}\circ\Lambda^{t/2}_\text{dis}(\vec{u}^{t_0})\). However, the performed test so far have not find significant accuracy or stability improvement when using the more computation time costly Strang splitting so we recommend to apply the simple Godunov algorithm: </p><p class="formulaDsp">
+\[ \vec{u}^{t_0+t}\approx\Lambda^t_\text{dis}\circ\Lambda^t_\text{con}(\vec{u}^{t_0}). \]
 </p>
 <p>The hyperbolic operator was solved with a finite volume Lax-Wendroff type method <a class="el" href="citelist.html#CITEREF_Hirsch2007">[3]</a> <a class="el" href="citelist.html#CITEREF_LeVeque1992">[4]</a> &ndash; the two step Richtmyer scheme for nonlinear systems <a class="el" href="citelist.html#CITEREF_LeVeque1992">[4]</a> . Such scheme was then elected to implement, given it is computationally light, as it is not required to explicitly evaluate the system Jacobian at each step, yet capable of returning accurate simulations. It consists in two distinct steps, a predictor where the mid nodes are calculated and then a corrector step that updates the simulated quantities at the central nodes.</p>
 <p>Whereas the dissipation and source terms were then computed with a forward time centred space (FTCS) scheme of finite differences. This choice of a lightweight parabolic solver has impact on the viable set of parameters for simulation, nonetheless, it allows to keep the maximum computing time for a complete 2D simulation bellow 150 min.</p>
 <h1><a class="anchor" id="onedrich"></a>
 One-dimensional Richtmyer method</h1>
 <p>In the onedimensional case, the hyperbolic system of equations for density and velocity fields is written in a conservation form: </p><p class="formulaDsp">
-<img class="formulaDsp" alt="\[ \frac{\partial}{\partial t}\begin{bmatrix}n\\v\end{bmatrix}+\frac{\partial}{\partial x} \begin{bmatrix} nv\\ \frac{v^2}{4}+\frac{v_F^2}{2}\log n + 2S^2\sqrt{n}\\\end{bmatrix} = 0 \iff \frac{\partial}{\partial t}\vec{u}+\frac{\partial}{\partial x}\mathbf{F(u)}=0, \label{eq:conserv} \]" src="form_78.png" width="481" height="37"/>
+\[ \frac{\partial}{\partial t}\begin{bmatrix}n\\v\end{bmatrix}+\frac{\partial}{\partial x} \begin{bmatrix} nv\\ \frac{v^2}{4}+\frac{v_F^2}{2}\log n + 2S^2\sqrt{n}\\\end{bmatrix} = 0 \iff \frac{\partial}{\partial t}\vec{u}+\frac{\partial}{\partial x}\mathbf{F(u)}=0, \label{eq:conserv} \]
 </p>
-<p>and was implemented for <img class="formulaInl" alt="$n$" src="form_60.png" width="11" height="8"/> an <img class="formulaInl" alt="$v$" src="form_61.png" width="10" height="8"/> according to</p>
+<p>and was implemented for \(n\) an \(v\) according to</p>
 <p class="formulaDsp">
-<img class="formulaDsp" alt="\begin{align} \vec{u}_{i+\sfrac{1}{2}}^{k+\sfrac{1}{2}} &amp;= \frac{1}{2}\left(\vec{u}_{i+1}^k + \vec{u}_{i}^k\right) - \frac{\Delta t}{2\Delta x}\left( \mathbf{F}_{i+1}^k - \mathbf{F}_{i}^k\right)\label{eq:richt_1}\\ \vec{u}_i^{k+1} &amp;= \vec{u}_i^k - \frac{\Delta t}{\Delta x} \left( \mathbf{F}_{i+\sfrac{1}{2}}^{k+\sfrac{1}{2}} - \mathbf{F}_{i-\sfrac{1}{2}}^{k+\sfrac{1}{2}}\right)\label{eq:richt_2} \end{align}" src="form_97.png" width="319" height="46"/>
+\begin{align} \vec{u}_{i+\sfrac{1}{2}}^{k+\sfrac{1}{2}} &amp;= \frac{1}{2}\left(\vec{u}_{i+1}^k + \vec{u}_{i}^k\right) - \frac{\Delta t}{2\Delta x}\left( \mathbf{F}_{i+1}^k - \mathbf{F}_{i}^k\right)\label{eq:richt_1}\\ \vec{u}_i^{k+1} &amp;= \vec{u}_i^k - \frac{\Delta t}{\Delta x} \left( \mathbf{F}_{i+\sfrac{1}{2}}^{k+\sfrac{1}{2}} - \mathbf{F}_{i-\sfrac{1}{2}}^{k+\sfrac{1}{2}}\right)\label{eq:richt_2} \end{align}
 </p>
-<p> using <img class="formulaInl" alt="$\vec{u}$" src="form_62.png" width="11" height="13"/> and <img class="formulaInl" alt="$\mathbf{F}(\vec{u})$" src="form_63.png" width="34" height="18"/> as defined by equation and space (indicated at subscript indices) and time (indicated at superscript indices) discretisation where <img class="formulaInl" alt="$t=k\Delta t$" src="form_64.png" width="57" height="13"/> and <img class="formulaInl" alt="$t=i\Delta x$" src="form_65.png" width="57" height="13"/>. Since such scheme is second order both in time and space it will not introduce spurious diffusion in the solution as a first order scheme would. It will, however, introduce artificial oscillations, contiguous to discontinuities, which can be corrected by the application of a moving average smoothing filter.</p>
+<p> using \(\vec{u}\) and \(\mathbf{F}(\vec{u})\) as defined by equation and space (indicated at subscript indices) and time (indicated at superscript indices) discretisation where \(t=k\Delta t\) and \(t=i\Delta x\). Since such scheme is second order both in time and space it will not introduce spurious diffusion in the solution as a first order scheme would. It will, however, introduce artificial oscillations, contiguous to discontinuities, which can be corrected by the application of a moving average smoothing filter.</p>
 <p>To comply with Courant&ndash;Friedrichs&ndash;Lewy condition, the time step is chose to be</p>
 <p class="formulaDsp">
-<img class="formulaDsp" alt="\[ \Delta t= \frac{\Delta x}{\lambda} \quad\text{with}\quad \lambda=\begin{cases} 1.2\,v_F&amp;\text{if }S&lt;0.36\,v_F\\ 1.97\,S+v_F/2&amp;\text{otherwise } \end{cases}\label{eq:cfl} \]" src="form_79.png" width="488" height="36"/>
+\[ \Delta t= \frac{\Delta x}{\lambda} \quad\text{with}\quad \lambda=\begin{cases} 1.2\,v_F&amp;\text{if }S&lt;0.36\,v_F\\ 1.97\,S+v_F/2&amp;\text{otherwise } \end{cases}\label{eq:cfl} \]
 </p>
-<p>such expression for the information speed <img class="formulaInl" alt="$\lambda$" src="form_5.png" width="8" height="10"/> was empirically obtained for a wide variety of space discretizations and parameters.</p>
+<p>such expression for the information speed \(\lambda\) was empirically obtained for a wide variety of space discretizations and parameters.</p>
 <h1><a class="anchor" id="twodrich"></a>
 Two-dimensional Richtmyer method</h1>
-<p>Regarding the two-dimensional case, one needs to consider the flux function along <img class="formulaInl" alt="$y$" src="form_66.png" width="10" height="11"/> </p><p class="formulaDsp">
-<img class="formulaDsp" alt="\[ \frac{\partial}{\partial t}\vec{u}+ \frac{\partial}{\partial x}\vec{F}(\vec{u}) +\frac{\partial}{\partial y}\vec{G}(\vec{u})=0 \]" src="form_80.png" width="211" height="39"/>
+<p>Regarding the two-dimensional case, one needs to consider the flux function along \(y\) </p><p class="formulaDsp">
+\[ \frac{\partial}{\partial t}\vec{u}+ \frac{\partial}{\partial x}\vec{F}(\vec{u}) +\frac{\partial}{\partial y}\vec{G}(\vec{u})=0 \]
 </p>
-<p> where now the state vector is <img class="formulaInl" alt="$\vec{u}=[n,p_x,p_y]^\mathsf{T}$" src="form_67.png" width="106" height="20"/> and the fluxes functions are given by </p><p class="formulaDsp">
-<img class="formulaDsp" alt="\[ \vec{F}(\vec{u})=\begin{bmatrix} p_xn^{-1/2}\\ \frac{p_x^2}{n^{3/2}}+\frac{v_F^2}{3}n^{3/2} + \frac{S^2}{2}n^2\\ p_xp_yn^{-3/2} \end{bmatrix} \]" src="form_81.png" width="349" height="37"/>
+<p> where now the state vector is \(\vec{u}=[n,p_x,p_y]^\mathsf{T}\) and the fluxes functions are given by </p><p class="formulaDsp">
+\[ \vec{F}(\vec{u})=\begin{bmatrix} p_xn^{-1/2}\\ \frac{p_x^2}{n^{3/2}}+\frac{v_F^2}{3}n^{3/2} + \frac{S^2}{2}n^2\\ p_xp_yn^{-3/2} \end{bmatrix} \]
 </p>
 <p> and </p><p class="formulaDsp">
-<img class="formulaDsp" alt="\[ \vec{G}(\vec{u})=\begin{bmatrix} p_yn^{-1/2}\\ p_xp_yn^{-3/2} \\ \frac{p_y^2}{n^{3/2}}+\frac{v_F^2}{3}n^{3/2} + \frac{S^2}{2}n^2 \end{bmatrix}. \]" src="form_82.png" width="354" height="39"/>
+\[ \vec{G}(\vec{u})=\begin{bmatrix} p_yn^{-1/2}\\ p_xp_yn^{-3/2} \\ \frac{p_y^2}{n^{3/2}}+\frac{v_F^2}{3}n^{3/2} + \frac{S^2}{2}n^2 \end{bmatrix}. \]
 </p>
 <p>The generalisation of leads to a more complex method having, for the first step, the form </p><p class="formulaDsp">
-<img class="formulaDsp" alt="\[ \vec{u}^{k+\sfrac{1}{2}}_{\subalign{i&amp;+\sfrac{1}{2}\\j&amp;+\sfrac{1}{2}}}=\frac{1}{4}\left(\vec{u}^{k}_{\subalign{i\\j}}+\vec{u}^{k}_{\subalign{&amp;i+1\\&amp;j}}+\vec{u}^{k}_{\subalign{&amp;i\\&amp;j+1}}+\vec{u}^{k}_{\subalign{i&amp;+1\\j&amp;+1}}\right)-\\ -\frac{\Delta t}{2\Delta x}\left(\vec{F}^{k}_{\subalign{i&amp;+1\\j&amp;+\sfrac{1}{2}}}-\vec{F}^{k}_{\subalign{&amp;i\\&amp;j+\sfrac{1}{2}}} \right) -\frac{\Delta t}{2\Delta y}\left( \vec{G}^{k}_{\subalign{i&amp;+\sfrac{1}{2}\\j&amp;+1}}-\vec{G}^{k}_{\subalign{&amp;i+\sfrac{1}{2}\\&amp;j}} \right) \label{eq:richt2D_1} \]" src="form_92.png" width="728" height="39"/>
+\[ \vec{u}^{k+\sfrac{1}{2}}_{\subalign{i&amp;+\sfrac{1}{2}\\j&amp;+\sfrac{1}{2}}}=\frac{1}{4}\left(\vec{u}^{k}_{\subalign{i\\j}}+\vec{u}^{k}_{\subalign{&amp;i+1\\&amp;j}}+\vec{u}^{k}_{\subalign{&amp;i\\&amp;j+1}}+\vec{u}^{k}_{\subalign{i&amp;+1\\j&amp;+1}}\right)-\\ -\frac{\Delta t}{2\Delta x}\left(\vec{F}^{k}_{\subalign{i&amp;+1\\j&amp;+\sfrac{1}{2}}}-\vec{F}^{k}_{\subalign{&amp;i\\&amp;j+\sfrac{1}{2}}} \right) -\frac{\Delta t}{2\Delta y}\left( \vec{G}^{k}_{\subalign{i&amp;+\sfrac{1}{2}\\j&amp;+1}}-\vec{G}^{k}_{\subalign{&amp;i+\sfrac{1}{2}\\&amp;j}} \right) \label{eq:richt2D_1} \]
 </p>
 <p> and then, the corrector is obtained by </p><p class="formulaDsp">
-<img class="formulaDsp" alt="\[ \vec{u}^{k+1}_{\substack{i\\j}}=\vec{u}^{k}_{\subalign{&amp;i\\&amp;j}}-\frac{\Delta t}{\Delta x}\left(\vec{F}^{k+\sfrac{1}{2}}_{\subalign{&amp;i+\sfrac{1}{2}\\&amp;j}}-\vec{F}^{k+\sfrac{1}{2}}_{\subalign{&amp;i-\sfrac{1}{2}\\&amp;j}}\right)-\frac{\Delta t}{\Delta y}\left(\vec{G}^{k+\sfrac{1}{2}}_{\subalign{&amp;i\\&amp;j+\sfrac{1}{2}}}-\vec{G}^{k+\sfrac{1}{2}}_{\subalign{&amp;i\\&amp;j-\sfrac{1}{2}}}\right)\label{eq:richt2D_2} \]" src="form_83.png" width="434" height="39"/>
+\[ \vec{u}^{k+1}_{\substack{i\\j}}=\vec{u}^{k}_{\subalign{&amp;i\\&amp;j}}-\frac{\Delta t}{\Delta x}\left(\vec{F}^{k+\sfrac{1}{2}}_{\subalign{&amp;i+\sfrac{1}{2}\\&amp;j}}-\vec{F}^{k+\sfrac{1}{2}}_{\subalign{&amp;i-\sfrac{1}{2}\\&amp;j}}\right)-\frac{\Delta t}{\Delta y}\left(\vec{G}^{k+\sfrac{1}{2}}_{\subalign{&amp;i\\&amp;j+\sfrac{1}{2}}}-\vec{G}^{k+\sfrac{1}{2}}_{\subalign{&amp;i\\&amp;j-\sfrac{1}{2}}}\right)\label{eq:richt2D_2} \]
 </p>
-<p> In the matter of this scheme stability, for equal spacing <img class="formulaInl" alt="$\Delta y=\Delta x$" src="form_68.png" width="67" height="16"/>, the previous condition, defined for the one-dimensional case, has hitherto been sufficient to guarantee stability.</p>
+<p> In the matter of this scheme stability, for equal spacing \(\Delta y=\Delta x\), the previous condition, defined for the one-dimensional case, has hitherto been sufficient to guarantee stability.</p>
 <h1><a class="anchor" id="twodftcs"></a>
 Two-dimensional Forward Time Centred Space method</h1>
 <p>Turning now our attention to the diffusive part of which can be written as </p><p class="formulaDsp">
-<img class="formulaDsp" alt="\[ \frac{\partial \vec{u}}{\partial t}=\nabla^2\vec{D}(\vec{u})+\vec{b}(\vec{u}) \]" src="form_84.png" width="148" height="36"/>
+\[ \frac{\partial \vec{u}}{\partial t}=\nabla^2\vec{D}(\vec{u})+\vec{b}(\vec{u}) \]
 </p>
 <p> with the viscous term </p><p class="formulaDsp">
-<img class="formulaDsp" alt="\[ \vec{D}(\vec{u})=\begin{bmatrix} 0\\ (\nu_s\,p_x-\nu_o\,p_y)n^{-3/2}\\ (\nu_s\,p_y+\nu_o\,p_x)n^{-3/2} \end{bmatrix} \]" src="form_85.png" width="346" height="21"/>
+\[ \vec{D}(\vec{u})=\begin{bmatrix} 0\\ (\nu_s\,p_x-\nu_o\,p_y)n^{-3/2}\\ (\nu_s\,p_y+\nu_o\,p_x)n^{-3/2} \end{bmatrix} \]
 </p>
 <p> and the magnetic source term </p><p class="formulaDsp">
-<img class="formulaDsp" alt="\[ \vec{b}(\vec{u})=\begin{bmatrix} 0\\ -\omega_c\, p_yn^{-1/2}\\ \hphantom{-}\omega_c\, p_xn^{-1/2} \end{bmatrix}, \]" src="form_86.png" width="245" height="23"/>
+\[ \vec{b}(\vec{u})=\begin{bmatrix} 0\\ -\omega_c\, p_yn^{-1/2}\\ \hphantom{-}\omega_c\, p_xn^{-1/2} \end{bmatrix}, \]
 </p>
 <p> applying a forward time and centred space stencil yields the scheme: </p><p class="formulaDsp">
-<img class="formulaDsp" alt="\[ \vec{u}^{k+1}_{\substack{i\\j}}=\vec{u}^{k}_{\subalign{&amp;i\\&amp;j}}+\frac{\Delta t}{\Delta x^2}\left(\vec{D}^{k}_{\subalign{&amp;i+1\\&amp;j}} -2\vec{D}^{k}_{\subalign{&amp;i\\&amp;j}}+\vec{D}^{k}_{\subalign{&amp;i-1\\&amp;j}} \right)+\\+\frac{\Delta t}{\Delta y^2}\left(\vec{D}^{k}_{\subalign{&amp;i\\&amp;j+1}} -2\vec{D}^{k}_{\subalign{&amp;i\\&amp;j}}+\vec{D}^{k}_{\subalign{&amp;i\\&amp;j-1}} \right) +\Delta t\vec{b}^{k}_{\subalign{&amp;i\\&amp;j}} \]" src="form_93.png" width="583" height="39"/>
+\[ \vec{u}^{k+1}_{\substack{i\\j}}=\vec{u}^{k}_{\subalign{&amp;i\\&amp;j}}+\frac{\Delta t}{\Delta x^2}\left(\vec{D}^{k}_{\subalign{&amp;i+1\\&amp;j}} -2\vec{D}^{k}_{\subalign{&amp;i\\&amp;j}}+\vec{D}^{k}_{\subalign{&amp;i-1\\&amp;j}} \right)+\\+\frac{\Delta t}{\Delta y^2}\left(\vec{D}^{k}_{\subalign{&amp;i\\&amp;j+1}} -2\vec{D}^{k}_{\subalign{&amp;i\\&amp;j}}+\vec{D}^{k}_{\subalign{&amp;i\\&amp;j-1}} \right) +\Delta t\vec{b}^{k}_{\subalign{&amp;i\\&amp;j}} \]
 </p>
-<p>It is important to notice that this method, being such a direct calculation has a strong constraint on the stability. For a purely diffusive system as <img class="formulaInl" alt="$\partial_t u =\nu_s\,\partial^2_{xx} u$" src="form_69.png" width="96" height="20"/> it is well established that stability requires </p><p class="formulaDsp">
-<img class="formulaDsp" alt="\[ 2\nu_s \Delta t \leq \frac{\Delta x^2\Delta y^2}{\Delta x^2+ \Delta y^2}, \]" src="form_87.png" width="151" height="41"/>
+<p>It is important to notice that this method, being such a direct calculation has a strong constraint on the stability. For a purely diffusive system as \(\partial_t u =\nu_s\,\partial^2_{xx} u\) it is well established that stability requires </p><p class="formulaDsp">
+\[ 2\nu_s \Delta t \leq \frac{\Delta x^2\Delta y^2}{\Delta x^2+ \Delta y^2}, \]
 </p>
-<p> which is somewhat narrower than the CFL condition for the hyperbolic part and imposes a maximum value of the <img class="formulaInl" alt="$\nu_s$" src="form_44.png" width="13" height="11"/> parameter. Notwithstanding, given that the typical values for shear viscosity on graphene are so low this restriction is of little consequence. Yet, for the dispersive case of odd viscosity no general criterion is known.</p>
+<p> which is somewhat narrower than the CFL condition for the hyperbolic part and imposes a maximum value of the \(\nu_s\) parameter. Notwithstanding, given that the typical values for shear viscosity on graphene are so low this restriction is of little consequence. Yet, for the dispersive case of odd viscosity no general criterion is known.</p>
 <h1><a class="anchor" id="twoddff"></a>
 Two-dimensional Du Fort–Frankel method</h1>
 <p class="formulaDsp">
-<img class="formulaDsp" alt="\[ \vec{u}^{k+1}_{\substack{i\\j}}=\vec{u}^{k-1}_{\subalign{&amp;i\\&amp;j}}+\frac{2\Delta t}{\Delta x^2}\left[\vec{D}^{k}_{\subalign{&amp;i+1\\&amp;j}} -\left(\vec{D}^{k+1}_{\subalign{&amp;i\\&amp;j}} + \vec{D}^{k-1}_{\subalign{&amp;i\\&amp;j}} \right)+\vec{D}^{k}_{\subalign{&amp;i-1\\&amp;j}} \right]+\\+\frac{2\Delta t}{\Delta y^2}\left[\vec{D}^{k}_{\subalign{&amp;i\\&amp;j+1}} -\left(\vec{D}^{k+1}_{\subalign{&amp;i\\&amp;j}} + \vec{D}^{k-1}_{\subalign{&amp;i\\&amp;j}} \right)+\vec{D}^{k}_{\subalign{&amp;i\\&amp;j-1}} \right] \]" src="form_94.png" width="702" height="39"/>
+\[ \vec{u}^{k+1}_{\substack{i\\j}}=\vec{u}^{k-1}_{\subalign{&amp;i\\&amp;j}}+\frac{2\Delta t}{\Delta x^2}\left[\vec{D}^{k}_{\subalign{&amp;i+1\\&amp;j}} -\left(\vec{D}^{k+1}_{\subalign{&amp;i\\&amp;j}} + \vec{D}^{k-1}_{\subalign{&amp;i\\&amp;j}} \right)+\vec{D}^{k}_{\subalign{&amp;i-1\\&amp;j}} \right]+\\+\frac{2\Delta t}{\Delta y^2}\left[\vec{D}^{k}_{\subalign{&amp;i\\&amp;j+1}} -\left(\vec{D}^{k+1}_{\subalign{&amp;i\\&amp;j}} + \vec{D}^{k-1}_{\subalign{&amp;i\\&amp;j}} \right)+\vec{D}^{k}_{\subalign{&amp;i\\&amp;j-1}} \right] \]
 </p>
-<p>for a linear diffusion function <img class="formulaInl" alt="$\partial_t u=\eta \nabla^2u$" src="form_70.png" width="83" height="18"/> can be simplified to </p><p class="formulaDsp">
-<img class="formulaDsp" alt="\[ \vec{u}^{k+1}_{\substack{i\\j}}=\frac{1-2\sigma-2\varsigma}{1+2\sigma+2\varsigma}\vec{u}^{k-1}_{\subalign{&amp;i\\&amp;j}}+\frac{2\sigma}{1+2\sigma+2\varsigma}\left[\vec{u}^{k}_{\subalign{&amp;i+1\\&amp;j}} +\vec{u}^{k}_{\subalign{&amp;i-1\\&amp;j}} \right]+\\+\frac{2\varsigma}{1+2\sigma+2\varsigma}\left[\vec{u}^{k}_{\subalign{&amp;i\\&amp;j+1}} +\vec{u}^{k}_{\subalign{&amp;i\\&amp;j-1}} \right] \]" src="form_95.png" width="598" height="36"/>
+<p>for a linear diffusion function \(\partial_t u=\eta \nabla^2u\) can be simplified to </p><p class="formulaDsp">
+\[ \vec{u}^{k+1}_{\substack{i\\j}}=\frac{1-2\sigma-2\varsigma}{1+2\sigma+2\varsigma}\vec{u}^{k-1}_{\subalign{&amp;i\\&amp;j}}+\frac{2\sigma}{1+2\sigma+2\varsigma}\left[\vec{u}^{k}_{\subalign{&amp;i+1\\&amp;j}} +\vec{u}^{k}_{\subalign{&amp;i-1\\&amp;j}} \right]+\\+\frac{2\varsigma}{1+2\sigma+2\varsigma}\left[\vec{u}^{k}_{\subalign{&amp;i\\&amp;j+1}} +\vec{u}^{k}_{\subalign{&amp;i\\&amp;j-1}} \right] \]
 </p>
 <p> <br  />
- with <img class="formulaInl" alt="$\varsigma=\eta\Delta t / \Delta y^2$" src="form_71.png" width="94" height="20"/> and <img class="formulaInl" alt="$\sigma=\eta\Delta t / \Delta x^2$" src="form_72.png" width="96" height="20"/>. Evidently, for the equal grid <img class="formulaInl" alt="$\Delta x=\Delta y$" src="form_73.png" width="67" height="16"/> case: </p><p class="formulaDsp">
-<img class="formulaDsp" alt="\[ \vec{u}^{k+1}_{\substack{i\\j}}=\frac{1-4\sigma}{1+4\sigma}\vec{u}^{k-1}_{\subalign{&amp;i\\&amp;j}}+\frac{2\sigma}{1+4\sigma}\left(\vec{u}^{k}_{\subalign{&amp;i+1\\&amp;j}} +\vec{u}^{k}_{\subalign{&amp;i-1\\&amp;j}}+\vec{u}^{k}_{\subalign{&amp;i\\&amp;j+1}} +\vec{u}^{k}_{\subalign{&amp;i\\&amp;j-1}} \right) \]" src="form_88.png" width="432" height="36"/>
+ with \(\varsigma=\eta\Delta t / \Delta y^2\) and \(\sigma=\eta\Delta t / \Delta x^2\). Evidently, for the equal grid \(\Delta x=\Delta y\) case: </p><p class="formulaDsp">
+\[ \vec{u}^{k+1}_{\substack{i\\j}}=\frac{1-4\sigma}{1+4\sigma}\vec{u}^{k-1}_{\subalign{&amp;i\\&amp;j}}+\frac{2\sigma}{1+4\sigma}\left(\vec{u}^{k}_{\subalign{&amp;i+1\\&amp;j}} +\vec{u}^{k}_{\subalign{&amp;i-1\\&amp;j}}+\vec{u}^{k}_{\subalign{&amp;i\\&amp;j+1}} +\vec{u}^{k}_{\subalign{&amp;i\\&amp;j-1}} \right) \]
 </p>
  </div></div><!-- contents -->
 </div><!-- PageDoc -->
