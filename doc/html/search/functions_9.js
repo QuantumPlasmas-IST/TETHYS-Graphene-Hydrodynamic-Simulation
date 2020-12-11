@@ -1,6 +1,5 @@
 var searchData=
 [
-  ['parabolicoperatorftcs_147',['ParabolicOperatorFtcs',['../class_fluid2_d.html#a94334df8f6dfdccfbe5a7882c9a7cdf8',1,'Fluid2D']]],
-  ['parabolicoperatorweightedexplicit19_148',['ParabolicOperatorWeightedExplicit19',['../class_fluid2_d.html#ad8d121c66fe669845ed6e706c1fd75e0',1,'Fluid2D']]],
-  ['parametersfromhdf5file_149',['ParametersFromHdf5File',['../class_set_up_parameters.html#aee79f402157ad5bcd8589cb2601b9314',1,'SetUpParameters']]]
+  ['ohmpower_174',['OhmPower',['../class_electro_analysis.html#a04a375aed18cc3f6144d3db7203ef18d',1,'ElectroAnalysis::OhmPower(const GrapheneFluid1D &amp;graphene)'],['../class_electro_analysis.html#a6e0c8fd4d7dc776860bf5c8669552b2e',1,'ElectroAnalysis::OhmPower(const GrapheneFluid2D &amp;graphene)']]],
+  ['openhdf5file_175',['OpenHdf5File',['../class_tethys_base.html#aa03e7b30c51d16dbdf67c2e68f233a8e',1,'TethysBase']]]
 ];

@@ -274,3 +274,18 @@
 \_form#273=150x36:\[ g'(x) = -\frac{x}{t\sqrt{2\pi t}}e^{-\frac{x^2}{2t}} \]
 \_form#274=34x18:$ g'(x) $
 \_form#275=10x8:$ x $
+\_form#276=47x24:$ \int_0^1 n dx $
+\_form#277=107x26:$ \int_0^{W/L}\int_0^1 n dxdy $
+\_form#278=50x24:$ \int_0^1 n \,dx $
+\_form#279=111x26:$ \int_0^{W/L}\int_0^1 n \,dxdy $
+\_form#280=57x24:$ \int_0^1 jv \,dx $
+\_form#281=115x26:$ \int_0^{W/L}\int_0^1 j^2 \,dxdy $
+\_form#282=114x26:$ \int_0^{W/L}\int_0^1 j_y \,dxdy $
+\_form#283=115x26:$ \int_0^{W/L}\int_0^1 j_x \,dxdy $
+\_form#284=115x26:$ \int_0^{W/L} j_x(L,y) \,dy $
+\_form#285=112x26:$ \int_0^{W/L} j_x(0,y) \,dy $
+\_form#286:$ \int_0^{W/L}\int_0^1 v_x(L,y) \,dxdy $
+\_form#287:$ \int_0^1 (x-1/2)n \,dx $
+\_form#288:$ \int_0^{W/L}\int_0^1 (x-1/2)n \,dxdy $
+\_form#289=190x26:$ \int_0^{W/L}\int_0^1 (y-W/2L)n \,dxdy $
+\_form#290=49x24:$ \int_0^1 j \,dx $

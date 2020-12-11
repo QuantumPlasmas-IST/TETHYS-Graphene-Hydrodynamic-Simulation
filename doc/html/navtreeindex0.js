@@ -23,6 +23,8 @@ var NAVTREEINDEX0 =
 "class_dirichlet_boundary_condition.html":[3,0,1],
 "class_dyakonov_shur_boundary_condition.html":[3,0,2],
 "class_electro_analysis.html":[3,0,3],
+"class_electro_analysis.html#aa81da3b7d74b35a2e7f373fdcd723a8e":[3,0,3,0],
+"class_electro_analysis.html#ad61174f849ebc18fd65d7311c5bea04c":[3,0,3,1],
 "class_fluid1_d.html":[3,0,4],
 "class_fluid2_d.html":[3,0,5],
 "class_fluid2_d.html#a04d2b0931713bd8a0b50eeefe17d0fb8":[3,0,5,25],

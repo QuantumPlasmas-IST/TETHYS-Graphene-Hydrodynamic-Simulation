@@ -48,8 +48,7 @@ void ElectroAnalysis::ComputeElectroBase(float t, const GrapheneFluid2D& graphen
 	AvgCurDS.push_back(ElectroAnalysis::AverageDirectCurrent(graphene));
 	VoltDS.push_back(ElectroAnalysis::DrainToSourceVoltage(graphene));
 	AvgCurHall.push_back(ElectroAnalysis::AverageHallCurrent(graphene));
-	//PowOhm.push_back(3.0f); //TODO ohm power ta a dar merda
-	PowOhm.push_back(ElectroAnalysis::OhmPower(graphene)); //TODO ohm power ta a dar merda
+	PowOhm.push_back(ElectroAnalysis::OhmPower(graphene));
 }
 
 

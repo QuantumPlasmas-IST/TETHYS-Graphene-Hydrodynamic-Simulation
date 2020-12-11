@@ -3,7 +3,7 @@ var annotated_dup =
     [ "BoundaryCondition", "class_boundary_condition.html", null ],
     [ "DirichletBoundaryCondition", "class_dirichlet_boundary_condition.html", null ],
     [ "DyakonovShurBoundaryCondition", "class_dyakonov_shur_boundary_condition.html", null ],
-    [ "ElectroAnalysis", "class_electro_analysis.html", null ],
+    [ "ElectroAnalysis", "class_electro_analysis.html", "class_electro_analysis" ],
     [ "Fluid1D", "class_fluid1_d.html", null ],
     [ "Fluid2D", "class_fluid2_d.html", "class_fluid2_d" ],
     [ "GrapheneFluid1D", "class_graphene_fluid1_d.html", null ],
