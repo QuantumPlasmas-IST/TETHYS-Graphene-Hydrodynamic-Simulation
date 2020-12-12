@@ -229,8 +229,6 @@ class GrapheneFluid2D : public Fluid2D{
 
 		void MagneticSourceSemiAnalytic(); // Semi analytic method for the magnetic interaction
 		//void MagneticSourceFtcs();  // Forward Time Centered Space method for the magnetic interaction
-
-
 };
 
 

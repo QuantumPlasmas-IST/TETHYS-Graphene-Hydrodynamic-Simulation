@@ -121,7 +121,6 @@ void Fluid2D::Richtmyer(){
 
 #pragma omp parallel for default(none) shared(Nx,Ny,FlxX,FlxY,Den,flxX_mid,flxY_mid,den_mid,vel_snd_arr,dt,dx)
 		for(int ks=0; ks<=Nx*Ny-Nx-Ny; ks++){ //correr todos os pontos da grelha secundaria de den_mid
-
 			int northeast,northwest,southeast,southwest;
 			float den_north, den_south ,den_east ,den_west, px_north, px_south, px_east, px_west, py_north, py_south, py_east, py_west,m_east,m_west,m_north,m_south;
 			float  sound_north, sound_south ,sound_east ,sound_west;
@@ -199,12 +198,10 @@ void Fluid2D::Richtmyer(){
 						MassFluxYFluxY(den_north, px_north, py_north,m_north,sound_north)-
 						MassFluxYFluxY(den_south, px_south, py_south,m_south,sound_south))//;
 					+0.5f*dt*MassFluxYSource(den_avg, flx_x_avg, flx_y_avg, 0.0f, 0.0f);
-
 		}
 
 #pragma omp parallel for default(none) shared(Nx,Ny,FlxX,FlxY,Den,flxX_mid,flxY_mid,den_mid,vel_snd_arr_mid,dt,dx)
 		for(int kp=1+Nx; kp<=Nx*Ny-Nx-2; kp++){ //correr a grelha principal evitando as fronteiras
-
 			int northeast,northwest,southeast,southwest;
 			float den_north, den_south ,den_east ,den_west, px_north, px_south, px_east, px_west, py_north, py_south, py_east, py_west,m_east,m_west,m_north,m_south;
 			float  sound_north, sound_south ,sound_east ,sound_west;
@@ -406,7 +403,6 @@ void GrapheneFluid2D::CflCondition(){ // Eventual redefinition
 	if(kin_vis>0.0f&& kin_vis*dt > dx*dx*0.5f){
 		dt = 0.8f*0.5f*dx*dx/kin_vis;
 	}
-
 }	
 
 float  GrapheneFluid2D::DensityFluxX(float n,float flx_x, __attribute__((unused)) float flx_y, __attribute__((unused)) float mass,__attribute__((unused))  float s){
@@ -500,10 +496,8 @@ void Fluid2D::VelocityLaplacianWeighted19() {
 			               sx*sy*( VelY[northeast] + VelY[southeast] + VelY[northwest] + VelY[southwest])
 			               + sy*(1.0f-2.0f*sx)*(VelY[north] + VelY[south])
 			               + sx*(1.0f-2.0f*sy)*(VelY[west] + VelY[east]);
-
 		}
 	}
-
 }
 
 
@@ -551,7 +545,6 @@ void Fluid2D::ParabolicOperatorWeightedExplicit19() {
 			FlxX[kp] = flx_x_old + lap_flxX[kp] ;//+ dt * ( -1.0f*cyc_freq * flx_y_old / sqrtn_0);
 			FlxY[kp] = flx_y_old + lap_flxY[kp] ;//+ dt * (       cyc_freq * flx_x_old / sqrtn_0);
 		}
-
 	}
 }
 
