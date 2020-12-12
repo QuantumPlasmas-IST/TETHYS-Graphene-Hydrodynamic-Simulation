@@ -11,10 +11,11 @@
 ## Documentation
 
 
-The full documentation can be generated with Doxygen 
-
-
-looked up [here](./doc/html/index.html)
+The full documentation can be generated with Doxygen simply running 
+```console
+$ doxygen Doxyfile
+```
+from the root directory
 
 <!--- ## Richtmyer method implementation --->
 <!--- Repository for the elaboration of the hydrodynamic model simulation. --->
