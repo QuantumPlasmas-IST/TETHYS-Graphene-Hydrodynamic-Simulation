@@ -11,7 +11,10 @@
 ## Documentation
 
 
-The full documentation can be looked up [here](./doc/html/index.html)
+The full documentation can be generated with Doxygen 
+
+
+looked up [here](./doc/html/index.html)
 
 <!--- ## Richtmyer method implementation --->
 <!--- Repository for the elaboration of the hydrodynamic model simulation. --->
@@ -34,17 +37,19 @@ The full documentation can be looked up [here](./doc/html/index.html)
 
   <small>Responsible for CPU parallelization.</small>
 
-* HDF5<sup><small>&reg;</small></sup> libraries (version 1.8.20) 
+* HDF5<sup><small>&reg;</small></sup> libraries (version 1.8.20 or higher) 
 
   <small>For the writing of the complete data.</small>
 
-* ~~FFTW libraries~~
+### Optional 
 
-  <small>Temporarily not implemented, in future will be used for calculate Fourier Transform of the signal.</small> 
+* Doxygen 
+
+  <small>For generating the documentation</small>
 
 * Gnuplot & Python
 
-  <small>Responsible for the plotting</small>
+  <small>For the plotting</small>
   
 ## Usage   
 ### Compilation
