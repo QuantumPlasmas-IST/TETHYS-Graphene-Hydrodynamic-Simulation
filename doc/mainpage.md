@@ -64,29 +64,30 @@ $ ./TETHYS_2D vel_snd vel_fer col vis cyc save_mode aspect_ratio
 
 
 @section vcs Version history
-**1.0.0** Initial commit
+
+**1.0.0** Initial commit *[16 Sep. 2019]*
 
 **1.1.0** Updated nonlinear terms in velocity flux, explicit pressure term. (minor changes in variables).
 
 **1.2.0** Addition of collisional loss term.
-  <br>&emsp;**1.2.1** Mean free path added as command line parameter. 
-  <br>&emsp;**1.2.2** Update of frequency functions + minor changes in appearance. 
-  <br>&emsp;**1.2.3** Added warning for the case on non-propagating plasmons + beginning implementation of CI tasks.
-  <br>&emsp;**1.2.4** New CFL condition.
-  <br>&emsp;**1.2.5** Output in HDF5 format.
-  
-**1.3.0** Transition to object oriented code. Addition of Time Series Analysis and Electronic properties extraction.
-  <br>&emsp;**1.3.1** Stored energy at the capacitor gate calculated. 
-  <br>&emsp;**1.3.2** Viscosity term for Reynolds >10 implemented. 
-  <br>&emsp;**1.3.3** New class hierarchy on 1D algorithms. 
-  <br>&emsp;**1.3.4** Boundary conditions implemented as a separate class
+<br>&emsp;**1.2.1** Mean free path added as command line parameter.
+<br>&emsp;**1.2.2** Update of frequency functions + minor changes in appearance.
+<br>&emsp;**1.2.3** Added warning for the case on non-propagating plasmons + beginning implementation of CI tasks. *[17 Nov. 2019]*
+<br>&emsp;**1.2.4** New CFL condition.
+<br>&emsp;**1.2.5** Output in HDF5 format. *[8 Jan. 2020]*
 
-**2.0.0** Two dimensional code implementation. 1D version maintained for fast/simpler simulations. 
-  <br>&emsp;**2.0.1** New class hierarchy on 2D algorithms. New organization of header files
-  <br>&emsp;**2.0.2** Boundary conditions implemented as a separate class
-  <br>&emsp;**2.0.3** Linear _for_ loops
-  <br>&emsp;**2.1.0** Magnetic Field inclusion with _Godunov Splitting_ 
-  <br>&emsp;**2.2.0** Shear viscosity with FTCS method. Variable Aspect ratio 
-  <br>&emsp;**2.2.1** Momentum relaxation in 2D simulations
-  <br>&emsp;**2.3.0** (1,9) Weighted explicit method for viscous terms 
-  <br>&emsp;**2.3.1** Parallelization with OpenMP 
+**1.3.0** Transition to object oriented code. Addition of Time Series Analysis and Electronic properties extraction. *[1 May. 2020]*
+<br>&emsp;**1.3.1** Stored energy at the capacitor gate calculated.
+<br>&emsp;**1.3.2** Viscosity term for Reynolds >10 implemented. *[26 May. 2020]*
+<br>&emsp;**1.3.3** New class hierarchy on 1D algorithms. *[26 Jun. 2020]*
+<br>&emsp;**1.3.4** Boundary conditions implemented as a separate class *[28 Jun. 2020]*
+
+**2.0.0** Two dimensional code implementation. 1D version maintained for fast/simpler simulations. *[22 Jun. 2020]*
+<br>&emsp;**2.0.1** New class hierarchy on 2D algorithms. New organization of header files *[26 Jun. 2020]*
+<br>&emsp;**2.0.2** Boundary conditions implemented as a separate class *[28 Jun. 2020]*
+<br>&emsp;**2.0.3** Linear _for_ loops *[29 Jun. 2020]*
+<br>&emsp;**2.1.0** Magnetic Field inclusion with _Godunov Splitting_ *[22 Jul. 2020]*
+<br>&emsp;**2.2.0** Shear viscosity with FTCS method. Variable Aspect ratio  *[20 Sep. 2020]*
+<br>&emsp;**2.2.1** Momentum relaxation in 2D simulations *[24 Oct. 2020]*
+<br>&emsp;**2.3.0** (1,9) Weighted explicit method for viscous terms *[17 Nov. 2020]*
+<br>&emsp;**2.3.1** Parallelization with OpenMP  *[25 Nov. 2020]*
