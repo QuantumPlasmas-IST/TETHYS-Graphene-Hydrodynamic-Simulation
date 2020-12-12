@@ -21,6 +21,7 @@
 *.tar.xz
 *.tar*
 
+*.backup
 
 #CMAke and Clion stuff
 .idea/
@@ -29,7 +30,9 @@ USING_HDF5_CMake.txt
 cmake-build-debug/
 venv/
 #Doxygen output
-./doc/html/
+./doc/html/*
+*.html
+*.js
 
 ###########################################
 # Github Template for C/C++
