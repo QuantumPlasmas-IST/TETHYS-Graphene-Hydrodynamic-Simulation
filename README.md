@@ -68,9 +68,26 @@ $ make all
 
 ### Running a simulation
 
+To run a simulation one can simply invoke
+```console
+$ ./TETHYS_2D 
+```
+and the program will prompt the user to provide the necessary parameters for the simulation. Alternatively, the user can pass directly such parameters as command arguments.
+The necessary inputs are:
+* Sound velocity S (vel_snd)
+* Fermi velocity v<sub>F</sub> (vel_fer)
+* Collision, of the electrons with impurities or defects, frequency (col)
+* Shear viscosity (vis)
+* Cyclotron frequency (cyc)
+* (save_mode)
+
+and optionally:  
+
+* Aspect ratio of the simulation grid x:y (aspect_ratio)
 ```console
 $ ./TETHYS_2D vel_snd vel_fer col vis cyc save_mode aspect_ratio
 ```
+
 
 ## Class Hierarchy
 

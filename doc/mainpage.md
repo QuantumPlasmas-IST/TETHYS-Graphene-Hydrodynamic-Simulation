@@ -14,23 +14,16 @@ This small manual is intended to be a first and broad guide to the usage of TETH
 
 * cmake (version 3.16)
 
-  <small>To generate the makefiles</small>
+  To generate the makefiles
 
-* OpenMP<sup><small>&reg;</small></sup>
+* OpenMP<sup>&reg;</sup>
 
-  <small>Responsible for CPU parallelization.</small>
+  Responsible for CPU parallelization.
 
-* HDF5<sup><small>&reg;</small></sup> libraries (version 1.8.20 or higher)
+* HDF5<sup>&reg;</sup> libraries (version 1.8.20 or higher)
 
-  <small>For the writing of the complete data.</small>
+  For the writing of the complete data.
 
-* ~~FFTW libraries~~
-
-  <small>Temporarily not implemented, in future will be used for calculate Fourier Transform of the signal.</small>
-
-* Gnuplot & Python
-
-  <small>Responsible for the plotting</small>
 
 @section use Usage
 @subsection compile Compilation
@@ -47,9 +40,27 @@ $ make all
 ```
 @subsection run Running a simulation
 
+
+To run a simulation one can simply invoke
+```console
+$ ./TETHYS_2D 
+```
+and the program will prompt the user to provide the necessary parameters for the simulation. Alternatively, the user can pass directly such parameters as command arguments.
+The necessary inputs are:
+* Sound velocity S (vel_snd)
+* Fermi velocity v<sub>F</sub> (vel_fer)
+* Collision, of the electrons with impurities or defects, frequency (col)
+* Shear viscosity (vis)
+* Cyclotron frequency (cyc)
+* (save_mode)
+
+and optionally:
+
+* Aspect ratio of the simulation grid x:y (aspect_ratio)
+
 ```console
 $ ./TETHYS_2D vel_snd vel_fer col vis cyc save_mode aspect_ratio
-```
+``` 
 
 
 @section vcs Version history
