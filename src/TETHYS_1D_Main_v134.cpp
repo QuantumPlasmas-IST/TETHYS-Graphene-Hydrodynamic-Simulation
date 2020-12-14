@@ -44,12 +44,11 @@ int main(int argc, char **argv){
 
 	graph.WelcomeScreen();
 
-	
-	////////////////////////////////////////////////////////////////////
-	// Initialization	
+
+	/*...............Initialization...................................*/
 	graph.InitialCondRand();
 	DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
-	////////////////////////////////////////////////////////////////////
+	/*................................................................*/
 
 	cout << "\033[1;7;5;33m Program Running \033[0m"<<endl;
 	graph.SetTmax(15.0);
