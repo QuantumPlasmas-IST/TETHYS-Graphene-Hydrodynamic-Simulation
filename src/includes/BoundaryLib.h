@@ -92,8 +92,9 @@ public:
  * This type of boundary conditions are characterized by a linear combination of the value and the normal derivative of the quantities at the boundary, i.e.
  * @f[ a U +  b \frac{\partial U}{\partial \xi}= c\quad {\rm at}\quad \partial \Omega\quad {\rm with}\quad a,b,c\in\mathbb{R}  @f]
  *
- * In the context of the fluid simulation it is useful for setting the _slip length_ conditions at the interfaces
+ * In the context of the fluid simulation it is useful for setting the _slip length_ conditions at the interfaces, where the fluid velocity is set as
  *
+ * @f[ v_x = \pm\ell \frac{\partial v_x}{\partial y} \quad v_y=0@f]
  * */
 class  RobinBoundaryCondition : public DirichletBoundaryCondition
 {
