@@ -62,7 +62,7 @@ void BoundaryCondition::XFree(Fluid2D &fluid_class, int x_limit) {
 
 	for(int j=0; j < fluid_class.SizeY(); j++){
 		int pos;
-		int neighbour=0;
+		int neighbour;
 		pos = x_limit * fluid_class.SizeX() + j * fluid_class.SizeX();
 		neighbour=pos+(1-2*x_limit);
 		fluid_class.Den[pos]=fluid_class.Den[neighbour];
@@ -125,7 +125,7 @@ void BoundaryCondition::YFree(Fluid2D& fluid_class){
 void BoundaryCondition::YFree(Fluid2D &fluid_class, int y_limit) {
 	for (int i=0; i <fluid_class.SizeX(); i++){
 		int pos = i + (fluid_class.SizeY() - 1) * fluid_class.SizeX()*y_limit;
-		int neighbour=pos+(1-2*y_limit)*fluid_class.SizeX();;
+		int neighbour=pos+(1-2*y_limit)*fluid_class.SizeX();
 		fluid_class.Den[pos]=fluid_class.Den[neighbour];
 		fluid_class.FlxY[pos] = fluid_class.FlxY[neighbour] ;
 		fluid_class.FlxX[pos] = fluid_class.FlxX[neighbour] ;
@@ -243,7 +243,7 @@ void BoundaryCondition::SetTopEdge(Fluid2D &fluid_class) {
 	TopEdge = new int[nx]();
 	for(int i=0;i<nx;i++){
 		for(int j=ny-1;j>ny/2;j--) {
-			if(abs(static_cast<float>(j) - (ny-1) + Slope * static_cast<float>(i)) <= 0.5f){
+			if(abs(static_cast<float>(j - (ny-1)) + Slope * static_cast<float>(i) ) <= 0.5f){
 				TopEdge[i] = j;
 				//TopEdge[nx-1-i] = j;
 			}

@@ -323,20 +323,16 @@ void Fluid2D::WriteFluidFile(float t){
 	int j=Ny/2;
 	int pos_end = Nx - 1 + j*Nx ;
 	int pos_ini = j*Nx ;
-	try {
 		if(!isfinite(Den[pos_end]) || !isfinite(Den[pos_ini]) || !isfinite(FlxX[pos_end]) || !isfinite(FlxX[pos_ini])){
-			throw "ERROR: numerical method failed to converge";
+			cerr << "ERROR: numerical method failed to converge" <<"\nExiting"<< endl;
+			CloseHdf5File();
+			exit(EXIT_FAILURE);
 		}
-		data_preview << t << "\t"
-		<< Den[pos_end]  << "\t"
-		<< FlxX[pos_end] << "\t"
-		<< Den[pos_ini]  << "\t"
-		<< FlxX[pos_ini] << "\n";
-	}catch (const char* msg) {
-		cerr << msg  <<"\nExiting"<< endl;
-		this->CloseHdf5File();
-		exit(EXIT_FAILURE);
-	}
+	data_preview << t << "\t"
+	<< Den[pos_end]  << "\t"
+	<< FlxX[pos_end] << "\t"
+	<< Den[pos_ini]  << "\t"
+	<< FlxX[pos_ini] << "\n";
 }
 
 void Fluid2D::SetSimulationTime(){
@@ -515,13 +511,14 @@ void Fluid2D:: ParabolicOperatorFtcs() {
 	//FTCS algorithm
 
 	//float	odd_vis=0.0f;
+	//TODO por esta evolucao e a do 1.9 numa mesma funcao ja que so variam nos lapacianos
 #pragma omp parallel for default(none) shared(Nx,Ny,FlxX,FlxY,lap_flxX,lap_flxY,dt,cyc_freq)
 	for (int kp = 1 + Nx; kp <= Nx * Ny - Nx - 2; kp++) { //correr a grelha principal evitando as fronteiras
-		float flx_x_old,flx_y_old,sqrtn_0;
+		float flx_x_old,flx_y_old;//,sqrtn_0;
 		if (kp % Nx != Nx - 1 && kp % Nx != 0) {
 			flx_x_old=FlxX[kp];
 			flx_y_old=FlxY[kp];
-			sqrtn_0=sqrt(Den[kp]);
+			//sqrtn_0=sqrt(Den[kp]);
 			FlxX[kp] = flx_x_old + lap_flxX[kp];// + dt * ( -1.0f*cyc_freq * flx_y_old / sqrtn_0);
 			FlxY[kp] = flx_y_old + lap_flxY[kp];// + dt * (       cyc_freq * flx_x_old / sqrtn_0);
 		}
@@ -532,11 +529,11 @@ void Fluid2D::ParabolicOperatorWeightedExplicit19() {
 	this->VelocityLaplacianWeighted19();
 #pragma omp parallel for default(none) shared(Nx,Ny,FlxX,FlxY,lap_flxX,lap_flxY,dt,cyc_freq)
 	for (int kp = 1 + Nx; kp <= Nx * Ny - Nx - 2; kp++) { //correr a grelha principal evitando as fronteiras
-		float flx_x_old,flx_y_old,sqrtn_0;
+		float flx_x_old,flx_y_old;//,sqrtn_0;
 		if (kp % Nx != Nx - 1 && kp % Nx != 0) {
 			flx_x_old=FlxX[kp];
 			flx_y_old=FlxY[kp];
-			sqrtn_0=sqrt(Den[kp]);
+			//sqrtn_0=sqrt(Den[kp]);
 			FlxX[kp] = flx_x_old + lap_flxX[kp] ;//+ dt * ( -1.0f*cyc_freq * flx_y_old / sqrtn_0);
 			FlxY[kp] = flx_y_old + lap_flxY[kp] ;//+ dt * (       cyc_freq * flx_x_old / sqrtn_0);
 		}

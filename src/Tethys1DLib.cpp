@@ -120,67 +120,62 @@ void Fluid1D::CreateFluidFile(){
 }
 
 void Fluid1D::WriteFluidFile(float t){
-	try {
-		int pos_end = Nx - 1 ;
-		int pos_ini = 0;
-		if (!isfinite(Den[pos_end]) || !isfinite(Den[pos_ini]) || !isfinite(Vel[pos_end]) ||
-		    !isfinite(Vel[pos_ini])) {
-			throw "ERROR: numerical method failed to converge";
-		}
-//data_preview << t << "\t" << DenCor[Nx - 1] << "\t" << VelCor[Nx - 1] << "\t" << DenCor[0] << "\t" << VelCor[0] << "\n";
-		data_preview << t << "\t" << Den[pos_end] << "\t" << Vel[pos_end] << "\t" << Den[pos_ini] << "\t" << Vel[pos_ini] << "\n";
-	}catch (const char* msg) {
-		cerr << msg <<"\nExiting"<< endl;
+	int pos_end = Nx - 1 ;
+	int pos_ini = 0;
+	if (!isfinite(Den[pos_end]) || !isfinite(Den[pos_ini]) || !isfinite(Vel[pos_end]) ||
+	    !isfinite(Vel[pos_ini])) {
+		cerr << "ERROR: numerical method failed to converge" <<"\nExiting"<< endl;
 		exit(EXIT_FAILURE);
 	}
+	data_preview << t << "\t" << Den[pos_end] << "\t" << Vel[pos_end] << "\t" << Den[pos_ini] << "\t" << Vel[pos_ini] << "\n";
 }
 
 
 
 void Fluid1D::Richtmyer(){
-		//
-		//Calculating the velocity gradient at k time
-		//
-		for ( int i = 1; i <= Nx-2 ; i++ )
-		{
-			GradVel[i] = (-0.5f * Vel[i - 1] + 0.5f * Vel[i + 1]) / dx;
-		}
-		GradVel[0] = (-1.5f * Vel[0] + 2.0f * Vel[1] - 0.5f * Vel[2]) / dx;
-		GradVel[Nx - 1] = (0.5f * Vel[Nx - 1 - 2] - 2.0f * Vel[Nx - 1 - 1] + 1.5f * Vel[Nx - 1]) / dx;
-		//
-		//Half step calculate density and velocity at time k+0.5 at the spatial midpoints
-		//
-		for ( int i = 0; i <= Nx - 2; i++ )
-		{
-			den_mid[i] = 0.5f*(Den[i] + Den[i + 1] )
-				- ( 0.5f*dt/dx ) * (DensityFlux(Den[i + 1], Vel[i + 1], vel_snd_arr[i]) - DensityFlux(Den[i], Vel[i], vel_snd_arr[i]) )
-					+ ( 0.5f*dt    ) * DensitySource(0.5f*(Den[i] + Den[i + 1]), 0.5f * (Vel[i] + Vel[i + 1]), vel_snd_arr[i]) ;
-			vel_mid[i] = 0.5f*(Vel[i] + Vel[i + 1] )
-				- ( 0.5f*dt/dx ) * (VelocityFlux(Den[i + 1], Vel[i + 1], GradVel[i + 1], vel_snd_arr[i]) - VelocityFlux(Den[i], Vel[i], GradVel[i], vel_snd_arr[i]) )
-					+ ( 0.5f*dt    ) * VelocitySource(0.5f*(Den[i] + Den[i + 1]), 0.5f * (Vel[i] + Vel[i + 1]), vel_snd_arr[i]) ;
-		}
-		//
-		//  Calculating the velocity gradient at k+1/2 time
-		//
-		for ( int i = 1; i <= Nx-3 ; i++ )
-		{
-			grad_vel_mid[i] =(-0.5f*vel_mid[i-1]+0.5f*vel_mid[i+1])/dx;
-		}
-		grad_vel_mid[0] = (-1.5f*vel_mid[0]+2.0f*vel_mid[1]-0.5f*vel_mid[2])/dx;
-		grad_vel_mid[(Nx-1)-1] = ( 0.5f*vel_mid[(Nx-1)-3]-2.0f*vel_mid[(Nx-1)-2]+1.5f*vel_mid[(Nx-1)-1])/dx;
-		//
-		// Remaining step 
-		//
-		for ( int i = 1; i <= Nx - 2; i++ )
-		{
-			float den_old = Den[i];
-			float vel_old = Vel[i];
-			Den[i] = Den[i] - (dt / dx) * (DensityFlux(den_mid[i], vel_mid[i], vel_snd_arr[i]) - DensityFlux(den_mid[i - 1], vel_mid[i - 1], vel_snd_arr[i] ) )
-			         +  dt * DensitySource(den_old,vel_old,vel_snd_arr[i]);
-			Vel[i] = Vel[i] - (dt / dx) * (VelocityFlux(den_mid[i], vel_mid[i], grad_vel_mid[i], vel_snd_arr[i]) - VelocityFlux(den_mid[i - 1], vel_mid[i - 1], grad_vel_mid[i - 1], vel_snd_arr[i] ) )
-					 +  dt * VelocitySource(den_old,vel_old,vel_snd_arr[i]);
-			Cur[i] = Vel[i] * Den[i];
-		}
+	//
+	//Calculating the velocity gradient at k time
+	//
+	for ( int i = 1; i <= Nx-2 ; i++ )
+	{
+		GradVel[i] = (-0.5f * Vel[i - 1] + 0.5f * Vel[i + 1]) / dx;
+	}
+	GradVel[0] = (-1.5f * Vel[0] + 2.0f * Vel[1] - 0.5f * Vel[2]) / dx;
+	GradVel[Nx - 1] = (0.5f * Vel[Nx - 1 - 2] - 2.0f * Vel[Nx - 1 - 1] + 1.5f * Vel[Nx - 1]) / dx;
+	//
+	//Half step calculate density and velocity at time k+0.5 at the spatial midpoints
+	//
+	for ( int i = 0; i <= Nx - 2; i++ )
+	{
+		den_mid[i] = 0.5f*(Den[i] + Den[i + 1] )
+			- ( 0.5f*dt/dx ) * (DensityFlux(Den[i + 1], Vel[i + 1], vel_snd_arr[i]) - DensityFlux(Den[i], Vel[i], vel_snd_arr[i]) )
+				+ ( 0.5f*dt    ) * DensitySource(0.5f*(Den[i] + Den[i + 1]), 0.5f * (Vel[i] + Vel[i + 1]), vel_snd_arr[i]) ;
+		vel_mid[i] = 0.5f*(Vel[i] + Vel[i + 1] )
+			- ( 0.5f*dt/dx ) * (VelocityFlux(Den[i + 1], Vel[i + 1], GradVel[i + 1], vel_snd_arr[i]) - VelocityFlux(Den[i], Vel[i], GradVel[i], vel_snd_arr[i]) )
+				+ ( 0.5f*dt    ) * VelocitySource(0.5f*(Den[i] + Den[i + 1]), 0.5f * (Vel[i] + Vel[i + 1]), vel_snd_arr[i]) ;
+	}
+	//
+	//  Calculating the velocity gradient at k+1/2 time
+	//
+	for ( int i = 1; i <= Nx-3 ; i++ )
+	{
+		grad_vel_mid[i] =(-0.5f*vel_mid[i-1]+0.5f*vel_mid[i+1])/dx;
+	}
+	grad_vel_mid[0] = (-1.5f*vel_mid[0]+2.0f*vel_mid[1]-0.5f*vel_mid[2])/dx;
+	grad_vel_mid[(Nx-1)-1] = ( 0.5f*vel_mid[(Nx-1)-3]-2.0f*vel_mid[(Nx-1)-2]+1.5f*vel_mid[(Nx-1)-1])/dx;
+	//
+	// Remaining step
+	//
+	for ( int i = 1; i <= Nx - 2; i++ )
+	{
+		float den_old = Den[i];
+		float vel_old = Vel[i];
+		Den[i] = Den[i] - (dt / dx) * (DensityFlux(den_mid[i], vel_mid[i], vel_snd_arr[i]) - DensityFlux(den_mid[i - 1], vel_mid[i - 1], vel_snd_arr[i] ) )
+		         +  dt * DensitySource(den_old,vel_old,vel_snd_arr[i]);
+		Vel[i] = Vel[i] - (dt / dx) * (VelocityFlux(den_mid[i], vel_mid[i], grad_vel_mid[i], vel_snd_arr[i]) - VelocityFlux(den_mid[i - 1], vel_mid[i - 1], grad_vel_mid[i - 1], vel_snd_arr[i] ) )
+				 +  dt * VelocitySource(den_old,vel_old,vel_snd_arr[i]);
+		Cur[i] = Vel[i] * Den[i];
+	}
 } 
 
 /*....................................................................*/	
@@ -194,15 +189,7 @@ float GrapheneFluid1D::DensityFlux(float n,float v,float __attribute__((unused))
 }
 float GrapheneFluid1D::VelocityFlux(float n,float v,__attribute__((unused))float dv,float s){
 	float f_2;
-	try {
-		if(n<0 || !isfinite(n)){
-			throw "ERROR: negative density";
-		}
 		f_2 = 0.25f * v * v + vel_fer * vel_fer * 0.5f * log(n) + 2.0f * s * s * sqrt(n);//- kin_vis * dv;
-	}catch (const char * msg) {
-		cerr << msg <<"\nExiting"<<endl;
-		exit(EXIT_FAILURE);
-	}
 	return f_2;
 }
 float GrapheneFluid1D::DensitySource(__attribute__((unused)) float n, __attribute__((unused)) float v, __attribute__((unused)) float s){
@@ -218,13 +205,7 @@ int Fluid1D::GetSnapshotFreq() const {return snapshot_per_period;}
 
 
 bool Fluid1D::Snapshot() const {
-	bool state;
-	if(TimeStepCounter % snapshot_step == 0){
-		state = true;
-	}else{
-		state = false;
-	}
-	return state;
+	return TimeStepCounter % snapshot_step == 0;
 }
 
 
@@ -232,7 +213,7 @@ void Fluid1D::SaveSnapShot(){
 	hsize_t dim_atr[1] = { 1 };
 	DataSpace atr_dataspace = DataSpace (1, dim_atr );
 
-	int points_per_period = static_cast<int>((2.0 * MAT_PI / this->RealFreq()) / dt);
+	int points_per_period = static_cast<int>((2.0 * MAT_PI / RealFreq()) / dt);
 	snapshot_step = points_per_period / snapshot_per_period;
 	string str_time = to_string(TimeStepCounter / snapshot_step);
 	string name_dataset = "snapshot_" + str_time;

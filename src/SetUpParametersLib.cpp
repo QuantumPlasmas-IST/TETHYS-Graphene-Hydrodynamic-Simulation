@@ -20,86 +20,74 @@ SetUpParameters::SetUpParameters() {
 SetUpParameters::SetUpParameters(float sound, float fermi, float coll, float visco, float cyclo, int mode, float aspect){
 	SizeX=101;
 	SizeY=101;
-	try {
-		SoundVelocity = sound;
-		FermiVelocity = fermi;
-		CollisionFrequency = coll;
-		ShearViscosity = visco;
-		CyclotronFrequency = cyclo;
-		SaveMode = mode;
-		AspectRatio = aspect;
-		ExceptionsChecking();
-	}catch (const char* msg) {
-		cerr << msg <<"\nExiting"<< endl;
-		exit(EXIT_FAILURE);
-	}
-	this->DefineGeometry();
+	SoundVelocity = sound;
+	FermiVelocity = fermi;
+	CollisionFrequency = coll;
+	ShearViscosity = visco;
+	CyclotronFrequency = cyclo;
+	SaveMode = mode;
+	AspectRatio = aspect;
+	ParametersChecking();
+	DefineGeometry();
 }
 
 SetUpParameters::SetUpParameters(int argc, char ** argv) {
 	SizeX=101;
 	SizeY=101;
 	if(argc==7||argc==8){
-		try {
-			SoundVelocity = strtof(argv[1], nullptr);
-			FermiVelocity = strtof(argv[2], nullptr);
-			CollisionFrequency = strtof(argv[3], nullptr);
-			ShearViscosity = strtof(argv[4], nullptr);
-			CyclotronFrequency = strtof(argv[5], nullptr);
-			SaveMode = (int) strtol(argv[6], nullptr, 10);    // full data or light save option
-			if (argc == 8) {
-				AspectRatio = strtof(argv[7], nullptr);
-			}
-			this->ExceptionsChecking();
-		}catch (const char* msg) {
-			cerr << msg <<"\nExiting"<< endl;
-			exit(EXIT_FAILURE);
+		SoundVelocity = strtof(argv[1], nullptr);
+		FermiVelocity = strtof(argv[2], nullptr);
+		CollisionFrequency = strtof(argv[3], nullptr);
+		ShearViscosity = strtof(argv[4], nullptr);
+		CyclotronFrequency = strtof(argv[5], nullptr);
+		SaveMode = (int) strtol(argv[6], nullptr, 10);    // full data or light save option
+		if (argc == 8) {
+			AspectRatio = strtof(argv[7], nullptr);
 		}
+		ParametersChecking();
 	}
 	else{
-		try {
-			cout << "Define S value: "; // throw exceptions if the velocities or frequency are negative or if S<Vf
-			cin >> SoundVelocity;
-			cout << "Define vF value: ";
-			cin >> FermiVelocity;
-			cout << "Define kinetic viscosity: ";
-			cin >> ShearViscosity;
-			cout << "Define collision frequency: ";
-			cin >> CollisionFrequency;
-			cout << "Define cyclotron frequency: ";
-			cin >> CyclotronFrequency;
-			cout << "Define the aspect ratio x:y ";
-			cin >> AspectRatio;
-			cout << "Define data_save_mode value (0-> light save | 1-> full data): ";
-			cin >> SaveMode;
-			this->ExceptionsChecking();
-		}catch (const char* msg) {
-			cerr << msg  <<"\nExiting"<< endl;
-			exit(EXIT_FAILURE);
-		}
+		cout << "Define S value: "; // throw exceptions if the velocities or frequency are negative or if S<Vf
+		cin >> SoundVelocity;
+		cout << "Define vF value: ";
+		cin >> FermiVelocity;
+		cout << "Define kinetic viscosity: ";
+		cin >> ShearViscosity;
+		cout << "Define collision frequency: ";
+		cin >> CollisionFrequency;
+		cout << "Define cyclotron frequency: ";
+		cin >> CyclotronFrequency;
+		cout << "Define the aspect ratio x:y ";
+		cin >> AspectRatio;
+		cout << "Define data_save_mode value (0-> light save | 1-> full data): ";
+		cin >> SaveMode;
+		ParametersChecking();
 	}
-	this->DefineGeometry();
+	DefineGeometry();
 }
 
-void SetUpParameters::ExceptionsChecking() const{
+void SetUpParameters::ParametersChecking() const{
+	std::string msg;
 	if(SoundVelocity<=0.0f){
-		throw "ERROR: Unphysical Sound Velocity";
+		msg = "ERROR: Unphysical Sound Velocity";
 	}
 	if(FermiVelocity<=0.0f){
-		throw "ERROR: Unphysical Fermi Velocity";
+		msg = "ERROR: Unphysical Fermi Velocity";
 	}
 	if(ShearViscosity<0.0f){
-		throw "ERROR: Unphysical Shear Viscosity";
+		msg = "ERROR: Unphysical Shear Viscosity";
 	}
 	if(CollisionFrequency<0.0f){
-		throw "ERROR: Unphysical Collision Frequency";
+		msg = "ERROR: Unphysical Collision Frequency";
 	}
 	if(CyclotronFrequency<0.0f){
-		throw "ERROR: Unphysical Cyclotron Frequency";
+		msg = "ERROR: Unphysical Cyclotron Frequency";
 	}
 	if( SaveMode != 0 && SaveMode != 1  ) {
-		throw "ERROR: Unknown save mode option";
+		msg = "ERROR: Unknown save mode option";
 	}
+	cerr << msg <<"\nExiting"<< endl;
+	exit(EXIT_FAILURE);
 }
 
 void SetUpParameters::ParametersFromHdf5File(const string& hdf5name){

@@ -65,7 +65,7 @@ int main(int argc, char **argv){
 		//DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
 		//DyakonovShurBoundaryCondition::YFree(graph);
 		BoundaryCondition::YFree(graph);
-		BoundaryCondition::XFreeRight(graph);
+		BoundaryCondition::XFree(graph,1);
 		DirichletBoundaryCondition::DensityLeft(graph, 1.0f);
 		DirichletBoundaryCondition::MassFluxXLeft(graph, 1.0f);
 		DirichletBoundaryCondition::MassFluxYLeft(graph, 0.0f);
@@ -79,7 +79,7 @@ int main(int argc, char **argv){
 			//DyakonovShurBoundaryCondition::YFree(graph);
 
 			BoundaryCondition::YFree(graph);
-			BoundaryCondition::XFreeRight(graph);
+			BoundaryCondition::XFree(graph,1);
 			DirichletBoundaryCondition::DensityLeft(graph, 1.0f);
 			DirichletBoundaryCondition::MassFluxXLeft(graph, 1.0f);
 			DirichletBoundaryCondition::MassFluxYLeft(graph, 0.0f);
