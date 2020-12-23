@@ -112,12 +112,6 @@ void Fluid2D::VelocityToCurrent() {
 }
 
 void Fluid2D::Richtmyer(){
-	//TODO OPENMP separar por exemplo densidade fluxo x e fluxo y para cada core
-//		int northeast,northwest,southeast,southwest;
-//		float den_north, den_south ,den_east ,den_west, px_north, px_south, px_east, px_west, py_north, py_south, py_east, py_west,m_east,m_west,m_north,m_south;
-//		float  sound_north, sound_south ,sound_east ,sound_west;
-		//k=i+j*Nx
-
 
 #pragma omp parallel for default(none) shared(Nx,Ny,FlxX,FlxY,Den,flxX_mid,flxY_mid,den_mid,vel_snd_arr,dt,dx)
 		for(int ks=0; ks<=Nx*Ny-Nx-Ny; ks++){ //correr todos os pontos da grelha secundaria de den_mid

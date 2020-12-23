@@ -350,7 +350,7 @@ SetUpParameters::SetUpParameters(float sound, float fermi, float coll, float vis
 		CyclotronFrequency = cyclo;
 		SaveMode = mode;
 		AspectRatio = aspect;
-		this->ExceptionsChecking();
+		ExceptionsChecking();
 	}catch (const char* msg) {
 		cerr << msg <<"\nExiting"<< endl;
 		exit(EXIT_FAILURE);

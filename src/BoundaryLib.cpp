@@ -59,8 +59,9 @@ void BoundaryCondition::XFreeLeft(Fluid2D &fluid_class) {
 		int left;
 		left= 0 + j * nx;
 		fluid_class.Den[left]=fluid_class.Den[left + 1];
-		fluid_class.FlxY[left] = 0.0f; 					//flux only on x at x=0
-		fluid_class.FlxX[left] = fluid_class.FlxX[left + 1] * pow(fluid_class.Den[left + 1], -1.5f);			//free flux at x=0
+		//fluid_class.FlxY[left] = 0.0f; 					//flux only on x at x=0
+		fluid_class.FlxY[left] = fluid_class.FlxY[left + 1] ; 					//flux only on x at x=0
+		fluid_class.FlxX[left] = fluid_class.FlxX[left + 1] ;//* pow(fluid_class.Den[left + 1], -1.5f);			//free flux at x=0
 	}
 }
 void BoundaryCondition::XFreeRight(Fluid2D &fluid_class) {
@@ -71,7 +72,8 @@ void BoundaryCondition::XFreeRight(Fluid2D &fluid_class) {
 		int right;
 		right = nx - 1 + j * nx;
 		fluid_class.Den[right]=fluid_class.Den[right - 1];			//free density at x=L
-		fluid_class.FlxY[right] = 0.0f ;					//idem at x=L
+		//fluid_class.FlxY[right] = 0.0f ;					//idem at x=L
+		fluid_class.FlxY[right] = fluid_class.FlxY[right - 1] ;					//idem at x=L
 		fluid_class.FlxX[right] =  fluid_class.FlxX[right - 1];
 	}
 }
