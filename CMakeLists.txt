@@ -38,13 +38,16 @@ add_test(test2D TETHYS_2D 20 10 0.0 0.0 0.0 1 1)
 add_executable(TETHYS_ELEC_2D src/TETHYS_2D_ElectronicAnalysis.cpp)
 add_test(test2D TETHYS_ELEC_2D hdf5_2D_S=20.00vF=10.00vis=0.00l=0.00wc=0.00.h5)
 
-add_library(tethys_library STATIC
-        src/TethysLib.cpp
-        src/Tethys2DLib.cpp
-        src/Tethys1DLib.cpp
-        src/TethysMathLib.cpp
-        src/BoundaryLib.cpp
-        src/ElectricLib.cpp)
+#add_library(tethys_library STATIC
+#        src/TethysLib.cpp
+#        src/Tethys2DLib.cpp
+#        src/Tethys1DLib.cpp
+#        src/TethysMathLib.cpp
+#        src/BoundaryLib.cpp
+#        src/ElectricLib.cpp)
+
+file(GLOB SRC_LIB_FILES src/*Lib.cpp)
+add_library(tethys_library STATIC ${SRC_LIB_FILES})
 
 
 find_library (TETHYS_LIB tethys_library lib)

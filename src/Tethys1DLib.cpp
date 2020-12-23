@@ -1,4 +1,5 @@
 #include "includes/Tethys1DLib.h"
+#include "SetUpParametersLib.h"
 
 
 using namespace H5;

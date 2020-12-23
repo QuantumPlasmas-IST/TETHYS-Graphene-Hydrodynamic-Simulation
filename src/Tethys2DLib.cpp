@@ -3,6 +3,7 @@
 
 
 #include "includes/Tethys2DLib.h"
+#include "SetUpParametersLib.h"
 
 
 using namespace H5;

@@ -7,8 +7,10 @@
 #define TETHYS1DLIB_H
 
 #include <H5Cpp.h>
-#include "TethysLib.h"
+#include "TethysBaseLib.h"
 #include "TethysMathLib.h"
+#include "SetUpParametersLib.h"
+
 using namespace H5;
 using namespace std;
 

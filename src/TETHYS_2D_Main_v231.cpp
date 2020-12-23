@@ -1,6 +1,9 @@
 #include "includes/Tethys2DLib.h"
 #include "includes/BoundaryLib.h"
 #include "includes/ElectricLib.h"
+#include "SetUpParametersLib.h"
+#include "DiricheletBoundaryLib.h"
+#include "DyakonovShurBoundaryLib.h"
 
 #ifndef MAT_PI
 #	define MAT_PI 3.14159265358979323846
@@ -59,13 +62,29 @@ int main(int argc, char **argv){
 		GrapheneFluid2D::TimeStepCounter++;
 
 		graph.Richtmyer();
-		DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
-		DyakonovShurBoundaryCondition::YFree(graph);
+		//DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
+		//DyakonovShurBoundaryCondition::YFree(graph);
+		BoundaryCondition::YFree(graph);
+		BoundaryCondition::XFreeRight(graph);
+		DirichletBoundaryCondition::DensityLeft(graph, 1.0f);
+		DirichletBoundaryCondition::MassFluxXLeft(graph, 1.0f);
+		DirichletBoundaryCondition::MassFluxYLeft(graph, 0.0f);
+		DirichletBoundaryCondition::MassFluxXBottom(graph, 0.0f);
+		DirichletBoundaryCondition::MassFluxYBottom(graph, 0.0f);
+
 
 		if(graph.GetKinVis()!=0.0f ) {
 			graph.ParabolicOperatorWeightedExplicit19();
-			DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
-			DyakonovShurBoundaryCondition::YFree(graph);
+			//DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
+			//DyakonovShurBoundaryCondition::YFree(graph);
+
+			BoundaryCondition::YFree(graph);
+			BoundaryCondition::XFreeRight(graph);
+			DirichletBoundaryCondition::DensityLeft(graph, 1.0f);
+			DirichletBoundaryCondition::MassFluxXLeft(graph, 1.0f);
+			DirichletBoundaryCondition::MassFluxYLeft(graph, 0.0f);
+			DirichletBoundaryCondition::MassFluxXBottom(graph, 0.0f);
+			DirichletBoundaryCondition::MassFluxYBottom(graph, 0.0f);
 		}
 
 		//Record full hdf5 data
