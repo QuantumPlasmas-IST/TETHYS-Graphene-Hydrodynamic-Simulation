@@ -32,6 +32,8 @@ class Fluid2D : public TethysBase
 		std::ofstream data_preview; // file stream for simplified .dat file output
 		int snapshot_per_period = 40;
 		int snapshot_step = 1;
+		void ForwardTimeOperator();
+
 	public :
 		float * Den ;       // number density
 		float * VelX ;      // fluid velocity x component
@@ -77,8 +79,6 @@ class Fluid2D : public TethysBase
 		 *
 		 */
 		void Richtmyer();                   // Central Algorithm for solving the hyperbolic conservation law
-
-
 
 
 		virtual float DensityFluxX(__attribute__((unused)) float n, float flx_x, __attribute__((unused)) float flx_y, __attribute__((unused)) float mass, __attribute__((unused)) float s); ///< density equation (continuity equation) conserved flux X component
