@@ -14,6 +14,7 @@ using namespace std;
 
 
 int main(int argc, char **argv){
+
 	SetUpParameters parameters(argc, argv);
 	parameters.DefineGeometry();
 
@@ -62,29 +63,28 @@ int main(int argc, char **argv){
 		GrapheneFluid2D::TimeStepCounter++;
 
 		graph.Richtmyer();
-		//DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
-		//DyakonovShurBoundaryCondition::YFree(graph);
-		BoundaryCondition::YFree(graph);
+		DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
+		DyakonovShurBoundaryCondition::YFree(graph);
+		/*BoundaryCondition::YFree(graph);
 		BoundaryCondition::XFree(graph,1);
 		DirichletBoundaryCondition::DensityLeft(graph, 1.0f);
 		DirichletBoundaryCondition::MassFluxXLeft(graph, 1.0f);
 		DirichletBoundaryCondition::MassFluxYLeft(graph, 0.0f);
 		DirichletBoundaryCondition::MassFluxXBottom(graph, 0.0f);
-		DirichletBoundaryCondition::MassFluxYBottom(graph, 0.0f);
+		DirichletBoundaryCondition::MassFluxYBottom(graph, 0.0f);*/
 
 
 		if(graph.GetKinVis()!=0.0f ) {
 			graph.ParabolicOperatorWeightedExplicit19();
-			//DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
-			//DyakonovShurBoundaryCondition::YFree(graph);
-
-			BoundaryCondition::YFree(graph);
+			DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
+			DyakonovShurBoundaryCondition::YFree(graph);
+			/*BoundaryCondition::YFree(graph);
 			BoundaryCondition::XFree(graph,1);
 			DirichletBoundaryCondition::DensityLeft(graph, 1.0f);
 			DirichletBoundaryCondition::MassFluxXLeft(graph, 1.0f);
 			DirichletBoundaryCondition::MassFluxYLeft(graph, 0.0f);
 			DirichletBoundaryCondition::MassFluxXBottom(graph, 0.0f);
-			DirichletBoundaryCondition::MassFluxYBottom(graph, 0.0f);
+			DirichletBoundaryCondition::MassFluxYBottom(graph, 0.0f);*/
 		}
 
 		//Record full hdf5 data

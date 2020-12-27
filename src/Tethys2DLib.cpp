@@ -33,6 +33,7 @@ Fluid2D::Fluid2D(const SetUpParameters &input_parameters) : TethysBase{input_par
 	CurY 		= new float[Nx * Ny]();
 	vel_snd_arr	= new float[Nx * Ny]();
 
+
 	lap_flxX = new float[Nx*Ny](); //new grids for the laplacians
 	lap_flxY = new float[Nx*Ny](); //in fact they could be smaller but thiw way they are just 0 at the borders who do not evolve
 
@@ -41,6 +42,7 @@ Fluid2D::Fluid2D(const SetUpParameters &input_parameters) : TethysBase{input_par
 	flxX_mid	= new float[(Nx-1)*(Ny-1)]();
 	flxY_mid	= new float[(Nx-1)*(Ny-1)]();
 	vel_snd_arr_mid	= new float[(Nx-1)*(Ny-1)]();
+
 }
 
 Fluid2D::~Fluid2D() = default;
@@ -113,7 +115,9 @@ void Fluid2D::VelocityToCurrent() {
 }
 
 void Fluid2D::Richtmyer(){
-
+	RichtmyerFirstStep();
+	RichtmyerSecondStep();
+/*
 #pragma omp parallel for default(none) shared(Nx,Ny,FlxX,FlxY,Den,flxX_mid,flxY_mid,den_mid,vel_snd_arr,dt,dx)
 		for(int ks=0; ks<=Nx*Ny-Nx-Ny; ks++){ //correr todos os pontos da grelha secundaria de den_mid
 			int northeast,northwest,southeast,southwest;
@@ -152,10 +156,12 @@ void Fluid2D::Richtmyer(){
 
 
 			//posso definir aqui a "massa" nos 4 ponto s cardeais
-			/*m_east=pow(den_east,1.5f); // e assim sucessivamente m_west m_north m_south que depois sao reutilizadeas nos 12 fluxos
+			*/
+/*m_east=pow(den_east,1.5f); // e assim sucessivamente m_west m_north m_south que depois sao reutilizadeas nos 12 fluxos
 			m_west=pow(den_west,1.5f);
 			m_north=pow(den_north,1.5f);
-			m_south=pow(den_south,1.5f);*/
+			m_south=pow(den_south,1.5f);*//*
+
 
 			m_east=sqrt(den_east*den_east*den_east); // e assim sucessivamente m_west m_north m_south que depois sao reutilizadeas nos 12 fluxos
 			m_west=sqrt(den_west*den_west*den_west);
@@ -194,7 +200,8 @@ void Fluid2D::Richtmyer(){
 						MassFluxYFluxY(den_south, px_south, py_south,m_south,sound_south))//;
 					+0.5f*dt*MassFluxYSource(den_avg, flx_x_avg, flx_y_avg, 0.0f, 0.0f);
 		}
-
+*/
+/*
 #pragma omp parallel for default(none) shared(Nx,Ny,FlxX,FlxY,Den,flxX_mid,flxY_mid,den_mid,vel_snd_arr_mid,dt,dx)
 		for(int kp=1+Nx; kp<=Nx*Ny-Nx-2; kp++){ //correr a grelha principal evitando as fronteiras
 			int northeast,northwest,southeast,southwest;
@@ -234,10 +241,10 @@ void Fluid2D::Richtmyer(){
 				py_west = 0.5f*(flxY_mid[northwest]+flxY_mid[southwest]);
 
 				//posso definir aqui a "massa" nos 4 ponto s cardeais
-				/*m_east=pow(den_east,1.5f); // e assim sucessivamente m_west m_north m_south que depois sao reutilizadeas nos 12 fluxos
+				*//*m_east=pow(den_east,1.5f); // e assim sucessivamente m_west m_north m_south que depois sao reutilizadeas nos 12 fluxos
 				m_west=pow(den_west,1.5f);
 				m_north=pow(den_north,1.5f);
-				m_south=pow(den_south,1.5f);*/
+				m_south=pow(den_south,1.5f);*//*
 
 				m_east=sqrt(den_east*den_east*den_east);
 				m_west=sqrt(den_west*den_west*den_west);
@@ -269,7 +276,7 @@ void Fluid2D::Richtmyer(){
 							MassFluxYFluxY(den_south, px_south, py_south,m_south,sound_south))
 						+dt*MassFluxYSource(den_old, flx_x_old, flx_y_old, 0.0f, 0.0f);
 			}
-		}
+		}*/
 }
 
 void Fluid2D::CflCondition(){
@@ -669,6 +676,158 @@ void Fluid2D::ForwardTimeOperator() {
 			flx_y_old=FlxY[kp];
 			FlxX[kp] = flx_x_old + lap_flxX[kp];
 			FlxY[kp] = flx_y_old + lap_flxY[kp];
+		}
+	}
+}
+
+
+void Fluid2D::RichtmyerFirstStep(){
+#pragma omp parallel for default(none) shared(Nx,Ny,FlxX,FlxY,Den,flxX_mid,flxY_mid,den_mid,vel_snd_arr,dt,dx)
+	for(int ks=0; ks<=Nx*Ny-Nx-Ny; ks++){ //correr todos os pontos da grelha secundaria de den_mid
+		int northeast,northwest,southeast,southwest;
+		float den_north, den_south ,den_east ,den_west, px_north, px_south, px_east, px_west, py_north, py_south, py_east, py_west,m_east,m_west,m_north,m_south;
+		float  sound_north, sound_south ,sound_east ,sound_west;
+
+		div_t divresult;
+		divresult = div (ks,Nx-1);
+		int j=divresult.quot;
+		int i=divresult.rem;
+
+		northeast=i+1+(j+1)*Nx;
+		northwest=i+(j+1)*Nx;
+		southeast=i+1+j*Nx;
+		southwest=i+j*Nx;
+
+		sound_north = 0.5f * (vel_snd_arr[northeast] + vel_snd_arr[northwest]);
+		sound_south = 0.5f*(vel_snd_arr[southeast] + vel_snd_arr[southwest]);
+		sound_east = 0.5f*(vel_snd_arr[northeast] + vel_snd_arr[southeast]);
+		sound_west = 0.5f*(vel_snd_arr[northwest] + vel_snd_arr[southwest]);
+
+		den_north = 0.5f*(Den[northeast] + Den[northwest]);
+		den_south = 0.5f*(Den[southeast] + Den[southwest]);
+		den_east = 0.5f*(Den[northeast] + Den[southeast]);
+		den_west = 0.5f*(Den[northwest] + Den[southwest]);
+
+		px_north = 0.5f*(FlxX[northeast] + FlxX[northwest]);
+		px_south = 0.5f*(FlxX[southeast] + FlxX[southwest]);
+		px_east = 0.5f*(FlxX[northeast] + FlxX[southeast]);
+		px_west = 0.5f*(FlxX[northwest] + FlxX[southwest]);
+
+		py_north = 0.5f*(FlxY[northeast] + FlxY[northwest]);
+		py_south = 0.5f*(FlxY[southeast] + FlxY[southwest]);
+		py_east = 0.5f*(FlxY[northeast] + FlxY[southeast]);
+		py_west = 0.5f*(FlxY[northwest] + FlxY[southwest]);
+
+		m_east=sqrt(den_east*den_east*den_east);
+		m_west=sqrt(den_west*den_west*den_west);
+		m_north=sqrt(den_north*den_north*den_north);
+		m_south=sqrt(den_south*den_south*den_south);
+
+		float den_avg = 0.25f * (Den[southwest] + Den[southeast] + Den[northwest] + Den[northeast]);
+		float flx_x_avg = 0.25f * (FlxX[southwest] + FlxX[southeast] + FlxX[northwest] + FlxX[northeast]);
+		float flx_y_avg = 0.25f * (FlxY[southwest] + FlxY[southeast] + FlxY[northwest] + FlxY[northeast]);
+
+		den_mid[ks] = den_avg
+		              -0.5f*(dt/dx)*(
+				DensityFluxX(den_east, px_east, py_east,m_east,sound_east)-
+				DensityFluxX(den_west, px_west, py_west,m_west,sound_west))
+		              -0.5f*(dt/dy)*(
+				DensityFluxY(den_north, px_north, py_north,m_north,sound_north)-
+				DensityFluxY(den_south, px_south, py_south,m_south,sound_south))//;
+		              +0.5f*dt*DensitySource(den_avg, flx_x_avg, flx_y_avg, 0.0f, 0.0f);
+
+
+		flxX_mid[ks] = flx_x_avg
+		               -0.5f*(dt/dx)*(
+				MassFluxXFluxX(den_east, px_east, py_east,m_east,sound_east)-
+				MassFluxXFluxX(den_west, px_west, py_west,m_west,sound_west))
+		               -0.5f*(dt/dy)*(
+				MassFluxXFluxY(den_north, px_north, py_north,m_north,sound_north)-
+				MassFluxXFluxY(den_south, px_south, py_south,m_south,sound_south))//;
+		               +0.5f*dt*MassFluxXSource(den_avg, flx_x_avg, flx_y_avg, 0.0f, 0.0f);
+
+		flxY_mid[ks] = flx_y_avg
+		               -0.5f*(dt/dx)*(
+				MassFluxYFluxX(den_east, px_east, py_east,m_east,sound_east)-
+				MassFluxYFluxX(den_west, px_west, py_west,m_west,sound_west))
+		               -0.5f*(dt/dy)*(
+				MassFluxYFluxY(den_north, px_north, py_north,m_north,sound_north)-
+				MassFluxYFluxY(den_south, px_south, py_south,m_south,sound_south))//;
+		               +0.5f*dt*MassFluxYSource(den_avg, flx_x_avg, flx_y_avg, 0.0f, 0.0f);
+	}
+
+
+}
+
+void Fluid2D::RichtmyerSecondStep(){
+
+#pragma omp parallel for default(none) shared(Nx,Ny,FlxX,FlxY,Den,flxX_mid,flxY_mid,den_mid,vel_snd_arr_mid,dt,dx)
+	for(int kp=1+Nx; kp<=Nx*Ny-Nx-2; kp++){ //correr a grelha principal evitando as fronteiras
+		int northeast,northwest,southeast,southwest;
+		float den_north, den_south ,den_east ,den_west, px_north, px_south, px_east, px_west, py_north, py_south, py_east, py_west,m_east,m_west,m_north,m_south;
+		float  sound_north, sound_south ,sound_east ,sound_west;
+
+		div_t divresult;
+		divresult = div (kp,Nx);
+		int j=divresult.quot;
+		int i=divresult.rem;
+
+
+		if( kp%Nx!=Nx-1 && kp%Nx!=0){
+			northeast=i+j*(Nx-1);
+			northwest=i-1+j*(Nx-1);
+			southeast=i+(j-1)*(Nx-1);
+			southwest=i-1+(j-1)*(Nx-1);
+
+			sound_north = 0.5f * (vel_snd_arr_mid[northeast] + vel_snd_arr_mid[northwest]);
+			sound_south = 0.5f*(vel_snd_arr_mid[southeast] + vel_snd_arr_mid[southwest]);
+			sound_east = 0.5f*(vel_snd_arr_mid[northeast] + vel_snd_arr_mid[southeast]);
+			sound_west = 0.5f*(vel_snd_arr_mid[northwest] + vel_snd_arr_mid[southwest]);
+
+			den_north = 0.5f*(den_mid[northeast]+den_mid[northwest]);
+			den_south = 0.5f*(den_mid[southeast]+den_mid[southwest]);
+			den_east = 0.5f*(den_mid[northeast]+den_mid[southeast]);
+			den_west = 0.5f*(den_mid[northwest]+den_mid[southwest]);
+
+			px_north = 0.5f*(flxX_mid[northeast]+flxX_mid[northwest]);
+			px_south = 0.5f*(flxX_mid[southeast]+flxX_mid[southwest]);
+			px_east = 0.5f*(flxX_mid[northeast]+flxX_mid[southeast]);
+			px_west = 0.5f*(flxX_mid[northwest]+flxX_mid[southwest]);
+
+			py_north = 0.5f*(flxY_mid[northeast]+flxY_mid[northwest]);
+			py_south = 0.5f*(flxY_mid[southeast]+flxY_mid[southwest]);
+			py_east = 0.5f*(flxY_mid[northeast]+flxY_mid[southeast]);
+			py_west = 0.5f*(flxY_mid[northwest]+flxY_mid[southwest]);
+
+			m_east=sqrt(den_east*den_east*den_east);
+			m_west=sqrt(den_west*den_west*den_west);
+			m_north=sqrt(den_north*den_north*den_north);
+			m_south=sqrt(den_south*den_south*den_south);
+
+			float den_old = Den[kp];
+			float flx_x_old = FlxX[kp];
+			float flx_y_old = FlxY[kp];
+			Den[kp] = den_old - (dt / dx) * (
+					DensityFluxX(den_east, px_east, py_east,m_east,sound_east)-
+					DensityFluxX(den_west, px_west, py_west,m_west,sound_west))
+			          -(dt/dy)*(
+					DensityFluxY(den_north, px_north, py_north,m_north,sound_north)-
+					DensityFluxY(den_south, px_south, py_south,m_south,sound_south))
+			          +dt*DensitySource(den_old, flx_x_old, flx_y_old, 0.0f, 0.0f);
+			FlxX[kp] = flx_x_old - (dt / dx) * (
+					MassFluxXFluxX(den_east, px_east, py_east,m_east,sound_east)-
+					MassFluxXFluxX(den_west, px_west, py_west,m_west,sound_west))
+			           -(dt/dy)*(
+					MassFluxXFluxY(den_north, px_north, py_north,m_north,sound_north)-
+					MassFluxXFluxY(den_south, px_south, py_south,m_south,sound_south))
+			           +dt*MassFluxXSource(den_old, flx_x_old, flx_y_old, 0.0f, 0.0f);
+			FlxY[kp] = flx_y_old - (dt / dx) * (
+					MassFluxYFluxX(den_east, px_east, py_east,m_east,sound_east)-
+					MassFluxYFluxX(den_west, px_west, py_west,m_west,sound_west))
+			           -(dt/dy)*(
+					MassFluxYFluxY(den_north, px_north, py_north,m_north,sound_north)-
+					MassFluxYFluxY(den_south, px_south, py_south,m_south,sound_south))
+			           +dt*MassFluxYSource(den_old, flx_x_old, flx_y_old, 0.0f, 0.0f);
 		}
 	}
 }

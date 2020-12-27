@@ -11,6 +11,7 @@
 #include "TethysMathLib.h"
 #include "SetUpParametersLib.h"
 
+
 using namespace H5;
 
 /*!
@@ -34,7 +35,8 @@ class Fluid2D : public TethysBase
 		int snapshot_step = 1;
 		void ForwardTimeOperator();
 
-	public :
+
+public :
 		float * Den ;       // number density
 		float * VelX ;      // fluid velocity x component
 		float * VelY ;      // fluid velocity y component
@@ -79,17 +81,24 @@ class Fluid2D : public TethysBase
 		 *
 		 */
 		void Richtmyer();                   // Central Algorithm for solving the hyperbolic conservation law
+		void RichtmyerFirstStep();
+		void RichtmyerSecondStep();
 
 
-		virtual float DensityFluxX(__attribute__((unused)) float n, float flx_x, __attribute__((unused)) float flx_y, __attribute__((unused)) float mass, __attribute__((unused)) float s); ///< density equation (continuity equation) conserved flux X component
-		virtual float DensityFluxY(__attribute__((unused)) float n, __attribute__((unused)) float flx_x, float flx_y, __attribute__((unused)) float mass, __attribute__((unused)) float s); ///< density equation (continuity equation) conserved flux Y component
-		virtual float DensitySource(__attribute__((unused)) float n,__attribute__((unused)) float flx_x,__attribute__((unused)) float flx_y,__attribute__((unused)) float mass,__attribute__((unused)) float s); ///< density equation (continuity equation) source term
-		virtual float MassFluxXFluxX(float n, float flx_x, float flx_y,__attribute__((unused)) float mass, float s); ///< velocity X component equation (momentum equation) conserved flux X component
-		virtual float MassFluxXFluxY(float n, float flx_x, float flx_y,__attribute__((unused)) float mass, float s); ///< velocity X component equation (momentum equation) conserved flux Y component
-		virtual float MassFluxXSource(__attribute__((unused))float n, float flx_x,__attribute__((unused)) float flx_y,__attribute__((unused)) float mass,__attribute__((unused)) float s); ///< velocity X component equation (momentum equation) source term
-		virtual float MassFluxYFluxX(float n, float flx_x, float flx_y,__attribute__((unused)) float mass, float s); ///< velocity Y component equation (momentum equation) conserved flux X component
-		virtual float MassFluxYFluxY(float n, float flx_x, float flx_y,__attribute__((unused)) float mass, float s); ///< velocity Y component equation (momentum equation) conserved flux Y component
-		virtual float MassFluxYSource(__attribute__((unused))float n, float flx_x,__attribute__((unused)) float flx_y,__attribute__((unused)) float mass,__attribute__((unused)) float s); ///< velocity y component equation (momentum equation) source term
+		virtual float DensityFluxX( float n, float flx_x,  float flx_y,  float mass,  float s); ///< density equation (continuity equation) conserved flux X component
+		virtual float DensityFluxY( float n,  float flx_x, float flx_y,  float mass,  float s); ///< density equation (continuity equation) conserved flux Y component
+		virtual float DensitySource( float n, float flx_x, float flx_y, float mass, float s); ///< density equation (continuity equation) source term
+		virtual float MassFluxXFluxX(float n, float flx_x, float flx_y, float mass, float s); ///< velocity X component equation (momentum equation) conserved flux X component
+		virtual float MassFluxXFluxY(float n, float flx_x, float flx_y, float mass, float s); ///< velocity X component equation (momentum equation) conserved flux Y component
+		virtual float MassFluxXSource(float n, float flx_x, float flx_y, float mass, float s); ///< velocity X component equation (momentum equation) source term
+		virtual float MassFluxYFluxX(float n, float flx_x, float flx_y, float mass, float s); ///< velocity Y component equation (momentum equation) conserved flux X component
+		virtual float MassFluxYFluxY(float n, float flx_x, float flx_y, float mass, float s); ///< velocity Y component equation (momentum equation) conserved flux Y component
+		virtual float MassFluxYSource(float n, float flx_x, float flx_y, float mass, float s); ///< velocity y component equation (momentum equation) source term
+
+
+
+
+
 
 		/*!
 		* @brief Converts the mass density flux to velocity on the entire simulation grid.

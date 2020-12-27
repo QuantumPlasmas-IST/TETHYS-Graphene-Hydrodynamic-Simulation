@@ -18,6 +18,7 @@
 #include <string>
 #include <random>
 #include <exception>
+#include <functional>
 
 #include <H5Cpp.h>
 #include <omp.h>

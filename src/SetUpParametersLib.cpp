@@ -70,24 +70,35 @@ void SetUpParameters::ParametersChecking() const{
 	std::string msg;
 	if(SoundVelocity<=0.0f){
 		msg = "ERROR: Unphysical Sound Velocity";
+		cerr << msg <<"\nExiting"<< endl;
+		exit(EXIT_FAILURE);
 	}
 	if(FermiVelocity<=0.0f){
 		msg = "ERROR: Unphysical Fermi Velocity";
+		cerr << msg <<"\nExiting"<< endl;
+		exit(EXIT_FAILURE);
 	}
 	if(ShearViscosity<0.0f){
 		msg = "ERROR: Unphysical Shear Viscosity";
+		cerr << msg <<"\nExiting"<< endl;
+		exit(EXIT_FAILURE);
 	}
 	if(CollisionFrequency<0.0f){
 		msg = "ERROR: Unphysical Collision Frequency";
+		cerr << msg <<"\nExiting"<< endl;
+		exit(EXIT_FAILURE);
 	}
 	if(CyclotronFrequency<0.0f){
 		msg = "ERROR: Unphysical Cyclotron Frequency";
+		cerr << msg <<"\nExiting"<< endl;
+		exit(EXIT_FAILURE);
 	}
 	if( SaveMode != 0 && SaveMode != 1  ) {
 		msg = "ERROR: Unknown save mode option";
+		cerr << msg <<"\nExiting"<< endl;
+		exit(EXIT_FAILURE);
 	}
-	cerr << msg <<"\nExiting"<< endl;
-	exit(EXIT_FAILURE);
+
 }
 
 void SetUpParameters::ParametersFromHdf5File(const string& hdf5name){
