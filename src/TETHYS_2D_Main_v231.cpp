@@ -1,9 +1,10 @@
-#include "includes/Tethys2DLib.h"
+#include "includes/Fluid2DLib.h"
 #include "includes/BoundaryLib.h"
 #include "includes/ElectricLib.h"
 #include "SetUpParametersLib.h"
 #include "DiricheletBoundaryLib.h"
 #include "DyakonovShurBoundaryLib.h"
+#include "GrapheneFluid2DLib.h"
 
 #ifndef MAT_PI
 #	define MAT_PI 3.14159265358979323846
@@ -41,6 +42,8 @@ int main(int argc, char **argv){
 		graph.SaveSound();
 	}
 	/*................................................................*/
+
+
 
 	GrapheneFluid2D::BannerDisplay();
 	graph.WelcomeScreen();

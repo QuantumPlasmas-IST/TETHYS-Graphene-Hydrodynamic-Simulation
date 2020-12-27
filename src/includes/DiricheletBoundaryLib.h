@@ -8,8 +8,8 @@
 #include <H5Cpp.h>
 #include "TethysBaseLib.h"
 #include "TethysMathLib.h"
-#include "Tethys1DLib.h"
-#include "Tethys2DLib.h"
+#include "Fluid1DLib.h"
+#include "Fluid2DLib.h"
 #include "BoundaryLib.h"
 #include "DiricheletBoundaryLib.h"
 

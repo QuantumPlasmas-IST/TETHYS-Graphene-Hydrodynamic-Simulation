@@ -7,10 +7,11 @@
 #include <H5Cpp.h>
 #include "TethysBaseLib.h"
 #include "TethysMathLib.h"
-#include "Tethys1DLib.h"
-#include "Tethys2DLib.h"
+#include "Fluid1DLib.h"
+#include "Fluid2DLib.h"
 #include "DiricheletBoundaryLib.h"
-
+#include "GrapheneFluid2DLib.h"
+#include "GrapheneFluid1DLib.h"
 
 
 /*!

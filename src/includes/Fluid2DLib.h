@@ -3,8 +3,8 @@
 * Distributed under the MIT License (license terms are at http://opensource.org/licenses/MIT).   *
 \************************************************************************************************/
 
-#ifndef TETHYS2DLIB_H
-#define TETHYS2DLIB_H
+#ifndef FLUID2DLIB_H
+#define FLUID2DLIB_H
 
 #include <H5Cpp.h>
 #include "TethysBaseLib.h"
@@ -13,6 +13,7 @@
 
 
 using namespace H5;
+
 
 /*!
  * @brief Generalistic fluid class in two dimensions, mainly for testing purposes.
@@ -48,7 +49,6 @@ public :
 		~Fluid2D();
 		bool Snapshot() const;
 
-
 		void SetSound();     // Applies the anisotropy to the sound velocity array
 		virtual void SetSimulationTime();   ///< Finds and set the appropriate simulation time
 		void InitialCondRand();             ///< Initial condition, zero velocity and constant density with 0.5% white noise
@@ -81,8 +81,6 @@ public :
 		 *
 		 */
 		void Richtmyer();                   // Central Algorithm for solving the hyperbolic conservation law
-		void RichtmyerFirstStep();
-		void RichtmyerSecondStep();
 
 
 		virtual float DensityFluxX( float n, float flx_x,  float flx_y,  float mass,  float s); ///< density equation (continuity equation) conserved flux X component
@@ -182,63 +180,6 @@ public :
 		* @see VelocityLaplacianWeighted19()
 		* */
 		void ParabolicOperatorWeightedExplicit19(); // Forward Time Centered Space method for the viscous terms
-};
-
-
-/*!
- * @brief Graphene electronic fluid class in two dimensions.
- *
- * The GrapheneFluid2D class describes a  fluid governed by the usual continuity and Cauchy momemtum equations, where the mass of the fluid element is *not* constant.
- * It overrides class Fluid2D necessary methods in order to describe the semi-classical electronic fluid.
- * */
-class GrapheneFluid2D : public Fluid2D{
-	public :
-		explicit GrapheneFluid2D(SetUpParameters &input_parameters);
-		~GrapheneFluid2D();
-
-		/*!
-		 * @brief Calculates @f$\Delta x@f$ and imposes Courant–Friedrichs–Lewy condition to @f$\Delta t@f$
-		 *
-		 * The method retrieves the spatial discretization @f$\Delta x = L / N_x @f$ and then sets the time step as @f$\Delta t = \Delta x/\lambda  @f$
-		 * where @f$\lambda@f$ is given by
-		 * @f{*eqnarray}
-		   \lambda =1.2v_F \quad&\mathrm{if}\quad S<0.36v_F\\
-		   \lambda =1.97S + 0.5 v_F \quad&\mathrm{otherwise} @f}
-		 */
-		void CflCondition() override;
-		/*!
-		 * @brief Sets the total simulation time in units of @f$v_0/L@f$
-		 *
-		 * The method predicts and set the maximum time for a typical Dyakonov-Shur instability simulation such that:
-		  -# It is larger than the usual saturation time
-		  -# After the saturation at least 10 oscillations occur
-
-		  Our tests concluded heuristically that such criteria can be met setting @f$T_{max}=5+0.02S+20/S@f$
-		 */
-		void SetSimulationTime() override;
-
-		/*!
-		 * @brief Converts the mass density flux to velocity on the entire simulation grid.
-		 *
-		 * Since the mass of the fluid element is not a constant the in the graphene electronic fluid, one needs to perform the transformation
-		   @f[ \vec{v} = \frac{\vec{p}}{n^{3/2}} @f]
-		 * */
-		void MassFluxToVelocity() override; // Converts the mass density flux back to velocity, in graphene  v = p n^{-3/2}
-		/*Override fluxes and sources to specifics of graphene physics*/
-
-
-		float DensityFluxX(float n, float flx_x, float flx_y,float mass, float s) override;    ///< density equation (continuity equation) conserved flux X component
-		float DensityFluxY(float n, float flx_x, float flx_y,float mass, float s) override;    ///< density equation (continuity equation) conserved flux Y component
-		float DensitySource(float n, float flx_x, float flx_y, float mass, float s)override;   ///< density equation (continuity equation) source term
-		float MassFluxXFluxX(float n, float flx_x, float flx_y,float mass, float s) override;  ///< velocity X component equation (momentum equation) conserved flux X component
-		float MassFluxXFluxY(float n, float flx_x, float flx_y,float mass, float s) override;  ///< velocity X component equation (momentum equation) conserved flux Y component
-		float MassFluxXSource(float n, float flx_x, float flx_y, float mass, float s)override; ///< velocity X component equation (momentum equation) source term
-		float MassFluxYFluxX(float n, float flx_x, float flx_y,float mass, float s) override;  ///< velocity Y component equation (momentum equation) conserved flux X component
-		float MassFluxYFluxY(float n, float flx_x, float flx_y,float mass, float s) override;  ///< velocity Y component equation (momentum equation) conserved flux Y component
-		float MassFluxYSource(float n, float flx_x, float flx_y, float mass, float s)override; ///< velocity y component equation (momentum equation) source term
-
-		void MagneticSourceSemiAnalytic(); // Semi analytic method for the magnetic interaction
-		//void MagneticSourceFtcs();  // Forward Time Centered Space method for the magnetic interaction
 };
 
 
