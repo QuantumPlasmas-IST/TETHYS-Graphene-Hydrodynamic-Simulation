@@ -1,3 +1,4 @@
+#include <RobinBoundaryLib.h>
 #include "includes/Fluid2DLib.h"
 #include "includes/BoundaryLib.h"
 #include "includes/ElectricLib.h"
@@ -66,28 +67,29 @@ int main(int argc, char **argv){
 		GrapheneFluid2D::TimeStepCounter++;
 
 		graph.Richtmyer();
-		DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
-		DyakonovShurBoundaryCondition::YFree(graph);
-		/*BoundaryCondition::YFree(graph);
-		BoundaryCondition::XFree(graph,1);
+		//DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
+		//DyakonovShurBoundaryCondition::YFree(graph);
+		BoundaryCondition::YFreeTop(graph);
+		BoundaryCondition::XFreeRight(graph);
 		DirichletBoundaryCondition::DensityLeft(graph, 1.0f);
 		DirichletBoundaryCondition::MassFluxXLeft(graph, 1.0f);
 		DirichletBoundaryCondition::MassFluxYLeft(graph, 0.0f);
-		DirichletBoundaryCondition::MassFluxXBottom(graph, 0.0f);
-		DirichletBoundaryCondition::MassFluxYBottom(graph, 0.0f);*/
-
+		DirichletBoundaryCondition::MassFluxYBottom(graph, 0.0f);
+		//DirichletBoundaryCondition::MassFluxXBottom(graph, 0.0f);
+		RobinBoundaryCondition::SlipLengthBottom(graph, 1.5f);
 
 		if(graph.GetKinVis()!=0.0f ) {
 			graph.ParabolicOperatorWeightedExplicit19();
-			DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
-			DyakonovShurBoundaryCondition::YFree(graph);
-			/*BoundaryCondition::YFree(graph);
-			BoundaryCondition::XFree(graph,1);
+			//DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
+			//DyakonovShurBoundaryCondition::YFree(graph);
+			BoundaryCondition::YFreeTop(graph);
+			BoundaryCondition::XFreeRight(graph);
 			DirichletBoundaryCondition::DensityLeft(graph, 1.0f);
 			DirichletBoundaryCondition::MassFluxXLeft(graph, 1.0f);
 			DirichletBoundaryCondition::MassFluxYLeft(graph, 0.0f);
-			DirichletBoundaryCondition::MassFluxXBottom(graph, 0.0f);
-			DirichletBoundaryCondition::MassFluxYBottom(graph, 0.0f);*/
+			DirichletBoundaryCondition::MassFluxYBottom(graph, 0.0f);
+			//DirichletBoundaryCondition::MassFluxXBottom(graph, 0.0f);
+			RobinBoundaryCondition::SlipLengthBottom(graph, 1.5f);
 		}
 
 		//Record full hdf5 data

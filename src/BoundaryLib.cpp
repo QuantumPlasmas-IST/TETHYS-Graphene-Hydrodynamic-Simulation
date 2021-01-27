@@ -70,10 +70,23 @@ void BoundaryCondition::XFree(Fluid2D &fluid_class, int x_limit) {
 		fluid_class.FlxX[pos] = fluid_class.FlxX[neighbour] ;
 	}
 }
-/*void BoundaryCondition::XFreeRight(Fluid2D &fluid_class) {
+void BoundaryCondition::XFreeLeft(Fluid2D &fluid_class) {
 	int nx=fluid_class.SizeX();
 	int ny=fluid_class.SizeY();
-
+//#pragma omp parallel for default(none) shared(fluid_class,nx,ny)
+	for(int j=0; j < ny; j++){
+		int left;
+		left= 0 + j * nx;
+		fluid_class.Den[left]=fluid_class.Den[left + 1];
+		//fluid_class.FlxY[left] = 0.0f; 					//flux only on x at x=0
+		fluid_class.FlxY[left] = fluid_class.FlxY[left + 1] ; 					//flux only on x at x=0
+		fluid_class.FlxX[left] = fluid_class.FlxX[left + 1] ;//* pow(fluid_class.Den[left + 1], -1.5f);			//free flux at x=0
+	}
+}
+void BoundaryCondition::XFreeRight(Fluid2D &fluid_class) {
+	int nx=fluid_class.SizeX();
+	int ny=fluid_class.SizeY();
+//#pragma omp parallel for default(none) shared(fluid_class,nx,ny)
 	for(int j=0; j < ny; j++){
 		int right;
 		right = nx - 1 + j * nx;
@@ -82,8 +95,7 @@ void BoundaryCondition::XFree(Fluid2D &fluid_class, int x_limit) {
 		fluid_class.FlxY[right] = fluid_class.FlxY[right - 1] ;					//idem at x=L
 		fluid_class.FlxX[right] =  fluid_class.FlxX[right - 1];
 	}
-}*/
-
+}
 
 void BoundaryCondition::XPeriodic(Fluid2D& fluid_class){
 	int nx=fluid_class.SizeX();
@@ -103,10 +115,10 @@ void BoundaryCondition::XPeriodic(Fluid2D& fluid_class){
 	}	
 }
 void BoundaryCondition::YFree(Fluid2D& fluid_class){
-	YFree(fluid_class,0);
-	YFree(fluid_class,1);
+	//YFree(fluid_class,0);
+//	YFree(fluid_class,1);
 
-/*	int nx=fluid_class.SizeX();
+	int nx=fluid_class.SizeX();
 	int ny=fluid_class.SizeY();
 //#pragma omp parallel for default(none) shared(fluid_class,nx,ny)
 	for (int i=0; i < nx; i++){
@@ -120,7 +132,7 @@ void BoundaryCondition::YFree(Fluid2D& fluid_class){
 		fluid_class.Den[top] = fluid_class.Den[top - nx];
 		fluid_class.FlxX[top] = fluid_class.FlxX[top - nx];
 		fluid_class.FlxY[top] = fluid_class.FlxY[top - nx];
-	}	 */
+	}
 }
 void BoundaryCondition::YFree(Fluid2D &fluid_class, int y_limit) {
 	for (int i=0; i <fluid_class.SizeX(); i++){
@@ -131,7 +143,19 @@ void BoundaryCondition::YFree(Fluid2D &fluid_class, int y_limit) {
 		fluid_class.FlxX[pos] = fluid_class.FlxX[neighbour] ;
 	}
 }
-/*void BoundaryCondition::YFreeBottom(Fluid2D &fluid_class) {
+void BoundaryCondition::YFreeTop(Fluid2D &fluid_class) {
+	int nx=fluid_class.SizeX();
+	int ny=fluid_class.SizeY();
+//#pragma omp parallel for default(none) shared(fluid_class,nx,ny)
+	for (int i=0; i < nx; i++){
+		int top;
+		top = i + (ny - 1) * nx;
+		fluid_class.Den[top] = fluid_class.Den[top - nx];
+		fluid_class.FlxX[top] = fluid_class.FlxX[top - nx];
+		fluid_class.FlxY[top] = fluid_class.FlxY[top - nx];
+	}
+}
+void BoundaryCondition::YFreeBottom(Fluid2D &fluid_class) {
 	int nx=fluid_class.SizeX();
 //#pragma omp parallel for default(none) shared(fluid_class,nx)
 	for (int i=0; i < nx; i++){
@@ -141,7 +165,7 @@ void BoundaryCondition::YFree(Fluid2D &fluid_class, int y_limit) {
 		fluid_class.FlxX[bottom] = fluid_class.FlxX[bottom + nx];
 		fluid_class.FlxY[bottom] = fluid_class.FlxY[bottom + nx];
 	}
-}*/
+}
 void BoundaryCondition::YPeriodic(Fluid2D& fluid_class){
 	int nx=fluid_class.SizeX();
 	int ny=fluid_class.SizeY();
