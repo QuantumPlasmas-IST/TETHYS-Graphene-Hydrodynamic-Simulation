@@ -1,4 +1,6 @@
 #include "includes/ElectricLib.h"
+#include "GrapheneFluid2DLib.h"
+#include "GrapheneFluid1DLib.h"
 
 #ifndef MAT_PI
 #    define MAT_PI 3.14159265358979323846
@@ -76,9 +78,9 @@ void ElectroAnalysis::ComputeElectroDerived() {
 
 
 void ElectroAnalysis::WriteElectroFile() {
-	try{
 		if(NetQ.empty() || DipVarY.empty()){
-			throw "Nothing to save on output file";
+			cerr << "Nothing to save on output file" <<"\nExiting"<< endl;
+			exit(EXIT_FAILURE);
 		}
 		for(size_t i = 0; i < NetQ.size(); ++i) {
 			data_electro << TmpArr[i] << "\t"
@@ -97,10 +99,6 @@ void ElectroAnalysis::WriteElectroFile() {
 			             << DipVarY[i] << "\t"
 			             << DipVarVarY[i] << "\n";
 		}
-	}catch (const char* msg) {
-		cerr << msg  <<"\nExiting"<< endl;
-		exit(EXIT_FAILURE);
-	}
 }
 
 float ElectroAnalysis::NetCharge(const GrapheneFluid1D& graphene){

@@ -10,7 +10,7 @@
 #define TETHYSMATHLIB_H
 
 #include <H5Cpp.h>
-#include "includes/TethysLib.h"
+#include "includes/TethysBaseLib.h"
 
 
 using namespace std;

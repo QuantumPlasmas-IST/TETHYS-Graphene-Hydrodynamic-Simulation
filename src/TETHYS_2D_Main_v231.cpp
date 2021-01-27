@@ -1,6 +1,11 @@
-#include "includes/Tethys2DLib.h"
+#include <RobinBoundaryLib.h>
+#include "includes/Fluid2DLib.h"
 #include "includes/BoundaryLib.h"
 #include "includes/ElectricLib.h"
+#include "SetUpParametersLib.h"
+#include "DiricheletBoundaryLib.h"
+#include "DyakonovShurBoundaryLib.h"
+#include "GrapheneFluid2DLib.h"
 
 #ifndef MAT_PI
 #	define MAT_PI 3.14159265358979323846
@@ -11,6 +16,7 @@ using namespace std;
 
 
 int main(int argc, char **argv){
+
 	SetUpParameters parameters(argc, argv);
 	parameters.DefineGeometry();
 
@@ -38,6 +44,8 @@ int main(int argc, char **argv){
 	}
 	/*................................................................*/
 
+
+
 	GrapheneFluid2D::BannerDisplay();
 	graph.WelcomeScreen();
 
@@ -59,13 +67,29 @@ int main(int argc, char **argv){
 		GrapheneFluid2D::TimeStepCounter++;
 
 		graph.Richtmyer();
-		DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
-		DyakonovShurBoundaryCondition::YFree(graph);
+		//DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
+		//DyakonovShurBoundaryCondition::YFree(graph);
+		BoundaryCondition::YFreeTop(graph);
+		BoundaryCondition::XFreeRight(graph);
+		DirichletBoundaryCondition::DensityLeft(graph, 1.0f);
+		DirichletBoundaryCondition::MassFluxXLeft(graph, 1.0f);
+		DirichletBoundaryCondition::MassFluxYLeft(graph, 0.0f);
+		DirichletBoundaryCondition::MassFluxYBottom(graph, 0.0f);
+		//DirichletBoundaryCondition::MassFluxXBottom(graph, 0.0f);
+		RobinBoundaryCondition::SlipLengthBottom(graph, 1.5f);
 
 		if(graph.GetKinVis()!=0.0f ) {
 			graph.ParabolicOperatorWeightedExplicit19();
-			DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
-			DyakonovShurBoundaryCondition::YFree(graph);
+			//DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
+			//DyakonovShurBoundaryCondition::YFree(graph);
+			BoundaryCondition::YFreeTop(graph);
+			BoundaryCondition::XFreeRight(graph);
+			DirichletBoundaryCondition::DensityLeft(graph, 1.0f);
+			DirichletBoundaryCondition::MassFluxXLeft(graph, 1.0f);
+			DirichletBoundaryCondition::MassFluxYLeft(graph, 0.0f);
+			DirichletBoundaryCondition::MassFluxYBottom(graph, 0.0f);
+			//DirichletBoundaryCondition::MassFluxXBottom(graph, 0.0f);
+			RobinBoundaryCondition::SlipLengthBottom(graph, 1.5f);
 		}
 
 		//Record full hdf5 data
