@@ -14,7 +14,12 @@
  * It overrides class Fluid2D necessary methods in order to describe the semi-classical electronic fluid.
  * */
 class GrapheneFluid2D : public Fluid2D{
-	public :
+
+protected:
+
+float DensityToMass(float density) override;
+
+public :
 
 	explicit GrapheneFluid2D(SetUpParameters &input_parameters);
 		~GrapheneFluid2D();

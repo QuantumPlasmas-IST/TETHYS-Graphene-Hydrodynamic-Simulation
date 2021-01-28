@@ -23,13 +23,9 @@ void GrapheneFluid2D::MassFluxToVelocity(){
 //#pragma omp parallel for default(none) shared(VelX,VelY,FlxX,FlxY,Den,Nx,Ny)
 float den;
 	for(int c=0; c <= Nx * Ny - 1; c++){
-//		VelX[c]= FlxX[c] * pow(Den[c], -1.5f);
-//		VelY[c]= FlxY[c] * pow(Den[c], -1.5f);
-den=Den[c];
-		VelX[c]= FlxX[c] / sqrt(den*den*den);
-		VelY[c]= FlxY[c] / sqrt(den*den*den);
-		//CurX[c] = VelX[c] * Den[c];
-		//CurY[c] = VelY[c] * Den[c];
+		den = Den[c];
+		VelX[c] = FlxX[c] / sqrt(den*den*den);
+		VelY[c] = FlxY[c] / sqrt(den*den*den);
 	}
 }
 
@@ -145,4 +141,9 @@ delete[] lap_flxY;
 delete[] vel_snd_arr;
 delete[] vel_snd_arr_mid;
 }
+
+float GrapheneFluid2D::DensityToMass(float density) {
+	return sqrt(density*density*density);
+}
+
 

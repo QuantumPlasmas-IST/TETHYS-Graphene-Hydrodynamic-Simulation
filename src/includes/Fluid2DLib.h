@@ -10,7 +10,7 @@
 #include "TethysBaseLib.h"
 #include "TethysMathLib.h"
 #include "SetUpParametersLib.h"
-
+#include "GridLib.h"
 
 using namespace H5;
 
@@ -29,6 +29,19 @@ class Fluid2D : public TethysBase
 		float * den_mid ;       // mid or auxiliary grids defined with (Nx-1)*(Ny-1) size
 		float * flxX_mid ;
 		float * flxY_mid ;
+
+		float * velX_dx;
+		float * velX_dy;
+
+		float * velY_dx;
+		float * velY_dy;
+
+		float * velX_dx_mid;
+		float * velX_dy_mid;
+
+		float * velY_dx_mid;
+		float * velY_dy_mid;
+
 		float * lap_flxX ;      // mass density flux laplacian component x
 		float * lap_flxY ;      // mass density flux laplacian component y
 		std::ofstream data_preview; // file stream for simplified .dat file output
@@ -36,6 +49,12 @@ class Fluid2D : public TethysBase
 		int snapshot_step = 1;
 		void ForwardTimeOperator();
 
+
+		void VelocityGradient();
+
+		void VelocityGradientMid();
+
+		virtual float DensityToMass(float density);
 
 public :
 		float * Den ;       // number density
@@ -84,11 +103,12 @@ public :
 
 
 		virtual float DensityFluxX( float n, float flx_x,  float flx_y,  float mass,  float s); ///< density equation (continuity equation) conserved flux X component
-		virtual float DensityFluxY( float n,  float flx_x, float flx_y,  float mass,  float s); ///< density equation (continuity equation) conserved flux Y component
+		virtual float DensityFluxY( float n,  float flx_x, float flx_y,  float mass,  float s); ///< density equation (continuity equation) conserved1 flux Y component
 		virtual float DensitySource( float n, float flx_x, float flx_y, float mass, float s); ///< density equation (continuity equation) source term
 		virtual float MassFluxXFluxX(float n, float flx_x, float flx_y, float mass, float s); ///< velocity X component equation (momentum equation) conserved flux X component
 		virtual float MassFluxXFluxY(float n, float flx_x, float flx_y, float mass, float s); ///< velocity X component equation (momentum equation) conserved flux Y component
 		virtual float MassFluxXSource(float n, float flx_x, float flx_y, float mass, float s); ///< velocity X component equation (momentum equation) source term
+
 		virtual float MassFluxYFluxX(float n, float flx_x, float flx_y, float mass, float s); ///< velocity Y component equation (momentum equation) conserved flux X component
 		virtual float MassFluxYFluxY(float n, float flx_x, float flx_y, float mass, float s); ///< velocity Y component equation (momentum equation) conserved flux Y component
 		virtual float MassFluxYSource(float n, float flx_x, float flx_y, float mass, float s); ///< velocity y component equation (momentum equation) source term
@@ -150,6 +170,8 @@ public :
 		void SaveSound();
 		int GetSnapshotStep() const; ///< Returns the number of the present snapshot @return snapshot_step order number of the snapshot
 		int GetSnapshotFreq() const; ///< Returns the number of snapshots per period to record  @return snapshot_per_period number of the snapshots per period
+
+
 
 		/*!
 		 * @brief Calculates the velocity Laplacians for the FTCS method
