@@ -123,149 +123,50 @@ void Fluid2D::VelocityToCurrent() {
 
 void Fluid2D::Richtmyer(){
 
-	this->VelocityGradient();
+//	this->VelocityGradient();
 
 #pragma omp parallel for default(none) shared(Nx,Ny,FlxX,FlxY,Den,flxX_mid,flxY_mid,den_mid,vel_snd_arr,dt,dx)
 		for(int ks=0; ks<=Nx*Ny-Nx-Ny; ks++){ //correr todos os pontos da grelha secundaria de den_mid
-			int northeast,northwest,southeast,southwest;
-			float den_north, den_south ,den_east ,den_west, px_north, px_south, px_east, px_west, py_north, py_south, py_east, py_west,m_east,m_west,m_north,m_south;
-			float  sound_north, sound_south ,sound_east ,sound_west;
-
 
 			GridPoint point(ks,Nx,Ny,true);
-			northeast=point.NE;
-			northwest=point.NW;
-			southeast=point.SE;
-			southwest=point.SW;
 
-
-			sound_north = 0.5f * (vel_snd_arr[northeast] + vel_snd_arr[northwest]);
-			sound_south = 0.5f*(vel_snd_arr[southeast] + vel_snd_arr[southwest]);
-			sound_east = 0.5f*(vel_snd_arr[northeast] + vel_snd_arr[southeast]);
-			sound_west = 0.5f*(vel_snd_arr[northwest] + vel_snd_arr[southwest]);
-
-			den_north = 0.5f*(Den[northeast] + Den[northwest]);
-			den_south = 0.5f*(Den[southeast] + Den[southwest]);
-			den_east = 0.5f*(Den[northeast] + Den[southeast]);
-			den_west = 0.5f*(Den[northwest] + Den[southwest]);
-
-			px_north = 0.5f*(FlxX[northeast] + FlxX[northwest]);
-			px_south = 0.5f*(FlxX[southeast] + FlxX[southwest]);
-			px_east = 0.5f*(FlxX[northeast] + FlxX[southeast]);
-			px_west = 0.5f*(FlxX[northwest] + FlxX[southwest]);
-
-			py_north = 0.5f*(FlxY[northeast] + FlxY[northwest]);
-			py_south = 0.5f*(FlxY[southeast] + FlxY[southwest]);
-			py_east = 0.5f*(FlxY[northeast] + FlxY[southeast]);
-			py_west = 0.5f*(FlxY[northwest] + FlxY[southwest]);
-
-			m_east=sqrt(den_east*den_east*den_east);
-			m_west=sqrt(den_west*den_west*den_west);
-			m_north=sqrt(den_north*den_north*den_north);
-			m_south=sqrt(den_south*den_south*den_south);
-
-			float den_avg = 0.25f * (Den[southwest] + Den[southeast] + Den[northwest] + Den[northeast]);
-			float flx_x_avg = 0.25f * (FlxX[southwest] + FlxX[southeast] + FlxX[northwest] + FlxX[northeast]);
-			float flx_y_avg = 0.25f * (FlxY[southwest] + FlxY[southeast] + FlxY[northwest] + FlxY[northeast]);
+			float den_avg   = 0.25f * ( Den[point.SW] + Den[point.SE]  + Den[point.NW]  + Den[point.NE]);
+			float flx_x_avg = 0.25f * (FlxX[point.SW] + FlxX[point.SE] + FlxX[point.NW] + FlxX[point.NE]);
+			float flx_y_avg = 0.25f * (FlxY[point.SW] + FlxY[point.SE] + FlxY[point.NW] + FlxY[point.NE]);
 
 			den_mid[ks] = den_avg
-					-0.5f*(dt/dx)*(
-						DensityFluxX(den_east, px_east, py_east,m_east,sound_east)-
-						DensityFluxX(den_west, px_west, py_west,m_west,sound_west))
-					-0.5f*(dt/dy)*(
-						DensityFluxY(den_north, px_north, py_north,m_north,sound_north)-
-						DensityFluxY(den_south, px_south, py_south,m_south,sound_south))//;
-					+0.5f*dt*DensitySource(den_avg, flx_x_avg, flx_y_avg, 0.0f, 0.0f);
-
-
+			              -0.5f*(dt/dx)*(DensityFluxX(point,'E') - DensityFluxX(point,'W'))
+			              -0.5f*(dt/dy)*(DensityFluxY(point,'N') - DensityFluxY(point,'S'));
 			flxX_mid[ks] = flx_x_avg
-					-0.5f*(dt/dx)*(
-						MassFluxXFluxX(den_east, px_east, py_east,m_east,sound_east)-
-						MassFluxXFluxX(den_west, px_west, py_west,m_west,sound_west))
-					-0.5f*(dt/dy)*(
-						MassFluxXFluxY(den_north, px_north, py_north,m_north,sound_north)-
-						MassFluxXFluxY(den_south, px_south, py_south,m_south,sound_south))//;
-					+0.5f*dt*MassFluxXSource(den_avg, flx_x_avg, flx_y_avg, 0.0f, 0.0f);
-
+					-0.5f*(dt/dx)*(XMomentumFluxX(point,'E') - XMomentumFluxX(point,'W'))
+					-0.5f*(dt/dy)*(XMomentumFluxY(point,'N') - XMomentumFluxY(point,'S'))
+					+0.5f*dt*XMomentumSource(den_avg, flx_x_avg, flx_y_avg, 0.0f, 0.0f);
 			flxY_mid[ks] = flx_y_avg
-					-0.5f*(dt/dx)*(
-						MassFluxYFluxX(den_east, px_east, py_east,m_east,sound_east)-
-						MassFluxYFluxX(den_west, px_west, py_west,m_west,sound_west))
-					-0.5f*(dt/dy)*(
-						MassFluxYFluxY(den_north, px_north, py_north,m_north,sound_north)-
-						MassFluxYFluxY(den_south, px_south, py_south,m_south,sound_south))//;
-					+0.5f*dt*MassFluxYSource(den_avg, flx_x_avg, flx_y_avg, 0.0f, 0.0f);
+					-0.5f*(dt/dx)*(YMomentumFluxX(point,'E') - YMomentumFluxX(point,'W'))
+					-0.5f*(dt/dy)*(YMomentumFluxY(point,'N') - YMomentumFluxY(point,'S'))
+					+0.5f*dt*YMomentumSource(den_avg, flx_x_avg, flx_y_avg, 0.0f, 0.0f);
 		}
 
-	this->VelocityGradientMid();
+//	this->VelocityGradientMid();
 
 #pragma omp parallel for default(none) shared(Nx,Ny,FlxX,FlxY,Den,flxX_mid,flxY_mid,den_mid,vel_snd_arr_mid,dt,dx)
 		for(int kp=1+Nx; kp<=Nx*Ny-Nx-2; kp++){ //correr a grelha principal evitando as fronteiras
-			int northeast,northwest,southeast,southwest;
-			float den_north, den_south ,den_east ,den_west, px_north, px_south, px_east, px_west, py_north, py_south, py_east, py_west,m_east,m_west,m_north,m_south;
-			float  sound_north, sound_south ,sound_east ,sound_west;
 
 			GridPoint point(kp,Nx,Ny,false);
 
 			if( kp%Nx!=Nx-1 && kp%Nx!=0){
-
-				northeast=point.NE;
-				northwest=point.NW;
-				southeast=point.SE;
-				southwest=point.SW;
-
-				sound_north = 0.5f * (vel_snd_arr_mid[northeast] + vel_snd_arr_mid[northwest]);
-				sound_south = 0.5f*(vel_snd_arr_mid[southeast] + vel_snd_arr_mid[southwest]);
-				sound_east = 0.5f*(vel_snd_arr_mid[northeast] + vel_snd_arr_mid[southeast]);
-				sound_west = 0.5f*(vel_snd_arr_mid[northwest] + vel_snd_arr_mid[southwest]);
-
-				den_north = 0.5f*(den_mid[northeast]+den_mid[northwest]);
-				den_south = 0.5f*(den_mid[southeast]+den_mid[southwest]);
-				den_east = 0.5f*(den_mid[northeast]+den_mid[southeast]);
-				den_west = 0.5f*(den_mid[northwest]+den_mid[southwest]);
-
-				px_north = 0.5f*(flxX_mid[northeast]+flxX_mid[northwest]);
-				px_south = 0.5f*(flxX_mid[southeast]+flxX_mid[southwest]);
-				px_east = 0.5f*(flxX_mid[northeast]+flxX_mid[southeast]);
-				px_west = 0.5f*(flxX_mid[northwest]+flxX_mid[southwest]);
-				
-				py_north = 0.5f*(flxY_mid[northeast]+flxY_mid[northwest]);
-				py_south = 0.5f*(flxY_mid[southeast]+flxY_mid[southwest]);
-				py_east = 0.5f*(flxY_mid[northeast]+flxY_mid[southeast]);
-				py_west = 0.5f*(flxY_mid[northwest]+flxY_mid[southwest]);
-
-				m_east=sqrt(den_east*den_east*den_east);
-				m_west=sqrt(den_west*den_west*den_west);
-				m_north=sqrt(den_north*den_north*den_north);
-				m_south=sqrt(den_south*den_south*den_south);
-
 				float den_old = Den[kp];
 				float flx_x_old = FlxX[kp];
 				float flx_y_old = FlxY[kp];
-
-
-				Den[kp] = den_old - (dt / dx) * (
-							DensityFluxX(den_east, px_east, py_east,m_east,sound_east)-
-							DensityFluxX(den_west, px_west, py_west,m_west,sound_west))
-						-(dt/dy)*(
-							DensityFluxY(den_north, px_north, py_north,m_north,sound_north)-
-							DensityFluxY(den_south, px_south, py_south,m_south,sound_south))
-						+dt*DensitySource(den_old, flx_x_old, flx_y_old, 0.0f, 0.0f);
-				FlxX[kp] = flx_x_old - (dt / dx) * (
-							MassFluxXFluxX(den_east, px_east, py_east,m_east,sound_east)-
-							MassFluxXFluxX(den_west, px_west, py_west,m_west,sound_west))
-						-(dt/dy)*(
-							MassFluxXFluxY(den_north, px_north, py_north,m_north,sound_north)-
-							MassFluxXFluxY(den_south, px_south, py_south,m_south,sound_south))
-						+dt*MassFluxXSource(den_old, flx_x_old, flx_y_old, 0.0f, 0.0f);
-				FlxY[kp] = flx_y_old - (dt / dx) * (
-							MassFluxYFluxX(den_east, px_east, py_east,m_east,sound_east)-
-							MassFluxYFluxX(den_west, px_west, py_west,m_west,sound_west))
-						-(dt/dy)*(
-							MassFluxYFluxY(den_north, px_north, py_north,m_north,sound_north)-
-							MassFluxYFluxY(den_south, px_south, py_south,m_south,sound_south))
-						+dt*MassFluxYSource(den_old, flx_x_old, flx_y_old, 0.0f, 0.0f);
-
+				Den[kp] = den_old - (dt/dx)*(DensityFluxX(point,'E') - DensityFluxX(point,'W'))
+						          - (dt/dy)*(DensityFluxY(point,'N') - DensityFluxY(point,'S'))
+						          + dt*DensitySource(den_old, flx_x_old, flx_y_old, 0.0f, 0.0f);
+				FlxX[kp] = flx_x_old - (dt/dx)*(XMomentumFluxX(point,'E') - XMomentumFluxX(point,'W'))
+						             - (dt/dy)*(XMomentumFluxY(point,'N') - XMomentumFluxY(point,'S'))
+						             + dt*XMomentumSource(den_old, flx_x_old, flx_y_old, 0.0f, 0.0f);
+				FlxY[kp] = flx_y_old - (dt/dx)*(YMomentumFluxX(point,'E') - YMomentumFluxX(point,'W'))
+						             - (dt/dy)*(YMomentumFluxY(point,'N') - YMomentumFluxY(point,'S'))
+				                     + dt*YMomentumSource(den_old, flx_x_old, flx_y_old, 0.0f, 0.0f);
 			}
 		}
 }
@@ -290,22 +191,22 @@ float  Fluid2D::DensityFluxY(__attribute__((unused)) float n, __attribute__((unu
 }
 
 
-float  Fluid2D::MassFluxXFluxX(float n,float flx_x,__attribute__((unused)) float flx_y,__attribute__((unused)) float mass,__attribute__((unused))  float s){
+float  Fluid2D::XMomentumFluxX(float n, float flx_x, __attribute__((unused)) float flx_y, __attribute__((unused)) float mass, __attribute__((unused))  float s){
 	float f_2;
 	f_2 = flx_x * flx_x / n + n;
 	return f_2;
 }
-float  Fluid2D::MassFluxXFluxY(float n,float flx_x, float flx_y,__attribute__((unused)) float mass,__attribute__((unused))  float s){
+float  Fluid2D::XMomentumFluxY(float n, float flx_x, float flx_y, __attribute__((unused)) float mass, __attribute__((unused))  float s){
 	float f_2;
 	f_2 = flx_x * flx_y / n;
 	return f_2;
 }
-float  Fluid2D::MassFluxYFluxX(float n,float flx_x, float flx_y,__attribute__((unused)) float mass,__attribute__((unused))  float s){
+float  Fluid2D::YMomentumFluxX(float n, float flx_x, float flx_y, __attribute__((unused)) float mass, __attribute__((unused))  float s){
 	float f_3;
 	f_3 = flx_x * flx_y / n;
 	return f_3;
 }
-float  Fluid2D::MassFluxYFluxY(float n, __attribute__((unused)) float flx_x, float flx_y,__attribute__((unused)) float mass,__attribute__((unused))  float s){
+float  Fluid2D::YMomentumFluxY(float n, __attribute__((unused)) float flx_x, float flx_y, __attribute__((unused)) float mass, __attribute__((unused))  float s){
 	float f_3;
 	f_3 = flx_y * flx_y / n + n;
 	return f_3;
@@ -556,10 +457,10 @@ float Fluid2D::DensitySource(__attribute__((unused)) float n, __attribute__((unu
 	return 0.0f;
 }
 
-float Fluid2D::MassFluxXSource(__attribute__((unused)) float n,__attribute__((unused)) float flx_x,__attribute__((unused)) float flx_y,__attribute__((unused)) float mass,__attribute__((unused)) float s) {
+float Fluid2D::XMomentumSource(__attribute__((unused)) float n, __attribute__((unused)) float flx_x, __attribute__((unused)) float flx_y, __attribute__((unused)) float mass, __attribute__((unused)) float s) {
 	return 0.0f;
 }
-float Fluid2D::MassFluxYSource(__attribute__((unused)) float n,__attribute__((unused)) float flx_x,__attribute__((unused)) float flx_y,__attribute__((unused)) float mass,__attribute__((unused)) float s) {
+float Fluid2D::YMomentumSource(__attribute__((unused)) float n, __attribute__((unused)) float flx_x, __attribute__((unused)) float flx_y, __attribute__((unused)) float mass, __attribute__((unused)) float s) {
 	return 0.0f;
 }
 
@@ -850,5 +751,144 @@ void Fluid2D::VelocityGradientMid() {
 
 float Fluid2D::DensityToMass(float density) {
 	return density;
+}
+
+float Fluid2D::DensityFluxX(GridPoint p, char side) {
+	float * px_ptr;
+	float px =0.0f;
+	if(p.IsMidGrid){
+		px_ptr = FlxX;
+	}else{
+		px_ptr = flxX_mid;
+	}
+	if (side == 'E'){
+		px = 0.5f*(px_ptr[p.NE] + px_ptr[p.SE]);
+	}
+	if (side == 'W'){
+		px = 0.5f*(px_ptr[p.NW] + px_ptr[p.SW]);
+	}
+	return px;
+}
+
+float Fluid2D::DensityFluxY(GridPoint p, char side) {
+	float * py_ptr;
+	float py=0.0f;
+	if(p.IsMidGrid){
+		py_ptr = FlxY;
+	}else{
+		py_ptr = flxY_mid;
+	}
+	if (side == 'N'){
+		py = 0.5f*(py_ptr[p.NE] + py_ptr[p.NW]);
+	}
+	if (side == 'S'){
+		py = 0.5f*(py_ptr[p.SE] + py_ptr[p.SW]);
+	}
+	return py;
+}
+
+float Fluid2D::XMomentumFluxX(GridPoint p, char side) {
+	float * den_ptr;
+	float * px_ptr;
+	float den=1.0f;
+	float px=0.0f;
+	if(p.IsMidGrid){
+		den_ptr = Den;
+		px_ptr = FlxX;
+	}else{
+		den_ptr = den_mid;
+		px_ptr = flxX_mid;
+	}
+	if (side == 'E'){
+		den = 0.5f*(den_ptr[p.NE] + den_ptr[p.SE]);
+		px = 0.5f*(px_ptr[p.NE] + px_ptr[p.SE]);
+	}
+	if (side == 'W'){
+		den = 0.5f*(den_ptr[p.NW] + den_ptr[p.SW]);
+		px = 0.5f*(px_ptr[p.NW] + px_ptr[p.SW]);
+	}
+	return px * px / den + den;
+}
+
+float Fluid2D::XMomentumFluxY(GridPoint p, char side) {
+	float * den_ptr;
+	float * px_ptr;
+	float * py_ptr;
+	float den =1.0f;
+	float px=0.0f;
+	float py=0.0f;
+	if(p.IsMidGrid){
+		den_ptr = Den;
+		px_ptr = FlxX;
+		py_ptr = FlxY;
+	}else{
+		den_ptr = den_mid;
+		px_ptr = flxX_mid;
+		py_ptr = flxY_mid;
+	}
+	if (side == 'N'){
+		den = 0.5f*(den_ptr[p.NE] + den_ptr[p.NW]);
+		px = 0.5f*(px_ptr[p.NE] + px_ptr[p.NW]);
+		py = 0.5f*(py_ptr[p.NE] + py_ptr[p.NW]);
+	}
+	if (side == 'S'){
+		den = 0.5f*(den_ptr[p.SE] + den_ptr[p.SW]);
+		px = 0.5f*(px_ptr[p.SE] + px_ptr[p.SW]);
+		py = 0.5f*(py_ptr[p.SE] + py_ptr[p.SW]);
+	}
+	return px * py / den;
+}
+
+
+float Fluid2D::YMomentumFluxY(GridPoint p, char side) {
+	float * den_ptr;
+	float * py_ptr;
+	float den=1.0f;
+	float py =0.0f;
+	if(p.IsMidGrid){
+		den_ptr = Den;
+		py_ptr = FlxY;
+	}else{
+		den_ptr = den_mid;
+		py_ptr = flxY_mid;
+	}
+	if (side == 'N'){
+		den = 0.5f*(den_ptr[p.NE] + den_ptr[p.NW]);
+		py = 0.5f*(py_ptr[p.NE] + py_ptr[p.NW]);
+	}
+	if (side == 'S'){
+		den = 0.5f*(den_ptr[p.SE] + den_ptr[p.SW]);
+		py = 0.5f*(py_ptr[p.SE] + py_ptr[p.SW]);
+	}
+	return py * py / den + den;
+}
+
+float Fluid2D::YMomentumFluxX(GridPoint p, char side) {
+	float * den_ptr;
+	float * px_ptr;
+	float * py_ptr;
+	float den=1.0f;
+	float px =0.0f;
+	float py=0.0f;
+	if(p.IsMidGrid){
+		den_ptr = Den;
+		px_ptr = FlxX;
+		py_ptr = FlxY;
+	}else{
+		den_ptr = den_mid;
+		px_ptr = flxX_mid;
+		py_ptr = flxY_mid;
+	}
+	if (side == 'E'){
+		den = 0.5f*(den_ptr[p.NE] + den_ptr[p.SE]);
+		px = 0.5f*(px_ptr[p.NE] + px_ptr[p.SE]);
+		py = 0.5f*(py_ptr[p.NE] + py_ptr[p.SE]);
+	}
+	if (side == 'W'){
+		den = 0.5f*(den_ptr[p.NW] + den_ptr[p.SW]);
+		px = 0.5f*(px_ptr[p.NW] + px_ptr[p.SW]);
+		py = 0.5f*(py_ptr[p.NW] + py_ptr[p.SW]);
+	}
+	return px * py / den;
 }
 

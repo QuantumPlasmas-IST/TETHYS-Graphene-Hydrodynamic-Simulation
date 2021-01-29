@@ -58,14 +58,25 @@ public :
 		float DensityFluxX(float n, float flx_x, float flx_y,float mass, float s) override;    ///< density equation (continuity equation) conserved flux X component
 		float DensityFluxY(float n, float flx_x, float flx_y,float mass, float s) override;    ///< density equation (continuity equation) conserved flux Y component
 		float DensitySource(float n, float flx_x, float flx_y, float mass, float s)override;   ///< density equation (continuity equation) source term
-		float MassFluxXFluxX(float n, float flx_x, float flx_y,float mass, float s) override;  ///< velocity X component equation (momentum equation) conserved flux X component
-		float MassFluxXFluxY(float n, float flx_x, float flx_y,float mass, float s) override;  ///< velocity X component equation (momentum equation) conserved flux Y component
-		float MassFluxXSource(float n, float flx_x, float flx_y, float mass, float s)override; ///< velocity X component equation (momentum equation) source term
-		float MassFluxYFluxX(float n, float flx_x, float flx_y,float mass, float s) override;  ///< velocity Y component equation (momentum equation) conserved flux X component
-		float MassFluxYFluxY(float n, float flx_x, float flx_y,float mass, float s) override;  ///< velocity Y component equation (momentum equation) conserved flux Y component
-		float MassFluxYSource(float n, float flx_x, float flx_y, float mass, float s)override; ///< velocity y component equation (momentum equation) source term
+		float XMomentumFluxX(float n, float flx_x, float flx_y, float mass, float s) override;  ///< velocity X component equation (momentum equation) conserved flux X component
+		float XMomentumFluxY(float n, float flx_x, float flx_y, float mass, float s) override;  ///< velocity X component equation (momentum equation) conserved flux Y component
+		float XMomentumSource(float n, float flx_x, float flx_y, float mass, float s)override; ///< velocity X component equation (momentum equation) source term
+		float YMomentumFluxX(float n, float flx_x, float flx_y, float mass, float s) override;  ///< velocity Y component equation (momentum equation) conserved flux X component
+		float YMomentumFluxY(float n, float flx_x, float flx_y, float mass, float s) override;  ///< velocity Y component equation (momentum equation) conserved flux Y component
+		float YMomentumSource(float n, float flx_x, float flx_y, float mass, float s)override; ///< velocity y component equation (momentum equation) source term
 
-		void MagneticSourceSemiAnalytic(); // Semi analytic method for the magnetic interaction
+
+	float DensityFluxX(GridPoint p, char side ) override; ///< density equation (continuity equation) conserved flux X component
+	float DensityFluxY(GridPoint p, char side ) override; ///< density equation (continuity equation) conserved1 flux Y component
+
+	float XMomentumFluxX(GridPoint p, char side ) override; ///< velocity X component equation (momentum equation) conserved flux X component
+	float XMomentumFluxY(GridPoint p, char side ) override; ///< velocity X component equation (momentum equation) conserved flux Y component
+
+	float YMomentumFluxX(GridPoint p, char side ) override; ///< velocity Y component equation (momentum equation) conserved flux X component
+	float YMomentumFluxY(GridPoint p, char side ) override; ///< velocity Y component equation (momentum equation) conserved flux Y component
+
+
+	void MagneticSourceSemiAnalytic(); // Semi analytic method for the magnetic interaction
 		//void MagneticSourceFtcs();  // Forward Time Centered Space method for the magnetic interaction
 };
 

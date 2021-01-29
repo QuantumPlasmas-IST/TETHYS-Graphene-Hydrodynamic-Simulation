@@ -61,29 +61,207 @@ float  GrapheneFluid2D::DensityFluxY(float n, __attribute__((unused)) float flx_
 	return f_1;
 }
 
-float  GrapheneFluid2D::MassFluxXFluxX(float n, float flx_x, __attribute__((unused)) float flx_y, float mass, float s){
+float  GrapheneFluid2D::XMomentumFluxX(float n, float flx_x, __attribute__((unused)) float flx_y, float mass, float s){
 	float f_2;
 	f_2 = flx_x * flx_x / mass + vel_fer * vel_fer * mass / 3.0f + 0.5f * s * s * n * n;
 	return f_2;
 }
 
-float  GrapheneFluid2D::MassFluxXFluxY(__attribute__((unused)) float n, float flx_x, float flx_y, float mass, __attribute__((unused)) float s){
+float  GrapheneFluid2D::XMomentumFluxY(__attribute__((unused)) float n, float flx_x, float flx_y, float mass, __attribute__((unused)) float s){
 	float f_2;
 	f_2 = flx_x * flx_y / mass;
 	return f_2;
 }
 
-float  GrapheneFluid2D::MassFluxYFluxX(__attribute__((unused)) float n, float flx_x, float flx_y, float mass, __attribute__((unused)) float s){
+float  GrapheneFluid2D::YMomentumFluxX(__attribute__((unused)) float n, float flx_x, float flx_y, float mass, __attribute__((unused)) float s){
 	float f_3;
 	f_3 = flx_x * flx_y / mass;
 	return f_3;
 }
 
-float  GrapheneFluid2D::MassFluxYFluxY(float n, __attribute__((unused)) float flx_x, float flx_y, float mass, float s){
+float  GrapheneFluid2D::YMomentumFluxY(float n, __attribute__((unused)) float flx_x, float flx_y, float mass, float s){
 	float f_3;
 	f_3 = flx_y * flx_y / mass + vel_fer * vel_fer * mass / 3.0f + 0.5f * s * s * n * n;
 	return f_3;
 }
+
+
+
+float GrapheneFluid2D::DensityFluxX(GridPoint p, char side) {
+	float * den_ptr;
+	float * px_ptr;
+	float den = 1.0f;
+	float px = 0.0f;
+	if(p.IsMidGrid){
+		den_ptr = Den; // se ESTÁ na grelha média tem de APONTAR pra outra grelha
+		px_ptr = FlxX;
+	}else{
+		den_ptr = den_mid;
+		px_ptr = flxX_mid;
+	}
+	if (side == 'E'){
+		den = 0.5f*(den_ptr[p.NE] + den_ptr[p.SE]);
+		px = 0.5f*(px_ptr[p.NE] + px_ptr[p.SE]);
+	}
+	if (side == 'W'){
+		den = 0.5f*(den_ptr[p.NW] + den_ptr[p.SW]);
+		px = 0.5f*(px_ptr[p.NW] + px_ptr[p.SW]);
+	}
+	return px / sqrt(den);
+}
+
+float GrapheneFluid2D::DensityFluxY(GridPoint p, char side) {
+	float * den_ptr;
+	float * py_ptr;
+	float den;
+	float py = 0.0f;
+	if(p.IsMidGrid){
+		den_ptr = Den;
+		py_ptr = FlxY;
+	}else{
+		den_ptr = den_mid;
+		py_ptr = flxY_mid;
+	}
+	if (side == 'N'){
+		den = 0.5f*(den_ptr[p.NE] + den_ptr[p.NW]);
+		py = 0.5f*(py_ptr[p.NE] + py_ptr[p.NW]);
+	}
+	if (side == 'S'){
+		den = 0.5f*(den_ptr[p.SE] + den_ptr[p.SW]);
+		py = 0.5f*(py_ptr[p.SE] + py_ptr[p.SW]);
+	}
+	return py / sqrt(den);
+}
+
+float GrapheneFluid2D::XMomentumFluxX(GridPoint p, char side) {
+	float * vel_ptr;
+	float * den_ptr;
+	float * px_ptr;
+	float sound =0.0f;
+	float den =1.0f;
+	float px =0.0f;
+	float mass;
+	if(p.IsMidGrid){
+		vel_ptr = vel_snd_arr;
+		den_ptr = Den;
+		px_ptr = FlxX;
+	}else{
+		vel_ptr = vel_snd_arr_mid;
+		den_ptr = den_mid;
+		px_ptr = flxX_mid;
+	}
+	if (side == 'E'){
+		sound= 0.5f*(vel_ptr[p.NE] + vel_ptr[p.SE]);
+		den = 0.5f*(den_ptr[p.NE] + den_ptr[p.SE]);
+		px = 0.5f*(px_ptr[p.NE] + px_ptr[p.SE]);
+	}
+	if (side == 'W'){
+		sound = 0.5f*(vel_ptr[p.NW] + vel_ptr[p.SW]);
+		den = 0.5f*(den_ptr[p.NW] + den_ptr[p.SW]);
+		px = 0.5f*(px_ptr[p.NW] + px_ptr[p.SW]);
+	}
+	mass=DensityToMass(den);
+	return px * px / mass + vel_fer * vel_fer * mass / 3.0f + 0.5f * sound * sound * den * den;
+}
+
+float GrapheneFluid2D::XMomentumFluxY(GridPoint p, char side) {
+	float * den_ptr;
+	float * px_ptr;
+	float * py_ptr;
+	float den =1.0f;
+	float px =0.0f;
+	float py =0.0f;
+	float mass;
+	if(p.IsMidGrid){
+		den_ptr = Den;
+		px_ptr = FlxX;
+		py_ptr = FlxY;
+	}else{
+		den_ptr = den_mid;
+		px_ptr = flxX_mid;
+		py_ptr = flxY_mid;
+	}
+	if (side == 'N'){
+		den = 0.5f*(den_ptr[p.NE] + den_ptr[p.NW]);
+		px = 0.5f*(px_ptr[p.NE] + px_ptr[p.NW]);
+		py = 0.5f*(py_ptr[p.NE] + py_ptr[p.NW]);
+	}
+	if (side == 'S'){
+		den = 0.5f*(den_ptr[p.SE] + den_ptr[p.SW]);
+		px = 0.5f*(px_ptr[p.SE] + px_ptr[p.SW]);
+		py = 0.5f*(py_ptr[p.SE] + py_ptr[p.SW]);
+	}
+	mass=DensityToMass(den);
+	return px * py / mass ;
+}
+
+
+float GrapheneFluid2D::YMomentumFluxY(GridPoint p, char side) {
+	float * vel_ptr;
+	float * den_ptr;
+	float * py_ptr;
+	float sound =0.0f;
+	float den =1.0f;
+	float py =0.0f;
+	float mass;
+	if(p.IsMidGrid){
+		vel_ptr = vel_snd_arr;
+		den_ptr = Den;
+		py_ptr = FlxY;
+	}else{
+		vel_ptr = vel_snd_arr_mid;
+		den_ptr = den_mid;
+		py_ptr = flxY_mid;
+	}
+	if (side == 'N'){
+		sound= 0.5f*(vel_ptr[p.NE] + vel_ptr[p.NW]);
+		den = 0.5f*(den_ptr[p.NE] + den_ptr[p.NW]);
+		py = 0.5f*(py_ptr[p.NE] + py_ptr[p.NW]);
+	}
+	if (side == 'S'){
+		sound = 0.5f*(vel_ptr[p.SE] + vel_ptr[p.SW]);
+		den = 0.5f*(den_ptr[p.SE] + den_ptr[p.SW]);
+		py = 0.5f*(py_ptr[p.SE] + py_ptr[p.SW]);
+	}
+	mass=DensityToMass(den);
+	return py * py / mass + vel_fer * vel_fer * mass / 3.0f + 0.5f * sound * sound * den * den;
+}
+
+float GrapheneFluid2D::YMomentumFluxX(GridPoint p, char side) {
+	float * den_ptr;
+	float * px_ptr;
+	float * py_ptr;
+	float den =1.0f;
+	float px =0.0f;
+	float py =0.0f;
+	float mass;
+	if(p.IsMidGrid){
+		den_ptr = Den;
+		px_ptr = FlxX;
+		py_ptr = FlxY;
+	}else{
+		den_ptr = den_mid;
+		px_ptr = flxX_mid;
+		py_ptr = flxY_mid;
+	}
+	if (side == 'E'){
+		den = 0.5f*(den_ptr[p.NE] + den_ptr[p.SE]);
+		px = 0.5f*(px_ptr[p.NE] + px_ptr[p.SE]);
+		py = 0.5f*(py_ptr[p.NE] + py_ptr[p.SE]);
+	}
+	if (side == 'W'){
+		den = 0.5f*(den_ptr[p.NW] + den_ptr[p.SW]);
+		px = 0.5f*(px_ptr[p.NW] + px_ptr[p.SW]);
+		py = 0.5f*(py_ptr[p.NW] + py_ptr[p.SW]);
+	}
+	mass=DensityToMass(den);
+	return px * py / mass;
+}
+
+
+
+
+
 
 void GrapheneFluid2D::MagneticSourceSemiAnalytic(){
 	float px_0,py_0,sqrtn_0;
@@ -117,11 +295,11 @@ float GrapheneFluid2D::DensitySource(__attribute__((unused)) float n,__attribute
 	return 0.0f;
 }
 
-float GrapheneFluid2D::MassFluxXSource(float n, float flx_x, float flx_y, __attribute__((unused)) float mass, __attribute__((unused)) float s) {
+float GrapheneFluid2D::XMomentumSource(float n, float flx_x, float flx_y, __attribute__((unused)) float mass, __attribute__((unused)) float s) {
 	return -1.0f*col_freq*flx_x  - cyc_freq*flx_y/sqrt(n);
 }
 
-float GrapheneFluid2D::MassFluxYSource(float n, float flx_x, float flx_y, __attribute__((unused)) float mass, __attribute__((unused)) float s) {
+float GrapheneFluid2D::YMomentumSource(float n, float flx_x, float flx_y, __attribute__((unused)) float mass, __attribute__((unused)) float s) {
 	return -1.0f*col_freq*flx_y  + cyc_freq*flx_x/sqrt(n);
 }
 
