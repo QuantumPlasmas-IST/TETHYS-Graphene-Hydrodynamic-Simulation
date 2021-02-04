@@ -52,6 +52,6 @@ void GridPoint::SecondNeighbours() {
 	}
 	N=C+stride;
 	S=C-stride;
-	E=C-1;
-	W=C+1;
+	E=C+1;
+	W=C-1;
 }

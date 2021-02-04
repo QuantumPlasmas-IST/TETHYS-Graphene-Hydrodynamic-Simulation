@@ -478,10 +478,9 @@ void Fluid2D::ForwardTimeOperator() {
 }
 
 void Fluid2D::VelocityGradient() {
-
 	int stride = Nx;
-
 	float m_east,m_west,m_north,m_south;
+#pragma omp parallel for default(none) private(m_east,m_west,m_north,m_south) shared(Nx,Ny,dx,dy,stride,FlxX,FlxY,Den,velX_dx,velX_dy,velY_dx,velY_dy)
 	for(int kp=1+Nx; kp<=Nx*Ny-Nx-2; kp++){  //correr a grelha principal evitando as fronteiras
 		if( kp%stride!=stride-1 && kp%stride!=0){ //aqui podem ser diferencas centradas quer em x quer em y
 			GridPoint point(kp,Nx,Ny,false);
@@ -495,6 +494,7 @@ void Fluid2D::VelocityGradient() {
 			velY_dy[kp] = ( (FlxY[point.N]/m_north)-(FlxY[point.S]/m_south) )/(2.0f*dy);
 		}
 	}
+
 	for(int i=1 ; i<=Nx-2; i++){ // topo rede principal, ou seja j=(Ny - 1)
 		float m_top,m_southsouth;
 		int top= i + (Ny - 1) * stride;
@@ -612,90 +612,96 @@ void Fluid2D::VelocityGradient() {
 void Fluid2D::VelocityGradientMid() {
 	int north, south, east, west;
 	float m_east,m_west,m_north,m_south;
+//#pragma omp parallel for default(none) private(m_east,m_west,m_north,m_south) shared(Nx,Ny,dx,dy,flxX_mid,flxY_mid,den_mid,velX_dx_mid,velX_dy_mid,velY_dx_mid,velY_dy_mid)
 	for(int ks=1+(Nx-1); ks<=(Nx-2)+(Ny-2)*(Nx-1); ks++){ //correr todos os pontos da grelha secundaria de _mid EVITANDO FRONTEIRAS
 		if( ks%(Nx-1)!=Nx-2 && ks%(Nx-1)!=0) {
-			north = ks - (Nx - 1);
-			south = ks + (Nx - 1);
-			east = ks + 1;
-			west = ks - 1;
-			m_east = DensityToMass(den_mid[east]);
-			m_west = DensityToMass(den_mid[west]);
-			m_north = DensityToMass(den_mid[north]);
-			m_south = DensityToMass(den_mid[south]);
-			velX_dx_mid[ks] = ( (flxX_mid[east]/m_east) - (flxX_mid[west]/m_west) ) / (2.0f * dx);
-			velX_dy_mid[ks] = ( (flxX_mid[south]/m_south) - (flxX_mid[north]/m_north) ) / (2.0f * dy);
-			velY_dx_mid[ks] = ( (flxY_mid[east]/m_east) - (flxY_mid[west]/m_west) ) / (2.0f * dx);
-			velY_dy_mid[ks] = ( (flxY_mid[south]/m_south) - (flxY_mid[north]/m_north) ) / (2.0f * dy);
+			GridPoint point(ks,Nx,Ny,true);
+		//	north = point.N;//ks + (Nx - 1);
+		//	south = point.S;//ks - (Nx - 1);
+		//	east = point.E;//ks + 1;
+		//	west = point.W;//ks - 1;
+			m_east = DensityToMass(den_mid[point.E]);
+			m_west = DensityToMass(den_mid[point.W]);
+			m_north = DensityToMass(den_mid[point.N]);
+			m_south = DensityToMass(den_mid[point.S]);
+			velX_dx_mid[ks] = ( (flxX_mid[point.E]/m_east) - (flxX_mid[point.W]/m_west) ) / (2.0f * dx);
+			velX_dy_mid[ks] = ( (flxX_mid[point.N]/m_north) - (flxX_mid[point.S]/m_south) ) / (2.0f * dy);
+			velY_dx_mid[ks] = ( (flxY_mid[point.E]/m_east) - (flxY_mid[point.W]/m_west) ) / (2.0f * dx);
+			velY_dy_mid[ks] = ( (flxY_mid[point.N]/m_north) - (flxY_mid[point.S]/m_south) ) / (2.0f * dy);
 		}
 	}
 	for(int i=1 ; i<=(Nx-1)-2; i++){ // topo rede principal, ou seja j=((Ny-1) - 1)
 		float m_top,m_southsouth;
 		int top= i + ((Ny-1) - 1) * (Nx-1);
-		east=top+1;
-		west=top-1;
-		south= i + ((Ny-1) - 2) * (Nx-1);
+		GridPoint point(top,Nx,Ny,true);
+		// east=top+1;
+		// west=top-1;
+		// south= i + ((Ny-1) - 2) * (Nx-1);
 		int southsouth= i + ((Ny-1) - 3) * (Nx-1);
-		m_top = DensityToMass(den_mid[top]);
-		m_east = DensityToMass(den_mid[east]);
-		m_west = DensityToMass(den_mid[west]);
-		m_south = DensityToMass(den_mid[south]);
+		m_top = DensityToMass(den_mid[point.C]);
+		m_east = DensityToMass(den_mid[point.E]);
+		m_west = DensityToMass(den_mid[point.W]);
+		m_south = DensityToMass(den_mid[point.S]);
 		m_southsouth = DensityToMass(den_mid[southsouth]);
-		velX_dx_mid[top] = ( (flxX_mid[east]/m_east)-(flxX_mid[west]/m_west) )/(2.0f*dx); //OK
-		velX_dy_mid[top] = ( 3.0f*(flxX_mid[top]/m_top) -4.0f*(flxX_mid[south]/m_south) +1.0f*(flxX_mid[southsouth]/m_southsouth) )/(2.0f*dy); //backward finite difference
-		velY_dx_mid[top] = ( (flxY_mid[east]/m_east)-(flxY_mid[west]/m_west) )/(2.0f*dx); //OK
-		velY_dy_mid[top] = ( 3.0f*(flxY_mid[top]/m_top) -4.0f*(flxY_mid[south]/m_south) +1.0f*(flxY_mid[southsouth]/m_southsouth)  )/(2.0f*dy); //backward finite difference
+		velX_dx_mid[top] = ( (flxX_mid[point.E]/m_east)-(flxX_mid[point.W]/m_west) )/(2.0f*dx); //OK
+		velX_dy_mid[top] = ( 3.0f*(flxX_mid[point.C]/m_top) -4.0f*(flxX_mid[point.S]/m_south) +1.0f*(flxX_mid[southsouth]/m_southsouth) )/(2.0f*dy); //backward finite difference
+		velY_dx_mid[top] = ( (flxY_mid[point.E]/m_east)-(flxY_mid[point.W]/m_west) )/(2.0f*dx); //OK
+		velY_dy_mid[top] = ( 3.0f*(flxY_mid[point.C]/m_top) -4.0f*(flxY_mid[point.S]/m_south) +1.0f*(flxY_mid[southsouth]/m_southsouth)  )/(2.0f*dy); //backward finite difference
 	}
 	for(int i=1 ; i<=(Nx-1)-2; i++){ // fundo rede principal, ou seja j=0
 		float m_bottom,m_northnorth;
 		int bottom=i; //i+0*nx
-		east=bottom+1;
-		west=bottom-1;
-		north=i+(Nx-1);
+		GridPoint point(bottom,Nx,Ny,true);
+		//east=bottom+1;
+		//west=bottom-1;
+		//north=i+(Nx-1);
 		int northnorth=i+2*(Nx-1);
-		m_bottom = DensityToMass(den_mid[bottom]);
-		m_east = DensityToMass(den_mid[east]);
-		m_west = DensityToMass(den_mid[west]);
-		m_north = DensityToMass(den_mid[north]);
+		m_bottom = DensityToMass(den_mid[point.C]);
+		m_east = DensityToMass(den_mid[point.E]);
+		m_west = DensityToMass(den_mid[point.W]);
+		m_north = DensityToMass(den_mid[point.N]);
 		m_northnorth = DensityToMass(den_mid[northnorth]);
-		velX_dx_mid[bottom] = ( (flxX_mid[east]/m_east)-(flxX_mid[west]/m_west) )/(2.0f*dx);  //OK
-		velX_dy_mid[bottom] = ( -3.0f*(flxX_mid[bottom]/m_bottom) +4.0f*(flxX_mid[north]/m_north)-1.0f*(flxX_mid[northnorth]/m_northnorth) )/(2.0f*dy); //forward finite difference
-		velY_dx_mid[bottom] = ( (flxY_mid[east]/m_east)-(flxY_mid[west]/m_west) )/(2.0f*dx); //OK
-		velY_dy_mid[bottom] = ( -3.0f*(flxY_mid[bottom]/m_bottom) +4.0f*(flxY_mid[north]/m_north)-1.0f*(flxY_mid[northnorth]/m_northnorth) )/(2.0f*dy); //forward finite difference
+		velX_dx_mid[bottom] = ( (flxX_mid[point.E]/m_east)-(flxX_mid[point.W]/m_west) )/(2.0f*dx);  //OK
+		velX_dy_mid[bottom] = ( -3.0f*(flxX_mid[point.C]/m_bottom) +4.0f*(flxX_mid[point.N]/m_north)-1.0f*(flxX_mid[northnorth]/m_northnorth) )/(2.0f*dy); //forward finite difference
+		velY_dx_mid[bottom] = ( (flxY_mid[point.E]/m_east)-(flxY_mid[point.W]/m_west) )/(2.0f*dx); //OK
+		velY_dy_mid[bottom] = ( -3.0f*(flxY_mid[point.C]/m_bottom) +4.0f*(flxY_mid[point.N]/m_north)-1.0f*(flxY_mid[northnorth]/m_northnorth) )/(2.0f*dy); //forward finite difference
 	}
 	for(int j=1; j<=(Ny-1)-2;j++){ //lado esquerdo da rede principal ou seja i=0
 		float m_left, m_easteast;
 		int left = 0 + j*(Nx-1);
+		GridPoint point(left,Nx,Ny,true);
 		int easteast = left + 2;
-		east =left+1;
-		north=left+(Nx-1);
-		south=left-(Nx-1);
-		m_north = DensityToMass(den_mid[north]);
-		m_south = DensityToMass(den_mid[south]);
-		m_east = DensityToMass(den_mid[east]);
+		//east =left+1;
+		//north=left+(Nx-1);
+		//south=left-(Nx-1);
+		m_north = DensityToMass(den_mid[point.N]);
+		m_south = DensityToMass(den_mid[point.S]);
+		m_east = DensityToMass(den_mid[point.E]);
 		m_easteast = DensityToMass(den_mid[easteast]);
-		m_left= DensityToMass(den_mid[left]);
-		velX_dx_mid[left] = ( -3.0f*(flxX_mid[left]/m_left) +4.0f*(flxX_mid[east]/m_east)-1.0f*(flxX_mid[easteast]/m_easteast)  )/(2.0f*dx); //forward difference
-		velX_dy_mid[left] = ( (flxX_mid[north]/m_north)-(flxX_mid[south]/m_south) )/(2.0f*dy); //OK
-		velY_dx_mid[left] = ( -3.0f*(flxY_mid[left]/m_left) +4.0f*(flxY_mid[east]/m_east)-1.0f*(flxY_mid[east]/m_easteast) )/(2.0f*dx); //forward difference
-		velY_dy_mid[left] = ( (flxY_mid[north]/m_north)-(flxY_mid[south]/m_south) )/(2.0f*dy); //OK
+		m_left= DensityToMass(den_mid[point.C]);
+		velX_dx_mid[left] = ( -3.0f*(flxX_mid[point.C]/m_left) +4.0f*(flxX_mid[point.E]/m_east)-1.0f*(flxX_mid[easteast]/m_easteast)  )/(2.0f*dx); //forward difference
+		velX_dy_mid[left] = ( (flxX_mid[point.N]/m_north)-(flxX_mid[point.S]/m_south) )/(2.0f*dy); //OK
+		velY_dx_mid[left] = ( -3.0f*(flxY_mid[point.C]/m_left) +4.0f*(flxY_mid[point.E]/m_east)-1.0f*(flxY_mid[easteast]/m_easteast) )/(2.0f*dx); //forward difference
+		velY_dy_mid[left] = ( (flxY_mid[point.N]/m_north)-(flxY_mid[point.S]/m_south) )/(2.0f*dy); //OK
 
 	}
 	for(int j=1; j<=(Ny-1)-2;j++){ //lado direito da rede principal ou seja i=((Nx-1)-1)
 		float m_rigth, m_westwest;
 		int right = ((Nx-1)-1) + j*(Nx-1);
+		GridPoint point(right,Nx,Ny,true);
 		int westwest = right-2;
-		west=right-1;
-		north=right+(Nx-1);
-		south=right-(Nx-1);
-		m_north = DensityToMass(den_mid[north]);
-		m_south = DensityToMass(den_mid[south]);
-		m_rigth= DensityToMass(den_mid[right]);
-		m_west = DensityToMass(den_mid[west]);
+		//west=right-1;
+		//north=right+(Nx-1);
+		//south=right-(Nx-1);
+		m_north = DensityToMass(den_mid[point.N]);
+		m_south = DensityToMass(den_mid[point.S]);
+		m_rigth= DensityToMass(den_mid[point.C]);
+		m_west = DensityToMass(den_mid[point.W]);
 		m_westwest = DensityToMass(den_mid[westwest]);
-		velX_dx_mid[right] = ( 3.0f*(flxX_mid[right]/m_rigth) -4.0f*(flxX_mid[west]/m_west) +1.0f*(flxX_mid[westwest]/m_westwest) )/(2.0f*dx); //backwar difference
-		velX_dy_mid[right] = ( (flxX_mid[north]/m_north)-(flxX_mid[south]/m_south) )/(2.0f*dy); //OK
-		velY_dx_mid[right] = ( 3.0f*(flxY_mid[right]/m_rigth) -4.0f*(flxY_mid[west]/m_west) +1.0f*(flxY_mid[westwest]/m_westwest) )/(2.0f*dx);
-		velY_dy_mid[right] = ( (flxY_mid[north]/m_north)-(flxY_mid[south]/m_south) )/(2.0f*dy); //OK
+		velX_dx_mid[right] = ( 3.0f*(flxX_mid[point.C]/m_rigth) -4.0f*(flxX_mid[point.W]/m_west) +1.0f*(flxX_mid[westwest]/m_westwest) )/(2.0f*dx); //backwar difference
+		velX_dy_mid[right] = ( (flxX_mid[point.N]/m_north)-(flxX_mid[point.S]/m_south) )/(2.0f*dy); //OK
+		velY_dx_mid[right] = ( 3.0f*(flxY_mid[point.C]/m_rigth) -4.0f*(flxY_mid[point.W]/m_west) +1.0f*(flxY_mid[westwest]/m_westwest) )/(2.0f*dx);
+		velY_dy_mid[right] = ( (flxY_mid[point.N]/m_north)-(flxY_mid[point.S]/m_south) )/(2.0f*dy); //OK
 	}
 //os 4 cantos em que ambas a derivadas nao podem ser centradas
 	int ks;

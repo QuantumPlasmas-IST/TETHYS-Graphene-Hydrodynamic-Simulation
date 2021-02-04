@@ -33,7 +33,7 @@ int main(int argc, char **argv){
 	/*.........Fixed or variable vel_snd value........................*/
 	graph.SetSound();
 	//graph.SetSimulationTime();
-	graph.SetTmax(7.0f);
+	graph.SetTmax(3.0f);
 	/*................................................................*/
 
 	/*.........Output files and streams...............................*/
@@ -97,7 +97,8 @@ int main(int argc, char **argv){
 		if (parameters.SaveMode  && graph.Snapshot()) {
 			graph.SaveSnapShot();
 		}
-		if(static_cast<int>(fmod(t/dt,2.0f))){
+		//if(static_cast<int>(fmod(t/dt,2.0f))){
+		if( !( GrapheneFluid2D::TimeStepCounter % 2) ){
 			graph.WriteFluidFile(t);
 		}
 	}
