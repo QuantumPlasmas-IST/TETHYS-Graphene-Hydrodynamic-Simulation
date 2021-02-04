@@ -613,7 +613,7 @@ void Fluid2D::VelocityGradientMid() {
 
 	float m_east,m_west,m_north,m_south;
 #pragma omp parallel for default(none) private(m_east,m_west,m_north,m_south) shared(Nx,Ny,dx,dy,flxX_mid,flxY_mid,den_mid,velX_dx_mid,velX_dy_mid,velY_dx_mid,velY_dy_mid)
-	for(int ks=1+(Nx-1); ks<=(Nx-2)+(Ny-2)*(Nx-1); ks++){ //correr todos os pontos da grelha secundaria de _mid EVITANDO FRONTEIRAS
+	for(int ks=1+(Nx-1); ks<=(Nx-3)+(Ny-3)*(Nx-1); ks++){ //correr todos os pontos da grelha secundaria de _mid EVITANDO FRONTEIRAS
 		if( ks%(Nx-1)!=Nx-2 && ks%(Nx-1)!=0) {
 			GridPoint point(ks,Nx,Ny,true);
 			m_east = DensityToMass(den_mid[point.E]);
