@@ -1,6 +1,6 @@
 
-#ifndef GRIDLIB_H
-#define GRIDLIB_H
+#ifndef GRID2DLIB_H
+#define GRID2DLIB_H
 
 #include <cstdlib>
 
@@ -27,4 +27,4 @@ public:
 };
 
 
-#endif //GRIDLIB_H
+#endif //GRID2DLIB_H

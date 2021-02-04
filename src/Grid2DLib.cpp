@@ -3,7 +3,7 @@
 //
 
 
-#include "includes/GridLib.h"
+#include "includes/Grid2DLib.h"
 
 GridPoint::GridPoint(int pos,int xpoints, int ypoints,bool mid) {
 	IsMidGrid=mid;

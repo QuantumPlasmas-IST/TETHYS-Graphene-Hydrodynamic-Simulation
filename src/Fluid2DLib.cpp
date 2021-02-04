@@ -123,7 +123,7 @@ void Fluid2D::VelocityToCurrent() {
 
 void Fluid2D::Richtmyer(){
 
-//	this->VelocityGradient();
+	this->VelocityGradient();
 
 #pragma omp parallel for default(none) shared(Nx,Ny,FlxX,FlxY,Den,flxX_mid,flxY_mid,den_mid,vel_snd_arr,dt,dx)
 		for(int ks=0; ks<=Nx*Ny-Nx-Ny; ks++){ //correr todos os pontos da grelha secundaria de den_mid
@@ -147,7 +147,7 @@ void Fluid2D::Richtmyer(){
 					+0.5f*dt*YMomentumSource(den_avg, flx_x_avg, flx_y_avg, 0.0f, 0.0f);
 		}
 
-//	this->VelocityGradientMid();
+	this->VelocityGradientMid();
 
 #pragma omp parallel for default(none) shared(Nx,Ny,FlxX,FlxY,Den,flxX_mid,flxY_mid,den_mid,vel_snd_arr_mid,dt,dx)
 		for(int kp=1+Nx; kp<=Nx*Ny-Nx-2; kp++){ //correr a grelha principal evitando as fronteiras
@@ -177,7 +177,7 @@ void Fluid2D::CflCondition(){
 		dt = dx/10.0f;
 }
 
-
+/*
 
 float  Fluid2D::DensityFluxX(__attribute__((unused)) float n, float flx_x, __attribute__((unused)) float flx_y, __attribute__((unused)) float mass, __attribute__((unused)) float s){
 	float f_1;
@@ -211,7 +211,7 @@ float  Fluid2D::YMomentumFluxY(float n, __attribute__((unused)) float flx_x, flo
 	f_3 = flx_y * flx_y / n + n;
 	return f_3;
 }
-
+*/
 
 void Fluid2D::CreateFluidFile(){
 	std::string previewfile = "preview_2D_" + file_infix + ".dat" ;

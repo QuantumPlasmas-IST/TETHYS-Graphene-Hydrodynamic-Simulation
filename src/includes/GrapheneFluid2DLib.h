@@ -55,14 +55,14 @@ public :
 		/*Override fluxes and sources to specifics of graphene physics*/
 
 
-		float DensityFluxX(float n, float flx_x, float flx_y,float mass, float s) override;    ///< density equation (continuity equation) conserved flux X component
-		float DensityFluxY(float n, float flx_x, float flx_y,float mass, float s) override;    ///< density equation (continuity equation) conserved flux Y component
+//		float DensityFluxX(float n, float flx_x, float flx_y,float mass, float s) override;    ///< density equation (continuity equation) conserved flux X component
+//		float DensityFluxY(float n, float flx_x, float flx_y,float mass, float s) override;    ///< density equation (continuity equation) conserved flux Y component
 		float DensitySource(float n, float flx_x, float flx_y, float mass, float s)override;   ///< density equation (continuity equation) source term
-		float XMomentumFluxX(float n, float flx_x, float flx_y, float mass, float s) override;  ///< velocity X component equation (momentum equation) conserved flux X component
-		float XMomentumFluxY(float n, float flx_x, float flx_y, float mass, float s) override;  ///< velocity X component equation (momentum equation) conserved flux Y component
+//		float XMomentumFluxX(float n, float flx_x, float flx_y, float mass, float s) override;  ///< velocity X component equation (momentum equation) conserved flux X component
+//		float XMomentumFluxY(float n, float flx_x, float flx_y, float mass, float s) override;  ///< velocity X component equation (momentum equation) conserved flux Y component
 		float XMomentumSource(float n, float flx_x, float flx_y, float mass, float s)override; ///< velocity X component equation (momentum equation) source term
-		float YMomentumFluxX(float n, float flx_x, float flx_y, float mass, float s) override;  ///< velocity Y component equation (momentum equation) conserved flux X component
-		float YMomentumFluxY(float n, float flx_x, float flx_y, float mass, float s) override;  ///< velocity Y component equation (momentum equation) conserved flux Y component
+//		float YMomentumFluxX(float n, float flx_x, float flx_y, float mass, float s) override;  ///< velocity Y component equation (momentum equation) conserved flux X component
+//		float YMomentumFluxY(float n, float flx_x, float flx_y, float mass, float s) override;  ///< velocity Y component equation (momentum equation) conserved flux Y component
 		float YMomentumSource(float n, float flx_x, float flx_y, float mass, float s)override; ///< velocity y component equation (momentum equation) source term
 
 

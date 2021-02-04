@@ -47,7 +47,7 @@ add_test(testElec2D TETHYS_ELEC_2D hdf5_2D_S=20.00vF=10.00vis=0.00l=0.00wc=0.00.
 #        src/ElectricLib.cpp)
 
 file(GLOB SRC_LIB_FILES src/*Lib.cpp)
-add_library(tethys_library STATIC ${SRC_LIB_FILES} src/GridLib.cpp src/includes/GridLib.h)
+add_library(tethys_library STATIC ${SRC_LIB_FILES} src/Grid2DLib.cpp src/includes/Grid2DLib.h)
 
 
 find_library (TETHYS_LIB tethys_library lib)
