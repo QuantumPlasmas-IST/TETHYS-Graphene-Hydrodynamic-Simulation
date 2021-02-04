@@ -610,16 +610,12 @@ void Fluid2D::VelocityGradient() {
 
 
 void Fluid2D::VelocityGradientMid() {
-	int north, south, east, west;
+
 	float m_east,m_west,m_north,m_south;
-//#pragma omp parallel for default(none) private(m_east,m_west,m_north,m_south) shared(Nx,Ny,dx,dy,flxX_mid,flxY_mid,den_mid,velX_dx_mid,velX_dy_mid,velY_dx_mid,velY_dy_mid)
+#pragma omp parallel for default(none) private(m_east,m_west,m_north,m_south) shared(Nx,Ny,dx,dy,flxX_mid,flxY_mid,den_mid,velX_dx_mid,velX_dy_mid,velY_dx_mid,velY_dy_mid)
 	for(int ks=1+(Nx-1); ks<=(Nx-2)+(Ny-2)*(Nx-1); ks++){ //correr todos os pontos da grelha secundaria de _mid EVITANDO FRONTEIRAS
 		if( ks%(Nx-1)!=Nx-2 && ks%(Nx-1)!=0) {
 			GridPoint point(ks,Nx,Ny,true);
-		//	north = point.N;//ks + (Nx - 1);
-		//	south = point.S;//ks - (Nx - 1);
-		//	east = point.E;//ks + 1;
-		//	west = point.W;//ks - 1;
 			m_east = DensityToMass(den_mid[point.E]);
 			m_west = DensityToMass(den_mid[point.W]);
 			m_north = DensityToMass(den_mid[point.N]);
@@ -634,9 +630,6 @@ void Fluid2D::VelocityGradientMid() {
 		float m_top,m_southsouth;
 		int top= i + ((Ny-1) - 1) * (Nx-1);
 		GridPoint point(top,Nx,Ny,true);
-		// east=top+1;
-		// west=top-1;
-		// south= i + ((Ny-1) - 2) * (Nx-1);
 		int southsouth= i + ((Ny-1) - 3) * (Nx-1);
 		m_top = DensityToMass(den_mid[point.C]);
 		m_east = DensityToMass(den_mid[point.E]);
@@ -652,9 +645,6 @@ void Fluid2D::VelocityGradientMid() {
 		float m_bottom,m_northnorth;
 		int bottom=i; //i+0*nx
 		GridPoint point(bottom,Nx,Ny,true);
-		//east=bottom+1;
-		//west=bottom-1;
-		//north=i+(Nx-1);
 		int northnorth=i+2*(Nx-1);
 		m_bottom = DensityToMass(den_mid[point.C]);
 		m_east = DensityToMass(den_mid[point.E]);
@@ -671,9 +661,6 @@ void Fluid2D::VelocityGradientMid() {
 		int left = 0 + j*(Nx-1);
 		GridPoint point(left,Nx,Ny,true);
 		int easteast = left + 2;
-		//east =left+1;
-		//north=left+(Nx-1);
-		//south=left-(Nx-1);
 		m_north = DensityToMass(den_mid[point.N]);
 		m_south = DensityToMass(den_mid[point.S]);
 		m_east = DensityToMass(den_mid[point.E]);
@@ -690,9 +677,6 @@ void Fluid2D::VelocityGradientMid() {
 		int right = ((Nx-1)-1) + j*(Nx-1);
 		GridPoint point(right,Nx,Ny,true);
 		int westwest = right-2;
-		//west=right-1;
-		//north=right+(Nx-1);
-		//south=right-(Nx-1);
 		m_north = DensityToMass(den_mid[point.N]);
 		m_south = DensityToMass(den_mid[point.S]);
 		m_rigth= DensityToMass(den_mid[point.C]);

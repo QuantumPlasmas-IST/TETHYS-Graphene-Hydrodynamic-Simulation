@@ -1,6 +1,4 @@
 #include "includes/BoundaryLib.h"
-#include "DyakonovShurBoundaryLib.h"
-#include "RobinBoundaryLib.h"
 
 #ifndef MAT_PI
 #    define MAT_PI 3.14159265358979323846
