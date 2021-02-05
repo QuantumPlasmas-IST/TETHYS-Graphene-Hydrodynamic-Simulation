@@ -343,6 +343,15 @@ delete[] lap_flxX;
 delete[] lap_flxY;
 delete[] vel_snd_arr;
 delete[] vel_snd_arr_mid;
+delete[] velX_dx;
+delete[] velX_dx_mid;
+	delete[] velX_dy;
+	delete[] velX_dy_mid;
+	delete[] velY_dx;
+	delete[] velY_dx_mid;
+	delete[] velY_dy;
+	delete[] velY_dy_mid;
+
 }
 
 float GrapheneFluid2D::DensityToMass(float density) {
