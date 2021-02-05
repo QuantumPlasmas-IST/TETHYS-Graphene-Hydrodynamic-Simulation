@@ -16,6 +16,14 @@ find_package(HDF5 REQUIRED COMPONENTS CXX)
 #link_libraries(GSL::gsl GSL::gslcblas)
 
 set(CMAKE_CXX_FLAGS "-Wall -Wextra -Wno-unused-parameter -O2")
+
+
+#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -g ")
+#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=leak -g ")
+#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=thread -g ")
+#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=undefined -g ")
+#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=memory -g ")
+
 FIND_PACKAGE(OpenMP REQUIRED)
 if(OPENMP_FOUND)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_C_FLAGS}")
@@ -24,11 +32,7 @@ endif()
 #set(GSL_FLAGS "-lgsl -lm")
 set(BLAS_FLAGS "-llapack -lblas -llapacke -lm")
 
-#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -g ")
-#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=leak -g ")
-#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=thread -g ")
-#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=undefined -g ")
-#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=memory -g ")
+
 
 add_executable(TETHYS_1D src/TETHYS_1D_Main_v134.cpp)
 add_test(test1D TETHYS_1D 20 10 0.0 0.0 0.0 1 1)

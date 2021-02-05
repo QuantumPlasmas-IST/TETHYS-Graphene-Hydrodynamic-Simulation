@@ -618,12 +618,12 @@ void Fluid2D::VelocityGradientMid() {
 			GridPoint point(ks,Nx,Ny,true);
 			m_east = DensityToMass(den_mid[point.E]);
 			m_west = DensityToMass(den_mid[point.W]);
-			m_north = DensityToMass(den_mid[point.N]);
+			m_north = DensityToMass(den_mid[point.N]); //valgrind
 			m_south = DensityToMass(den_mid[point.S]);
 			velX_dx_mid[ks] = ( (flxX_mid[point.E]/m_east) - (flxX_mid[point.W]/m_west) ) / (2.0f * dx);
-			velX_dy_mid[ks] = ( (flxX_mid[point.N]/m_north) - (flxX_mid[point.S]/m_south) ) / (2.0f * dy);
+			velX_dy_mid[ks] = ( (flxX_mid[point.N]/m_north) - (flxX_mid[point.S]/m_south) ) / (2.0f * dy); //valgrind
 			velY_dx_mid[ks] = ( (flxY_mid[point.E]/m_east) - (flxY_mid[point.W]/m_west) ) / (2.0f * dx);
-			velY_dy_mid[ks] = ( (flxY_mid[point.N]/m_north) - (flxY_mid[point.S]/m_south) ) / (2.0f * dy);
+			velY_dy_mid[ks] = ( (flxY_mid[point.N]/m_north) - (flxY_mid[point.S]/m_south) ) / (2.0f * dy); //valgrind
 		}
 	}
 	for(int i=1 ; i<=(Nx-1)-2; i++){ // topo rede principal, ou seja j=((Ny-1) - 1)
