@@ -33,7 +33,7 @@ int main(int argc, char **argv){
 	/*.........Fixed or variable vel_snd value........................*/
 	graph.SetSound();
 	//graph.SetSimulationTime();
-	graph.SetTmax(3.0f);
+	graph.SetTmax(7.0f);
 	/*................................................................*/
 
 	/*.........Output files and streams...............................*/
@@ -58,6 +58,9 @@ int main(int argc, char **argv){
 	DyakonovShurBoundaryCondition::SetBottomEdge(graph);
 	DyakonovShurBoundaryCondition::SetTopEdge(graph);
 	/*................................................................*/
+
+	graph.SetOddVis(0.0f);
+	cout<<"\n Odd viscosity:\t"<<graph.GetOddVis()<<"\n";
 
 
 	cout << "\033[1;7;5;33m Program Running \033[0m"<<endl;
