@@ -168,7 +168,7 @@ float GrapheneFluid2D::XMomentumFluxX(GridPoint p, char side) {
 		dvy =  0.5f*(dvel_ptr[p.NW] + dvel_ptr[p.SW]);
 	}
 	mass=DensityToMass(den);
-	return px * px / mass + vel_fer * vel_fer * mass / 3.0f + 0.5f * sound * sound * den * den - 0.02f*dvy;
+	return px * px / mass + vel_fer * vel_fer * mass / 3.0f + 0.5f * sound * sound * den * den - odd_vis*dvy;
 }
 
 float GrapheneFluid2D::XMomentumFluxY(GridPoint p, char side) {
@@ -205,7 +205,7 @@ float GrapheneFluid2D::XMomentumFluxY(GridPoint p, char side) {
 		dvy =  0.5f*(dvel_ptr[p.SE] + dvel_ptr[p.SW]);
 	}
 	mass=DensityToMass(den);
-	return px * py / mass - 0.02f*dvy;
+	return px * py / mass - odd_vis*dvy;
 }
 
 
@@ -243,7 +243,7 @@ float GrapheneFluid2D::YMomentumFluxY(GridPoint p, char side) {
 		dvx =  0.5f*(dvel_ptr[p.SE] + dvel_ptr[p.SW]);
 	}
 	mass=DensityToMass(den);
-	return py * py / mass + vel_fer * vel_fer * mass / 3.0f + 0.5f * sound * sound * den * den + 0.02f*dvx;
+	return py * py / mass + vel_fer * vel_fer * mass / 3.0f + 0.5f * sound * sound * den * den + odd_vis*dvx;
 }
 
 float GrapheneFluid2D::YMomentumFluxX(GridPoint p, char side) {
@@ -280,7 +280,7 @@ float GrapheneFluid2D::YMomentumFluxX(GridPoint p, char side) {
 		dvx =  0.5f*(dvel_ptr[p.NW] + dvel_ptr[p.SW]);
 	}
 	mass=DensityToMass(den);
-	return px * py / mass  + 0.02f*dvx;
+	return px * py / mass  + odd_vis*dvx;
 }
 
 
