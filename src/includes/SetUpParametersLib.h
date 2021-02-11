@@ -38,6 +38,7 @@ class SetUpParameters {
 		float FermiVelocity;
 		float CollisionFrequency;
 		float ShearViscosity;
+		float OddViscosity;
 		float CyclotronFrequency;
 		void ParametersChecking() const; ///< Runs a checking on the physical feasibility of the parameters
 		void DefineGeometry(); ///< Set ups the 2D grid dimensions

@@ -33,7 +33,7 @@ int main(int argc, char **argv){
 	/*.........Fixed or variable vel_snd value........................*/
 	graph.SetSound();
 	//graph.SetSimulationTime();
-	graph.SetTmax(7.0f);
+	graph.SetTmax(25.0f);
 	/*................................................................*/
 
 	/*.........Output files and streams...............................*/
@@ -64,7 +64,7 @@ int main(int argc, char **argv){
 
 
 	cout << "\033[1;7;5;33m Program Running \033[0m"<<endl;
-	while (t <= graph.GetTmax() ){ //
+	while (t <=  graph.GetTmax() ){ // graph.GetTmax()
 
 		t += dt;
 		GrapheneFluid2D::TimeStepCounter++;
@@ -72,6 +72,8 @@ int main(int argc, char **argv){
 		graph.Richtmyer();
 		DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
 		DyakonovShurBoundaryCondition::YFree(graph);
+		//DirichletBoundaryCondition::YClosedNoSlip(graph);
+
 	/*	BoundaryCondition::YFreeTop(graph);
 		BoundaryCondition::XFreeRight(graph);
 		DirichletBoundaryCondition::DensityLeft(graph, 1.0f);
@@ -85,6 +87,7 @@ int main(int argc, char **argv){
 			graph.ParabolicOperatorWeightedExplicit19();
 			DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
 			DyakonovShurBoundaryCondition::YFree(graph);
+//DirichletBoundaryCondition::YClosedNoSlip(graph);
 			/*
 			BoundaryCondition::YFreeTop(graph);
 			BoundaryCondition::XFreeRight(graph);

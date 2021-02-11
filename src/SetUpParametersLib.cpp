@@ -34,15 +34,16 @@ SetUpParameters::SetUpParameters(float sound, float fermi, float coll, float vis
 SetUpParameters::SetUpParameters(int argc, char ** argv) {
 	SizeX=101;
 	SizeY=101;
-	if(argc==7||argc==8){
+	if(argc==8||argc==9){
 		SoundVelocity = strtof(argv[1], nullptr);
 		FermiVelocity = strtof(argv[2], nullptr);
 		CollisionFrequency = strtof(argv[3], nullptr);
 		ShearViscosity = strtof(argv[4], nullptr);
-		CyclotronFrequency = strtof(argv[5], nullptr);
-		SaveMode = (int) strtol(argv[6], nullptr, 10);    // full data or light save option
-		if (argc == 8) {
-			AspectRatio = strtof(argv[7], nullptr);
+		OddViscosity = strtof(argv[5], nullptr);
+		CyclotronFrequency = strtof(argv[6], nullptr);
+		SaveMode = (int) strtol(argv[7], nullptr, 10);    // full data or light save option
+		if (argc == 9) {
+			AspectRatio = strtof(argv[8], nullptr);
 		}
 		ParametersChecking();
 	}
@@ -51,8 +52,10 @@ SetUpParameters::SetUpParameters(int argc, char ** argv) {
 		cin >> SoundVelocity;
 		cout << "Define vF value: ";
 		cin >> FermiVelocity;
-		cout << "Define kinetic viscosity: ";
+		cout << "Define kinetic shear viscosity: ";
 		cin >> ShearViscosity;
+		cout << "Define kinetic odd viscosity: ";
+		cin >> OddViscosity;
 		cout << "Define collision frequency: ";
 		cin >> CollisionFrequency;
 		cout << "Define cyclotron frequency: ";
@@ -83,6 +86,11 @@ void SetUpParameters::ParametersChecking() const{
 		cerr << msg <<"\nExiting"<< endl;
 		exit(EXIT_FAILURE);
 	}
+	if(OddViscosity<0.0f){
+		msg = "ERROR: Unphysical Odd Viscosity";
+		cerr << msg <<"\nExiting"<< endl;
+		exit(EXIT_FAILURE);
+	}
 	if(CollisionFrequency<0.0f){
 		msg = "ERROR: Unphysical Collision Frequency";
 		cerr << msg <<"\nExiting"<< endl;
@@ -90,6 +98,11 @@ void SetUpParameters::ParametersChecking() const{
 	}
 	if(CyclotronFrequency<0.0f){
 		msg = "ERROR: Unphysical Cyclotron Frequency";
+		cerr << msg <<"\nExiting"<< endl;
+		exit(EXIT_FAILURE);
+	}
+	if(AspectRatio<0.0f){
+		msg = "ERROR: Negative Aspect Ratio";
 		cerr << msg <<"\nExiting"<< endl;
 		exit(EXIT_FAILURE);
 	}

@@ -21,6 +21,7 @@ Fluid2D::Fluid2D(const SetUpParameters &input_parameters) : TethysBase{input_par
 	dy = lengY / ( float ) ( Ny - 1 );
 	vel_snd = input_parameters.SoundVelocity;//sound_velocity;
 	kin_vis = input_parameters.ShearViscosity;//shear_viscosity;
+	odd_vis = input_parameters.OddViscosity;//odd_viscosity;
 
 	char buffer [50];
 	sprintf (buffer, "S=%.2fvF=%.2fvis=%.2fl=%.2fwc=%.2f", vel_snd, vel_fer, kin_vis, col_freq,cyc_freq);
