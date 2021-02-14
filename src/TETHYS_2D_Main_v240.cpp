@@ -33,7 +33,7 @@ int main(int argc, char **argv){
 	/*.........Fixed or variable vel_snd value........................*/
 	graph.SetSound();
 	//graph.SetSimulationTime();
-	graph.SetTmax(25.0f);
+	graph.SetTmax(6.0f);
 	/*................................................................*/
 
 	/*.........Output files and streams...............................*/
@@ -59,8 +59,6 @@ int main(int argc, char **argv){
 	DyakonovShurBoundaryCondition::SetTopEdge(graph);
 	/*................................................................*/
 
-	graph.SetOddVis(0.0f);
-	cout<<"\n Odd viscosity:\t"<<graph.GetOddVis()<<"\n";
 
 
 	cout << "\033[1;7;5;33m Program Running \033[0m"<<endl;
@@ -70,33 +68,34 @@ int main(int argc, char **argv){
 		GrapheneFluid2D::TimeStepCounter++;
 
 		graph.Richtmyer();
-		DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
-		DyakonovShurBoundaryCondition::YFree(graph);
+		//DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
+		//DyakonovShurBoundaryCondition::YFree(graph);
 		//DirichletBoundaryCondition::YClosedNoSlip(graph);
 
-	/*	BoundaryCondition::YFreeTop(graph);
+		BoundaryCondition::YFreeTop(graph);
 		BoundaryCondition::XFreeRight(graph);
 		DirichletBoundaryCondition::DensityLeft(graph, 1.0f);
 		DirichletBoundaryCondition::MassFluxXLeft(graph, 1.0f);
 		DirichletBoundaryCondition::MassFluxYLeft(graph, 0.0f);
 		DirichletBoundaryCondition::MassFluxYBottom(graph, 0.0f);
-		//DirichletBoundaryCondition::MassFluxXBottom(graph, 0.0f);
-		RobinBoundaryCondition::SlipLengthBottom(graph, 1.5f);
-*/
+		DirichletBoundaryCondition::MassFluxXBottom(graph, 0.0f);
+		//RobinBoundaryCondition::SlipLengthBottom(graph, 1.5f);
+
 		if(graph.GetKinVis()!=0.0f ) {
 			graph.ParabolicOperatorWeightedExplicit19();
-			DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
-			DyakonovShurBoundaryCondition::YFree(graph);
-//DirichletBoundaryCondition::YClosedNoSlip(graph);
-			/*
+			//DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
+			//DyakonovShurBoundaryCondition::YFree(graph);
+			//DirichletBoundaryCondition::YClosedNoSlip(graph);
+
+
 			BoundaryCondition::YFreeTop(graph);
 			BoundaryCondition::XFreeRight(graph);
 			DirichletBoundaryCondition::DensityLeft(graph, 1.0f);
 			DirichletBoundaryCondition::MassFluxXLeft(graph, 1.0f);
 			DirichletBoundaryCondition::MassFluxYLeft(graph, 0.0f);
 			DirichletBoundaryCondition::MassFluxYBottom(graph, 0.0f);
-			//DirichletBoundaryCondition::MassFluxXBottom(graph, 0.0f);
-			RobinBoundaryCondition::SlipLengthBottom(graph, 1.5f);*/
+			DirichletBoundaryCondition::MassFluxXBottom(graph, 0.0f);
+			//RobinBoundaryCondition::SlipLengthBottom(graph, 1.5f);*/
 		}
 
 		//Record full hdf5 data

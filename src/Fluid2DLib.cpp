@@ -24,7 +24,7 @@ Fluid2D::Fluid2D(const SetUpParameters &input_parameters) : TethysBase{input_par
 	odd_vis = input_parameters.OddViscosity;//odd_viscosity;
 
 	char buffer [50];
-	sprintf (buffer, "S=%.2fvF=%.2fvis=%.2fl=%.2fwc=%.2f", vel_snd, vel_fer, kin_vis, col_freq,cyc_freq);
+	sprintf (buffer, "S=%.2fvF=%.2fvis=%.2fodd=%.3fl=%.2fwc=%.2f", vel_snd, vel_fer, kin_vis,odd_vis, col_freq,cyc_freq);
 	file_infix = buffer;
 	// main grid variables Nx*Ny
 	Den 		= new float[Nx * Ny]();
