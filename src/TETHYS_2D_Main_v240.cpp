@@ -84,7 +84,7 @@ int main(int argc, char **argv){
 		DirichletBoundaryCondition::MassFluxXBottom(graph, 0.0f);*/
 		//RobinBoundaryCondition::SlipLengthBottom(graph, 1.5f);
 
-		if(graph.GetKinVis()!=0.0f ) {
+		if(graph.GetKinVis()!=0.0f || graph.GetThermDiff()!=0.0f  ) {
 			graph.ParabolicOperatorWeightedExplicit19();
 			DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
 			DyakonovShurBoundaryCondition::YFree(graph);

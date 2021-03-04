@@ -17,6 +17,7 @@ GridPoint::GridPoint(int pos,int xpoints, int ypoints,bool mid) {
 	}
 	FirstNeighbours();
 	SecondNeighbours();
+	ThirdNeighbours();
 }
 
 void GridPoint::FirstNeighbours() {
@@ -54,4 +55,16 @@ void GridPoint::SecondNeighbours() {
 	S=C-stride;
 	E=C+1;
 	W=C-1;
+}
+
+void GridPoint::ThirdNeighbours() {
+	if(IsMidGrid){
+		stride=size_x-1;
+	}else{
+		stride=size_x;
+	}
+	NE2=C+stride+1;
+	NW2=C+stride-1;
+	SE2=C-stride+1;
+	SW2=C-stride-1;
 }
