@@ -88,6 +88,9 @@ void Fluid2D::InitialCondRand(){
 		float noise;
 		noise =  (float) rd()/maxrand ; //(float) rand()/ (float) RAND_MAX ;
 		Den[c] = 1.0f + 0.005f * (noise - 0.5f);
+
+		noise =  (float) rd()/maxrand ; //(float) rand()/ (float) RAND_MAX ;
+        Tmp[c] =  1.0f + 0.005f * (noise - 0.5f);
 	}
 }
 

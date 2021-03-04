@@ -178,3 +178,54 @@ void DirichletBoundaryCondition::MassFluxYBottom(Fluid2D &fluid_class, float bot
 		fluid_class.FlxY[i] = bottom;
 	}
 }
+
+void DirichletBoundaryCondition::Temperature(Fluid2D& fluid_class, float left, float right, float top, float bottom){
+	int nx=fluid_class.SizeX();
+	int ny=fluid_class.SizeY();
+//#pragma omp parallel for default(none) shared(fluid_class,nx,ny,left,right)
+	for (int j=0; j < ny; j++){
+		fluid_class.Tmp[j * nx] = left;
+		fluid_class.Tmp[nx - 1 + j * nx] = right;
+	}
+//#pragma omp parallel for default(none) shared(fluid_class,nx,ny,top,bottom)
+	for (int i=0; i < nx; i++){
+		fluid_class.Tmp[i + (ny - 1) * nx] = top;
+		fluid_class.Tmp[i] = bottom;
+	}
+}
+
+void DirichletBoundaryCondition::TemperatureRight(Fluid2D &fluid_class, float right) {
+	int nx=fluid_class.SizeX();
+	int ny=fluid_class.SizeY();
+//#pragma omp parallel for default(none) shared(fluid_class,nx,ny,right)
+	for (int j=0; j < ny; j++){
+		fluid_class.Tmp[nx - 1 + j * nx] = right;
+	}
+}
+
+void DirichletBoundaryCondition::TemperatureLeft(Fluid2D &fluid_class, float left) {
+	int nx=fluid_class.SizeX();
+	int ny=fluid_class.SizeY();
+//#pragma omp parallel for default(none) shared(fluid_class,nx,ny,left)
+	for (int j=0; j < ny; j++){
+		fluid_class.Tmp[j * nx] = left;
+	}
+}
+
+void DirichletBoundaryCondition::TemperatureTop(Fluid2D &fluid_class, float top) {
+	int nx=fluid_class.SizeX();
+	int ny=fluid_class.SizeY();
+	for (int i=0; i < nx; i++){
+		fluid_class.Tmp[i + (ny - 1) * nx] = top;
+	}
+}
+
+void DirichletBoundaryCondition::TemperatureBottom(Fluid2D &fluid_class, float bottom) {
+	int nx=fluid_class.SizeX();
+	for (int i=0; i < nx; i++){
+		fluid_class.Tmp[i] = bottom;
+	}
+}
+
+
+
