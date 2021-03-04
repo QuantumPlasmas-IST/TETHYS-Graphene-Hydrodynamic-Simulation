@@ -245,6 +245,7 @@ TethysBase::TethysBase(int size_nx, int size_ny, int dimension){
 		DataspaceDen = new DataSpace(RANK, dimsf );
 		DataspaceVelX = new DataSpace(RANK, dimsf );
 		DataspaceVelY = new DataSpace(RANK, dimsf );
+		DataspaceTmp = new DataSpace(RANK, dimsf );
 		dimsf[0] = static_cast<hsize_t>(Ny-1);
 		dimsf[1] = static_cast<hsize_t>(Nx-1);  //troquei !
 		DataspaceVelSndMid = new DataSpace(RANK, dimsf );
@@ -274,7 +275,8 @@ void TethysBase::CreateHdf5File(){
 	GrpVelX = new Group(Hdf5File->createGroup("/Data/VelocityX" ));
 	if(RANK==2) {
 		GrpVelY = new Group(Hdf5File->createGroup("/Data/VelocityY"));
-	}
+        GrpTmp = new Group(Hdf5File->createGroup("/Data/Temperature"));
+    }
 }
 
 
@@ -286,7 +288,8 @@ void TethysBase::OpenHdf5File(const std::string& hdf5name){
 	GrpVelX = new Group(Hdf5File->openGroup("/Data/VelocityX" ));
 	if(RANK==2) {
 		GrpVelY = new Group(Hdf5File->openGroup("/Data/VelocityY"));
-	}
+        GrpTmp = new Group(Hdf5File->openGroup("/Data/Temperature"));
+    }
 }
 
 
