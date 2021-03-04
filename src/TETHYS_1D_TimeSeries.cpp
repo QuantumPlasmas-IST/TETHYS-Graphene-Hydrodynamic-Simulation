@@ -11,7 +11,7 @@
 #include <numeric>
 
 
-#include "includes/Tethys1DLib.h"
+#include "includes/Fluid1DLib.h"
 
 using namespace std;
 

@@ -1,6 +1,7 @@
-#include "includes/Tethys2DLib.h"
+#include "includes/Fluid2DLib.h"
 #include "includes/ElectricLib.h"
-
+#include "SetUpParametersLib.h"
+#include "GrapheneFluid2DLib.h"
 
 
 using namespace std;
@@ -20,7 +21,7 @@ int main(int argc, char **argv){
 	GrapheneFluid2D graph(parameters);
 	ElectroAnalysis elec;
 
-	elec.BannerDisplay(graph);
+	ElectroAnalysis::BannerDisplay(graph);
 
 	graph.OpenHdf5File(input_file_name);
 	for(hsize_t i=0; i < graph.GrpDen->getNumObjs(); i++){
