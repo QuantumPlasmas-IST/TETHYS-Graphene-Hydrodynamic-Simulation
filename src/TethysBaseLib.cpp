@@ -194,6 +194,7 @@ TethysBase::~TethysBase(){
 		delete GrpDat;
 		delete GrpDen;
 		delete GrpVelX;
+		delete GrpTmp;
 		delete DataspaceDen;
 		delete DataspaceVelX;
 		delete DataspaceVelSnd;
@@ -201,6 +202,7 @@ TethysBase::~TethysBase(){
 			delete GrpVelY;
 			delete DataspaceVelY;
 			delete DataspaceVelSndMid;
+			delete DataspaceTmp;
 		}
 		delete Hdf5File;
 	}
@@ -256,6 +258,7 @@ TethysBase::TethysBase(int size_nx, int size_ny, int dimension){
 	GrpDen = nullptr;
 	GrpVelX = nullptr;
 	GrpVelY = nullptr;
+	GrpTmp = nullptr;
 }
 
 
