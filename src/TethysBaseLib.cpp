@@ -136,7 +136,7 @@ void TethysBase::WriteAttributes(){
 	Attribute atr_vel_snd  = GrpDat->createAttribute("Sound velocity", HDF5FLOAT, atr_dataspace);
 	Attribute atr_kin_vis = GrpDat->createAttribute("Kinematic shear viscosity", HDF5FLOAT, atr_dataspace);
 	Attribute atr_odd_vis = GrpDat->createAttribute("Kinematic odd viscosity", HDF5FLOAT, atr_dataspace);
-//	Attribute atr_therm_diff = GrpDat->createAttribute("Thermal diffusivity", HDF5FLOAT, atr_dataspace);
+	Attribute atr_therm_diff = GrpDat->createAttribute("Thermal diffusivity", HDF5FLOAT, atr_dataspace);
 	Attribute atr_col_freq = GrpDat->createAttribute("Collision frequency", HDF5FLOAT, atr_dataspace);
 	Attribute atr_cyc_freq  = GrpDat->createAttribute("Cyclotron frequency", HDF5FLOAT, atr_dataspace);
 	Attribute atr_vel_fer  = GrpDat->createAttribute("Fermi velocity", HDF5FLOAT, atr_dataspace);
@@ -161,7 +161,7 @@ void TethysBase::WriteAttributes(){
 	atr_col_freq.write(HDF5FLOAT, &col_freq);
 	atr_kin_vis.write(HDF5FLOAT, &kin_vis);
 	atr_odd_vis.write(HDF5FLOAT, &odd_vis);
-	//atr_therm_diff.write(HDF5FLOAT, &therm_diff);
+	atr_therm_diff.write(HDF5FLOAT, &therm_diff);
 	atr_dx.write(HDF5FLOAT, &dx);
 	atr_dt.write(HDF5FLOAT, &dt);
 	atr_num_space_points_x.write(HDF5INT, &Nx);
@@ -176,7 +176,8 @@ void TethysBase::WriteAttributes(){
 	// Close the attributes.
 	atr_num_time_steps.close();
 	atr_col_freq.close();
-	//atr_vel_fer.close();
+	atr_vel_fer.close();
+	atr_therm_diff.close();
 	atr_vel_snd.close();
 	atr_kin_vis.close();
 	atr_dx.close();
