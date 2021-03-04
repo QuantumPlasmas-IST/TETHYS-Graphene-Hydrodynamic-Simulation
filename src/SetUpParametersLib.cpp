@@ -40,7 +40,7 @@ SetUpParameters::SetUpParameters(int argc, char ** argv) {
 
 	if(argc==2){
 	    string line;
-        ifstream file("FileToRead");
+        ifstream file(argv[1]);
 
         vector<string> veclines;
         vector<float> final_values;
