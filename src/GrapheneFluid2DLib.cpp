@@ -47,6 +47,9 @@ void GrapheneFluid2D::CflCondition(){ // Eventual redefinition
 	if(kin_vis>0.0f&& kin_vis*dt > dx*dx*0.5f){
 		dt = 0.8f*0.5f*dx*dx/kin_vis;
 	}
+	if(therm_diff>0.0f&& therm_diff*dt > dx*dx*0.5f){
+		dt = 0.8f*0.5f*dx*dx/therm_diff;
+	}
 }
 
 /*

@@ -58,7 +58,8 @@ class TethysBase {
 		float vel_fer =10.0f;
 		float cyc_freq =0.0f;
 		float kin_vis =0.0f;    // kinetic shear viscosity parameter
-		float odd_vis =0.0f;    // kinetic shear viscosity parameter
+		float odd_vis =0.0f;    // kinetic odd viscosity parameter
+		float therm_diff = 0.0f; // thermal diffusivity parameter
 		float col_freq =0.0f;   // colision frequency parameter
 		std::string file_infix; // base name for the output files
 		float Tmax=10;          // total time of simulation
@@ -101,6 +102,7 @@ class TethysBase {
 		void SetKinVis(float x);    ///< sets  kinetic shear viscosity
 		void SetOddVis(float x);    ///< sets  kinetic odd viscosity
 		void SetColFreq(float x);   ///< sets  collision frequency
+		void SetThermDiff(float x);   ///< sets  collision frequency
 		void SetVelFer(float x);        ///< sets  Fermi Velocity
 		void SetCycFreq(float x);        ///< sets  cyclotron frequency
 		void SetDx(float x);        ///< sets  spatial step x
@@ -109,6 +111,7 @@ class TethysBase {
 		void SetLengthX(float x);   ///< sets  total length along x
 		void SetLengthY(float x);   ///< sets  total length along y
 
+		float GetThermDiff() const ;    ///< @returns  collision frequency
 		float GetVelSnd() const;    ///< @returns   nominal S value
 		float GetKinVis() const;    ///< @returns   kinetic shear viscosity
 		float GetOddVis() const;    ///< @returns   kinetic odd viscosity

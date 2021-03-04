@@ -361,8 +361,8 @@ void Fluid2D::VelocityLaplacianWeighted19() {
 }
 
 void Fluid2D::TemperatureLaplacianWeighted19() {
-    float sx=0.15*dt/(dx*dx);
-    float sy=0.15*dt/(dy*dy);
+    float sx= therm_diff * dt / (dx * dx);
+    float sy= therm_diff * dt / (dy * dy);
 #pragma omp parallel for default(none) shared(lap_flxX,lap_flxY,VelX,VelY,sx,sy)
     for (int kp = 1 + Nx; kp <= Nx * Ny - Nx - 2; kp++) { //correr a grelha principal evitando as fronteiras
         int north, south, east, west, northeast, northwest,southeast, southwest ;
