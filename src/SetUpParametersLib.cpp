@@ -6,7 +6,8 @@
 #include "SetUpParametersLib.h"
 
 SetUpParameters::SetUpParameters() {
-	SizeX=101;
+    cout << "Saí "<<endl;
+    SizeX=101;
 	SizeY=101;
 	SoundVelocity = 30.0f;
 	FermiVelocity = 10.0f;
@@ -29,43 +30,88 @@ SetUpParameters::SetUpParameters(float sound, float fermi, float coll, float vis
 	AspectRatio = aspect;
 	ParametersChecking();
 	DefineGeometry();
+    cout << "Saí "<<endl;
+
 }
 
 SetUpParameters::SetUpParameters(int argc, char ** argv) {
 	SizeX=101;
 	SizeY=101;
-	if(argc==8||argc==9){
-		SoundVelocity = strtof(argv[1], nullptr);
-		FermiVelocity = strtof(argv[2], nullptr);
-		CollisionFrequency = strtof(argv[3], nullptr);
-		ShearViscosity = strtof(argv[4], nullptr);
-		OddViscosity = strtof(argv[5], nullptr);
-		CyclotronFrequency = strtof(argv[6], nullptr);
-		SaveMode = (int) strtol(argv[7], nullptr, 10);    // full data or light save option
-		if (argc == 9) {
-			AspectRatio = strtof(argv[8], nullptr);
-		}
-		ParametersChecking();
+
+	if(argc==2){
+	    string line;
+        ifstream file("FileToRead");
+
+        vector<string> veclines;
+        vector<float> final_values;
+
+        while(1){
+            getline(file, line);
+            if(line == "")
+                break;
+            veclines.push_back(line);
+        }
+
+        file.close();
+
+        for(int j=0; j<(int)veclines.size(); ++j) {
+            string line = veclines[j];
+
+            vector<char> init_number;
+
+            for (int i = 0; i < (int) line.size(); ++i) {
+                if (isdigit(line[i]) || int(line[i]) == 46)
+                    init_number.push_back(line[i]);
+            }
+
+            string final_number(init_number.begin(), init_number.end());
+            final_values.push_back(stof(final_number));
+        }
+
+        SoundVelocity = final_values[0];
+        FermiVelocity = final_values[1];
+        ShearViscosity = final_values[2];
+        OddViscosity = final_values[3];
+        CollisionFrequency = final_values[4];
+        CyclotronFrequency = final_values[5];
+        AspectRatio = final_values[6];
+        SaveMode = final_values[7];
 	}
-	else{
-		cout << "Define S value: "; // throw exceptions if the velocities or frequency are negative or if S<Vf
-		cin >> SoundVelocity;
-		cout << "Define vF value: ";
-		cin >> FermiVelocity;
-		cout << "Define kinetic shear viscosity: ";
-		cin >> ShearViscosity;
-		cout << "Define kinetic odd viscosity: ";
-		cin >> OddViscosity;
-		cout << "Define collision frequency: ";
-		cin >> CollisionFrequency;
-		cout << "Define cyclotron frequency: ";
-		cin >> CyclotronFrequency;
-		cout << "Define the aspect ratio x:y ";
-		cin >> AspectRatio;
-		cout << "Define data_save_mode value (0-> light save | 1-> full data): ";
-		cin >> SaveMode;
-		ParametersChecking();
-	}
+
+	else {
+        if (argc == 8 || argc == 9) {
+            SoundVelocity = strtof(argv[1], nullptr);
+            FermiVelocity = strtof(argv[2], nullptr);
+            CollisionFrequency = strtof(argv[3], nullptr);
+            ShearViscosity = strtof(argv[4], nullptr);
+            OddViscosity = strtof(argv[5], nullptr);
+            CyclotronFrequency = strtof(argv[6], nullptr);
+            SaveMode = (int) strtol(argv[7], nullptr, 10);    // full data or light save option
+            if (argc == 9) {
+                AspectRatio = strtof(argv[8], nullptr);
+            }
+            ParametersChecking();
+        }
+        else {
+            cout << "Define S value: "; // throw exceptions if the velocities or frequency are negative or if S<Vf
+            cin >> SoundVelocity;
+            cout << "Define vF value: ";
+            cin >> FermiVelocity;
+            cout << "Define kinetic shear viscosity: ";
+            cin >> ShearViscosity;
+            cout << "Define kinetic odd viscosity: ";
+            cin >> OddViscosity;
+            cout << "Define collision frequency: ";
+            cin >> CollisionFrequency;
+            cout << "Define cyclotron frequency: ";
+            cin >> CyclotronFrequency;
+            cout << "Define the aspect ratio x:y ";
+            cin >> AspectRatio;
+            cout << "Define data_save_mode value (0-> light save | 1-> full data): ";
+            cin >> SaveMode;
+            ParametersChecking();
+        }
+    }
 	DefineGeometry();
 }
 
@@ -181,4 +227,23 @@ void SetUpParameters::DefineGeometry() {
 		SizeX=151;
 		SizeY= static_cast<int>( static_cast<float>(SizeX - 1) / AspectRatio) + 1;
 	}
+}
+
+/*SoundVelocity = sound;
+FermiVelocity = fermi;
+CollisionFrequency = coll;
+ShearViscosity = visco;
+CyclotronFrequency = cyclo;
+SaveMode = mode;
+AspectRatio = aspect;*/
+
+void SetUpParameters::GetParameters(){
+    cout << endl << "Sound velocity: " << SoundVelocity << endl;
+    cout << "Fermi velocity: " << FermiVelocity << endl;
+    cout << "Shear viscosity: " << ShearViscosity << endl;
+    cout << "Odd viscosity: " << OddViscosity << endl;
+    cout << "Collision frequency: " << CollisionFrequency << endl;
+    cout << "Cyclotron frequency: " << CyclotronFrequency << endl;
+    cout << "Aspect ratio: " << AspectRatio << endl;
+    cout << "Save mode: " << SaveMode << endl;
 }

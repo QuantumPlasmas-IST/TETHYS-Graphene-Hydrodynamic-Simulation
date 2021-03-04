@@ -43,6 +43,7 @@ class SetUpParameters {
 		void ParametersChecking() const; ///< Runs a checking on the physical feasibility of the parameters
 		void DefineGeometry(); ///< Set ups the 2D grid dimensions
 		void ParametersFromHdf5File(const std::string& hdf5name); ///< Imports the parameters from a saved HDF5 file
+        void GetParameters();
 };
 
 
