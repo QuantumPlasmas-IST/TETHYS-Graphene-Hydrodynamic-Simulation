@@ -27,6 +27,7 @@ Fluid2D::Fluid2D(const SetUpParameters &input_parameters) : TethysBase{input_par
 	sprintf (buffer, "S=%.2fvF=%.2fvis=%.2fodd=%.3fl=%.2fwc=%.2f", vel_snd, vel_fer, kin_vis,odd_vis, col_freq,cyc_freq);
 	file_infix = buffer;
 	// main grid variables Nx*Ny
+	Tmp 		= new float[Nx * Ny]();
 	Den 		= new float[Nx * Ny]();
 	VelX 		= new float[Nx * Ny]();
 	VelY 		= new float[Nx * Ny]();
@@ -44,6 +45,7 @@ Fluid2D::Fluid2D(const SetUpParameters &input_parameters) : TethysBase{input_par
 	lap_flxY = new float[Nx*Ny](); //in fact they could be smaller but thiw way they are just 0 at the borders who do not evolve
 
 	// 1st Aux. Grid variables (Nx-1)*(Ny-1)
+	tmp_mid		= new float[(Nx-1)*(Ny-1)]();
 	den_mid		= new float[(Nx-1)*(Ny-1)]();
 	velX_dx_mid	= new float[(Nx-1)*(Ny-1)]();
 	velX_dy_mid	= new float[(Nx-1)*(Ny-1)]();
