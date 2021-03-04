@@ -18,6 +18,7 @@ using namespace std;
 int main(int argc, char **argv){
 
 	SetUpParameters parameters(argc, argv);
+	parameters.GetParameters();
 	parameters.DefineGeometry();
 
 	float t=0.0;
