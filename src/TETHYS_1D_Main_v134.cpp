@@ -1,6 +1,10 @@
-#include "includes/Tethys1DLib.h"
+#include "includes/Fluid1DLib.h"
 #include "includes/BoundaryLib.h"
 #include "includes/ElectricLib.h"
+#include "SetUpParametersLib.h"
+#include "DyakonovShurBoundaryLib.h"
+#include "GrapheneFluid1DLib.h"
+
 #ifndef MAT_PI
 #	define MAT_PI 3.14159265358979323846
 #endif
@@ -21,9 +25,9 @@ int main(int argc, char **argv){
 
 	SetUpParameters parameters(argc, argv);
 	GrapheneFluid1D graph(parameters);
-	DyakonovShurBoundaryCondition boundary_condition;
+	//DyakonovShurBoundaryCondition boundary_condition;
 
-	graph.BannerDisplay();
+	GrapheneFluid1D::BannerDisplay();
 	/*......CFL routine to determine dt...............................*/
 	graph.CflCondition();
 	dt=graph.GetDt();
@@ -44,12 +48,11 @@ int main(int argc, char **argv){
 
 	graph.WelcomeScreen();
 
-	
-	////////////////////////////////////////////////////////////////////
-	// Initialization	
+
+	/*...............Initialization...................................*/
 	graph.InitialCondRand();
-	boundary_condition.DyakonovShurBc(graph);
-	////////////////////////////////////////////////////////////////////
+	DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
+	/*................................................................*/
 
 	cout << "\033[1;7;5;33m Program Running \033[0m"<<endl;
 	graph.SetTmax(15.0);
@@ -60,7 +63,7 @@ int main(int argc, char **argv){
 		// Main algorithm		
 		graph.Richtmyer();
 		// Impose boundary conditions
-		boundary_condition.DyakonovShurBc(graph);
+		DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
 		// Applying average filters for smoothing 	
 		graph.Smooth(2);
 		//Record full data

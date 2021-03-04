@@ -5,6 +5,8 @@ set(CMAKE_CXX_STANDARD 14)
 
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/lib")
 
+enable_testing()
+
 include_directories(src/)
 include_directories(src/includes)
 include_directories(/usr/include/hdf5/serial/)
@@ -16,8 +18,17 @@ find_package(HDF5 REQUIRED COMPONENTS CXX)
 #link_libraries(GSL::gsl GSL::gslcblas)
 
 set(CMAKE_CXX_FLAGS "-Wall -Wextra -Wno-unused-parameter -O2")
+
+
+FIND_PACKAGE(OpenMP REQUIRED)
+if(OPENMP_FOUND)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_C_FLAGS}")
+endif()
+
 #set(GSL_FLAGS "-lgsl -lm")
 set(BLAS_FLAGS "-llapack -lblas -llapacke -lm")
+
+
 
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -g ")
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=leak -g ")
@@ -25,17 +36,25 @@ set(BLAS_FLAGS "-llapack -lblas -llapacke -lm")
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=undefined -g ")
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=memory -g ")
 
-add_executable(TETHYS_1D src/TETHYS_1D_Main_v134.cpp)
-add_executable(TETHYS_2D src/TETHYS_2D_Main_v230.cpp)
-add_executable(TETHYS_ELEC_2D src/TETHYS_2D_ElectronicAnalysis.cpp)
 
-add_library(tethys_library STATIC
-        src/TethysLib.cpp
-        src/Tethys2DLib.cpp
-        src/Tethys1DLib.cpp
-        src/TethysMathLib.cpp
-        src/BoundaryLib.cpp
-        src/ElectricLib.cpp)
+add_executable(TETHYS_1D src/TETHYS_1D_Main_v134.cpp)
+add_test(test1D TETHYS_1D 20 10 0.0 0.0 0.0 1 1)
+add_executable(TETHYS_2D src/TETHYS_2D_Main_v240.cpp)
+add_test(test2D TETHYS_2D 20 10 0.0 0.0 0.0 1 1)
+
+add_executable(TETHYS_ELEC_2D src/TETHYS_2D_ElectronicAnalysis.cpp)
+add_test(testElec2D TETHYS_ELEC_2D hdf5_2D_S=20.00vF=10.00vis=0.00l=0.00wc=0.00.h5)
+
+#add_library(tethys_library STATIC
+#        src/TethysLib.cpp
+#        src/Tethys2DLib.cpp
+#        src/Tethys1DLib.cpp
+#        src/TethysMathLib.cpp
+#        src/BoundaryLib.cpp
+#        src/ElectricLib.cpp)
+
+file(GLOB SRC_LIB_FILES src/*Lib.cpp)
+add_library(tethys_library STATIC ${SRC_LIB_FILES} src/Grid2DLib.cpp src/includes/Grid2DLib.h)
 
 
 find_library (TETHYS_LIB tethys_library lib)
@@ -51,5 +70,3 @@ target_link_libraries(TETHYS_2D PRIVATE ${HDF5_CXX_LIBRARIES})
 
 target_include_directories(TETHYS_ELEC_2D PRIVATE ${HDF5_INCLUDE_DIRS})
 target_link_libraries(TETHYS_ELEC_2D PRIVATE ${HDF5_CXX_LIBRARIES})
-
-
