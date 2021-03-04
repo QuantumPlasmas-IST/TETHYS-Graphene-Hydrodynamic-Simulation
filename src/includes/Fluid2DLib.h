@@ -45,7 +45,9 @@ class Fluid2D : public TethysBase
 
 		float * lap_flxX ;      // mass density flux laplacian component x
 		float * lap_flxY ;      // mass density flux laplacian component y
-		std::ofstream data_preview; // file stream for simplified .dat file output
+        float * lap_tmp ;      // temperature laplacian
+
+    std::ofstream data_preview; // file stream for simplified .dat file output
 		int snapshot_per_period = 40;
 		int snapshot_step = 1;
 		void ForwardTimeOperator();
@@ -213,6 +215,7 @@ public :
 		* @see VelocityLaplacianWeighted19()
 		* */
 		void ParabolicOperatorWeightedExplicit19(); // Forward Time Centered Space method for the viscous terms
+        void TemperatureLaplacianWeighted19();
 };
 
 

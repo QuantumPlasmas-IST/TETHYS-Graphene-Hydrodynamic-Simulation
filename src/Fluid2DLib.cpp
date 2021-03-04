@@ -43,6 +43,7 @@ Fluid2D::Fluid2D(const SetUpParameters &input_parameters) : TethysBase{input_par
 
 	lap_flxX = new float[Nx*Ny](); //new grids for the laplacians
 	lap_flxY = new float[Nx*Ny](); //in fact they could be smaller but thiw way they are just 0 at the borders who do not evolve
+    lap_tmp = new float[Nx*Ny]();
 
 	// 1st Aux. Grid variables (Nx-1)*(Ny-1)
 	tmp_mid		= new float[(Nx-1)*(Ny-1)]();
@@ -359,6 +360,35 @@ void Fluid2D::VelocityLaplacianWeighted19() {
 	}
 }
 
+void Fluid2D::TemperatureLaplacianWeighted19() {
+    float sx=0.02*dt/(dx*dx);
+    float sy=0.02*dt/(dy*dy);
+#pragma omp parallel for default(none) shared(lap_flxX,lap_flxY,VelX,VelY,sx,sy)
+    for (int kp = 1 + Nx; kp <= Nx * Ny - Nx - 2; kp++) { //correr a grelha principal evitando as fronteiras
+        int north, south, east, west, northeast, northwest,southeast, southwest ;
+        div_t divresult;
+        divresult = div(kp, Nx);
+        int j;
+        j = divresult.quot;
+        int i;
+        i = divresult.rem;
+        if (kp % Nx != Nx - 1 && kp % Nx != 0){
+            north = i + (j + 1) * Nx;
+            south = i + (j - 1) * Nx;
+            east = i + 1 + j * Nx;
+            west = i - 1 + j * Nx;
+            northeast = i + 1 + (j + 1) * Nx;
+            northwest = i - 1 + (j + 1) * Nx;
+            southeast = i + 1 + (j - 1) * Nx;
+            southwest = i - 1 + (j - 1) * Nx;
+            lap_tmp[kp] = (4.0f*sx*sy-2.0f*sx-2.0f*sy)*Tmp[kp] +
+                           sx*sy*( Tmp[northeast] + Tmp[southeast] + Tmp[northwest] + Tmp[southwest])
+                           + sy*(1.0f-2.0f*sx)*(Tmp[north] + Tmp[south])
+                           + sx*(1.0f-2.0f*sy)*(Tmp[west] + Tmp[east]);
+        }
+    }
+}
+
 
 void Fluid2D:: ParabolicOperatorFtcs() {
 	VelocityLaplacianFtcs();
@@ -367,6 +397,7 @@ void Fluid2D:: ParabolicOperatorFtcs() {
 
 void Fluid2D::ParabolicOperatorWeightedExplicit19() {
 	VelocityLaplacianWeighted19();
+	TemperatureLaplacianWeighted19();
 	ForwardTimeOperator();
 }
 
@@ -487,13 +518,16 @@ float Fluid2D::YMomentumSource(__attribute__((unused)) float n, __attribute__((u
 void Fluid2D::ForwardTimeOperator() {
 #pragma omp parallel for default(none) shared(Nx,Ny,FlxX,FlxY,lap_flxX,lap_flxY,dt,cyc_freq)
 	for (int kp = 1 + Nx; kp <= Nx * Ny - Nx - 2; kp++) { //correr a grelha principal evitando as fronteiras
-		float flx_x_old,flx_y_old;
+		float flx_x_old, flx_y_old, tmp_old;
 		if (kp % Nx != Nx - 1 && kp % Nx != 0) {
-			flx_x_old=FlxX[kp];
-			flx_y_old=FlxY[kp];
-			FlxX[kp] = flx_x_old + lap_flxX[kp];
+			flx_x_old = FlxX[kp];
+			flx_y_old = FlxY[kp];
+            tmp_old = Tmp[kp];
+
+            FlxX[kp] = flx_x_old + lap_flxX[kp];
 			FlxY[kp] = flx_y_old + lap_flxY[kp];
-		}
+            Tmp[kp] = tmp_old + lap_tmp[kp];
+        }
 	}
 }
 
