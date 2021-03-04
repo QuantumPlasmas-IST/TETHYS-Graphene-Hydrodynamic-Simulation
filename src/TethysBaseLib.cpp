@@ -136,6 +136,7 @@ void TethysBase::WriteAttributes(){
 	Attribute atr_vel_snd  = GrpDat->createAttribute("Sound velocity", HDF5FLOAT, atr_dataspace);
 	Attribute atr_kin_vis = GrpDat->createAttribute("Kinematic shear viscosity", HDF5FLOAT, atr_dataspace);
 	Attribute atr_odd_vis = GrpDat->createAttribute("Kinematic odd viscosity", HDF5FLOAT, atr_dataspace);
+//	Attribute atr_therm_diff = GrpDat->createAttribute("Thermal diffusivity", HDF5FLOAT, atr_dataspace);
 	Attribute atr_col_freq = GrpDat->createAttribute("Collision frequency", HDF5FLOAT, atr_dataspace);
 	Attribute atr_cyc_freq  = GrpDat->createAttribute("Cyclotron frequency", HDF5FLOAT, atr_dataspace);
 	Attribute atr_vel_fer  = GrpDat->createAttribute("Fermi velocity", HDF5FLOAT, atr_dataspace);
@@ -160,6 +161,7 @@ void TethysBase::WriteAttributes(){
 	atr_col_freq.write(HDF5FLOAT, &col_freq);
 	atr_kin_vis.write(HDF5FLOAT, &kin_vis);
 	atr_odd_vis.write(HDF5FLOAT, &odd_vis);
+	//atr_therm_diff.write(HDF5FLOAT, &therm_diff);
 	atr_dx.write(HDF5FLOAT, &dx);
 	atr_dt.write(HDF5FLOAT, &dt);
 	atr_num_space_points_x.write(HDF5INT, &Nx);
@@ -317,6 +319,14 @@ float TethysBase::ImagFreq()const {
 	float vel_phs = this->PhaseVel();
 	float vel_phs_sqr = vel_phs*vel_phs ;
 	return (vel_phs_sqr - 0.5625f ) * log(fabs( (vel_phs+0.75f)/(vel_phs-0.75f) )) / (2.0f * vel_phs ) - col_freq*(1.0f-0.125f/vel_phs);
+}
+
+void TethysBase::SetThermDiff(float x) {
+	therm_diff = x;
+}
+
+float TethysBase::GetThermDiff() const {
+	return therm_diff;
 }
 
 

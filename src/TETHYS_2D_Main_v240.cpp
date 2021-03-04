@@ -25,6 +25,9 @@ int main(int argc, char **argv){
 
 	GrapheneFluid2D graph(parameters);
 
+	graph.SetThermDiff(0.2);
+
+
 	/*......CFL routine to determine dt...............................*/
 	graph.CflCondition();
 	dt=graph.GetDt();
@@ -58,7 +61,6 @@ int main(int argc, char **argv){
 	DyakonovShurBoundaryCondition::SetBottomEdge(graph);
 	DyakonovShurBoundaryCondition::SetTopEdge(graph);
 	/*................................................................*/
-
 
 
 	cout << "\033[1;7;5;33m Program Running \033[0m"<<endl;
