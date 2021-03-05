@@ -202,6 +202,8 @@ public :
 		*
 		* @see ParabolicOperatorWeightedExplicit19()
 		* */
+		float Laplacian19(GridPoint p, float *input_ptr, float constant);
+
 		void VelocityLaplacianWeighted19();
 		/*!
 		* @brief Forward Time Centered Space method for the viscous terms

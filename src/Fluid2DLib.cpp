@@ -328,10 +328,12 @@ void Fluid2D::VelocityLaplacianFtcs() {
 
 void Fluid2D::VelocityLaplacianWeighted19() {
 	this->MassFluxToVelocity();
-	float sx=kin_vis*dt/(dx*dx);
-	float sy=kin_vis*dt/(dy*dy);
-#pragma omp parallel for default(none) shared(lap_flxX,lap_flxY,VelX,VelY,sx,sy)
+//	float sx=kin_vis*dt/(dx*dx);
+//	float sy=kin_vis*dt/(dy*dy);
+#pragma omp parallel for default(none) shared(lap_flxX,lap_flxY,VelX,VelY)
 	for (int kp = 1 + Nx; kp <= Nx * Ny - Nx - 2; kp++) { //correr a grelha principal evitando as fronteiras
+		GridPoint point(kp,Nx,Ny,false);
+		/*
 		int north, south, east, west, northeast, northwest,southeast, southwest ;
 		div_t divresult;
 		divresult = div(kp, Nx);
@@ -339,7 +341,9 @@ void Fluid2D::VelocityLaplacianWeighted19() {
 		j = divresult.quot;
 		int i;
 		i = divresult.rem;
+		*/
 		if (kp % Nx != Nx - 1 && kp % Nx != 0){
+			/*
 			north = i + (j + 1) * Nx;
 			south = i + (j - 1) * Nx;
 			east = i + 1 + j * Nx;
@@ -356,35 +360,19 @@ void Fluid2D::VelocityLaplacianWeighted19() {
 			               sx*sy*( VelY[northeast] + VelY[southeast] + VelY[northwest] + VelY[southwest])
 			               + sy*(1.0f-2.0f*sx)*(VelY[north] + VelY[south])
 			               + sx*(1.0f-2.0f*sy)*(VelY[west] + VelY[east]);
+			*/
+			lap_flxX[kp] = Laplacian19( point, VelX, kin_vis);
+			lap_flxY[kp] = Laplacian19( point, VelY, kin_vis);
 		}
 	}
 }
 
 void Fluid2D::TemperatureLaplacianWeighted19() {
-    float sx= therm_diff * dt / (dx * dx);
-    float sy= therm_diff * dt / (dy * dy);
-#pragma omp parallel for default(none) shared(lap_flxX,lap_flxY,VelX,VelY,sx,sy)
+#pragma omp parallel for default(none) shared(lap_tmp,Tmp)
     for (int kp = 1 + Nx; kp <= Nx * Ny - Nx - 2; kp++) { //correr a grelha principal evitando as fronteiras
-        int north, south, east, west, northeast, northwest,southeast, southwest ;
-        div_t divresult;
-        divresult = div(kp, Nx);
-        int j;
-        j = divresult.quot;
-        int i;
-        i = divresult.rem;
+	    GridPoint point(kp,Nx,Ny,false);
         if (kp % Nx != Nx - 1 && kp % Nx != 0){
-            north = i + (j + 1) * Nx;
-            south = i + (j - 1) * Nx;
-            east = i + 1 + j * Nx;
-            west = i - 1 + j * Nx;
-            northeast = i + 1 + (j + 1) * Nx;
-            northwest = i - 1 + (j + 1) * Nx;
-            southeast = i + 1 + (j - 1) * Nx;
-            southwest = i - 1 + (j - 1) * Nx;
-            lap_tmp[kp] = (4.0f*sx*sy-2.0f*sx-2.0f*sy)*Tmp[kp] +
-                           sx*sy*( Tmp[northeast] + Tmp[southeast] + Tmp[northwest] + Tmp[southwest])
-                           + sy*(1.0f-2.0f*sx)*(Tmp[north] + Tmp[south])
-                           + sx*(1.0f-2.0f*sy)*(Tmp[west] + Tmp[east]);
+	        lap_tmp[kp] = Laplacian19( point, Tmp, therm_diff);
         }
     }
 }
@@ -934,5 +922,17 @@ float Fluid2D::YMomentumFluxX(GridPoint p, char side) {
 		py = 0.5f*(py_ptr[p.NW] + py_ptr[p.SW]);
 	}
 	return px * py / den;
+}
+
+float Fluid2D::Laplacian19(GridPoint p, float *input_ptr, float constant) {
+	float sx=constant*dt/(dx*dx);
+	float sy=constant*dt/(dy*dy);
+	float * data_ptr = input_ptr;
+	float lap;
+	lap = (4.0f*sx*sy-2.0f*sx-2.0f*sy)*data_ptr[p.C] +
+	               sx*sy*( data_ptr[p.NE2] + data_ptr[p.SE2] + data_ptr[p.NW2] + data_ptr[p.SW2])
+	               + sy*(1.0f-2.0f*sx)*(data_ptr[p.N] + data_ptr[p.S])
+	               + sx*(1.0f-2.0f*sy)*(data_ptr[p.W] + data_ptr[p.E]);
+return lap;
 }
 
