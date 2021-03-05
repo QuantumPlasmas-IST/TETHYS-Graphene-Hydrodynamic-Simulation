@@ -245,14 +245,14 @@ TethysBase::TethysBase(int size_nx, int size_ny, int dimension){
 	if(RANK==2){
 		hsize_t dimsf[2];
 		dimsf[0] = static_cast<hsize_t>(Ny);
-		dimsf[1] = static_cast<hsize_t>(Nx);  //troquei !
+		dimsf[1] = static_cast<hsize_t>(Nx);
 		DataspaceVelSnd = new DataSpace(RANK, dimsf );
 		DataspaceDen = new DataSpace(RANK, dimsf );
 		DataspaceVelX = new DataSpace(RANK, dimsf );
 		DataspaceVelY = new DataSpace(RANK, dimsf );
 		DataspaceTmp = new DataSpace(RANK, dimsf );
 		dimsf[0] = static_cast<hsize_t>(Ny-1);
-		dimsf[1] = static_cast<hsize_t>(Nx-1);  //troquei !
+		dimsf[1] = static_cast<hsize_t>(Nx-1);
 		DataspaceVelSndMid = new DataSpace(RANK, dimsf );
 	}
 
@@ -275,7 +275,21 @@ void TethysBase::CreateHdf5File(){
 		hdf5name = "hdf5_2D_" + this->GetInfix() + ".h5" ;
 	}
 	H5std_string  file_name(hdf5name );
-	Hdf5File = new H5File(file_name, H5F_ACC_TRUNC );
+	try {
+		/*
+		 * Turn off the auto-printing when failure occurs so that we can
+		 * handle the errors appropriately
+		 */
+		Exception::dontPrint();
+		Hdf5File = new H5File(file_name, H5F_ACC_TRUNC);
+	}
+		// catch failure caused by the H5File operations
+	catch( FileIException error )
+	{
+		cerr << error.getCDetailMsg()<<"\nExiting"<< endl;
+		exit(EXIT_FAILURE);
+	}
+
 	GrpDat = new Group(Hdf5File->createGroup("/Data" ));
 	GrpDen = new Group(Hdf5File->createGroup("/Data/Density" ));
 	GrpVelX = new Group(Hdf5File->createGroup("/Data/VelocityX" ));
