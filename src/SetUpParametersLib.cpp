@@ -43,7 +43,6 @@ SetUpParameters::SetUpParameters(int argc, char ** argv) {
         ifstream file(argv[1]);
 
         vector<string> veclines;
-        vector<float> final_values;
 
         while(1){
             getline(file, line);
@@ -54,8 +53,54 @@ SetUpParameters::SetUpParameters(int argc, char ** argv) {
 
         file.close();
 
-        for(int j=0; j<(int)veclines.size(); ++j) {
-            string line = veclines[j];
+
+        for(int j=0; j<(int)veclines.size(); ++j){
+            line = veclines[j];
+
+            vector<char> num_part, txt_part; // ao redeclarar, é apagado o conteúdo anterior
+
+            for(int i=0; i < (int) line.size(); ++i){
+                if(isdigit(line[i]) || int(line[i]) == 46)
+                    num_part.push_back(line[i]);
+
+                else{
+                    if((int(line[i])>65 && int(line[i])<=90) || (int(line[i])>=97 && int(line[i])<=122))
+                        txt_part.push_back(line[i]);
+                }
+            }
+
+            string num(num_part.begin(), num_part.end());
+            string txt(txt_part.begin(), txt_part.end());
+
+            if(txt == "sound")
+                SoundVelocity = stof(num);
+
+            if(txt == "fermi")
+                FermiVelocity = stof(num);
+
+            if(txt == "shear")
+                ShearViscosity = stof(num);
+
+            if(txt == "odd")
+                OddViscosity = stof(num);
+
+            if(txt == "col")
+                CollisionFrequency = stof(num);
+
+            if(txt == "cycl")
+                CyclotronFrequency = stof(num);
+
+            if(txt == "aspect")
+                AspectRatio = stof(num);
+
+            if(txt == "save")
+                SaveMode = stof(num);
+        }
+
+
+        /*  vector<float> final_values;
+            for(int j=0; j<(int)veclines.size(); ++j){
+            line = veclines[j];
 
             vector<char> init_number;
 
@@ -75,7 +120,7 @@ SetUpParameters::SetUpParameters(int argc, char ** argv) {
         CollisionFrequency = final_values[4];
         CyclotronFrequency = final_values[5];
         AspectRatio = final_values[6];
-        SaveMode = final_values[7];
+        SaveMode = final_values[7];*/
 	}
 
 	else {

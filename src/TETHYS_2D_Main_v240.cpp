@@ -17,79 +17,77 @@ using namespace std;
 
 int main(int argc, char **argv){
 
-	SetUpParameters parameters(argc, argv);
-	parameters.GetParameters();
-	parameters.DefineGeometry();
+    SetUpParameters parameters(argc, argv);
+    parameters.GetParameters();
+    parameters.DefineGeometry();
 
-	float t=0.0;
-	float dt;		// time step
+    float t=0.0;
+    float dt;		// time step
 
-	GrapheneFluid2D graph(parameters);
+    GrapheneFluid2D graph(parameters);
 
-	graph.SetThermDiff(0.2);
+    /*......CFL routine to determine dt...............................*/
+    graph.CflCondition();
+    dt=graph.GetDt();
+    /*................................................................*/
 
+    /*.........Fixed or variable vel_snd value........................*/
+    graph.SetSound();
+    //graph.SetSimulationTime();
+    graph.SetTmax(0.5f);
+    /*................................................................*/
 
-	/*......CFL routine to determine dt...............................*/
-	graph.CflCondition();
-	dt=graph.GetDt();
-	/*................................................................*/
-	
-	/*.........Fixed or variable vel_snd value........................*/
-	graph.SetSound();
-	//graph.SetSimulationTime();
-	graph.SetTmax(0.5f);
-	/*................................................................*/
-
-	/*.........Output files and streams...............................*/
-	graph.CreateFluidFile();
-	graph.CreateHdf5File();
-	if(parameters.SaveMode){
-		graph.SaveSound();
-	}
-	/*................................................................*/
+    /*.........Output files and streams...............................*/
+    graph.CreateFluidFile();
+    graph.CreateHdf5File();
+    if(parameters.SaveMode){
+        graph.SaveSound();
+    }
+    /*................................................................*/
 
 
 
-	GrapheneFluid2D::BannerDisplay();
-	graph.WelcomeScreen();
+    GrapheneFluid2D::BannerDisplay();
+    graph.WelcomeScreen();
 
-	/*...............Initialization...................................*/
-	graph.InitialCondRand();
-	/*................................................................*/
+    /*...............Initialization...................................*/
+    graph.InitialCondRand();
+    /*................................................................*/
 
-	/*................Setting.the.lateral.boundaries..................*/
-	DyakonovShurBoundaryCondition::SetSlope(0.0f);
-	DyakonovShurBoundaryCondition::SetBottomEdge(graph);
-	DyakonovShurBoundaryCondition::SetTopEdge(graph);
-	/*................................................................*/
+    /*................Setting.the.lateral.boundaries..................*/
+    DyakonovShurBoundaryCondition::SetSlope(0.0f);
+    DyakonovShurBoundaryCondition::SetBottomEdge(graph);
+    DyakonovShurBoundaryCondition::SetTopEdge(graph);
+    /*................................................................*/
 
 
-	cout << "\033[1;7;5;33m Program Running \033[0m"<<endl;
-	while (t <=  graph.GetTmax() ){ // graph.GetTmax()
 
-		t += dt;
-		GrapheneFluid2D::TimeStepCounter++;
+    cout << "\033[1;7;5;33m Program Running \033[0m"<<endl;
+    while (t <=  graph.GetTmax() ){ // graph.GetTmax()
 
-		graph.Richtmyer();
-		DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
-		DyakonovShurBoundaryCondition::YFree(graph);
-		DirichletBoundaryCondition::YClosedNoSlip(graph);
+        t += dt;
+        GrapheneFluid2D::TimeStepCounter++;
+
+        graph.Richtmyer();
+        DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
+        DyakonovShurBoundaryCondition::YFree(graph);
+        DirichletBoundaryCondition::YClosedNoSlip(graph);
         DirichletBoundaryCondition::Temperature(graph, 1, 2, 3, 4);
 
-		/*BoundaryCondition::YFreeTop(graph);
-		BoundaryCondition::XFreeRight(graph);
-		DirichletBoundaryCondition::DensityLeft(graph, 1.0f);
-		DirichletBoundaryCondition::MassFluxXLeft(graph, 1.0f);
-		DirichletBoundaryCondition::MassFluxYLeft(graph, 0.0f);
-		DirichletBoundaryCondition::MassFluxYBottom(graph, 0.0f);
-		DirichletBoundaryCondition::MassFluxXBottom(graph, 0.0f);*/
-		//RobinBoundaryCondition::SlipLengthBottom(graph, 1.5f);
+        /*BoundaryCondition::YFreeTop(graph);
+        BoundaryCondition::XFreeRight(graph);
+        DirichletBoundaryCondition::DensityLeft(graph, 1.0f);
+        DirichletBoundaryCondition::MassFluxXLeft(graph, 1.0f);
+        DirichletBoundaryCondition::MassFluxYLeft(graph, 0.0f);
+        DirichletBoundaryCondition::MassFluxYBottom(graph, 0.0f);
+        DirichletBoundaryCondition::MassFluxXBottom(graph, 0.0f);*/
+        //RobinBoundaryCondition::SlipLengthBottom(graph, 1.5f);
 
-		if(graph.GetKinVis()!=0.0f ) {
-			graph.ParabolicOperatorWeightedExplicit19();
-			DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
-			DyakonovShurBoundaryCondition::YFree(graph);
-			DirichletBoundaryCondition::YClosedNoSlip(graph);
+        if(graph.GetKinVis()!=0.0f ) {
+            graph.ParabolicOperatorWeightedExplicit19();
+            DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
+            DyakonovShurBoundaryCondition::YFree(graph);
+            DirichletBoundaryCondition::YClosedNoSlip(graph);
             DirichletBoundaryCondition::Temperature(graph, 1, 2, 3, 4);
 
 
@@ -101,25 +99,25 @@ int main(int argc, char **argv){
             DirichletBoundaryCondition::MassFluxYBottom(graph, 0.0f);
             DirichletBoundaryCondition::MassFluxXBottom(graph, 0.0f);
             //RobinBoundaryCondition::SlipLengthBottom(graph, 1.5f);*/
-		}
+        }
 
-		//Record full hdf5 data
-		if (parameters.SaveMode  && graph.Snapshot()) {
-			graph.SaveSnapShot();
-		}
-		//if(static_cast<int>(fmod(t/dt,2.0f))){
-		if( !( GrapheneFluid2D::TimeStepCounter % 2) ){
-			graph.WriteFluidFile(t);
-		}
-	}
-	//Record atributes on hdf5 file
-	if(parameters.SaveMode) {
-		graph.WriteAttributes();
-	}
-	graph.CloseHdf5File();
+        //Record full hdf5 data
+        if (parameters.SaveMode  && graph.Snapshot()) {
+            graph.SaveSnapShot();
+        }
+        //if(static_cast<int>(fmod(t/dt,2.0f))){
+        if( !( GrapheneFluid2D::TimeStepCounter % 2) ){
+            graph.WriteFluidFile(t);
+        }
+    }
+    //Record atributes on hdf5 file
+    if(parameters.SaveMode) {
+        graph.WriteAttributes();
+    }
+    graph.CloseHdf5File();
 
 
-	cout << "\033[1A\033[2K\033[1;32mDONE!\033[0m\n";
-	cout << "═══════════════════════════════════════════════════════════════════════════" <<endl;
-	return 0;
+    cout << "\033[1A\033[2K\033[1;32mDONE!\033[0m\n";
+    cout << "═══════════════════════════════════════════════════════════════════════════" <<endl;
+    return 0;
 }
