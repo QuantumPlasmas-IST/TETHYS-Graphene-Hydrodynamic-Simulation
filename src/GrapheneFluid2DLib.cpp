@@ -331,6 +331,7 @@ float GrapheneFluid2D::YMomentumSource(float n, float flx_x, float flx_y, __attr
 	return -1.0f*col_freq*flx_y  + cyc_freq*flx_x/sqrt(n);
 }
 
+
 GrapheneFluid2D::~GrapheneFluid2D(){
 delete[] Den;
 delete[] VelX;

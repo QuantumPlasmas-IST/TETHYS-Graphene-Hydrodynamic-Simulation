@@ -155,10 +155,11 @@ void Fluid2D::Richtmyer(){
 					-0.5f*(dt/dx)*(YMomentumFluxX(point,'E') - YMomentumFluxX(point,'W'))
 					-0.5f*(dt/dy)*(YMomentumFluxY(point,'N') - YMomentumFluxY(point,'S'))
 					+0.5f*dt*YMomentumSource(den_avg, flx_x_avg, flx_y_avg, 0.0f, 0.0f);
-
-            tmp_mid[ks] = tmp_avg
-                           -0.5f*(dt/dx)*(TemperatureFluxX(point,'E') - TemperatureFluxX(point,'W'))
-                           -0.5f*(dt/dy)*(TemperatureFluxY(point,'N') - TemperatureFluxY(point,'S'));
+			if(therm_diff){
+				tmp_mid[ks] = tmp_avg
+				              - 0.5f * (dt / dx) * (TemperatureFluxX(point, 'E') - TemperatureFluxX(point, 'W'))
+				              - 0.5f * (dt / dy) * (TemperatureFluxY(point, 'N') - TemperatureFluxY(point, 'S'));
+			}
 		}
 
 	if(odd_vis) {
@@ -184,8 +185,10 @@ void Fluid2D::Richtmyer(){
 				FlxY[kp] = flx_y_old - (dt/dx)*(YMomentumFluxX(point,'E') - YMomentumFluxX(point,'W'))
 						             - (dt/dy)*(YMomentumFluxY(point,'N') - YMomentumFluxY(point,'S'))
 				                     + dt*YMomentumSource(den_old, flx_x_old, flx_y_old, 0.0f, 0.0f);
-                Tmp[kp] = tmp_old - (dt/dx)*(TemperatureFluxX(point,'E') - TemperatureFluxX(point,'W'))
-                                  - (dt/dy)*(TemperatureFluxY(point,'N') - TemperatureFluxY(point,'S'));
+				if(therm_diff) {
+					Tmp[kp] = tmp_old - (dt / dx) * (TemperatureFluxX(point, 'E') - TemperatureFluxX(point, 'W'))
+					          - (dt / dy) * (TemperatureFluxY(point, 'N') - TemperatureFluxY(point, 'S'));
+				}
 			}
 		}
 }
