@@ -32,7 +32,7 @@ set(BLAS_FLAGS "-llapack -lblas -llapacke -lm")
 
 add_executable(TETHYS_1D src/TETHYS_1D_Main_v134.cpp)
 add_test(test1D TETHYS_1D 20 10 0.0 0.0 0.0 1 1)
-add_executable(TETHYS_2D src/TETHYS_2D_Main_v231.cpp)
+add_executable(TETHYS_2D src/TETHYS_2D_Main_v240.cpp)
 add_test(test2D TETHYS_2D 20 10 0.0 0.0 0.0 1 1)
 
 add_executable(TETHYS_ELEC_2D src/TETHYS_2D_ElectronicAnalysis.cpp)
