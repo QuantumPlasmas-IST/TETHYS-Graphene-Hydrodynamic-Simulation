@@ -26,7 +26,7 @@ int main(int argc, char **argv){
 
 	GrapheneFluid2D graph(parameters);
 
-	graph.SetThermDiff(0.2);
+	graph.SetThermDiff(0.5);
 
 
 	/*......CFL routine to determine dt...............................*/
@@ -74,7 +74,7 @@ int main(int argc, char **argv){
 		DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
 		DyakonovShurBoundaryCondition::YFree(graph);
 		DirichletBoundaryCondition::YClosedNoSlip(graph);
-        DirichletBoundaryCondition::Temperature(graph, 1, 2, 3, 4);
+        DirichletBoundaryCondition::Temperature(graph, 1, 1, 1, 1);
 
 		/*BoundaryCondition::YFreeTop(graph);
 		BoundaryCondition::XFreeRight(graph);
@@ -90,7 +90,7 @@ int main(int argc, char **argv){
 			DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
 			DyakonovShurBoundaryCondition::YFree(graph);
 			DirichletBoundaryCondition::YClosedNoSlip(graph);
-            DirichletBoundaryCondition::Temperature(graph, 1, 2, 3, 4);
+            DirichletBoundaryCondition::Temperature(graph, 1, 1, 1, 1);
 
 
             /*BoundaryCondition::YFreeTop(graph);

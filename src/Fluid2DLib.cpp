@@ -141,8 +141,10 @@ void Fluid2D::Richtmyer(){
 			float den_avg   = 0.25f * ( Den[point.SW] + Den[point.SE]  + Den[point.NW]  + Den[point.NE]);
 			float flx_x_avg = 0.25f * (FlxX[point.SW] + FlxX[point.SE] + FlxX[point.NW] + FlxX[point.NE]);
 			float flx_y_avg = 0.25f * (FlxY[point.SW] + FlxY[point.SE] + FlxY[point.NW] + FlxY[point.NE]);
+            float tmp_avg   = 0.25f * ( Tmp[point.SW] + Tmp[point.SE]  + Tmp[point.NW]  + Tmp[point.NE]);
 
-			den_mid[ks] = den_avg
+
+            den_mid[ks] = den_avg
 			              -0.5f*(dt/dx)*(DensityFluxX(point,'E') - DensityFluxX(point,'W'))
 			              -0.5f*(dt/dy)*(DensityFluxY(point,'N') - DensityFluxY(point,'S'));
 			flxX_mid[ks] = flx_x_avg
@@ -153,6 +155,10 @@ void Fluid2D::Richtmyer(){
 					-0.5f*(dt/dx)*(YMomentumFluxX(point,'E') - YMomentumFluxX(point,'W'))
 					-0.5f*(dt/dy)*(YMomentumFluxY(point,'N') - YMomentumFluxY(point,'S'))
 					+0.5f*dt*YMomentumSource(den_avg, flx_x_avg, flx_y_avg, 0.0f, 0.0f);
+
+            tmp_mid[ks] = tmp_avg
+                           -0.5f*(dt/dx)*(TemperatureFluxX(point,'E') - TemperatureFluxX(point,'W'))
+                           -0.5f*(dt/dy)*(TemperatureFluxY(point,'N') - TemperatureFluxY(point,'S'));
 		}
 
 	if(odd_vis) {
@@ -167,7 +173,9 @@ void Fluid2D::Richtmyer(){
 				float den_old = Den[kp];
 				float flx_x_old = FlxX[kp];
 				float flx_y_old = FlxY[kp];
-				Den[kp] = den_old - (dt/dx)*(DensityFluxX(point,'E') - DensityFluxX(point,'W'))
+                float tmp_old = Tmp[kp];
+
+                Den[kp] = den_old - (dt/dx)*(DensityFluxX(point,'E') - DensityFluxX(point,'W'))
 						          - (dt/dy)*(DensityFluxY(point,'N') - DensityFluxY(point,'S'))
 						          + dt*DensitySource(den_old, flx_x_old, flx_y_old, 0.0f, 0.0f);
 				FlxX[kp] = flx_x_old - (dt/dx)*(XMomentumFluxX(point,'E') - XMomentumFluxX(point,'W'))
@@ -176,6 +184,8 @@ void Fluid2D::Richtmyer(){
 				FlxY[kp] = flx_y_old - (dt/dx)*(YMomentumFluxX(point,'E') - YMomentumFluxX(point,'W'))
 						             - (dt/dy)*(YMomentumFluxY(point,'N') - YMomentumFluxY(point,'S'))
 				                     + dt*YMomentumSource(den_old, flx_x_old, flx_y_old, 0.0f, 0.0f);
+                Tmp[kp] = tmp_old - (dt/dx)*(TemperatureFluxX(point,'E') - TemperatureFluxX(point,'W'))
+                                  - (dt/dy)*(TemperatureFluxY(point,'N') - TemperatureFluxY(point,'S'));
 			}
 		}
 }
@@ -923,6 +933,44 @@ float Fluid2D::YMomentumFluxX(GridPoint p, char side) {
 	}
 	return px * py / den;
 }
+
+
+float Fluid2D::TemperatureFluxX(GridPoint p, char side) {
+    float * px_ptr;
+    float px =0.0f;
+    if(p.IsMidGrid){
+        px_ptr = FlxX;
+    }else{
+        px_ptr = flxX_mid;
+    }
+    if (side == 'E'){
+        px = 0.5f*(px_ptr[p.NE] + px_ptr[p.SE]);
+    }
+    if (side == 'W'){
+        px = 0.5f*(px_ptr[p.NW] + px_ptr[p.SW]);
+    }
+    return px * vel_fer * vel_fer;
+}
+
+
+float Fluid2D::TemperatureFluxY(GridPoint p, char side) {
+    float * py_ptr;
+    float py=0.0f;
+    if(p.IsMidGrid){
+        py_ptr = FlxY;
+    }else{
+        py_ptr = flxY_mid;
+    }
+    if (side == 'N'){
+        py = 0.5f*(py_ptr[p.NE] + py_ptr[p.NW]);
+    }
+    if (side == 'S'){
+        py = 0.5f*(py_ptr[p.SE] + py_ptr[p.SW]);
+    }
+    return py * vel_fer * vel_fer;
+}
+
+
 
 float Fluid2D::Laplacian19(GridPoint p, float *input_ptr, float constant) {
 	float sx=constant*dt/(dx*dx);

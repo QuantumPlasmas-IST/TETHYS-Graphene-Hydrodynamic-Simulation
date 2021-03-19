@@ -118,16 +118,17 @@ public :
 	virtual float YMomentumSource(float n, float flx_x, float flx_y, float mass, float s); ///< velocity y component equation (momentum equation) source term
 
 
-		virtual float DensityFluxX(GridPoint p, char side ); ///< density equation (continuity equation) conserved flux X component
-		virtual float DensityFluxY(GridPoint p, char side ); ///< density equation (continuity equation) conserved1 flux Y component
+    virtual float DensityFluxX(GridPoint p, char side ); ///< density equation (continuity equation) conserved flux X component
+    virtual float DensityFluxY(GridPoint p, char side ); ///< density equation (continuity equation) conserved1 flux Y component
 
-		virtual float XMomentumFluxX(GridPoint p, char side ); ///< velocity X component equation (momentum equation) conserved flux X component
-		virtual float XMomentumFluxY(GridPoint p, char side ); ///< velocity X component equation (momentum equation) conserved flux Y component
+    virtual float XMomentumFluxX(GridPoint p, char side ); ///< velocity X component equation (momentum equation) conserved flux X component
+    virtual float XMomentumFluxY(GridPoint p, char side ); ///< velocity X component equation (momentum equation) conserved flux Y component
 
-		virtual float YMomentumFluxX(GridPoint p, char side ); ///< velocity Y component equation (momentum equation) conserved flux X component
-		virtual float YMomentumFluxY(GridPoint p, char side ); ///< velocity Y component equation (momentum equation) conserved flux Y component
+    virtual float YMomentumFluxX(GridPoint p, char side ); ///< velocity Y component equation (momentum equation) conserved flux X component
+    virtual float YMomentumFluxY(GridPoint p, char side ); ///< velocity Y component equation (momentum equation) conserved flux Y component
 
-
+    float TemperatureFluxX(GridPoint p, char side );
+    float TemperatureFluxY(GridPoint p, char side );
 
 
 
