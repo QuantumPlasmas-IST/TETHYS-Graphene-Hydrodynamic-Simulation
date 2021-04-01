@@ -26,7 +26,7 @@ int main(int argc, char **argv){
 
 	GrapheneFluid2D graph(parameters);
 
-	graph.SetThermDiff(0.5);
+	graph.SetThermDiff(0.6);
 
 
 	/*......CFL routine to determine dt...............................*/

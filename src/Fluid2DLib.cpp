@@ -385,7 +385,7 @@ void Fluid2D::TemperatureLaplacianWeighted19() {
     for (int kp = 1 + Nx; kp <= Nx * Ny - Nx - 2; kp++) { //correr a grelha principal evitando as fronteiras
 	    GridPoint point(kp,Nx,Ny,false);
         if (kp % Nx != Nx - 1 && kp % Nx != 0){
-	        lap_tmp[kp] = Laplacian19( point, Tmp, therm_diff);
+	        lap_tmp[kp] = Laplacian19( point, Tmp, therm_diff );
         }
     }
 }
@@ -958,7 +958,7 @@ float Fluid2D::TemperatureFluxX(GridPoint p, char side) {
 	    den = 0.5f*(den_ptr[p.NW] + den_ptr[p.SW]);
         px = 0.5f*(px_ptr[p.NW] + px_ptr[p.SW]);
     }
-    return px * vel_fer * vel_fer + px / DensityToMass(den);
+    return 0.0f*px * vel_fer * vel_fer + px / DensityToMass(den);
 }
 
 
@@ -982,7 +982,7 @@ float Fluid2D::TemperatureFluxY(GridPoint p, char side) {
 	    den = 0.5f*(den_ptr[p.SE] + den_ptr[p.SW]);
         py = 0.5f*(py_ptr[p.SE] + py_ptr[p.SW]);
     }
-    return py * vel_fer * vel_fer  + py / DensityToMass(den) ;
+    return 0.0f*py * vel_fer * vel_fer  + py / DensityToMass(den) ;
 }
 
 
