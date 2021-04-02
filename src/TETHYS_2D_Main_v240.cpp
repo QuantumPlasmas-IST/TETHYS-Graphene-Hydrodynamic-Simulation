@@ -74,7 +74,7 @@ int main(int argc, char **argv){
 		DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
 		DyakonovShurBoundaryCondition::YFree(graph);
 		DirichletBoundaryCondition::YClosedNoSlip(graph);
-        DirichletBoundaryCondition::Temperature(graph, 1, 1, 1, 1);
+        DirichletBoundaryCondition::Temperature(graph,0.22f, 0.22f, 0.22f, 0.22f);
 
 		/*BoundaryCondition::YFreeTop(graph);
 		BoundaryCondition::XFreeRight(graph);
@@ -90,7 +90,7 @@ int main(int argc, char **argv){
 			DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
 			DyakonovShurBoundaryCondition::YFree(graph);
 			DirichletBoundaryCondition::YClosedNoSlip(graph);
-            DirichletBoundaryCondition::Temperature(graph, 1, 1, 1, 1);
+            DirichletBoundaryCondition::Temperature(graph, 0.22f, 0.22f, 0.22f, 0.22f); // 300Kelvin sao aproximadamente 0.2 Temperatura de Fermi
 
 
             /*BoundaryCondition::YFreeTop(graph);
