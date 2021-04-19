@@ -46,7 +46,7 @@ from the root directory
 
   <small>For the writing of the complete data.</small>
   
-_<small>As an example in Fedoras systems it will be enough to install the packages: cmake; libgomp; libomp; hdf5; hdf5-devel; hdf5-static </small>_
+_<small>As an example in Fedora systems it should be enough to install the packages: cmake; libgomp; libomp; hdf5; hdf5-devel; hdf5-static </small>_
   
   
 
