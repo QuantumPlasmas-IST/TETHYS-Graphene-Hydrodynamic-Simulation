@@ -45,6 +45,10 @@ from the root directory
 * HDF5<sup><small>&reg;</small></sup> libraries (version 1.8.20 or higher) 
 
   <small>For the writing of the complete data.</small>
+  
+_<small>As an example in Fedoras systems it will be enough to install the packages: cmake; libgomp; libomp; hdf5; hdf5-devel; hdf5-static </small>_
+  
+  
 
 ### Optional 
 
