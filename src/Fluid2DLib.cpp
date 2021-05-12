@@ -941,51 +941,63 @@ float Fluid2D::YMomentumFluxX(GridPoint p, char side) {
 float Fluid2D::TemperatureFluxX(GridPoint p, char side) {
     float * px_ptr;
 	float * den_ptr;
+	float * tmp_ptr;
+	float tmp=1.0f;
     float px =0.0f;
 	float den=1.0f;
+
     if(p.IsMidGrid){
 	    den_ptr = Den;
         px_ptr = FlxX;
+	    tmp_ptr = Tmp;
     }else{
 	    den_ptr = den_mid;
         px_ptr = flxX_mid;
+	    tmp_ptr = tmp_mid;
     }
     if (side == 'E'){
 	    den = 0.5f*(den_ptr[p.NE] + den_ptr[p.SE]);
         px = 0.5f*(px_ptr[p.NE] + px_ptr[p.SE]);
+	    tmp = 0.5f*(tmp_ptr[p.NE] + tmp_ptr[p.SE]);
     }
     if (side == 'W'){
 	    den = 0.5f*(den_ptr[p.NW] + den_ptr[p.SW]);
         px = 0.5f*(px_ptr[p.NW] + px_ptr[p.SW]);
+	    tmp = 0.5f*(tmp_ptr[p.NW] + tmp_ptr[p.SW]);
     }
     //return px * vel_fer * vel_fer + px / DensityToMass(den);
-	return 0.07599088773f*px  + px / DensityToMass(den);
+	return PHYS_FERMI_CNVC*px  + tmp*px / DensityToMass(den);
 }
 
 
 float Fluid2D::TemperatureFluxY(GridPoint p, char side) {
     float * py_ptr;
     float py=0.0f;
+	float * tmp_ptr;
+	float tmp=1.0f;
 	float * den_ptr;
 	float den=1.0f;
     if(p.IsMidGrid){
 	    den_ptr = Den;
         py_ptr = FlxY;
+        tmp_ptr=Tmp;
     }else{
 	    den_ptr = den_mid;
         py_ptr = flxY_mid;
+        tmp_ptr=tmp_mid;
     }
     if (side == 'N'){
 	    den = 0.5f*(den_ptr[p.NE] + den_ptr[p.NW]);
         py = 0.5f*(py_ptr[p.NE] + py_ptr[p.NW]);
+	    tmp = 0.5f*(tmp_ptr[p.NE] + tmp_ptr[p.NW]);
     }
     if (side == 'S'){
 	    den = 0.5f*(den_ptr[p.SE] + den_ptr[p.SW]);
         py = 0.5f*(py_ptr[p.SE] + py_ptr[p.SW]);
+	    tmp = 0.5f*(tmp_ptr[p.SE] + tmp_ptr[p.SW]);
     }
     //return 0.0f*py * vel_fer * vel_fer  + py / DensityToMass(den) ;
-	return 0.07599088773f*py * vel_fer * vel_fer  + py / DensityToMass(den) ;
-
+	return PHYS_FERMI_CNVC*py  + tmp*py / DensityToMass(den) ;
 }
 
 

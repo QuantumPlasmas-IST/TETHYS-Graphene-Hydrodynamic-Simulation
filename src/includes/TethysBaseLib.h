@@ -34,6 +34,11 @@ using namespace H5;
 #	define MAT_EULER 2.71828182845905f
 #endif
 
+#ifndef PHYS_FERMI_CNVC
+#	define PHYS_FERMI_CNVC 0.07599088773175f
+#endif
+
+
 const FloatType      HDF5FLOAT(PredType::NATIVE_FLOAT);
 const IntType        HDF5INT(PredType::NATIVE_INT);
 
