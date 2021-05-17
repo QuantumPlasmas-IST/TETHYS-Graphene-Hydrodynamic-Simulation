@@ -40,6 +40,7 @@ class SetUpParameters {
 		float ShearViscosity;
 		float OddViscosity;
 		float CyclotronFrequency;
+		float ThermalDiffusivity;
 		void ParametersChecking() const; ///< Runs a checking on the physical feasibility of the parameters
 		void DefineGeometry(); ///< Set ups the 2D grid dimensions
 		void ParametersFromHdf5File(const std::string& hdf5name); ///< Imports the parameters from a saved HDF5 file

@@ -72,29 +72,23 @@ SetUpParameters::SetUpParameters(int argc, char ** argv) {
             string num(num_part.begin(), num_part.end());
             string txt(txt_part.begin(), txt_part.end());
 
-            if(txt == "sound")
-                SoundVelocity = stof(num);
+            if(txt == "sound") SoundVelocity = stof(num);
 
-            if(txt == "fermi")
-                FermiVelocity = stof(num);
+            if(txt == "fermi") FermiVelocity = stof(num);
 
-            if(txt == "shear")
-                ShearViscosity = stof(num);
+            if(txt == "shear") ShearViscosity = stof(num);
 
-            if(txt == "odd")
-                OddViscosity = stof(num);
+            if(txt == "odd") OddViscosity = stof(num);
 
-            if(txt == "col")
-                CollisionFrequency = stof(num);
+            if(txt == "col") CollisionFrequency = stof(num);
 
-            if(txt == "cycl")
-                CyclotronFrequency = stof(num);
+            if(txt == "cycl") CyclotronFrequency = stof(num);
 
-            if(txt == "aspect")
-                AspectRatio = stof(num);
+	        if(txt == "therm") ThermalDiffusivity = stof(num);
 
-            if(txt == "save")
-                SaveMode = stof(num);
+            if(txt == "aspect") AspectRatio = stof(num);
+
+            if(txt == "save") SaveMode = stof(num);
         }
 
 
@@ -124,16 +118,17 @@ SetUpParameters::SetUpParameters(int argc, char ** argv) {
 	}
 
 	else {
-        if (argc == 8 || argc == 9) {
+        if (argc == 9 || argc == 10) {
             SoundVelocity = strtof(argv[1], nullptr);
             FermiVelocity = strtof(argv[2], nullptr);
             CollisionFrequency = strtof(argv[3], nullptr);
             ShearViscosity = strtof(argv[4], nullptr);
             OddViscosity = strtof(argv[5], nullptr);
-            CyclotronFrequency = strtof(argv[6], nullptr);
-            SaveMode = (int) strtol(argv[7], nullptr, 10);    // full data or light save option
-            if (argc == 9) {
-                AspectRatio = strtof(argv[8], nullptr);
+	        ThermalDiffusivity = strtof(argv[6], nullptr);
+            CyclotronFrequency = strtof(argv[7], nullptr);
+            SaveMode = (int) strtol(argv[8], nullptr, 10);    // full data or light save option
+            if (argc == 10) {
+                AspectRatio = strtof(argv[9], nullptr);
             }
             ParametersChecking();
         }
@@ -150,6 +145,8 @@ SetUpParameters::SetUpParameters(int argc, char ** argv) {
             cin >> CollisionFrequency;
             cout << "Define cyclotron frequency: ";
             cin >> CyclotronFrequency;
+	        cout << "Define thermal diffusivity: ";
+	        cin >> ThermalDiffusivity;
             cout << "Define the aspect ratio x:y ";
             cin >> AspectRatio;
             cout << "Define data_save_mode value (0-> light save | 1-> full data): ";
@@ -184,6 +181,11 @@ void SetUpParameters::ParametersChecking() const{
 	}
 	if(CollisionFrequency<0.0f){
 		msg = "ERROR: Unphysical Collision Frequency";
+		cerr << msg <<"\nExiting"<< endl;
+		exit(EXIT_FAILURE);
+	}
+	if(ThermalDiffusivity<0.0f){
+		msg = "ERROR: Thermal Diffusivity";
 		cerr << msg <<"\nExiting"<< endl;
 		exit(EXIT_FAILURE);
 	}
@@ -289,6 +291,7 @@ void SetUpParameters::GetParameters(){
     cout << "Odd viscosity: " << OddViscosity << endl;
     cout << "Collision frequency: " << CollisionFrequency << endl;
     cout << "Cyclotron frequency: " << CyclotronFrequency << endl;
+    cout << "Thermal Diffusivity: " << ThermalDiffusivity << endl;
     cout << "Aspect ratio: " << AspectRatio << endl;
     cout << "Save mode: " << SaveMode << endl;
 }
