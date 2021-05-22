@@ -32,7 +32,7 @@ endif()
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=memory -g ")
 
 add_executable(TETHYS_1D src/TETHYS_1D_Main_v134.cpp)
-add_executable(TETHYS_2D src/TETHYS_2D_Main_v240.cpp)
+add_executable(TETHYS_2D src/TETHYS_2D_Main_v250.cpp)
 add_executable(TETHYS_ELEC_2D src/TETHYS_2D_ElectronicAnalysis.cpp)
 
 
