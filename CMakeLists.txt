@@ -13,6 +13,9 @@ include_directories(src/includes)
 find_package(HDF5 REQUIRED COMPONENTS CXX)
 include_directories(${HDF5_INCLUDE_DIRS})
 
+#find_package(GSL REQUIRED)
+#link_libraries(GSL::gsl GSL::gslcblas)
+
 set(CMAKE_CXX_FLAGS "-Wall -Wextra -Wno-unused-parameter -O2")
 FIND_PACKAGE(OpenMP REQUIRED)
 if(OPENMP_FOUND)
@@ -35,6 +38,14 @@ add_test(test2D TETHYS_2D 20 10 0.0 0.0 0.0 1 1)
 
 add_executable(TETHYS_ELEC_2D src/TETHYS_2D_ElectronicAnalysis.cpp)
 add_test(testElec2D TETHYS_ELEC_2D hdf5_2D_S=20.00vF=10.00vis=0.00l=0.00wc=0.00.h5)
+
+#add_library(tethys_library STATIC
+#        src/TethysLib.cpp
+#        src/Tethys2DLib.cpp
+#        src/Tethys1DLib.cpp
+#        src/TethysMathLib.cpp
+#        src/BoundaryLib.cpp
+#        src/ElectricLib.cpp)
 
 file(GLOB SRC_LIB_FILES src/*Lib.cpp)
 add_library(tethys_library STATIC ${SRC_LIB_FILES})
