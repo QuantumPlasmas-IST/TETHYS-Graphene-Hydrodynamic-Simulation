@@ -1,5 +1,0 @@
-/home/ifgrd26/Hydrodynamic-Simulation/Hydrodynamic-Simulation/build/CMakeFiles/rebuild_cache.dir
-/home/ifgrd26/Hydrodynamic-Simulation/Hydrodynamic-Simulation/build/CMakeFiles/TETHYS_ELEC_2D.dir
-/home/ifgrd26/Hydrodynamic-Simulation/Hydrodynamic-Simulation/build/CMakeFiles/edit_cache.dir
-/home/ifgrd26/Hydrodynamic-Simulation/Hydrodynamic-Simulation/build/CMakeFiles/TETHYS_1D.dir
-/home/ifgrd26/Hydrodynamic-Simulation/Hydrodynamic-Simulation/build/CMakeFiles/TETHYS_2D.dir
