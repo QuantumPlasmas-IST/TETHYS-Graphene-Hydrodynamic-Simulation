@@ -42,6 +42,11 @@ class  DirichletBoundaryCondition : public BoundaryCondition
 	static void DensityBottom(Fluid2D& fluid_class, float bottom);     ///< Fixed density at boundary n(y=0)=bottom
 	static void MassFluxXBottom(Fluid2D& fluid_class, float bottom);   ///< Fixed mass density flux x component at boundary px(y=0)=bottom
 	static void MassFluxYBottom(Fluid2D& fluid_class, float bottom);   ///< Fixed mass density flux Y component at boundary py(y=0)=bottom
+    static void Temperature(Fluid2D& fluid_class, float left, float right, float top, float bottom);           ///< Fixed density at boundary n(x=0)=left, n(x=L)=right, n(y=0)=bottom, n(y=W)=top
+    static void TemperatureRight(Fluid2D& fluid_class, float right);       ///< Fixed density at boundary n(x=L)=right
+    static void TemperatureLeft(Fluid2D& fluid_class, float left);         ///< Fixed density at boundary n(x=0)=left
+    static void TemperatureTop(Fluid2D& fluid_class, float top);           ///< Fixed density at boundary n(y=W)=top
+    static void TemperatureBottom(Fluid2D& fluid_class, float bottom);     ///< Fixed density at boundary n(y=0)=botto
 };
 
 

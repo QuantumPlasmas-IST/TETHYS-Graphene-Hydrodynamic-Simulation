@@ -25,6 +25,7 @@
 
 #CMAke and Clion stuff
 .idea/
+build/
 #!CMakeLists.txt
 USING_HDF5_CMake.txt
 cmake-build-debug/
@@ -92,3 +93,4 @@ Module.symvers
 Mkfile.old
 dkms.conf
 /venv/
+/build/

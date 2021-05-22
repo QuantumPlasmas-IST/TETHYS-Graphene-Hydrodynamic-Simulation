@@ -10,7 +10,7 @@
 #include "TethysBaseLib.h"
 #include "TethysMathLib.h"
 #include "SetUpParametersLib.h"
-
+#include "Grid2DLib.h"
 
 using namespace H5;
 
@@ -27,18 +27,41 @@ class Fluid2D : public TethysBase
 		float * vel_snd_arr;    // array for saving the (potentially varying) S(x,y) function at main grid
 		float * vel_snd_arr_mid;// array for saving the (potentially varying) S(x,y) function at auxiliary grid
 		float * den_mid ;       // mid or auxiliary grids defined with (Nx-1)*(Ny-1) size
+		float * tmp_mid ;
 		float * flxX_mid ;
 		float * flxY_mid ;
+
+		float * velX_dx;
+		float * velX_dy;
+
+		float * velY_dx;
+		float * velY_dy;
+
+		float * velX_dx_mid;
+		float * velX_dy_mid;
+
+		float * velY_dx_mid;
+		float * velY_dy_mid;
+
 		float * lap_flxX ;      // mass density flux laplacian component x
 		float * lap_flxY ;      // mass density flux laplacian component y
-		std::ofstream data_preview; // file stream for simplified .dat file output
+        float * lap_tmp ;      // temperature laplacian
+
+    std::ofstream data_preview; // file stream for simplified .dat file output
 		int snapshot_per_period = 40;
 		int snapshot_step = 1;
 		void ForwardTimeOperator();
 
 
+		void VelocityGradient();
+
+		void VelocityGradientMid();
+
+		virtual float DensityToMass(float density);
+
 public :
 		float * Den ;       // number density
+		float * Tmp ;       // electron temperature
 		float * VelX ;      // fluid velocity x component
 		float * VelY ;      // fluid velocity y component
 		float * FlxX ;      // mass density flux x component
@@ -71,30 +94,41 @@ public :
 		 *
 		 * @see DensityFluxX
 		 * @see DensityFluxY
-		 * @see MassFluxXFluxX
-		 * @see MassFluxXFluxY
-		 * @see MassFluxYFluxX
-		 * @see MassFluxYFluxY
+		 * @see XMomentumFluxX
+		 * @see XMomentumFluxY
+		 * @see YMomentumFluxX
+		 * @see YMomentumFluxY
 		 * @see DensitySource
-		 * @see MassFluxXSource
-		 * @see MassFluxYSource
+		 * @see XMomentumSource
+		 * @see YMomentumSource
 		 *
 		 */
 		void Richtmyer();                   // Central Algorithm for solving the hyperbolic conservation law
 
 
-		virtual float DensityFluxX( float n, float flx_x,  float flx_y,  float mass,  float s); ///< density equation (continuity equation) conserved flux X component
-		virtual float DensityFluxY( float n,  float flx_x, float flx_y,  float mass,  float s); ///< density equation (continuity equation) conserved flux Y component
-		virtual float DensitySource( float n, float flx_x, float flx_y, float mass, float s); ///< density equation (continuity equation) source term
-		virtual float MassFluxXFluxX(float n, float flx_x, float flx_y, float mass, float s); ///< velocity X component equation (momentum equation) conserved flux X component
-		virtual float MassFluxXFluxY(float n, float flx_x, float flx_y, float mass, float s); ///< velocity X component equation (momentum equation) conserved flux Y component
-		virtual float MassFluxXSource(float n, float flx_x, float flx_y, float mass, float s); ///< velocity X component equation (momentum equation) source term
-		virtual float MassFluxYFluxX(float n, float flx_x, float flx_y, float mass, float s); ///< velocity Y component equation (momentum equation) conserved flux X component
-		virtual float MassFluxYFluxY(float n, float flx_x, float flx_y, float mass, float s); ///< velocity Y component equation (momentum equation) conserved flux Y component
-		virtual float MassFluxYSource(float n, float flx_x, float flx_y, float mass, float s); ///< velocity y component equation (momentum equation) source term
+//		virtual float DensityFluxX( float n, float flx_x,  float flx_y,  float mass,  float s); ///< density equation (continuity equation) conserved flux X component
+//		virtual float DensityFluxY( float n,  float flx_x, float flx_y,  float mass,  float s); ///< density equation (continuity equation) conserved1 flux Y component
+//		virtual float XMomentumFluxX(float n, float flx_x, float flx_y, float mass, float s); ///< velocity X component equation (momentum equation) conserved flux X component
+//		virtual float XMomentumFluxY(float n, float flx_x, float flx_y, float mass, float s); ///< velocity X component equation (momentum equation) conserved flux Y component
+//		virtual float YMomentumFluxX(float n, float flx_x, float flx_y, float mass, float s); ///< velocity Y component equation (momentum equation) conserved flux X component
+//		virtual float YMomentumFluxY(float n, float flx_x, float flx_y, float mass, float s); ///< velocity Y component equation (momentum equation) conserved flux Y component
+
+	virtual float DensitySource( float n, float flx_x, float flx_y, float mass, float s); ///< density equation (continuity equation) source term
+	virtual float XMomentumSource(float n, float flx_x, float flx_y, float mass, float s); ///< velocity X component equation (momentum equation) source term
+	virtual float YMomentumSource(float n, float flx_x, float flx_y, float mass, float s); ///< velocity y component equation (momentum equation) source term
 
 
+    virtual float DensityFluxX(GridPoint p, char side ); ///< density equation (continuity equation) conserved flux X component
+    virtual float DensityFluxY(GridPoint p, char side ); ///< density equation (continuity equation) conserved1 flux Y component
 
+    virtual float XMomentumFluxX(GridPoint p, char side ); ///< velocity X component equation (momentum equation) conserved flux X component
+    virtual float XMomentumFluxY(GridPoint p, char side ); ///< velocity X component equation (momentum equation) conserved flux Y component
+
+    virtual float YMomentumFluxX(GridPoint p, char side ); ///< velocity Y component equation (momentum equation) conserved flux X component
+    virtual float YMomentumFluxY(GridPoint p, char side ); ///< velocity Y component equation (momentum equation) conserved flux Y component
+
+    float TemperatureFluxX(GridPoint p, char side );
+    float TemperatureFluxY(GridPoint p, char side );
 
 
 
@@ -151,6 +185,8 @@ public :
 		int GetSnapshotStep() const; ///< Returns the number of the present snapshot @return snapshot_step order number of the snapshot
 		int GetSnapshotFreq() const; ///< Returns the number of snapshots per period to record  @return snapshot_per_period number of the snapshots per period
 
+
+
 		/*!
 		 * @brief Calculates the velocity Laplacians for the FTCS method
 		 *
@@ -167,6 +203,8 @@ public :
 		*
 		* @see ParabolicOperatorWeightedExplicit19()
 		* */
+		float Laplacian19(GridPoint p, float *input_ptr, float constant);
+
 		void VelocityLaplacianWeighted19();
 		/*!
 		* @brief Forward Time Centered Space method for the viscous terms
@@ -180,6 +218,7 @@ public :
 		* @see VelocityLaplacianWeighted19()
 		* */
 		void ParabolicOperatorWeightedExplicit19(); // Forward Time Centered Space method for the viscous terms
+        void TemperatureLaplacianWeighted19();
 };
 
 
