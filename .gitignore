@@ -95,3 +95,5 @@ dkms.conf
 /venv/
 /build/
 /build/
+./doc/
+/doc/
