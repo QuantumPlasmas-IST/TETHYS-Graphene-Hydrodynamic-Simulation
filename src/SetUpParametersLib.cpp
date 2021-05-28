@@ -6,7 +6,6 @@
 #include "SetUpParametersLib.h"
 
 SetUpParameters::SetUpParameters() {
-    cout << "Saí "<<endl;
     SizeX=101;
 	SizeY=101;
 	SoundVelocity = 30.0f;
@@ -30,8 +29,6 @@ SetUpParameters::SetUpParameters(float sound, float fermi, float coll, float vis
 	AspectRatio = aspect;
 	ParametersChecking();
 	DefineGeometry();
-    cout << "Saí "<<endl;
-
 }
 
 SetUpParameters::SetUpParameters(int argc, char ** argv) {
@@ -232,7 +229,7 @@ void SetUpParameters::ParametersFromHdf5File(const string& hdf5name){
 	attr_snd.read(attr_snd.getDataType(), &SoundVelocity);
 	Attribute attr_fer(grp_dat->openAttribute("Fermi velocity"));
 	attr_fer.read(attr_fer.getDataType(), &FermiVelocity);
-	Attribute attr_vis(grp_dat->openAttribute("Kinetic viscosity"));
+	Attribute attr_vis(grp_dat->openAttribute("Kinematic shear viscosity"));
 	attr_vis.read(attr_vis.getDataType(), &ShearViscosity);
 	Attribute attr_cyc(grp_dat->openAttribute("Cyclotron frequency"));
 	attr_cyc.read(attr_cyc.getDataType(), &CyclotronFrequency);
