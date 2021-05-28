@@ -1,4 +1,6 @@
 #include "includes/ElectricLib.h"
+#include "GrapheneFluid2DLib.h"
+#include "GrapheneFluid1DLib.h"
 
 #ifndef MAT_PI
 #    define MAT_PI 3.14159265358979323846
@@ -76,9 +78,9 @@ void ElectroAnalysis::ComputeElectroDerived() {
 
 
 void ElectroAnalysis::WriteElectroFile() {
-	try{
 		if(NetQ.empty() || DipVarY.empty()){
-			throw "Nothing to save on output file";
+			cerr << "Nothing to save on output file" <<"\nExiting"<< endl;
+			exit(EXIT_FAILURE);
 		}
 		for(size_t i = 0; i < NetQ.size(); ++i) {
 			data_electro << TmpArr[i] << "\t"
@@ -97,10 +99,6 @@ void ElectroAnalysis::WriteElectroFile() {
 			             << DipVarY[i] << "\t"
 			             << DipVarVarY[i] << "\n";
 		}
-	}catch (const char* msg) {
-		cerr << msg  <<"\nExiting"<< endl;
-		exit(EXIT_FAILURE);
-	}
 }
 
 float ElectroAnalysis::NetCharge(const GrapheneFluid1D& graphene){
@@ -138,9 +136,9 @@ float ElectroAnalysis::ElectricDipole(const GrapheneFluid1D& graphene){
 }
 
 float ElectroAnalysis::OhmPower(const GrapheneFluid1D& graphene){
-	float itg=0.0; //TODO corrigir esta matematica +e a dividir por raiz de n e nao por n
+	float itg=0.0;
 	for(int j=1;j<graphene.SizeX()/2;j++){
-		itg += graphene.CurCor[2 * j - 2] * graphene.VelCor[2 * j - 2] + 4 * graphene.CurCor[2 * j - 1] * graphene.VelCor[2 * j - 1] + graphene.CurCor[2 * j] * graphene.VelCor[2 * j];
+		itg += graphene.CurCor[2 * j - 2] * graphene.CurCor[2 * j - 2]/sqrt(graphene.DenCor[2 * j - 2]) + 4 * graphene.CurCor[2 * j - 1] * graphene.CurCor[2 * j - 1] /sqrt(graphene.DenCor[2 * j - 1]) + graphene.CurCor[2 * j] * graphene.CurCor[2 * j]/sqrt(graphene.DenCor[2 * j]);
 	}
 	itg = itg*graphene.GetDx()/3.0f;
 	return itg;

@@ -1,6 +1,10 @@
-#include "includes/Tethys1DLib.h"
+#include "includes/Fluid1DLib.h"
 #include "includes/BoundaryLib.h"
 #include "includes/ElectricLib.h"
+#include "SetUpParametersLib.h"
+#include "DyakonovShurBoundaryLib.h"
+#include "GrapheneFluid1DLib.h"
+
 #ifndef MAT_PI
 #	define MAT_PI 3.14159265358979323846
 #endif
@@ -44,12 +48,11 @@ int main(int argc, char **argv){
 
 	graph.WelcomeScreen();
 
-	
-	////////////////////////////////////////////////////////////////////
-	// Initialization	
+
+	/*...............Initialization...................................*/
 	graph.InitialCondRand();
 	DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
-	////////////////////////////////////////////////////////////////////
+	/*................................................................*/
 
 	cout << "\033[1;7;5;33m Program Running \033[0m"<<endl;
 	graph.SetTmax(15.0);

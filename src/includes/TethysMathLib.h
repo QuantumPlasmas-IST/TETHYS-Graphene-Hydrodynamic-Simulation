@@ -10,7 +10,7 @@
 #define TETHYSMATHLIB_H
 
 #include <H5Cpp.h>
-#include "includes/TethysLib.h"
+#include "includes/TethysBaseLib.h"
 
 
 using namespace std;
@@ -152,5 +152,4 @@ float Integral_2_D(int n, int m, float dx, float dy, const float * f);
  * */
 void Average_Filter(const float * vec_in, float * vec_out, int size , int width );
 
-
-#endif TETHYSMATHLIB_H
+#endif

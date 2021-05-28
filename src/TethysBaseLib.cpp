@@ -1,4 +1,5 @@
-#include "includes/TethysLib.h"
+#include "includes/TethysBaseLib.h"
+#include "SetUpParametersLib.h"
 
 
 using namespace H5;
@@ -20,7 +21,7 @@ cout<<"\n" ;
 	cout<<"║\033[2m      ▐█▌      ▐█▌    ▗▉      ▐█▌      ▐█▌   ▐█▌      ▐█▌    ▗       ██  \033[0m║\n";
 	cout<<"║\033[2m     ▆███▆    ▆███▆▆▆██▉     ▆███▆    ▆███▆ ▆███▆    ▆███▆   ▐█▆▆▆▆▆██▘  \033[0m║\n";
 	cout<<"║                                                                         ║\n";
-	cout<<"║ \033[1mTwo-dimensional Emitter of THz, Hydrodynamic Simulation.  Version 2.2.1\033[0m ║\n";
+	cout<<"║ \033[1mTwo-dimensional Emitter of THz, Hydrodynamic Simulation.  Version 2.5.0\033[0m ║\n";
 	cout<<"╚═════════════════════════════════════════════════════════════════════════╝\n";
 }
 
@@ -32,7 +33,7 @@ void TethysBase::WelcomeScreen() const {
 	} else {
 		cout << "Phase velocity\t\033[1mS'\t" << this->PhaseVel() << " v\342\202\200\033[0m\n";
 	}
-	cout << "Viscosity \t\033[1m\316\267\t" << kin_vis << "\033[0m\n";
+	cout << "Shear Viscosity \t\033[1m\316\267s\t" << kin_vis << "\033[0m\n";
 	if (kin_vis != 0.0) {
 		if (2.0f * kin_vis * dt > 0.95 * dx * dx * dy * dy / (dx * dx + dy * dy)) {
 			cout << "Reynolds n. \t\033[1mRe\t" << 1.0 / kin_vis
@@ -40,6 +41,10 @@ void TethysBase::WelcomeScreen() const {
 		} else {
 			cout << "Reynolds n. \t\033[1mRe\t" << 1.0 / kin_vis << "\033[0m\n";
 		}
+	}
+	cout << "Odd Viscosity \t\033[1m\316\267o\t" << odd_vis << "\033[0m\n";
+	if (kin_vis != 0.0) {
+			cout << "Odd Reynolds n. \t\033[1mRe\t" << 1.0 / odd_vis << "\033[0m\n";
 	}
 	if (col_freq != 0.0) {
 		if (col_freq >= 0.75){
@@ -80,6 +85,7 @@ int TethysBase::SizeX() const{ return Nx; }
 int TethysBase::SizeY() const{ return Ny; }
 float TethysBase::GetVelSnd() const{ return vel_snd; }
 float TethysBase::GetKinVis() const{ return kin_vis; }
+float TethysBase::GetOddVis() const{ return odd_vis; }
 float TethysBase::GetColFreq() const{ return col_freq; }
 float TethysBase::GetVelFer() const{ return vel_fer;  }
 float TethysBase::GetCycFreq() const{ return cyc_freq; }
@@ -94,6 +100,7 @@ float TethysBase::GetLengthY() const{return lengY;}
 void TethysBase::SetTmax(float x){ Tmax=x;}
 void TethysBase::SetVelSnd(float x){ vel_snd=x; }
 void TethysBase::SetKinVis(float x){ kin_vis=x;}
+void TethysBase::SetOddVis(float x){ odd_vis=x;}
 void TethysBase::SetColFreq(float x){ col_freq=x; }
 void TethysBase::SetVelFer(float x){ vel_fer=x;}
 void TethysBase::SetCycFreq(float x) { cyc_freq=x;}
@@ -127,7 +134,9 @@ void TethysBase::WriteAttributes(){
 	DataSpace atr_dataspace = DataSpace (1, dim_atr );
 	// Create a group attribute.
 	Attribute atr_vel_snd  = GrpDat->createAttribute("Sound velocity", HDF5FLOAT, atr_dataspace);
-	Attribute atr_kin_vis = GrpDat->createAttribute("Kinetic viscosity", HDF5FLOAT, atr_dataspace);
+	Attribute atr_kin_vis = GrpDat->createAttribute("Kinematic shear viscosity", HDF5FLOAT, atr_dataspace);
+	Attribute atr_odd_vis = GrpDat->createAttribute("Kinematic odd viscosity", HDF5FLOAT, atr_dataspace);
+	Attribute atr_therm_diff = GrpDat->createAttribute("Thermal diffusivity", HDF5FLOAT, atr_dataspace);
 	Attribute atr_col_freq = GrpDat->createAttribute("Collision frequency", HDF5FLOAT, atr_dataspace);
 	Attribute atr_cyc_freq  = GrpDat->createAttribute("Cyclotron frequency", HDF5FLOAT, atr_dataspace);
 	Attribute atr_vel_fer  = GrpDat->createAttribute("Fermi velocity", HDF5FLOAT, atr_dataspace);
@@ -151,6 +160,8 @@ void TethysBase::WriteAttributes(){
 	atr_cyc_freq.write(HDF5FLOAT, &cyc_freq);
 	atr_col_freq.write(HDF5FLOAT, &col_freq);
 	atr_kin_vis.write(HDF5FLOAT, &kin_vis);
+	atr_odd_vis.write(HDF5FLOAT, &odd_vis);
+	atr_therm_diff.write(HDF5FLOAT, &therm_diff);
 	atr_dx.write(HDF5FLOAT, &dx);
 	atr_dt.write(HDF5FLOAT, &dt);
 	atr_num_space_points_x.write(HDF5INT, &Nx);
@@ -165,7 +176,8 @@ void TethysBase::WriteAttributes(){
 	// Close the attributes.
 	atr_num_time_steps.close();
 	atr_col_freq.close();
-	//atr_vel_fer.close();
+	atr_vel_fer.close();
+	atr_therm_diff.close();
 	atr_vel_snd.close();
 	atr_kin_vis.close();
 	atr_dx.close();
@@ -185,6 +197,7 @@ TethysBase::~TethysBase(){
 		delete GrpDat;
 		delete GrpDen;
 		delete GrpVelX;
+		delete GrpTmp;
 		delete DataspaceDen;
 		delete DataspaceVelX;
 		delete DataspaceVelSnd;
@@ -192,6 +205,7 @@ TethysBase::~TethysBase(){
 			delete GrpVelY;
 			delete DataspaceVelY;
 			delete DataspaceVelSndMid;
+			delete DataspaceTmp;
 		}
 		delete Hdf5File;
 	}
@@ -231,13 +245,14 @@ TethysBase::TethysBase(int size_nx, int size_ny, int dimension){
 	if(RANK==2){
 		hsize_t dimsf[2];
 		dimsf[0] = static_cast<hsize_t>(Ny);
-		dimsf[1] = static_cast<hsize_t>(Nx);  //troquei !
+		dimsf[1] = static_cast<hsize_t>(Nx);
 		DataspaceVelSnd = new DataSpace(RANK, dimsf );
 		DataspaceDen = new DataSpace(RANK, dimsf );
 		DataspaceVelX = new DataSpace(RANK, dimsf );
 		DataspaceVelY = new DataSpace(RANK, dimsf );
+		DataspaceTmp = new DataSpace(RANK, dimsf );
 		dimsf[0] = static_cast<hsize_t>(Ny-1);
-		dimsf[1] = static_cast<hsize_t>(Nx-1);  //troquei !
+		dimsf[1] = static_cast<hsize_t>(Nx-1);
 		DataspaceVelSndMid = new DataSpace(RANK, dimsf );
 	}
 
@@ -246,6 +261,7 @@ TethysBase::TethysBase(int size_nx, int size_ny, int dimension){
 	GrpDen = nullptr;
 	GrpVelX = nullptr;
 	GrpVelY = nullptr;
+	GrpTmp = nullptr;
 }
 
 
@@ -259,13 +275,28 @@ void TethysBase::CreateHdf5File(){
 		hdf5name = "hdf5_2D_" + this->GetInfix() + ".h5" ;
 	}
 	H5std_string  file_name(hdf5name );
-	Hdf5File = new H5File(file_name, H5F_ACC_TRUNC );
+	try {
+		/*
+		 * Turn off the auto-printing when failure occurs so that we can
+		 * handle the errors appropriately
+		 */
+		Exception::dontPrint();
+		Hdf5File = new H5File(file_name, H5F_ACC_TRUNC);
+	}
+		// catch failure caused by the H5File operations
+	catch( FileIException error )
+	{
+		cerr << error.getCDetailMsg()<<"\nExiting"<< endl;
+		exit(EXIT_FAILURE);
+	}
+
 	GrpDat = new Group(Hdf5File->createGroup("/Data" ));
 	GrpDen = new Group(Hdf5File->createGroup("/Data/Density" ));
 	GrpVelX = new Group(Hdf5File->createGroup("/Data/VelocityX" ));
 	if(RANK==2) {
 		GrpVelY = new Group(Hdf5File->createGroup("/Data/VelocityY"));
-	}
+        GrpTmp = new Group(Hdf5File->createGroup("/Data/Temperature"));
+    }
 }
 
 
@@ -277,32 +308,12 @@ void TethysBase::OpenHdf5File(const std::string& hdf5name){
 	GrpVelX = new Group(Hdf5File->openGroup("/Data/VelocityX" ));
 	if(RANK==2) {
 		GrpVelY = new Group(Hdf5File->openGroup("/Data/VelocityY"));
-	}
+        GrpTmp = new Group(Hdf5File->openGroup("/Data/Temperature"));
+    }
 }
 
 
 
-
-///////////////////////////////////////////////////////////////////////////////////////////////////////77
-/*void Record_Log_File(float vel_snd, float vel_fer, float col_freq, float dt, float dx, float dy, float tmax){
-	ofstream logfile;
-	logfile.open("Simulation.log",std::ios_base::app);
-	time_t time_raw;
-	struct tm * time_info;
-	time (&time_raw);
-	time_info = localtime (&time_raw);
-	char buffer [80];
-	strftime (buffer,80,"%F %H:%M:%S\n",time_info);
-	logfile << "\n#Simulation @ " << buffer ;
-	logfile << "#parameters:\n";
-	logfile << "#vel_snd \t vel_fer \t col_freq  \t w' \t w'' \n";
-	logfile << vel_snd << "\t" << vel_fer << "\t" << col_freq << "\t" << RealFreq(vel_snd, vel_fer, col_freq, 1) << "\t" << ImagFreq(
-			vel_snd, vel_fer, col_freq) << "\n";
-	logfile << "#discretisation:\n";
-	logfile << "#dt\tdx\ttmax\ttime steps\tspace points\n";
-	logfile << dt << "\t" << dx << "\t" << dy << "\t" << tmax << "\t" << (int) (tmax / dt) << "\t" << (int) 1 / dx << endl;
-}
-*/
 
 float TethysBase::PhaseVel()const{
 	return sqrt(vel_snd*vel_snd+0.5f*vel_fer*vel_fer + 0.0625f );
@@ -325,174 +336,13 @@ float TethysBase::ImagFreq()const {
 	return (vel_phs_sqr - 0.5625f ) * log(fabs( (vel_phs+0.75f)/(vel_phs-0.75f) )) / (2.0f * vel_phs ) - col_freq*(1.0f-0.125f/vel_phs);
 }
 
+void TethysBase::SetThermDiff(float x) {
+	therm_diff = x;
+}
 
-SetUpParameters::SetUpParameters() {
-	SizeX=101;
-	SizeY=101;
-	SoundVelocity = 30.0f;
-	FermiVelocity = 10.0f;
-	CollisionFrequency = 0.01f;
-	ShearViscosity = 0.0f;
-	CyclotronFrequency = 0.0f;
-	SaveMode = 1;
-	this->DefineGeometry();
+float TethysBase::GetThermDiff() const {
+	return therm_diff;
 }
 
 
-SetUpParameters::SetUpParameters(float sound, float fermi, float coll, float visco, float cyclo, int mode, float aspect){
-	SizeX=101;
-	SizeY=101;
-	try {
-		SoundVelocity = sound;
-		FermiVelocity = fermi;
-		CollisionFrequency = coll;
-		ShearViscosity = visco;
-		CyclotronFrequency = cyclo;
-		SaveMode = mode;
-		AspectRatio = aspect;
-		this->ExceptionsChecking();
-	}catch (const char* msg) {
-		cerr << msg <<"\nExiting"<< endl;
-		exit(EXIT_FAILURE);
-	}
-	this->DefineGeometry();
-}
-
-
-SetUpParameters::SetUpParameters(int argc, char ** argv) {
-	SizeX=101;
-	SizeY=101;
-	if(argc==7||argc==8){
-		try {
-			SoundVelocity = strtof(argv[1], nullptr);
-			FermiVelocity = strtof(argv[2], nullptr);
-			CollisionFrequency = strtof(argv[3], nullptr);
-			ShearViscosity = strtof(argv[4], nullptr);
-			CyclotronFrequency = strtof(argv[5], nullptr);
-			SaveMode = (int) strtol(argv[6], nullptr, 10);    // full data or light save option
-			if (argc == 8) {
-				AspectRatio = strtof(argv[7], nullptr);
-			}
-			this->ExceptionsChecking();
-		}catch (const char* msg) {
-			cerr << msg <<"\nExiting"<< endl;
-			exit(EXIT_FAILURE);
-		}
-	}
-	else{
-		try {
-			cout << "Define S value: "; // throw exceptions if the velocities or frequency are negative or if S<Vf
-			cin >> SoundVelocity;
-			cout << "Define vF value: ";
-			cin >> FermiVelocity;
-			cout << "Define kinetic viscosity: ";
-			cin >> ShearViscosity;
-			cout << "Define collision frequency: ";
-			cin >> CollisionFrequency;
-			cout << "Define cyclotron frequency: ";
-			cin >> CyclotronFrequency;
-			cout << "Define the aspect ratio x:y ";
-			cin >> AspectRatio;
-			cout << "Define data_save_mode value (0-> light save | 1-> full data): ";
-			cin >> SaveMode;
-			this->ExceptionsChecking();
-		}catch (const char* msg) {
-			cerr << msg  <<"\nExiting"<< endl;
-			exit(EXIT_FAILURE);
-		}
-	}
-	this->DefineGeometry();
-}
-
-
-
-void SetUpParameters::ExceptionsChecking() const{
-	if(SoundVelocity<=0.0f){
-		throw "ERROR: Unphysical Sound Velocity";
-	}
-	if(FermiVelocity<=0.0f){
-		throw "ERROR: Unphysical Fermi Velocity";
-	}
-	if(ShearViscosity<0.0f){
-		throw "ERROR: Unphysical Shear Viscosity";
-	}
-	if(CollisionFrequency<0.0f){
-		throw "ERROR: Unphysical Collision Frequency";
-	}
-	if(CyclotronFrequency<0.0f){
-		throw "ERROR: Unphysical Cyclotron Frequency";
-	}
-	if( SaveMode != 0 && SaveMode != 1  ) {
-		throw "ERROR: Unknown save mode option";
-	}
-}
-
-void SetUpParameters::ParametersFromHdf5File(const std::string& hdf5name){
-	H5File *hdf5_file;
-	Group *grp_dat;
-	try{
-		Exception::dontPrint();
-		hdf5_file = new H5File(hdf5name, H5F_ACC_RDONLY);
-		grp_dat = new Group(hdf5_file->openGroup("/Data"));
-	}
-	catch( FileIException &file_error )
-	{
-		cerr<<"Unable to open HDF5 file\t"<< file_error.getDetailMsg() <<"\nExiting\n";
-		exit(EXIT_FAILURE);
-	}
-	catch (...) {
-		cerr<<"Unknown error found\nExiting";
-		exit(EXIT_FAILURE);
-	}
-	Attribute attr_n_x(grp_dat->openAttribute("Number of spatial points x"));
-	attr_n_x.read(attr_n_x.getDataType(), &SizeX);
-	Attribute attr_n_y(grp_dat->openAttribute("Number of spatial points y"));
-	attr_n_y.read(attr_n_y.getDataType(), &SizeY);
-	Attribute attr_snd(grp_dat->openAttribute("Sound velocity"));
-	attr_snd.read(attr_snd.getDataType(), &SoundVelocity);
-	Attribute attr_fer(grp_dat->openAttribute("Fermi velocity"));
-	attr_fer.read(attr_fer.getDataType(), &FermiVelocity);
-	Attribute attr_vis(grp_dat->openAttribute("Kinetic viscosity"));
-	attr_vis.read(attr_vis.getDataType(), &ShearViscosity);
-	Attribute attr_cyc(grp_dat->openAttribute("Cyclotron frequency"));
-	attr_cyc.read(attr_cyc.getDataType(), &CyclotronFrequency);
-	Attribute attr_col(grp_dat->openAttribute("Collision frequency"));
-	attr_col.read(attr_col.getDataType(), &CollisionFrequency);
-	AspectRatio = (static_cast<float>(SizeX-1)) / (static_cast<float>(SizeY-1));
-	attr_n_x.close();
-	attr_n_y.close();
-	attr_snd.close();
-	attr_fer.close();
-	attr_vis.close();
-	attr_cyc.close();
-	attr_col.close();
-	grp_dat->close();
-	hdf5_file->close();
-	this->DefineGeometry();
-}
-
-void SetUpParameters::DefineGeometry() {
-	if(AspectRatio>1.0f){
-		Length=1.0f*AspectRatio;
-		Width=1.0f;
-		//SizeY=201;
-		SizeY=151;
-		SizeX= static_cast<int>( static_cast<float>(SizeY-1)*AspectRatio)+1;
-	}
-	if(AspectRatio==1.0f){
-		Length=1.0f;
-		Width=1.0f;
-		//SizeX=201;
-		//SizeY=201;
-		SizeX=151;
-		SizeY=151;
-	}
-	if(AspectRatio<1.0f){
-		Length=1.0f;
-		Width=1.0f/AspectRatio;
-		//SizeX=201;
-		SizeX=151;
-		SizeY= static_cast<int>( static_cast<float>(SizeX - 1) / AspectRatio) + 1;
-	}
-}
 

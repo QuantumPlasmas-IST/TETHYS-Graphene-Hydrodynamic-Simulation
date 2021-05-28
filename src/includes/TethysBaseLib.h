@@ -3,8 +3,8 @@
 * Distributed under the MIT License (license terms are at http://opensource.org/licenses/MIT).   *
 \************************************************************************************************/
 
-#ifndef TETHYSLIB_H
-#define TETHYSLIB_H
+#ifndef TETHYSBASELIB_H
+#define TETHYSBASELIB_H
 
 #include <fstream>
 #include <cstdio>
@@ -18,6 +18,7 @@
 #include <string>
 #include <random>
 #include <exception>
+#include <functional>
 
 #include <H5Cpp.h>
 #include <omp.h>
@@ -33,36 +34,13 @@ using namespace H5;
 #	define MAT_EULER 2.71828182845905f
 #endif
 
+#ifndef PHYS_FERMI_CNVC
+#	define PHYS_FERMI_CNVC 0.07599088773175f
+#endif
+
+
 const FloatType      HDF5FLOAT(PredType::NATIVE_FLOAT);
 const IntType        HDF5INT(PredType::NATIVE_INT);
-
-
-/*!
- * @brief Initialization class for the fluid classes.
- *
- * This class allows the initialization of the appropriate physical parameters either from inline arguments, prompt or reading them from an existing HDF5 file
- * */
-class SetUpParameters {
-	public:
-		SetUpParameters();
-		SetUpParameters(int argc, char ** argv);
-		SetUpParameters(float sound, float fermi, float coll, float visco, float cyclo, int mode, float aspect);
-		~SetUpParameters() = default;
-		int SaveMode;
-		int SizeX;
-		int SizeY;
-		float Length=1.0f;
-		float Width=1.0f;
-		float AspectRatio=1.0f;
-		float SoundVelocity;
-		float FermiVelocity;
-		float CollisionFrequency;
-		float ShearViscosity;
-		float CyclotronFrequency;
-		void ExceptionsChecking() const; ///< Runs a checking on the physical feasibility of the parameters
-		void DefineGeometry(); ///< Set ups the 2D grid dimensions
-		void ParametersFromHdf5File(const std::string& hdf5name); ///< Imports the parameters from a saved HDF5 file
-};
 
 
 /*!
@@ -85,6 +63,8 @@ class TethysBase {
 		float vel_fer =10.0f;
 		float cyc_freq =0.0f;
 		float kin_vis =0.0f;    // kinetic shear viscosity parameter
+		float odd_vis =0.0f;    // kinetic odd viscosity parameter
+		float therm_diff = 0.0f; // thermal diffusivity parameter
 		float col_freq =0.0f;   // colision frequency parameter
 		std::string file_infix; // base name for the output files
 		float Tmax=10;          // total time of simulation
@@ -108,11 +88,14 @@ class TethysBase {
 		Group* GrpDen ;     ///< group for ALL Density snapshots
 		Group* GrpVelX ;    ///< group for ALL Velocity X snapshots
 		Group* GrpVelY ;    ///< group for ALL Velocity X snapshots
-		DataSpace* DataspaceVelSnd; ///< dataspace for the sound anisotropy
+        Group* GrpTmp ;    ///< group for ALL Temperature snapshots
+
+        DataSpace* DataspaceVelSnd; ///< dataspace for the sound anisotropy
 		DataSpace* DataspaceVelSndMid; ///< dataspace for the sound anisotropy
 		DataSpace* DataspaceDen;    ///< dataspace for EACH Density snapshots
 		DataSpace* DataspaceVelX;   ///< dataspace for EACH Velocity X snapshots
 		DataSpace* DataspaceVelY;   ///< dataspace for EACH Velocity Y snapshots
+        DataSpace* DataspaceTmp;   ///< dataspace for Temperature
 
 		void SetTmax(float x);      ///< sets  the total simulation time cf. GrapheneFluid2D::SetSimulationTime()
 		float GetTmax() const;      ///< @returns   the total simulation time
@@ -122,7 +105,9 @@ class TethysBase {
 
 		void SetVelSnd(float x);    ///< sets  nominal S value
 		void SetKinVis(float x);    ///< sets  kinetic shear viscosity
+		void SetOddVis(float x);    ///< sets  kinetic odd viscosity
 		void SetColFreq(float x);   ///< sets  collision frequency
+		void SetThermDiff(float x);   ///< sets  collision frequency
 		void SetVelFer(float x);        ///< sets  Fermi Velocity
 		void SetCycFreq(float x);        ///< sets  cyclotron frequency
 		void SetDx(float x);        ///< sets  spatial step x
@@ -131,8 +116,10 @@ class TethysBase {
 		void SetLengthX(float x);   ///< sets  total length along x
 		void SetLengthY(float x);   ///< sets  total length along y
 
+		float GetThermDiff() const ;    ///< @returns  collision frequency
 		float GetVelSnd() const;    ///< @returns   nominal S value
 		float GetKinVis() const;    ///< @returns   kinetic shear viscosity
+		float GetOddVis() const;    ///< @returns   kinetic odd viscosity
 		float GetColFreq() const;   ///< @returns   collision frequency
 		float GetVelFer() const;        ///< @returns   Fermi Velocity
 		float GetCycFreq() const;       ///< @returns   cyclotron frequency
