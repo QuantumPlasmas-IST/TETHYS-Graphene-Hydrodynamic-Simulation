@@ -56,7 +56,7 @@ void ElectroAnalysis::ComputeElectroBase(float t, const GrapheneFluid2D& graphen
 
 void ElectroAnalysis::ComputeElectroDerived() {
 	float dt;
-	dt=TmpArr.back()/DipX.size();
+	dt=TmpArr.back()/static_cast<float>(DipX.size());
 	EngCap.resize(DipX.size());
 	PowCap.resize(DipX.size());
 	transform(NetQ.begin(), NetQ.end(), EngCap.begin(), [](const float &c){ return 0.5f*c*c; });
