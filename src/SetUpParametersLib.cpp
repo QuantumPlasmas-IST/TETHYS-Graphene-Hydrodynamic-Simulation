@@ -55,6 +55,7 @@ SetUpParameters::SetUpParameters(int argc, char ** argv) {
 		}
 
 		file.close();
+//TODO make posible for the .ini file to have comments and/or blank lines
 
 		for(auto & vecline : veclines){
 			line = vecline;
@@ -70,7 +71,7 @@ SetUpParameters::SetUpParameters(int argc, char ** argv) {
 
 			string num(num_part.begin(), num_part.end());
 			string txt(txt_part.begin(), txt_part.end());
-
+//TODO include the equal sing int the text as usual on ini files syntax
 			if(txt == "sound") SoundVelocity = stof(num);
 			if(txt == "fermi") FermiVelocity = stof(num);
 			if(txt == "shear") ShearViscosity = stof(num);
