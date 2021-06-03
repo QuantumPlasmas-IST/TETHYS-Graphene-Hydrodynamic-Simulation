@@ -26,7 +26,8 @@ class SetUpParameters {
 	public:
 		SetUpParameters();
 		SetUpParameters(int argc, char ** argv);
-		SetUpParameters(float sound, float fermi, float coll, float visco, float cyclo, int mode, float aspect);
+		SetUpParameters(float sound, float fermi, float coll, float visco, float odd_visco, float cyclo,
+		                float thermal_diff, int mode, float aspect);
 		~SetUpParameters() = default;
 		int SaveMode;
 		int SizeX;
@@ -44,7 +45,7 @@ class SetUpParameters {
 		void ParametersChecking() const; ///< Runs a checking on the physical feasibility of the parameters
 		void DefineGeometry(); ///< Set ups the 2D grid dimensions
 		void ParametersFromHdf5File(const std::string& hdf5name); ///< Imports the parameters from a saved HDF5 file
-        void GetParameters();
+        void PrintParameters() const;
 };
 
 

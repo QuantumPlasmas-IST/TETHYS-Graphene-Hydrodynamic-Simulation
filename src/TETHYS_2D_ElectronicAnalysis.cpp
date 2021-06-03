@@ -1,7 +1,7 @@
 #include "includes/Fluid2DLib.h"
 #include "includes/ElectricLib.h"
-#include "SetUpParametersLib.h"
-#include "GrapheneFluid2DLib.h"
+#include "includes/SetUpParametersLib.h"
+#include "includes/GrapheneFluid2DLib.h"
 
 
 using namespace std;

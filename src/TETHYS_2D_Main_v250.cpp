@@ -1,11 +1,9 @@
-#include <RobinBoundaryLib.h>
+
 #include "includes/Fluid2DLib.h"
-#include "includes/BoundaryLib.h"
-#include "includes/ElectricLib.h"
-#include "SetUpParametersLib.h"
-#include "DiricheletBoundaryLib.h"
-#include "DyakonovShurBoundaryLib.h"
-#include "GrapheneFluid2DLib.h"
+#include "includes/SetUpParametersLib.h"
+#include "includes/DiricheletBoundaryLib.h"
+#include "includes/DyakonovShurBoundaryLib.h"
+#include "includes/GrapheneFluid2DLib.h"
 
 #ifndef MAT_PI
 #	define MAT_PI 3.14159265358979323846
@@ -18,7 +16,7 @@ using namespace std;
 int main(int argc, char **argv){
 
 	SetUpParameters parameters(argc, argv);
-	parameters.GetParameters();
+	parameters.PrintParameters();
 	parameters.DefineGeometry();
 
 	float t=0.0;

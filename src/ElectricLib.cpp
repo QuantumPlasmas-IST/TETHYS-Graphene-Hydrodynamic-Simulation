@@ -1,6 +1,6 @@
 #include "includes/ElectricLib.h"
-#include "GrapheneFluid2DLib.h"
-#include "GrapheneFluid1DLib.h"
+#include "includes/GrapheneFluid2DLib.h"
+#include "includes/GrapheneFluid1DLib.h"
 
 #ifndef MAT_PI
 #    define MAT_PI 3.14159265358979323846
