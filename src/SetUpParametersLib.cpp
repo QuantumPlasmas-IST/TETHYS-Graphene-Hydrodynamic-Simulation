@@ -46,9 +46,9 @@ SetUpParameters::SetUpParameters(int argc, char ** argv) {
 
 		vector<string> veclines;
 
-		while(1){
+		while(true){
 			getline(file, line);
-			if(line == "") {
+			if(line.empty()) {
 				break;
 			}
 			veclines.push_back(line);
@@ -56,15 +56,15 @@ SetUpParameters::SetUpParameters(int argc, char ** argv) {
 
 		file.close();
 
-		for(int j=0; j<(int)veclines.size(); ++j){
-			line = veclines[j];
+		for(auto & vecline : veclines){
+			line = vecline;
 			vector<char> num_part, txt_part; // ao redeclarar, é apagado o conteúdo anterior
-			for(int i=0; i < (int) line.size(); ++i){
-				if(isdigit(line[i]) || int(line[i]) == 46)
-					num_part.push_back(line[i]);
+			for(char & i : line){
+				if(isdigit(i) || int(i) == 46)
+					num_part.push_back(i);
 				else{
-					if((int(line[i])>65 && int(line[i])<=90) || (int(line[i])>=97 && int(line[i])<=122))
-						txt_part.push_back(line[i]);
+					if((int(i)>65 && int(i)<=90) || (int(i)>=97 && int(i)<=122))
+						txt_part.push_back(i);
 				}
 			}
 
