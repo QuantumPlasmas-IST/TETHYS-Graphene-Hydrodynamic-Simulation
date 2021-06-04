@@ -5,7 +5,7 @@
 #ifndef GRAPHENEFLUID2DLIB_H
 #define GRAPHENEFLUID2DLIB_H
 
-#include "Fluid2DLib.h"
+#include "includes/Fluid2DLib.h"
 
 /*!
  * @brief Graphene electronic fluid class in two dimensions.
@@ -80,6 +80,5 @@ public :
 		//void MagneticSourceFtcs();  // Forward Time Centered Space method for the magnetic interaction
 };
 
-#include "Fluid2DLib.h"
 
 #endif //GRAPHENEFLUID2DLIB_H

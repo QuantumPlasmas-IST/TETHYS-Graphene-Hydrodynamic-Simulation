@@ -62,7 +62,7 @@ _<small>As an example in Fedora systems it should be enough to install the packa
   
 ## Usage   
 ### Compilation
-For the compilation of the source code a makefile can ge automatically generated with cmake. It is generally a sensible idea to create a empty directory to hold the executable files
+For the compilation of the source code a makefile can ge automatically generated with cmake. It is generally a sensible idea to create an empty directory to hold the executable files
 
 ```console
 $ mkdir build
@@ -119,7 +119,7 @@ Standard form of numeric *major.minor.patch* starting with the initial commit 1.
   <br>&emsp;**1.2.4** New CFL condition.
   <br>&emsp;**1.2.5** Output in HDF5 format. *[8 Jan. 2020]*
   
-**1.3.0** Transition to object oriented code. Addition of Time Series Analysis and Electronic properties extraction. *[1 May. 2020]*
+**1.3.0** Transition to object-oriented code. Addition of Time Series Analysis and Electronic properties extraction. *[1 May. 2020]*
   <br>&emsp;**1.3.1** Stored energy at the capacitor gate calculated.  
   <br>&emsp;**1.3.2** Viscosity term for Reynolds >10 implemented. *[26 May. 2020]*
   <br>&emsp;**1.3.3** New class hierarchy on 1D algorithms. *[26 Jun. 2020]*

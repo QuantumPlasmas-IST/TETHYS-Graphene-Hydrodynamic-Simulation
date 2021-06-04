@@ -2,7 +2,7 @@
 // Created by pcosme on 27/12/2020.
 //
 
-#include "GrapheneFluid2DLib.h"
+#include "includes/GrapheneFluid2DLib.h"
 
 GrapheneFluid2D::GrapheneFluid2D(SetUpParameters &input_parameters) : Fluid2D(input_parameters) {
 	vel_fer = input_parameters.FermiVelocity ;//fermi_velocity;

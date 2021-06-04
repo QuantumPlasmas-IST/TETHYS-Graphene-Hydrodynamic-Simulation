@@ -3,7 +3,7 @@
 //
 
 #include "includes/BoundaryLib.h"
-#include "DyakonovShurBoundaryLib.h"
+#include "includes/DyakonovShurBoundaryLib.h"
 
 void DyakonovShurBoundaryCondition::DyakonovShurBc(GrapheneFluid1D& fluid_class) {
 	int nx=fluid_class.SizeX();

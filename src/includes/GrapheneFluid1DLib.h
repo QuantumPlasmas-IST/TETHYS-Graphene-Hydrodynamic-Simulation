@@ -5,7 +5,7 @@
 #ifndef GRAPHENEFLUID1DLIB_H
 #define GRAPHENEFLUID1DLIB_H
 
-#include "Fluid1DLib.h"
+#include "includes/Fluid1DLib.h"
 
 /*!
  * @brief Graphene electronic fluid class in one dimension.
@@ -25,7 +25,5 @@ class GrapheneFluid1D : public Fluid1D{
 		float DensitySource(__attribute__((unused)) float n,__attribute__((unused)) float v, __attribute__((unused)) float s) override;
 		float VelocitySource(__attribute__((unused)) float n,float v,__attribute__((unused)) float s) override;
 };
-
-#include "Fluid1DLib.h"
 
 #endif //GRAPHENEFLUID1DLIB_H

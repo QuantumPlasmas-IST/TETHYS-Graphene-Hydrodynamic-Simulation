@@ -7,10 +7,10 @@
 #define FLUID2DLIB_H
 
 #include <H5Cpp.h>
-#include "TethysBaseLib.h"
-#include "TethysMathLib.h"
-#include "SetUpParametersLib.h"
-#include "Grid2DLib.h"
+#include "includes/TethysBaseLib.h"
+#include "includes/TethysMathLib.h"
+#include "includes/SetUpParametersLib.h"
+#include "includes/Grid2DLib.h"
 
 using namespace H5;
 

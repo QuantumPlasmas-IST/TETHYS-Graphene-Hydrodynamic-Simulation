@@ -1,9 +1,8 @@
 #include "includes/Fluid1DLib.h"
-#include "includes/BoundaryLib.h"
 #include "includes/ElectricLib.h"
-#include "SetUpParametersLib.h"
-#include "DyakonovShurBoundaryLib.h"
-#include "GrapheneFluid1DLib.h"
+#include "includes/SetUpParametersLib.h"
+#include "includes/DyakonovShurBoundaryLib.h"
+#include "includes/GrapheneFluid1DLib.h"
 
 #ifndef MAT_PI
 #	define MAT_PI 3.14159265358979323846
