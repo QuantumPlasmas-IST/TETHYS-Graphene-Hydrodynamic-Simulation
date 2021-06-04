@@ -14,9 +14,11 @@
 #include <algorithm>
 #include <string>
 #include <random>
+#include <regex>
 #include <exception>
 #include <H5Cpp.h>
 #include <omp.h>
+
 /*!
  * @brief Initialization class for the fluid classes.
  *
@@ -46,6 +48,7 @@ class SetUpParameters {
 		void DefineGeometry(); ///< Set ups the 2D grid dimensions
 		void ParametersFromHdf5File(const std::string& hdf5name); ///< Imports the parameters from a saved HDF5 file
         void PrintParameters() const;
+        void ReadIniFile(char * file_name);
 };
 
 

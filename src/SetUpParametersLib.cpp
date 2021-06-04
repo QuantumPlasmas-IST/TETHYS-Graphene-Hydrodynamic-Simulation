@@ -41,48 +41,8 @@ SetUpParameters::SetUpParameters(int argc, char ** argv) {
 	SizeY=101;
 
 	if(argc==2){
-		string line;
-		ifstream file(argv[1]);
-
-		vector<string> veclines;
-
-		while(true){
-			getline(file, line);
-			if(line.empty()) {
-				break;
-			}
-			veclines.push_back(line);
-		}
-
-		file.close();
-//TODO make posible for the .ini file to have comments and/or blank lines
-
-		for(auto & vecline : veclines){
-			line = vecline;
-			vector<char> num_part, txt_part; // ao redeclarar, é apagado o conteúdo anterior
-			for(char & i : line){
-				if(isdigit(i) || int(i) == 46)
-					num_part.push_back(i);
-				else{
-					if((int(i)>65 && int(i)<=90) || (int(i)>=97 && int(i)<=122))
-						txt_part.push_back(i);
-				}
-			}
-
-			string num(num_part.begin(), num_part.end());
-			string txt(txt_part.begin(), txt_part.end());
-//TODO include the equal sing int the text as usual on ini files syntax
-			if(txt == "sound") SoundVelocity = stof(num);
-			if(txt == "fermi") FermiVelocity = stof(num);
-			if(txt == "shear") ShearViscosity = stof(num);
-			if(txt == "odd") OddViscosity = stof(num);
-			if(txt == "col") CollisionFrequency = stof(num);
-			if(txt == "cycl") CyclotronFrequency = stof(num);
-			if(txt == "therm") ThermalDiffusivity = stof(num);
-			if(txt == "aspect") AspectRatio = stof(num);
-			if(txt == "save") SaveMode = stoi(num);
-		}
-
+		ReadIniFile(argv[1]);
+		 ParametersChecking();
 	}
 
 	else{
@@ -244,13 +204,6 @@ void SetUpParameters::DefineGeometry() {
 	}
 }
 
-/*SoundVelocity = sound;
-FermiVelocity = fermi;
-CollisionFrequency = coll;
-ShearViscosity = visco;
-CyclotronFrequency = cyclo;
-SaveMode = mode;
-AspectRatio = aspect;*/
 
 void SetUpParameters::PrintParameters() const{
 	cout << endl << "Sound velocity: " << SoundVelocity << endl;
@@ -262,4 +215,51 @@ void SetUpParameters::PrintParameters() const{
 	cout << "Thermal Diffusivity: " << ThermalDiffusivity << endl;
 	cout << "Aspect ratio: " << AspectRatio << endl;
 	cout << "Save mode: " << SaveMode << endl;
+}
+
+void SetUpParameters::ReadIniFile(char *  file_name) {
+	string line;
+	ifstream file(file_name);
+
+	vector<string> veclines;
+
+	/*while(true){
+		getline(file, line);
+		if(line.empty()) {
+			break;
+		}
+		veclines.push_back(line);
+	}*/
+	while(getline(file, line)){
+		veclines.push_back(line);
+	}
+	cout<<"JA LI TUDINHO\n";
+	file.close();
+
+	for(auto & vecline : veclines){
+		line = vecline;
+		vector<char> num_part, txt_part; // ao redeclarar, é apagado o conteúdo anterior
+		if(line[0]!=';' && line[0]!='[') {
+			for (char &i : line) {
+				if (isdigit(i) || int(i) == 46)
+					num_part.push_back(i);
+				else {
+					if ((int(i) > 65 && int(i) <= 90) || (int(i) >= 97 && int(i) <= 122))
+						txt_part.push_back(i);
+				}
+			}
+		}
+		string num(num_part.begin(), num_part.end());
+		string txt(txt_part.begin(), txt_part.end());
+
+		if(txt == "sound") SoundVelocity = stof(num);
+		if(txt == "fermi") FermiVelocity = stof(num);
+		if(txt == "shear") ShearViscosity = stof(num);
+		if(txt == "odd") OddViscosity = stof(num);
+		if(txt == "col") CollisionFrequency = stof(num);
+		if(txt == "cycl") CyclotronFrequency = stof(num);
+		if(txt == "therm") ThermalDiffusivity = stof(num);
+		if(txt == "aspect") AspectRatio = stof(num);
+		if(txt == "save") SaveMode = stoi(num);
+	}
 }
