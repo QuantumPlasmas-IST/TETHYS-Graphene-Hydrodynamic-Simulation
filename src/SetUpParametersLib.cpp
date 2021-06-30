@@ -42,7 +42,6 @@ SetUpParameters::SetUpParameters(int argc, char ** argv) {
 
 	if(argc==2){
 		ReadIniFile(argv[1]);
-		 ParametersChecking();
 	}
 
 	else{
@@ -58,30 +57,12 @@ SetUpParameters::SetUpParameters(int argc, char ** argv) {
 			if (argc == 10) {
 				AspectRatio = strtof(argv[9], nullptr);
 			}
-			ParametersChecking();
 		}
 		else {
-			cout << "Define S value: "; // throw exceptions if the velocities or frequency are negative or if S<Vf
-			cin >> SoundVelocity;
-			cout << "Define vF value: ";
-			cin >> FermiVelocity;
-			cout << "Define kinetic shear viscosity: ";
-			cin >> ShearViscosity;
-			cout << "Define kinetic odd viscosity: ";
-			cin >> OddViscosity;
-			cout << "Define collision frequency: ";
-			cin >> CollisionFrequency;
-			cout << "Define cyclotron frequency: ";
-			cin >> CyclotronFrequency;
-			cout << "Define thermal diffusivity: ";
-			cin >> ThermalDiffusivity;
-			cout << "Define the aspect ratio x:y ";
-			cin >> AspectRatio;
-			cout << "Define data_save_mode value (0-> light save | 1-> full data): ";
-			cin >> SaveMode;
-			ParametersChecking();
+			PromptParameters();
 		}
 	}
+	ParametersChecking();
 	DefineGeometry();
 }
 
@@ -223,17 +204,9 @@ void SetUpParameters::ReadIniFile(char *  file_name) {
 
 	vector<string> veclines;
 
-	/*while(true){
-		getline(file, line);
-		if(line.empty()) {
-			break;
-		}
-		veclines.push_back(line);
-	}*/
 	while(getline(file, line)){
 		veclines.push_back(line);
 	}
-	cout<<"JA LI TUDINHO\n";
 	file.close();
 
 	for(auto & vecline : veclines){
@@ -262,4 +235,25 @@ void SetUpParameters::ReadIniFile(char *  file_name) {
 		if(txt == "aspect") AspectRatio = stof(num);
 		if(txt == "save") SaveMode = stoi(num);
 	}
+}
+
+void SetUpParameters::PromptParameters() {
+	cout << "Define S value: "; // throw exceptions if the velocities or frequency are negative or if S<Vf
+	cin >> SoundVelocity;
+	cout << "Define vF value: ";
+	cin >> FermiVelocity;
+	cout << "Define kinetic shear viscosity: ";
+	cin >> ShearViscosity;
+	cout << "Define kinetic odd viscosity: ";
+	cin >> OddViscosity;
+	cout << "Define collision frequency: ";
+	cin >> CollisionFrequency;
+	cout << "Define cyclotron frequency: ";
+	cin >> CyclotronFrequency;
+	cout << "Define thermal diffusivity: ";
+	cin >> ThermalDiffusivity;
+	cout << "Define the aspect ratio x:y ";
+	cin >> AspectRatio;
+	cout << "Define data_save_mode value (0-> light save | 1-> full data): ";
+	cin >> SaveMode;
 }

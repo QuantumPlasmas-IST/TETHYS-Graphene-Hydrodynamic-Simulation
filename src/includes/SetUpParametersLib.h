@@ -48,6 +48,7 @@ class SetUpParameters {
 		void DefineGeometry(); ///< Set ups the 2D grid dimensions
 		void ParametersFromHdf5File(const std::string& hdf5name); ///< Imports the parameters from a saved HDF5 file
         void PrintParameters() const;
+		void PromptParameters() ;
         void ReadIniFile(char * file_name);
 };
 

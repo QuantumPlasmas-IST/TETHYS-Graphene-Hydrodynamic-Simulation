@@ -154,7 +154,6 @@ float ElectroAnalysis::OhmPower(const GrapheneFluid2D& graphene){
 		square_current_density[c] = (jx*jx+jy*jy)/sqrt(graphene.Den[c]);
 	}
 	return Integral_2_D(graphene.SizeX(), graphene.SizeY(), graphene.GetDx(), graphene.GetDy(), square_current_density);
-
 }
 
 float ElectroAnalysis::ElectricDipoleX(const GrapheneFluid2D &graphene) {
