@@ -1,11 +1,9 @@
-#include <RobinBoundaryLib.h>
+
 #include "includes/Fluid2DLib.h"
-#include "includes/BoundaryLib.h"
-#include "includes/ElectricLib.h"
-#include "SetUpParametersLib.h"
-#include "DiricheletBoundaryLib.h"
-#include "DyakonovShurBoundaryLib.h"
-#include "GrapheneFluid2DLib.h"
+#include "includes/SetUpParametersLib.h"
+#include "includes/DiricheletBoundaryLib.h"
+#include "includes/DyakonovShurBoundaryLib.h"
+#include "includes/GrapheneFluid2DLib.h"
 
 #ifndef MAT_PI
 #	define MAT_PI 3.14159265358979323846
@@ -18,7 +16,7 @@ using namespace std;
 int main(int argc, char **argv){
 
 	SetUpParameters parameters(argc, argv);
-	parameters.GetParameters();
+	parameters.PrintParameters();
 	parameters.DefineGeometry();
 
 	float t=0.0;
@@ -37,7 +35,8 @@ int main(int argc, char **argv){
 	/*.........Fixed or variable vel_snd value........................*/
 	graph.SetSound();
 	//graph.SetSimulationTime();
-	graph.SetTmax(0.5f);
+	graph.SetTmax(5.0f);
+
 	/*................................................................*/
 
 	/*.........Output files and streams...............................*/
@@ -68,39 +67,52 @@ int main(int argc, char **argv){
 	while (t <=  graph.GetTmax() ){ // graph.GetTmax()
 
 		t += dt;
+		float forcing=1.0f + 0.2f*sin(t*64.0f);
+
+
 		GrapheneFluid2D::TimeStepCounter++;
 
 		graph.Richtmyer();
-		DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
+		/*DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
 		DyakonovShurBoundaryCondition::YFree(graph);
 		DirichletBoundaryCondition::YClosedNoSlip(graph);
-        DirichletBoundaryCondition::Temperature(graph,0.22f, 0.22f, 0.22f, 0.22f);
+        DirichletBoundaryCondition::Temperature(graph,0.22f, 0.22f, 0.22f, 0.22f);*/
 
-		/*BoundaryCondition::YFreeTop(graph);
+		//BoundaryCondition::YFreeTop(graph);
 		BoundaryCondition::XFreeRight(graph);
 		DirichletBoundaryCondition::DensityLeft(graph, 1.0f);
-		DirichletBoundaryCondition::MassFluxXLeft(graph, 1.0f);
+		DirichletBoundaryCondition::MassFluxXLeft(graph, forcing);
 		DirichletBoundaryCondition::MassFluxYLeft(graph, 0.0f);
 		DirichletBoundaryCondition::MassFluxYBottom(graph, 0.0f);
-		DirichletBoundaryCondition::MassFluxXBottom(graph, 0.0f);*/
+		DirichletBoundaryCondition::MassFluxXBottom(graph, 0.0f);
+
+		DirichletBoundaryCondition::MassFluxYTop(graph, 0.0f);
+		DirichletBoundaryCondition::MassFluxXTop(graph, 0.0f);
+
 		//RobinBoundaryCondition::SlipLengthBottom(graph, 1.5f);
 
 		if(graph.GetKinVis()!=0.0f || graph.GetThermDiff()!=0.0f  ) {
 			graph.ParabolicOperatorWeightedExplicit19();
-			DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
+			/*DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
 			DyakonovShurBoundaryCondition::YFree(graph);
 			DirichletBoundaryCondition::YClosedNoSlip(graph);
             DirichletBoundaryCondition::Temperature(graph, 0.22f, 0.22f, 0.22f, 0.22f); // 300Kelvin sao aproximadamente 0.2 Temperatura de Fermi
+*/
 
-
-            /*BoundaryCondition::YFreeTop(graph);
+            //BoundaryCondition::YFreeTop(graph);
             BoundaryCondition::XFreeRight(graph);
+
+
             DirichletBoundaryCondition::DensityLeft(graph, 1.0f);
-            DirichletBoundaryCondition::MassFluxXLeft(graph, 1.0f);
+            DirichletBoundaryCondition::MassFluxXLeft(graph, forcing);
             DirichletBoundaryCondition::MassFluxYLeft(graph, 0.0f);
             DirichletBoundaryCondition::MassFluxYBottom(graph, 0.0f);
             DirichletBoundaryCondition::MassFluxXBottom(graph, 0.0f);
-            //RobinBoundaryCondition::SlipLengthBottom(graph, 1.5f);*/
+
+			DirichletBoundaryCondition::MassFluxYTop(graph, 0.0f);
+			DirichletBoundaryCondition::MassFluxXTop(graph, 0.0f);
+
+			//RobinBoundaryCondition::SlipLengthBottom(graph, 1.5f);*/
 		}
 
 		//Record full hdf5 data

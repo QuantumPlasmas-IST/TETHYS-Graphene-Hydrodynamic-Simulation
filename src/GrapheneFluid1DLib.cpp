@@ -2,7 +2,7 @@
 // Created by pcosme on 27/12/2020.
 //
 
-#include "GrapheneFluid1DLib.h"
+#include "includes/GrapheneFluid1DLib.h"
 
 GrapheneFluid1D::GrapheneFluid1D(SetUpParameters &input_parameters) : Fluid1D(input_parameters) {
 	vel_fer = input_parameters.FermiVelocity;

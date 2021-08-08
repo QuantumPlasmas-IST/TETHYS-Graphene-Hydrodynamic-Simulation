@@ -5,7 +5,7 @@
 #ifndef GRAPHENEFLUID2DLIB_H
 #define GRAPHENEFLUID2DLIB_H
 
-#include "Fluid2DLib.h"
+#include "includes/Fluid2DLib.h"
 
 /*!
  * @brief Graphene electronic fluid class in two dimensions.
@@ -14,13 +14,10 @@
  * It overrides class Fluid2D necessary methods in order to describe the semi-classical electronic fluid.
  * */
 class GrapheneFluid2D : public Fluid2D{
-
 protected:
-
-float DensityToMass(float density) override;
+	float DensityToMass(float density) override;
 
 public :
-
 	explicit GrapheneFluid2D(SetUpParameters &input_parameters);
 		~GrapheneFluid2D();
 
@@ -80,6 +77,5 @@ public :
 		//void MagneticSourceFtcs();  // Forward Time Centered Space method for the magnetic interaction
 };
 
-#include "Fluid2DLib.h"
 
 #endif //GRAPHENEFLUID2DLIB_H

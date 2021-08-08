@@ -6,12 +6,12 @@
 #define DIRICHELETBOUNDARYLIB_H
 
 #include <H5Cpp.h>
-#include "TethysBaseLib.h"
-#include "TethysMathLib.h"
-#include "Fluid1DLib.h"
-#include "Fluid2DLib.h"
-#include "BoundaryLib.h"
-#include "DiricheletBoundaryLib.h"
+#include "includes/TethysBaseLib.h"
+#include "includes/TethysMathLib.h"
+#include "includes/Fluid1DLib.h"
+#include "includes/Fluid2DLib.h"
+#include "includes/BoundaryLib.h"
+#include "includes/DiricheletBoundaryLib.h"
 
 
 

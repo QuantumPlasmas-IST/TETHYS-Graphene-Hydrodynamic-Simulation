@@ -1,6 +1,6 @@
 #include "includes/ElectricLib.h"
-#include "GrapheneFluid2DLib.h"
-#include "GrapheneFluid1DLib.h"
+#include "includes/GrapheneFluid2DLib.h"
+#include "includes/GrapheneFluid1DLib.h"
 
 #ifndef MAT_PI
 #    define MAT_PI 3.14159265358979323846
@@ -56,7 +56,7 @@ void ElectroAnalysis::ComputeElectroBase(float t, const GrapheneFluid2D& graphen
 
 void ElectroAnalysis::ComputeElectroDerived() {
 	float dt;
-	dt=TmpArr.back()/DipX.size();
+	dt=TmpArr.back()/static_cast<float>(DipX.size());
 	EngCap.resize(DipX.size());
 	PowCap.resize(DipX.size());
 	transform(NetQ.begin(), NetQ.end(), EngCap.begin(), [](const float &c){ return 0.5f*c*c; });
@@ -154,7 +154,6 @@ float ElectroAnalysis::OhmPower(const GrapheneFluid2D& graphene){
 		square_current_density[c] = (jx*jx+jy*jy)/sqrt(graphene.Den[c]);
 	}
 	return Integral_2_D(graphene.SizeX(), graphene.SizeY(), graphene.GetDx(), graphene.GetDy(), square_current_density);
-
 }
 
 float ElectroAnalysis::ElectricDipoleX(const GrapheneFluid2D &graphene) {

@@ -3,7 +3,7 @@
 //
 
 #include "includes/BoundaryLib.h"
-#include "DiricheletBoundaryLib.h"
+#include "includes/DiricheletBoundaryLib.h"
 
 void DirichletBoundaryCondition::Density(Fluid1D& fluid_class, float left, float right){
 	int nx=fluid_class.SizeX();

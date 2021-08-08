@@ -3,22 +3,24 @@
 //
 
 #include "includes/TethysBaseLib.h"
-#include "SetUpParametersLib.h"
+#include "includes/SetUpParametersLib.h"
 
-SetUpParameters::SetUpParameters() {
-    cout << "Saí "<<endl;
-    SizeX=101;
+SetUpParameters::SetUpParameters(){
+	SizeX=101;
 	SizeY=101;
 	SoundVelocity = 30.0f;
 	FermiVelocity = 10.0f;
 	CollisionFrequency = 0.01f;
 	ShearViscosity = 0.0f;
 	CyclotronFrequency = 0.0f;
+	OddViscosity=0.0f;
+	ThermalDiffusivity=0.0f;
 	SaveMode = 1;
 	this->DefineGeometry();
 }
 
-SetUpParameters::SetUpParameters(float sound, float fermi, float coll, float visco, float cyclo, int mode, float aspect){
+SetUpParameters::SetUpParameters(float sound, float fermi, float coll, float visco, float odd_visco, float cyclo,
+								 float thermal_diff, int mode, float aspect) {
 	SizeX=101;
 	SizeY=101;
 	SoundVelocity = sound;
@@ -28,10 +30,10 @@ SetUpParameters::SetUpParameters(float sound, float fermi, float coll, float vis
 	CyclotronFrequency = cyclo;
 	SaveMode = mode;
 	AspectRatio = aspect;
+	OddViscosity=odd_visco;
+	ThermalDiffusivity=thermal_diff;
 	ParametersChecking();
 	DefineGeometry();
-    cout << "Saí "<<endl;
-
 }
 
 SetUpParameters::SetUpParameters(int argc, char ** argv) {
@@ -39,121 +41,28 @@ SetUpParameters::SetUpParameters(int argc, char ** argv) {
 	SizeY=101;
 
 	if(argc==2){
-	    string line;
-        ifstream file(argv[1]);
-
-        vector<string> veclines;
-
-        while(1){
-            getline(file, line);
-            if(line == "")
-                break;
-            veclines.push_back(line);
-        }
-
-        file.close();
-
-
-        for(int j=0; j<(int)veclines.size(); ++j){
-            line = veclines[j];
-
-            vector<char> num_part, txt_part; // ao redeclarar, é apagado o conteúdo anterior
-
-            for(int i=0; i < (int) line.size(); ++i){
-                if(isdigit(line[i]) || int(line[i]) == 46)
-                    num_part.push_back(line[i]);
-
-                else{
-                    if((int(line[i])>65 && int(line[i])<=90) || (int(line[i])>=97 && int(line[i])<=122))
-                        txt_part.push_back(line[i]);
-                }
-            }
-
-            string num(num_part.begin(), num_part.end());
-            string txt(txt_part.begin(), txt_part.end());
-
-            if(txt == "sound") SoundVelocity = stof(num);
-
-            if(txt == "fermi") FermiVelocity = stof(num);
-
-            if(txt == "shear") ShearViscosity = stof(num);
-
-            if(txt == "odd") OddViscosity = stof(num);
-
-            if(txt == "col") CollisionFrequency = stof(num);
-
-            if(txt == "cycl") CyclotronFrequency = stof(num);
-
-	        if(txt == "therm") ThermalDiffusivity = stof(num);
-
-            if(txt == "aspect") AspectRatio = stof(num);
-
-            if(txt == "save") SaveMode = stof(num);
-        }
-
-
-        /*  vector<float> final_values;
-            for(int j=0; j<(int)veclines.size(); ++j){
-            line = veclines[j];
-
-            vector<char> init_number;
-
-            for (int i = 0; i < (int) line.size(); ++i) {
-                if (isdigit(line[i]) || int(line[i]) == 46)
-                    init_number.push_back(line[i]);
-            }
-
-            string final_number(init_number.begin(), init_number.end());
-            final_values.push_back(stof(final_number));
-        }
-
-        SoundVelocity = final_values[0];
-        FermiVelocity = final_values[1];
-        ShearViscosity = final_values[2];
-        OddViscosity = final_values[3];
-        CollisionFrequency = final_values[4];
-        CyclotronFrequency = final_values[5];
-        AspectRatio = final_values[6];
-        SaveMode = final_values[7];*/
+		ReadIniFile(argv[1]);
 	}
 
-	else {
-        if (argc == 9 || argc == 10) {
-            SoundVelocity = strtof(argv[1], nullptr);
-            FermiVelocity = strtof(argv[2], nullptr);
-            CollisionFrequency = strtof(argv[3], nullptr);
-            ShearViscosity = strtof(argv[4], nullptr);
-            OddViscosity = strtof(argv[5], nullptr);
-	        ThermalDiffusivity = strtof(argv[6], nullptr);
-            CyclotronFrequency = strtof(argv[7], nullptr);
-            SaveMode = (int) strtol(argv[8], nullptr, 10);    // full data or light save option
-            if (argc == 10) {
-                AspectRatio = strtof(argv[9], nullptr);
-            }
-            ParametersChecking();
-        }
-        else {
-            cout << "Define S value: "; // throw exceptions if the velocities or frequency are negative or if S<Vf
-            cin >> SoundVelocity;
-            cout << "Define vF value: ";
-            cin >> FermiVelocity;
-            cout << "Define kinetic shear viscosity: ";
-            cin >> ShearViscosity;
-            cout << "Define kinetic odd viscosity: ";
-            cin >> OddViscosity;
-            cout << "Define collision frequency: ";
-            cin >> CollisionFrequency;
-            cout << "Define cyclotron frequency: ";
-            cin >> CyclotronFrequency;
-	        cout << "Define thermal diffusivity: ";
-	        cin >> ThermalDiffusivity;
-            cout << "Define the aspect ratio x:y ";
-            cin >> AspectRatio;
-            cout << "Define data_save_mode value (0-> light save | 1-> full data): ";
-            cin >> SaveMode;
-            ParametersChecking();
-        }
-    }
+	else{
+		if (argc == 9 || argc == 10) {
+			SoundVelocity = strtof(argv[1], nullptr);
+			FermiVelocity = strtof(argv[2], nullptr);
+			CollisionFrequency = strtof(argv[3], nullptr);
+			ShearViscosity = strtof(argv[4], nullptr);
+			OddViscosity = strtof(argv[5], nullptr);
+			ThermalDiffusivity = strtof(argv[6], nullptr);
+			CyclotronFrequency = strtof(argv[7], nullptr);
+			SaveMode = (int) strtol(argv[8], nullptr, 10);    // full data or light save option
+			if (argc == 10) {
+				AspectRatio = strtof(argv[9], nullptr);
+			}
+		}
+		else {
+			PromptParameters();
+		}
+	}
+	ParametersChecking();
 	DefineGeometry();
 }
 
@@ -232,7 +141,7 @@ void SetUpParameters::ParametersFromHdf5File(const string& hdf5name){
 	attr_snd.read(attr_snd.getDataType(), &SoundVelocity);
 	Attribute attr_fer(grp_dat->openAttribute("Fermi velocity"));
 	attr_fer.read(attr_fer.getDataType(), &FermiVelocity);
-	Attribute attr_vis(grp_dat->openAttribute("Kinetic viscosity"));
+	Attribute attr_vis(grp_dat->openAttribute("Kinematic shear viscosity"));
 	attr_vis.read(attr_vis.getDataType(), &ShearViscosity);
 	Attribute attr_cyc(grp_dat->openAttribute("Cyclotron frequency"));
 	attr_cyc.read(attr_cyc.getDataType(), &CyclotronFrequency);
@@ -276,22 +185,75 @@ void SetUpParameters::DefineGeometry() {
 	}
 }
 
-/*SoundVelocity = sound;
-FermiVelocity = fermi;
-CollisionFrequency = coll;
-ShearViscosity = visco;
-CyclotronFrequency = cyclo;
-SaveMode = mode;
-AspectRatio = aspect;*/
 
-void SetUpParameters::GetParameters(){
-    cout << endl << "Sound velocity: " << SoundVelocity << endl;
-    cout << "Fermi velocity: " << FermiVelocity << endl;
-    cout << "Shear viscosity: " << ShearViscosity << endl;
-    cout << "Odd viscosity: " << OddViscosity << endl;
-    cout << "Collision frequency: " << CollisionFrequency << endl;
-    cout << "Cyclotron frequency: " << CyclotronFrequency << endl;
-    cout << "Thermal Diffusivity: " << ThermalDiffusivity << endl;
-    cout << "Aspect ratio: " << AspectRatio << endl;
-    cout << "Save mode: " << SaveMode << endl;
+void SetUpParameters::PrintParameters() const{
+	cout << endl << "Sound velocity: " << SoundVelocity << endl;
+	cout << "Fermi velocity: " << FermiVelocity << endl;
+	cout << "Shear viscosity: " << ShearViscosity << endl;
+	cout << "Odd viscosity: " << OddViscosity << endl;
+	cout << "Collision frequency: " << CollisionFrequency << endl;
+	cout << "Cyclotron frequency: " << CyclotronFrequency << endl;
+	cout << "Thermal Diffusivity: " << ThermalDiffusivity << endl;
+	cout << "Aspect ratio: " << AspectRatio << endl;
+	cout << "Save mode: " << SaveMode << endl;
+}
+
+void SetUpParameters::ReadIniFile(char *  file_name) {
+	string line;
+	ifstream file(file_name);
+
+	vector<string> veclines;
+
+	while(getline(file, line)){
+		veclines.push_back(line);
+	}
+	file.close();
+
+	for(auto & vecline : veclines){
+		line = vecline;
+		vector<char> num_part, txt_part; // ao redeclarar, é apagado o conteúdo anterior
+		if(line[0]!=';' && line[0]!='[') {
+			for (char &i : line) {
+				if (isdigit(i) || int(i) == 46)
+					num_part.push_back(i);
+				else {
+					if ((int(i) > 65 && int(i) <= 90) || (int(i) >= 97 && int(i) <= 122))
+						txt_part.push_back(i);
+				}
+			}
+		}
+		string num(num_part.begin(), num_part.end());
+		string txt(txt_part.begin(), txt_part.end());
+
+		if(txt == "sound") SoundVelocity = stof(num);
+		if(txt == "fermi") FermiVelocity = stof(num);
+		if(txt == "shear") ShearViscosity = stof(num);
+		if(txt == "odd") OddViscosity = stof(num);
+		if(txt == "col") CollisionFrequency = stof(num);
+		if(txt == "cycl") CyclotronFrequency = stof(num);
+		if(txt == "therm") ThermalDiffusivity = stof(num);
+		if(txt == "aspect") AspectRatio = stof(num);
+		if(txt == "save") SaveMode = stoi(num);
+	}
+}
+
+void SetUpParameters::PromptParameters() {
+	cout << "Define S value: "; // throw exceptions if the velocities or frequency are negative or if S<Vf
+	cin >> SoundVelocity;
+	cout << "Define vF value: ";
+	cin >> FermiVelocity;
+	cout << "Define kinetic shear viscosity: ";
+	cin >> ShearViscosity;
+	cout << "Define kinetic odd viscosity: ";
+	cin >> OddViscosity;
+	cout << "Define collision frequency: ";
+	cin >> CollisionFrequency;
+	cout << "Define cyclotron frequency: ";
+	cin >> CyclotronFrequency;
+	cout << "Define thermal diffusivity: ";
+	cin >> ThermalDiffusivity;
+	cout << "Define the aspect ratio x:y ";
+	cin >> AspectRatio;
+	cout << "Define data_save_mode value (0-> light save | 1-> full data): ";
+	cin >> SaveMode;
 }

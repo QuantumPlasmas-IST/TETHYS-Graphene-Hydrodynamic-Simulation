@@ -7,12 +7,12 @@
 #define ELECTRICLIB_H
 
 #include <H5Cpp.h>
-#include "TethysBaseLib.h"
-#include "TethysMathLib.h"
-#include "Fluid1DLib.h"
-#include "Fluid2DLib.h"
-#include "GrapheneFluid2DLib.h"
-#include "GrapheneFluid1DLib.h"
+#include "includes/TethysBaseLib.h"
+#include "includes/TethysMathLib.h"
+#include "includes/Fluid1DLib.h"
+#include "includes/Fluid2DLib.h"
+#include "includes/GrapheneFluid2DLib.h"
+#include "includes/GrapheneFluid1DLib.h"
 
 /*!
  * @brief Class to obtain the macroscopic electrical quantities

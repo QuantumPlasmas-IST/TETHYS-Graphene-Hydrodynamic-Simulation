@@ -2,9 +2,8 @@
 // Created by pcosme on 23/12/2020.
 //
 
-#include "DyakonovShurBoundaryLib.h"
 #include "includes/BoundaryLib.h"
-#include "RobinBoundaryLib.h"
+#include "includes/RobinBoundaryLib.h"
 
 void RobinBoundaryCondition::SlipLength(Fluid2D &fluid_class, float slip_length) {
 	int nx=fluid_class.SizeX();

@@ -7,10 +7,10 @@
 #define BOUNDARYLIB_H
 
 #include <H5Cpp.h>
-#include "TethysBaseLib.h"
-#include "TethysMathLib.h"
-#include "Fluid1DLib.h"
-#include "Fluid2DLib.h"
+#include "includes/TethysBaseLib.h"
+#include "includes/TethysMathLib.h"
+#include "includes/Fluid1DLib.h"
+#include "includes/Fluid2DLib.h"
 
 
 //TODO review the entire boundary class
@@ -45,12 +45,10 @@ class BoundaryCondition {
 		static void YPeriodic(Fluid2D& fluid_class);       ///< periodic boundaries u(y=0)=u(y=W) for all variables
 		static void YClosedFreeSlip(Fluid2D& fluid_class); ///< zero flux across y=0 and y=W and free tangent velocity Vx
 		static void YClosedNoSlip(Fluid2D& fluid_class);   ///< zero flux across y=0 and y=W and zero tangent velocity Vx=0
+
 	static void XFreeLeft(Fluid2D &fluid_class);
-
 	static void XFreeRight(Fluid2D &fluid_class);
-
 	static void YFreeTop(Fluid2D &fluid_class);
-
 	static void YFreeBottom(Fluid2D &fluid_class);
 };
 
