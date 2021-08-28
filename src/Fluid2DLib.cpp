@@ -92,6 +92,13 @@ void Fluid2D::InitialCondRand(){
 	}
 }
 
+
+void Fluid2D::InitialCondStream(float vel) {
+	for (int c = 0; c < Nx*Ny; c++ ){
+		VelX[c] = vel;
+	}
+}
+
 void Fluid2D::InitialCondTest(){
 	for (int i = 0; i < Nx; i++ ){
 		for (int j=0; j<Ny; j++){
@@ -1001,4 +1008,5 @@ float Fluid2D::Laplacian19(GridPoint p, float *input_ptr, float constant) {
 	               + sx*(1.0f-2.0f*sy)*(data_ptr[p.W] + data_ptr[p.E]);
 return lap;
 }
+
 

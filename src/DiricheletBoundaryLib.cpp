@@ -62,6 +62,33 @@ void DirichletBoundaryCondition::MassFluxY(Fluid2D& fluid_class, float left, flo
 	}
 }
 
+void DirichletBoundaryCondition::JetLeft(Fluid2D &fluid_class, float left, float left_width) {
+	int nx=fluid_class.SizeX();
+	int ny=fluid_class.SizeY();
+	int n_width_left= static_cast<int>(static_cast<float>(ny) * left_width);
+	for (int j=0; j < ny; j++){
+		if( j>=(ny-n_width_left)/2 && j<= (ny+n_width_left)/2){
+			fluid_class.FlxX[0 + j * nx] = left;
+		} else{
+			fluid_class.FlxX[0 + j * nx] = 0.0f;
+		}
+	}
+}
+
+void DirichletBoundaryCondition::JetRight(Fluid2D &fluid_class, float right, float right_width) {
+	int nx=fluid_class.SizeX();
+	int ny=fluid_class.SizeY();
+	int n_width_right= static_cast<int>(static_cast<float>(ny) * right_width);
+	for (int j=0; j < ny; j++){
+		if( j>=(ny-n_width_right)/2 && j<= (ny+n_width_right)/2){
+			fluid_class.FlxX[nx - 1 + j * nx] = right;
+		} else{
+			fluid_class.FlxX[nx - 1 + j * nx] = 0.0f;
+		}
+	}
+}
+
+
 void DirichletBoundaryCondition::Jet(Fluid2D &fluid_class, float left, float left_width, float right, float right_width) {
 	int nx=fluid_class.SizeX();
 	int ny=fluid_class.SizeY();
@@ -226,6 +253,7 @@ void DirichletBoundaryCondition::TemperatureBottom(Fluid2D &fluid_class, float b
 		fluid_class.Tmp[i] = bottom;
 	}
 }
+
 
 
 

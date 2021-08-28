@@ -75,6 +75,7 @@ public :
 		void SetSound();     // Applies the anisotropy to the sound velocity array
 		virtual void SetSimulationTime();   ///< Finds and set the appropriate simulation time
 		void InitialCondRand();             ///< Initial condition, zero velocity and constant density with 0.5% white noise
+		void InitialCondStream(float vel);             ///< Initial condition, constant stream velocity
 		void InitialCondTest();             // Initial condition for testing and debugging
 		/*!
 		 * @brief Calculates @f$\Delta x@f$ and imposes Courant–Friedrichs–Lewy condition to @f$\Delta t@f$
