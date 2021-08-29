@@ -45,10 +45,15 @@ add_test(testElec2D TETHYS_ELEC_2D ${H5_TEST_FILE})
 file(GLOB SRC_LIB_FILES src/*Lib.cpp)
 add_library(tethys_library STATIC ${SRC_LIB_FILES})
 
-find_library (TETHYS_LIB tethys_library lib)
-target_link_libraries(TETHYS_1D LINK_PUBLIC ${TETHYS_LIB})
-target_link_libraries(TETHYS_2D LINK_PUBLIC ${TETHYS_LIB})
-target_link_libraries(TETHYS_ELEC_2D LINK_PUBLIC ${TETHYS_LIB})
+#find_library (TETHYS_LIB tethys_library lib)
+#target_link_libraries(TETHYS_1D LINK_PUBLIC ${TETHYS_LIB})
+#target_link_libraries(TETHYS_2D LINK_PUBLIC ${TETHYS_LIB})
+#target_link_libraries(TETHYS_ELEC_2D LINK_PUBLIC ${TETHYS_LIB})
+
+target_link_libraries(TETHYS_1D PUBLIC tethys_library)
+target_link_libraries(TETHYS_2D PUBLIC tethys_library)
+target_link_libraries(TETHYS_ELEC_2D PUBLIC tethys_library)
+
 
 target_include_directories(TETHYS_1D PRIVATE ${HDF5_INCLUDE_DIRS})
 target_link_libraries(TETHYS_1D PRIVATE ${HDF5_CXX_LIBRARIES})
