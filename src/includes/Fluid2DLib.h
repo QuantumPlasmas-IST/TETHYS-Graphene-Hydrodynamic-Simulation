@@ -174,7 +174,7 @@ public :
 		 * @brief Saves the grid of the spatial distribution of the parameter S at the output HDF5 file
 		 *
 		 * */
-		void SaveSound();
+		void SaveSound(); ///< Records a mesh of eventual sound velocity anisotropy at the HDF5 file
 		int GetSnapshotStep() const; ///< Returns the number of the present snapshot @return snapshot_step order number of the snapshot
 		int GetSnapshotFreq() const; ///< Returns the number of snapshots per period to record  @return snapshot_per_period number of the snapshots per period
 
@@ -210,7 +210,7 @@ public :
 		*
 		* @see VelocityLaplacianWeighted19()
 		* */
-		void ParabolicOperatorWeightedExplicit19(); // Forward Time Centered Space method for the viscous terms
+		void ParabolicOperatorWeightedExplicit19(); ///< Forward Time Centered Space method for the diffusive terms
         void TemperatureLaplacianWeighted19();
 };
 

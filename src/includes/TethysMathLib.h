@@ -37,6 +37,7 @@ float Sound_Velocity_Anisotropy(float x, float s);
  * corresponding to a variation of substrate permittivity or even the description of a multi gated system.
  *
  * @param x position along x
+ * @param y position along y
  * @param s nominal sound velocity
  *
  * @return S(x,y) the value of local sound velocity
