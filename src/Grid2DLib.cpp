@@ -1,6 +1,8 @@
-//
-// Created by pcosme on 28/01/2021.
-//
+/************************************************************************************************\
+* 2020 Pedro Cosme , João Santos and Ivan Figueiredo                                             *
+* DOI: 10.5281/zenodo.4319281																	 *
+* Distributed under the MIT License (license terms are at http://opensource.org/licenses/MIT).   *
+\************************************************************************************************/
 
 
 #include "includes/Grid2DLib.h"
