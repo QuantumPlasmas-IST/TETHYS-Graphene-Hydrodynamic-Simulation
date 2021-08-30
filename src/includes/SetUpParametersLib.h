@@ -49,9 +49,9 @@ class SetUpParameters {
 		void ParametersChecking() const; ///< Runs a checking on the physical feasibility of the parameters
 		void DefineGeometry(); ///< Set ups the 2D grid dimensions
 		void ParametersFromHdf5File(const std::string& hdf5name); ///< Imports the parameters from a saved HDF5 file
-        void PrintParameters() const;
-		void PromptParameters() ;
-        void ReadIniFile(char * file_name);
+        void PrintParameters() const; ///< Prints the read parameters to standard output
+		void PromptParameters() ; ///< Asks the user for the simulation parameters
+        void ReadIniFile(char * file_name); ///< Imports the parameters from a saved .ini file
 };
 
 

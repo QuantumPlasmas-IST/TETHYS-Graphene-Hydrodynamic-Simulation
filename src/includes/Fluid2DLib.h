@@ -107,31 +107,22 @@ public :
 		 */
 		void Richtmyer();                   // Central Algorithm for solving the hyperbolic conservation law
 
-
-//		virtual float DensityFluxX( float n, float flx_x,  float flx_y,  float mass,  float s); ///< density equation (continuity equation) conserved flux X component
-//		virtual float DensityFluxY( float n,  float flx_x, float flx_y,  float mass,  float s); ///< density equation (continuity equation) conserved1 flux Y component
-//		virtual float XMomentumFluxX(float n, float flx_x, float flx_y, float mass, float s); ///< velocity X component equation (momentum equation) conserved flux X component
-//		virtual float XMomentumFluxY(float n, float flx_x, float flx_y, float mass, float s); ///< velocity X component equation (momentum equation) conserved flux Y component
-//		virtual float YMomentumFluxX(float n, float flx_x, float flx_y, float mass, float s); ///< velocity Y component equation (momentum equation) conserved flux X component
-//		virtual float YMomentumFluxY(float n, float flx_x, float flx_y, float mass, float s); ///< velocity Y component equation (momentum equation) conserved flux Y component
-
-	virtual float DensitySource( float n, float flx_x, float flx_y, float mass, float s); ///< density equation (continuity equation) source term
-	virtual float XMomentumSource(float n, float flx_x, float flx_y, float mass, float s); ///< velocity X component equation (momentum equation) source term
-	virtual float YMomentumSource(float n, float flx_x, float flx_y, float mass, float s); ///< velocity y component equation (momentum equation) source term
+		virtual float DensitySource( float n, float flx_x, float flx_y, float mass, float s); ///< density equation (continuity equation) source term
+		virtual float XMomentumSource(float n, float flx_x, float flx_y, float mass, float s); ///< velocity X component equation (momentum equation) source term
+		virtual float YMomentumSource(float n, float flx_x, float flx_y, float mass, float s); ///< velocity y component equation (momentum equation) source term
 
 
-    virtual float DensityFluxX(GridPoint p, char side ); ///< density equation (continuity equation) conserved flux X component
-    virtual float DensityFluxY(GridPoint p, char side ); ///< density equation (continuity equation) conserved1 flux Y component
+	    virtual float DensityFluxX(GridPoint p, char side ); ///< density equation (continuity equation) conserved flux X component
+	    virtual float DensityFluxY(GridPoint p, char side ); ///< density equation (continuity equation) conserved1 flux Y component
 
-    virtual float XMomentumFluxX(GridPoint p, char side ); ///< velocity X component equation (momentum equation) conserved flux X component
-    virtual float XMomentumFluxY(GridPoint p, char side ); ///< velocity X component equation (momentum equation) conserved flux Y component
+	    virtual float XMomentumFluxX(GridPoint p, char side ); ///< velocity X component equation (momentum equation) conserved flux X component
+	    virtual float XMomentumFluxY(GridPoint p, char side ); ///< velocity X component equation (momentum equation) conserved flux Y component
 
-    virtual float YMomentumFluxX(GridPoint p, char side ); ///< velocity Y component equation (momentum equation) conserved flux X component
-    virtual float YMomentumFluxY(GridPoint p, char side ); ///< velocity Y component equation (momentum equation) conserved flux Y component
+	    virtual float YMomentumFluxX(GridPoint p, char side ); ///< velocity Y component equation (momentum equation) conserved flux X component
+	    virtual float YMomentumFluxY(GridPoint p, char side ); ///< velocity Y component equation (momentum equation) conserved flux Y component
 
-    float TemperatureFluxX(GridPoint p, char side );
-    float TemperatureFluxY(GridPoint p, char side );
-
+	    float TemperatureFluxX(GridPoint p, char side ); ///< Temperature equation (heat equation) conserved flux X component
+	    float TemperatureFluxY(GridPoint p, char side ); ///< Temperature equation (heat equation) conserved flux Y component
 
 
 		/*!

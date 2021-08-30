@@ -54,7 +54,6 @@ void RobinBoundaryCondition::SlipLengthBottom(Fluid2D &fluid_class, float slip_l
 	float dy=fluid_class.GetDy();
 	for (int i=0; i < nx; i++){
 		float aux_bot, dn_bot, l_bot;
-		//int bottom=i; //i+0*nx
 		dn_bot = (-3.0f*fluid_class.Den[i+0*nx]+4.0f*fluid_class.Den[i+1*nx]-1.0f*fluid_class.Den[i+2*nx])/(2.0f*dy);
 		dn_bot = dn_bot/sqrt(fluid_class.Den[i]);
 		l_bot = slip_length/(1.0f-slip_length*dn_bot);

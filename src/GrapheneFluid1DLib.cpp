@@ -28,7 +28,6 @@ GrapheneFluid1D::~GrapheneFluid1D(){
 	delete grad_vel_mid ;
 }
 
-/*....................................................................*/
 
 float GrapheneFluid1D::DensityFlux(float n,float v,float __attribute__((unused)) s){
 	float f_1;

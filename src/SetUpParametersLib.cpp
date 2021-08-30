@@ -166,22 +166,18 @@ void SetUpParameters::DefineGeometry() {
 	if(AspectRatio>1.0f){
 		Length=1.0f*AspectRatio;
 		Width=1.0f;
-		//SizeY=201;
 		SizeY=151;
 		SizeX= static_cast<int>( static_cast<float>(SizeY-1)*AspectRatio)+1;
 	}
 	if(AspectRatio==1.0f){
 		Length=1.0f;
 		Width=1.0f;
-		//SizeX=201;
-		//SizeY=201;
 		SizeX=151;
 		SizeY=151;
 	}
 	if(AspectRatio<1.0f){
 		Length=1.0f;
 		Width=1.0f/AspectRatio;
-		//SizeX=201;
 		SizeX=151;
 		SizeY= static_cast<int>( static_cast<float>(SizeX - 1) / AspectRatio) + 1;
 	}
@@ -213,7 +209,7 @@ void SetUpParameters::ReadIniFile(char *  file_name) {
 
 	for(auto & vecline : veclines){
 		line = vecline;
-		vector<char> num_part, txt_part; // ao redeclarar, é apagado o conteúdo anterior
+		vector<char> num_part, txt_part;
 		if(line[0]!=';' && line[0]!='[') {
 			for (char &i : line) {
 				if (isdigit(i) || int(i) == 46)
@@ -240,7 +236,7 @@ void SetUpParameters::ReadIniFile(char *  file_name) {
 }
 
 void SetUpParameters::PromptParameters() {
-	cout << "Define S value: "; // throw exceptions if the velocities or frequency are negative or if S<Vf
+	cout << "Define S value: ";
 	cin >> SoundVelocity;
 	cout << "Define vF value: ";
 	cin >> FermiVelocity;
