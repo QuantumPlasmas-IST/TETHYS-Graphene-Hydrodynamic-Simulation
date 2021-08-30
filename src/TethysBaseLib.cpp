@@ -5,19 +5,11 @@
 \************************************************************************************************/
 
 #include "includes/TethysBaseLib.h"
-//#include "includes/SetUpParametersLib.h"
-
 
 using namespace H5;
 using namespace std;
 
 
-
-
-
-/*....................................................................*/
-/*........ General Functions .........................................*/
-/*....................................................................*/
 void TethysBase::BannerDisplay() {
 cout<<"\n" ;
 	cout<<"╔═════════════════════════════════════════════════════════════════════════╗\n";
@@ -61,13 +53,8 @@ void TethysBase::WelcomeScreen() const {
 		}
 	}
 	cout << "Cyclotron frequency \t\033[1m\317\211c\t" << cyc_freq << " v\342\202\200/L\n\033[0m\n";
-//	cout << "Theoretical frequency \033[1m\317\211=\317\211'+i\317\211''\033[0m\n";
-//	cout << "\033[1m\317\211'\t" << this->RealFreq() << " v\342\202\200/L\t2\317\200/\317\211'\t" << 2.0 * MAT_PI /
-//	                                                                                                 this->RealFreq()
-//	     << " L/v\342\202\200\033[0m\n";
-//	cout << "\033[1m\317\211''\t" << this->ImagFreq() << " v\342\202\200/L\t2\317\200/\317\211''\t" << 2.0 * MAT_PI /
-//	                                                                                                   this->ImagFreq()
-//	     << " L/v\342\202\200\033[0m\n";
+	cout << "Thermal diffusivity \t\033[1m\316\261c\t" << therm_diff << " v\342\202\200/L\n\033[0m\n";
+
 	cout << "\nDetermined maximum simulated time\t\033[1m\nT\342\202\230\342\202\220\342\202\223\t" << Tmax
 	     << " L/v\342\202\200\t\342\211\210" << Tmax / dt << "\033[0m\t time steps" << endl;
 	cout << "Discretisation\n";
