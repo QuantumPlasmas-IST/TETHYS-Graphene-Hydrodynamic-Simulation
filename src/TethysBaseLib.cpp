@@ -52,8 +52,8 @@ void TethysBase::WelcomeScreen() const {
 			cout << "Collision rate \t\033[1m 1/\317\204 \t" << col_freq << " v\342\202\200/L\033[0m\n";
 		}
 	}
-	cout << "Cyclotron frequency \t\033[1m\317\211c\t" << cyc_freq << " v\342\202\200/L\n\033[0m\n";
-	cout << "Thermal diffusivity \t\033[1m\316\261c\t" << therm_diff << " v\342\202\200/L\n\033[0m\n";
+	cout << "Cyclotron frequency \t\033[1m\317\211c\t" << cyc_freq << " v\342\202\200/L\033[0m\n";
+	cout << "Thermal diffusivity \t\033[1m\316\261\t" << therm_diff << "\033[0m\n";
 
 	cout << "\nDetermined maximum simulated time\t\033[1m\nT\342\202\230\342\202\220\342\202\223\t" << Tmax
 	     << " L/v\342\202\200\t\342\211\210" << Tmax / dt << "\033[0m\t time steps" << endl;

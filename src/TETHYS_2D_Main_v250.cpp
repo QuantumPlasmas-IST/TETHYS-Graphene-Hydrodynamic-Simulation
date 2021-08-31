@@ -40,7 +40,7 @@ int main(int argc, char **argv){
 	/*.........Fixed or variable vel_snd value........................*/
 	graph.SetSound();
 	//graph.SetSimulationTime();
-	graph.SetTmax(5.0f);
+	graph.SetTmax(.5f);
 
 	/*................................................................*/
 
@@ -70,6 +70,9 @@ int main(int argc, char **argv){
 
 	cout << "\033[1;7;5;33m Program Running \033[0m"<<endl;
 	while (t <=  graph.GetTmax() ){ // graph.GetTmax()
+
+		int percentage=100*GrapheneFluid2D::TimeStepCounter/(graph.GetTmax()/dt);
+		cout << percentage<<"%\033[?25l";
 
 		t += dt;
 		float forcing=1.0f + 0.2f*sin(t*64.0f);
@@ -128,6 +131,7 @@ int main(int argc, char **argv){
 		if( !( GrapheneFluid2D::TimeStepCounter % 2) ){
 			graph.WriteFluidFile(t);
 		}
+		cout <<"\033[1G\033[2K"; //clears percentage of completion
 	}
 	//Record atributes on hdf5 file
 	if(parameters.SaveMode) {
