@@ -3,7 +3,7 @@
 
 @section intro Introduction
 
-TETHYS software, now on its version 2.3.1, is hastily reaching the first point of maturity. Having passed roughly two years in the development of both the analytical models and the source code, it is now a reliable and robust software although yet incomplete. With the prospect of a new widening of the team working for the development of this endeavour, and with the expectancy of a public release in the near future, the creation of a user's and developer's manual is of the utmost importance. However, as a research project, TETHYS source code is ever-changing and so keeping this manual up-to-date is a considerable effort that we wish that the reader may appreciate.
+TETHYS software, now on its version 2.5.0, is hastily reaching the first point of maturity. Having passed roughly two years in the development of both the analytical models and the source code, it is now a reliable and robust software although yet incomplete. With the prospect of a new widening of the team working for the development of this endeavour, and with the expectancy of a public release in the near future, the creation of a user's and developer's manual is of the utmost importance. However, as a research project, TETHYS source code is ever-changing and so keeping this manual up-to-date is a considerable effort that we wish that the reader may appreciate.
 
 This small manual is intended to be a first and broad guide to the usage of TETHYS code, therefore the introduction on the physical model and numerical methods found in this chapter are but a general description aiming to get the reader acquainted with the terms used and approaches to the problem that we have followed. For a more thorough study of the physics and computational or mathematical concepts the reader will find a concise bibliography at the end of this manual and whenever any question, suggestion or commentary arise we urge the reader to send them to pedro.cosme.e.silva@tecnico.ulisboa.pt
 
@@ -61,6 +61,13 @@ and optionally:
 ```console
 $ ./TETHYS_2D vel_snd vel_fer col vis cyc save_mode aspect_ratio
 ``` 
+@subsection out Output description
+
+The user can opt for simplified or full output.
+
+In the simplified version the output is a data file named ``preview_2D<...>.dat`` organised by tab separated columns with the (normalised) values of $t$, $n(L)$, $v(L)$ , $n(0)$ and $v(0)$ (by this order).
+
+While the full output option will return a HDF5 file, ``hdf5_2D<...>.h5``, with the data of density, both velocity components and temperature, besides all the relevant simulation parameters saved as attributes of the file. Each HDF5 file has a root group called Data that houses the simulation attributes as well as the groups Density, VelocityX, VelocityY and Temperature, inside each of these three groups the simulation results are stored for each temporal snapshot, organised in a matricial form.
 
 
 @section vcs Version history
@@ -91,3 +98,5 @@ $ ./TETHYS_2D vel_snd vel_fer col vis cyc save_mode aspect_ratio
 <br>&emsp;**2.2.1** Momentum relaxation in 2D simulations *[24 Oct. 2020]*
 <br>&emsp;**2.3.0** (1,9) Weighted explicit method for viscous terms *[17 Nov. 2020]*
 <br>&emsp;**2.3.1** Parallelization with OpenMP  *[25 Nov. 2020]*
+<br>&emsp;**2.4.0** Simulation with odd viscosity  *[12 Feb. 2021]*
+<br>&emsp;**2.5.0** Energy transport by conduction and convection  *[22 May. 2021]*
