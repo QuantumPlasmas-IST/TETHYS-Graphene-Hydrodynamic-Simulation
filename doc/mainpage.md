@@ -45,29 +45,48 @@ To run a simulation one can simply invoke
 ```console
 $ ./TETHYS_2D 
 ```
-and the program will prompt the user to provide the necessary parameters for the simulation. Alternatively, the user can pass directly such parameters as command arguments.
-The necessary inputs are:
+and the program will prompt the user to provide the necessary parameters for the simulation. Alternatively, the user can pass directly such parameters as command arguments:
+```console
+$ ./TETHYS_2D vel_snd vel_fer col vis odd cyc therm_diff aspect_ratio save_mode
+``` 
+with the parameters, 
 * Sound velocity S (vel_snd)
 * Fermi velocity v<sub>F</sub> (vel_fer)
-* Collision, of the electrons with impurities or defects, frequency (col)
-* Shear viscosity (vis)
-* Cyclotron frequency (cyc)
-* (save_mode)
-
-and optionally:
-
+* Shear viscosity ν<sub>s</sub> (vis)
+* Odd viscosity ν<sub>o</sub> (odd)
+* Collision, of the electrons with impurities or defects, frequency 1/τ (col)
+* Cyclotron frequency ω<sub>o</sub> (cyc)
+* Thermal diffusivity α (therm_diff)
 * Aspect ratio of the simulation grid x:y (aspect_ratio)
+* Mode of saving, light vs. full (save_mode)
 
-```console
-$ ./TETHYS_2D vel_snd vel_fer col vis cyc save_mode aspect_ratio
-``` 
+Besides this two input methods the user can also provide a .ini file with the set-up parameters.
+
 @subsection out Output description
 
 The user can opt for simplified or full output.
 
-In the simplified version the output is a data file named ``preview_2D<...>.dat`` organised by tab separated columns with the (normalised) values of $t$, $n(L)$, $v(L)$ , $n(0)$ and $v(0)$ (by this order).
+In the simplified version the output is a data file named ``preview_2D<...>.dat`` organised by tab separated columns with the (normalised) values of time, density at x=L, x component of velocity  at x=L , density  at x=0 and x component of velocity  at x=0 (by this order).
 
 While the full output option will return a HDF5 file, ``hdf5_2D<...>.h5``, with the data of density, both velocity components and temperature, besides all the relevant simulation parameters saved as attributes of the file. Each HDF5 file has a root group called Data that houses the simulation attributes as well as the groups Density, VelocityX, VelocityY and Temperature, inside each of these three groups the simulation results are stored for each temporal snapshot, organised in a matricial form.
+
+
+
+
+```
+hdf5_2D<...>.h5
+└─📂Data
+    │ Atributes
+    │ Sound Velocity
+    └─📂 Density
+    │ │ 📄 snapshot_00000
+    │ │ 📄 snapshot_00001
+    │ │ 📄 snapshot_00002
+    │ ... 
+    └─📁 VelocityX
+    └─📁 VelocityY
+    └─📁 Temperature
+```
 
 
 @section vcs Version history
