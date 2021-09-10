@@ -40,7 +40,7 @@ int main(int argc, char **argv){
 	/*.........Fixed or variable vel_snd value........................*/
 	graph.SetSound();
 	//graph.SetSimulationTime();
-	graph.SetTmax(.5f);
+	graph.SetTmax(1.0f);
 
 	/*................................................................*/
 
@@ -69,24 +69,28 @@ int main(int argc, char **argv){
 
 
 	cout << "\033[1;7;5;33m Program Running \033[0m"<<endl;
-	while (t <=  graph.GetTmax() ){ // graph.GetTmax()
-
+	while (t <=  graph.GetTmax() ){
 		int percentage=100*GrapheneFluid2D::TimeStepCounter/(graph.GetTmax()/dt);
 		cout << percentage<<"%\033[?25l";
 
 		t += dt;
-		float forcing=1.0f + 0.2f*sin(t*64.0f);
+		//float forcing=1.0f + 0.2f*sin(t*64.0f);
 
 
 		GrapheneFluid2D::TimeStepCounter++;
 
 		graph.Richtmyer();
-		/*DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
-		DyakonovShurBoundaryCondition::YFree(graph);
+		DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
+		//DyakonovShurBoundaryCondition::YFree(graph);
+//		DyakonovShurBoundaryCondition::YClosedFreeSlip(graph);
 		DirichletBoundaryCondition::YClosedNoSlip(graph);
-        DirichletBoundaryCondition::Temperature(graph,0.22f, 0.22f, 0.22f, 0.22f);*/
+
+		if(graph.GetThermDiff()!=0.0){
+			DirichletBoundaryCondition::Temperature(graph,0.22f, 0.22f, 0.22f, 0.22f);
+		}
 
 		//BoundaryCondition::YFreeTop(graph);
+		/*
 		BoundaryCondition::XFreeRight(graph);
 		DirichletBoundaryCondition::DensityLeft(graph, 1.0f);
 		DirichletBoundaryCondition::MassFluxXLeft(graph, forcing);
@@ -96,17 +100,21 @@ int main(int argc, char **argv){
 
 		DirichletBoundaryCondition::MassFluxYTop(graph, 0.0f);
 		DirichletBoundaryCondition::MassFluxXTop(graph, 0.0f);
-
+*/
 		//RobinBoundaryCondition::SlipLengthBottom(graph, 1.5f);
 
 		if(graph.GetKinVis()!=0.0f || graph.GetThermDiff()!=0.0f  ) {
 			graph.ParabolicOperatorWeightedExplicit19();
-			/*DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
-			DyakonovShurBoundaryCondition::YFree(graph);
+			DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
+//			DyakonovShurBoundaryCondition::YClosedFreeSlip(graph);
+			//DyakonovShurBoundaryCondition::YFree(graph);
 			DirichletBoundaryCondition::YClosedNoSlip(graph);
-            DirichletBoundaryCondition::Temperature(graph, 0.22f, 0.22f, 0.22f, 0.22f); // 300Kelvin sao aproximadamente 0.2 Temperatura de Fermi
-*/
+			if(graph.GetThermDiff()!=0.0){
+				DirichletBoundaryCondition::Temperature(graph,0.22f, 0.22f, 0.22f, 0.22f);
+			}
+            //DirichletBoundaryCondition::Temperature(graph, 0.22f, 0.22f, 0.22f, 0.22f); // 300Kelvin sao aproximadamente 0.2 Temperatura de Fermi
 
+/*
             //BoundaryCondition::YFreeTop(graph);
             BoundaryCondition::XFreeRight(graph);
 
@@ -127,7 +135,6 @@ int main(int argc, char **argv){
 		if (parameters.SaveMode  && graph.Snapshot()) {
 			graph.SaveSnapShot();
 		}
-		//if(static_cast<int>(fmod(t/dt,2.0f))){
 		if( !( GrapheneFluid2D::TimeStepCounter % 2) ){
 			graph.WriteFluidFile(t);
 		}

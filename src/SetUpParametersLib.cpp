@@ -163,22 +163,23 @@ void SetUpParameters::ParametersFromHdf5File(const string& hdf5name){
 }
 
 void SetUpParameters::DefineGeometry() {
+	int sampling=151;
 	if(AspectRatio>1.0f){
 		Length=1.0f*AspectRatio;
 		Width=1.0f;
-		SizeY=151;
+		SizeY=sampling;
 		SizeX= static_cast<int>( static_cast<float>(SizeY-1)*AspectRatio)+1;
 	}
 	if(AspectRatio==1.0f){
 		Length=1.0f;
 		Width=1.0f;
-		SizeX=151;
-		SizeY=151;
+		SizeX=sampling;
+		SizeY=sampling;
 	}
 	if(AspectRatio<1.0f){
 		Length=1.0f;
 		Width=1.0f/AspectRatio;
-		SizeX=151;
+		SizeX=sampling;
 		SizeY= static_cast<int>( static_cast<float>(SizeX - 1) / AspectRatio) + 1;
 	}
 }

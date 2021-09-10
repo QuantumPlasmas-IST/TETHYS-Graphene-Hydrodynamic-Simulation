@@ -320,7 +320,7 @@ void Fluid2D::SaveSnapShot() {
 	snapshot_step = points_per_period / snapshot_per_period;
 
 	this->MassFluxToVelocity();
-	this->VelocityToCurrent();
+	//this->VelocityToCurrent();
 	string str_time = to_string(TimeStepCounter / snapshot_step);
 	str_time.insert(str_time.begin(), 5 - str_time.length(), '0');
 	string name_dataset = "snapshot_" + str_time;

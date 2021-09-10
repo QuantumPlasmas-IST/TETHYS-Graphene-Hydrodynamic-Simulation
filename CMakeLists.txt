@@ -13,11 +13,6 @@ include_directories(src/includes)
 find_package(HDF5 REQUIRED COMPONENTS CXX)
 include_directories(${HDF5_INCLUDE_DIRS})
 
-#find_package(GSL REQUIRED)
-#link_libraries(GSL::gsl GSL::gslcblas)
-#set(GSL_FLAGS "-lgsl -lm")
-#set(BLAS_FLAGS "-llapack -lblas -llapacke -lm")
-
 set(CMAKE_CXX_FLAGS "-Wall -Wextra -Wno-unused-parameter -O2")
 FIND_PACKAGE(OpenMP REQUIRED)
 if(OPENMP_FOUND)
@@ -36,8 +31,6 @@ add_executable(TETHYS_2D src/TETHYS_2D_Main_v250.cpp)
 add_executable(TETHYS_ELEC_2D src/TETHYS_2D_ElectronicAnalysis.cpp)
 
 
-add_test(test1D TETHYS_1D 20 10 0.003 0.002 0.001 0.03  0.0 1 1)
-#add_test(test2D TETHYS_2D 20 10 0.003 0.002 0.001 0.03  0.0 1 .5)
 add_test(test2D TETHYS_2D 2DTESTparameters.ini)
 set(H5_TEST_FILE "hdf5_2D_S=20.00vF=10.00vis=0.00odd=0.001l=0.00wc=0.00.h5")
 add_test(testElec2D TETHYS_ELEC_2D ${H5_TEST_FILE})
@@ -45,10 +38,6 @@ add_test(testElec2D TETHYS_ELEC_2D ${H5_TEST_FILE})
 file(GLOB SRC_LIB_FILES src/*Lib.cpp)
 add_library(tethys_library STATIC ${SRC_LIB_FILES})
 
-#find_library (TETHYS_LIB tethys_library lib)
-#target_link_libraries(TETHYS_1D LINK_PUBLIC ${TETHYS_LIB})
-#target_link_libraries(TETHYS_2D LINK_PUBLIC ${TETHYS_LIB})
-#target_link_libraries(TETHYS_ELEC_2D LINK_PUBLIC ${TETHYS_LIB})
 
 target_link_libraries(TETHYS_1D PUBLIC tethys_library)
 target_link_libraries(TETHYS_2D PUBLIC tethys_library)
