@@ -40,7 +40,7 @@ int main(int argc, char **argv){
 	/*.........Fixed or variable vel_snd value........................*/
 	graph.SetSound();
 	//graph.SetSimulationTime();
-	graph.SetTmax(1.0f);
+	graph.SetTmax(7.5f);
 
 	/*................................................................*/
 
@@ -82,8 +82,8 @@ int main(int argc, char **argv){
 		graph.Richtmyer();
 		DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
 		//DyakonovShurBoundaryCondition::YFree(graph);
-//		DyakonovShurBoundaryCondition::YClosedFreeSlip(graph);
-		DirichletBoundaryCondition::YClosedNoSlip(graph);
+		DyakonovShurBoundaryCondition::YClosedFreeSlip(graph);
+//		DirichletBoundaryCondition::YClosedNoSlip(graph);
 
 		if(graph.GetThermDiff()!=0.0){
 			DirichletBoundaryCondition::Temperature(graph,0.22f, 0.22f, 0.22f, 0.22f);
@@ -106,9 +106,9 @@ int main(int argc, char **argv){
 		if(graph.GetKinVis()!=0.0f || graph.GetThermDiff()!=0.0f  ) {
 			graph.ParabolicOperatorWeightedExplicit19();
 			DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
-//			DyakonovShurBoundaryCondition::YClosedFreeSlip(graph);
+			DyakonovShurBoundaryCondition::YClosedFreeSlip(graph);
 			//DyakonovShurBoundaryCondition::YFree(graph);
-			DirichletBoundaryCondition::YClosedNoSlip(graph);
+//			DirichletBoundaryCondition::YClosedNoSlip(graph);
 			if(graph.GetThermDiff()!=0.0){
 				DirichletBoundaryCondition::Temperature(graph,0.22f, 0.22f, 0.22f, 0.22f);
 			}
