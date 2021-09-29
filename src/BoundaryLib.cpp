@@ -43,23 +43,6 @@ void BoundaryCondition::XPeriodic(Fluid1D& fluid_class){
 void BoundaryCondition::XFree(Fluid2D& fluid_class){
 	XFree(fluid_class, 1);
 	XFree(fluid_class, 0);
-	/*
-	int nx=fluid_class.SizeX();
-	int ny=fluid_class.SizeY();
-
-//#pragma omp parallel for default(none) shared(fluid_class,nx,ny)
-	for(int j=0; j < ny; j++){
-		int left;
-		int right;
-		left= 0 + j * nx;
-		right= nx - 1 + j * nx;
-		fluid_class.Den[left]=fluid_class.Den[left + 1];
-		fluid_class.Den[right]=fluid_class.Den[right - 1];			//free density at x=L
-		fluid_class.FlxY[left] = 0.0f; 					//flux only on x at x=0
-		fluid_class.FlxY[right] = 0.0f ;					//idem at x=L
-		fluid_class.FlxX[left] = fluid_class.FlxX[left + 1] * pow(fluid_class.Den[left + 1], -1.5f);			//free flux at x=0
-		fluid_class.FlxX[right] =  fluid_class.FlxX[right - 1];
-	}*/
 }
 void BoundaryCondition::XFree(Fluid2D &fluid_class, int x_limit) {
 	//int nx=fluid_class.SizeX();
@@ -211,18 +194,7 @@ void BoundaryCondition::YClosedFreeSlip(Fluid2D& fluid_class){
 		fluid_class.FlxY[bottom] = Slope * fluid_class.FlxX[top - nx];
 		fluid_class.FlxX[top] = fluid_class.FlxX[bottom + nx];
 		fluid_class.FlxY[top] = -1.0f * Slope * fluid_class.FlxX[bottom + nx];
-/*
-		for(int j=0;j<j_bot;j++){
-			fluid_class.Den[i+j*nx] = fluid_class.Den[bottom + nx];
-			fluid_class.FlxX[i+j*nx] = 0.0f;
-			fluid_class.FlxY[i+j*nx] = 0.0f;
-		}
-		for(int j=ny-1;j>j_top;j--){
-			fluid_class.Den[i+j*nx] = fluid_class.Den[top-nx];
-			fluid_class.FlxX[i+j*nx] = 0.0f;
-			fluid_class.FlxY[i+j*nx] = 0.0f;
-		}
-*/
+
 	}
 }
 void BoundaryCondition::YClosedNoSlip(Fluid2D& fluid_class){

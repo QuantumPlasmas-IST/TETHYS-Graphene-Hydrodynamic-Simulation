@@ -1,8 +1,6 @@
-/************************************************************************************************\
-* 2020 Pedro Cosme , João Santos and Ivan Figueiredo                                             *
-* DOI: 10.5281/zenodo.4319281																	 *
-* Distributed under the MIT License (license terms are at http://opensource.org/licenses/MIT).   *
-\************************************************************************************************/
+//
+// Created by pcosme on 23/12/2020.
+//
 
 #ifndef DYAKONOVSHURBOUNDARYLIB_H
 #define DYAKONOVSHURBOUNDARYLIB_H
@@ -24,6 +22,9 @@ class  DyakonovShurBoundaryCondition : public DirichletBoundaryCondition{
 public:
 	static void DyakonovShurBc(GrapheneFluid1D& fluid_class);  ///< Dyakonov-Shur boundary conditions 1D n(0)=1 n(L)V(L)=1
 	static void DyakonovShurBc(GrapheneFluid2D& fluid_class);  ///< Dyakonov-Shur boundary conditions 2D n(x=0)=1 n(x=L)Vx(x=L)=1 Vy(x=0)=0 Vy(L=0)=0
+	static void DSFeedbackBc(GrapheneFluid2D &fluid_class, float gain);  ///< Dyakonov-Shur boundary conditions 2D n(x=0)=1 n(x=L)Vx(x=L)=1 Vy(x=0)=0 Vy(L=0)=0
 };
+
+
 
 #endif //DYAKONOVSHURBOUNDARYLIB_H

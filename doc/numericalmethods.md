@@ -8,12 +8,12 @@ The simulations of the model described before rely on the division of the proble
 +\omega_c\frac{\vec{p}\times\vec{\hat{z}}}{\sqrt{n}}}_{\mathscr{L}_\text{dissipation}(\vec{p})}=0.
 @f]
 
-Then, if the solution, after a time @f$t@f$, for the conservation and dissipation operators is well approximated by the numerical evolution operators @f$\Lambda^t_\text{con}@f$ and @f$\Lambda^t_\text{dis}@f$, respectively, the solution of the complete system is given by the Godunov splitting. This method is generally first order in time. One can, of course, invert the order of the operators and in fact the splitting error depends on the commutator @f$[\mathscr{L}_\text{dis},\mathscr{L}_\text{con}]@f$. For second order accuracy one can use Strang splitting where @f$\vec{u}^{t_0+t}\approx\Lambda^{t/2}_\text{dis}\circ\Lambda^t_\text{con}\circ\Lambda^{t/2}_\text{dis}(\vec{u}^{t_0})@f$. However, the performed test so far have not find significant accuracy or stability improvement when using the more computation time costly Strang splitting so we recommend to apply the simple Godunov algorithm:
+Then, if the solution, after a time @f$t@f$, for the conservation and dissipation operators is well approximated by the numerical evolution operators @f$\Lambda^t_\text{con}@f$ and @f$\Lambda^t_\text{dis}@f$, respectively, the solution of the complete system is given by the Godunov splitting. This method is generally first order in time. One can, of course, invert the order of the operators and in fact the splitting error depends on the commutator @f$[\mathscr{L}_\text{dis},\mathscr{L}_\text{con}]@f$. For second order accuracy one can use Strang splitting where @f$\vec{u}^{t_0+t}\approx\Lambda^{t/2}_\text{dis}\circ\Lambda^t_\text{con}\circ\Lambda^{t/2}_\text{dis}(\vec{u}^{t_0})@f$. However, the performed test so far have not find significant accuracy or stability improvement when using the more computation time costly Strang splitting; so, we recommend applying the simple Godunov algorithm:
 @f[
 \vec{u}^{t_0+t}\approx\Lambda^t_\text{dis}\circ\Lambda^t_\text{con}(\vec{u}^{t_0}).
 @f]
 
-The hyperbolic operator was solved with a finite volume Lax-Wendroff type method \cite Hirsch2007 \cite LeVeque1992  --  the two step Richtmyer scheme for nonlinear systems \cite LeVeque1992 .  Such scheme was then elected to implement, given it is computationally light, as it is not required to explicitly evaluate the system Jacobian at each step, yet capable of returning accurate simulations. It consists in two distinct steps, a predictor where the mid nodes are calculated and then a corrector step that updates the simulated quantities at the central nodes.
+The hyperbolic operator was solved with a finite volume Lax-Wendroff type method \cite Hirsch2007 \cite LeVeque1992  --  the two-step Richtmyer scheme for nonlinear systems \cite LeVeque1992 .  Such scheme was then elected to implement, given it is computationally light, as it is not required to explicitly evaluate the system Jacobian at each step, yet capable of returning accurate simulations. It consists in two distinct steps, a predictor where the mid nodes are calculated and then a corrector step that updates the simulated quantities at the central nodes.
 
 Whereas the dissipation and source terms were then computed with a forward time centred space (FTCS) scheme of finite differences. This choice of a lightweight parabolic solver has impact on the viable set of parameters for simulation, nonetheless, it allows to keep the maximum computing time for a complete 2D simulation bellow 150 min.
 
@@ -25,7 +25,7 @@ In the onedimensional case, the hyperbolic system of equations for density and v
 \begin{bmatrix}      nv\\ \frac{v^2}{4}+\frac{v_F^2}{2}\log n + 2S^2\sqrt{n}\\\end{bmatrix} = 0 \iff \frac{\partial}{\partial t}\vec{u}+\frac{\partial}{\partial x}\mathbf{F(u)}=0, \label{eq:conserv}
 @f]
 
-and was implemented for @f$n@f$ an @f$v@f$ according to
+and was implemented for @f$n@f$ and @f$v@f$ according to
 
 @f{align}
 \vec{u}_{i+\sfrac{1}{2}}^{k+\sfrac{1}{2}} &= \frac{1}{2}\left(\vec{u}_{i+1}^k + \vec{u}_{i}^k\right) - \frac{\Delta t}{2\Delta x}\left( \mathbf{F}_{i+1}^k - \mathbf{F}_{i}^k\right)\label{eq:richt_1}\\
@@ -33,7 +33,7 @@ and was implemented for @f$n@f$ an @f$v@f$ according to
 @f}
 using @f$\vec{u}@f$ and @f$\mathbf{F}(\vec{u})@f$ as defined by equation and space (indicated at subscript indices) and time (indicated at superscript indices) discretisation where @f$t=k\Delta t@f$ and @f$t=i\Delta x@f$. Since such scheme is second order both in time and space it will not introduce spurious diffusion in the solution as a first order scheme would. It will, however, introduce artificial oscillations, contiguous to discontinuities, which can be corrected by the application of a moving average smoothing filter.
 
-To comply with Courant--Friedrichs--Lewy condition, the time step is chose to be
+To comply with Courant--Friedrichs--Lewy condition, the time step is chosen to be
 
 @f[
 \Delta t= \frac{\Delta x}{\lambda}  \quad\text{with}\quad
