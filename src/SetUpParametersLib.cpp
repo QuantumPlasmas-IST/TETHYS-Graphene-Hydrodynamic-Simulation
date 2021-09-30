@@ -216,7 +216,7 @@ void SetUpParameters::ReadIniFile(char *  file_name) {
 				if (isdigit(i) || int(i) == 46)
 					num_part.push_back(i);
 				else {
-					if ((int(i) > 65 && int(i) <= 90) || (int(i) >= 97 && int(i) <= 122))
+					if ((int(i) >= 65 && int(i) <= 90) || (int(i) >= 97 && int(i) <= 122))
 						txt_part.push_back(i);
 				}
 			}

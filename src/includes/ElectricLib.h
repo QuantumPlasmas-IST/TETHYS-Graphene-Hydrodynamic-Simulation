@@ -44,9 +44,37 @@ private:
 	vector<float> PowCap;
 
 public:
-	void CloseElectroFile();
+	void CloseElectroFile(); ///< Closes the output file for the electrical quantities
+
+	/*!
+	 * @brief Creates and opens the appropriate .dat file to store the results of the electricla quantities
+	 * */
 	void CreateElectroFile(const GrapheneFluid1D& graphene);
 	void CreateElectroFile(const string &infix_string);
+
+	/*!
+	 * @brief Stores the computed electrical quantities at the output .dat file.
+	 *
+	 * The data are organized by columns as follows
+	 *
+	 * | column # | Quantity |   |
+     * | ---: | :---- | :---: |
+     * | 1    | time     |  @f$ t @f$ |
+     * | 2    | net charge     |  @f$ Q @f$ |
+	 *| 3    | average direct current     |  @f$ I_{DS} @f$ |
+	 *| 4    | average Hall current     |  @f$ I_{Hall} @f$ |
+	 *| 5    | sourc-drain voltage     |  @f$ V_{DS} @f$ |
+	 *| 6    | drain current     |  @f$ I_{D} @f$ |
+	 *| 7    | source current     |  @f$ I_{S} @f$ |
+	 *| 8    | dissipated Ohm power     |  @f$ P_{\Omega} @f$ |
+	 *| 9    | capacitor stored power     |  @f$ P_{C} @f$ |
+	 *| 10    | electric dipole x component     |  @f$ p_{x} @f$ |
+	 *| 11    | electric dipole variation x component     |  @f$ \dot p_{x} @f$ |
+	 *| 12    | electric dipole acceleration x component     |  @f$ \ddot p_{x} @f$ |
+	 *| 13    | electric dipole y component     |  @f$ p_{y} @f$ |
+	 *| 14    | electric dipole variation y component     |  @f$ \dot p_{y} @f$ |
+	 *| 15    | electric dipole acceleration y component     |  @f$ \ddot p_{y} @f$ |
+	 * */
 	void WriteElectroFile(float t,const GrapheneFluid1D& graphene);
 	void WriteElectroFile();
 
