@@ -40,6 +40,11 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
+    
+    - name: Install jq tool
+      run: |
+        sudo apt-get update
+        sudo apt-get install libhdf5 libhdf5-cpp libhdf5-dev libhdf5-openmpi-103
 
     # Initializes the CodeQL tools for scanning.
     - name: Initialize CodeQL
