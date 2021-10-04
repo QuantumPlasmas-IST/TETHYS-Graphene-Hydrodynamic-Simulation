@@ -21,6 +21,7 @@ jobs:
     - name: Install HDF5
       run: |
        sudo apt-get update
+       sudo apt-get install gnuplot
        sudo apt-get install libhdf5-103 libhdf5-cpp-103 libhdf5-dev libhdf5-openmpi-103
 
     - name: Configure CMake
@@ -43,3 +44,5 @@ jobs:
     - name: Run test 1
       run: ctest --extra-verbose -I 1,1,,1
 
+    - name: Gnuplot Output
+      run: gnuplot -e "set term dumb; set xlabel 't/t0'; set ylabel 'n/n0'; plot 'preview_2D_S=31.00vF=5.50vis=0.010odd=0.002l=0.001wc=0.00therm=0.45.dat' u 1:2 w l"
