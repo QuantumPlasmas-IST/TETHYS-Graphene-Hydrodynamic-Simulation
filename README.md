@@ -75,27 +75,52 @@ $ make all
 ```
 
 ### Running a simulation
-
+#### 1) Fluid simulation
 To run a simulation one can simply invoke
 ```console
 $ ./TETHYS_2D 
 ```
-and the program will prompt the user to provide the necessary parameters for the simulation. Alternatively, the user can pass directly such parameters as command arguments.
+and the program will prompt the user to provide the necessary parameters for the simulation.
 The necessary inputs are:
 * Sound velocity S (vel_snd)
 * Fermi velocity v<sub>F</sub> (vel_fer)
 * Collision, of the electrons with impurities or defects, frequency (col)
 * Shear viscosity (vis)
+* Odd viscosity (odd)
 * Cyclotron frequency (cyc)
-* (save_mode)
-
+* Thermal diffusivity (therm)
+* Saving option (save_mode)
 and optionally:  
-
 * Aspect ratio of the simulation grid x:y (aspect_ratio)
-```console
-$ ./TETHYS_2D vel_snd vel_fer col vis cyc save_mode aspect_ratio
-```
 
+Alternatively, the user can pass directly such parameters as command arguments with 
+```console
+$ ./TETHYS_2D vel_snd vel_fer col vis odd cyc therm save_mode aspect_ratio
+```
+Moreover, the parameters can also be passed via a `.ini` file 
+```console
+$ ./TETHYS_2D parameters.ini
+```
+As standard with .ini files sections can be indicated by square brackets as in [section] and comment lines start with a semicolon ; The readble keywords are
+
+| Keywords | Parameter |   |
+| ----: | :----: | :---: |
+|  sound   | Sound velocity     |  _S_     |
+|  fermi   | Fermi velocity     | _v<sub>0</sub>_     |
+|  shear   | Shear viscosity     |  _&nu;<sub>s</sub>_    |
+|  odd   |  Odd/Hall viscosity    | _&nu;<sub>o</sub>_     |
+|  col   |  Collision frequency    |  1/_&tau;_     |
+|  cycl   |  Cyclotron frequency    | _&omega;<sub>c</sub>_     |
+|  therm   |  Thermal diffusivity    |  _&alpha;_|
+|  aspect   |  Aspect ratio    |  _AR_     |
+|  save   |  Save mode    | -    |
+
+#### 2) Electrical response 
+To later extract the electronic quantities from the fluid simulation data one should run
+
+```console
+$ ./TETHYS_ELEC_2D [name of output file].h5
+```
 
 ## Class Hierarchy
 
