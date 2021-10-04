@@ -21,6 +21,10 @@ jobs:
         sudo apt-get update
         sudo apt-get install libhdf5-103 libhdf5-cpp-103 libhdf5-dev libhdf5-openmpi-103
 
+    - name: List files in the repository
+      run: |
+        ls ${{ github.workspace }}
+
     - name: Compile code
       run: |
         cmake ./
@@ -29,3 +33,6 @@ jobs:
     - name: Run test 1
       run: |
         ctest --extra-verbose -I 1,1,,1
+
+
+
