@@ -68,7 +68,7 @@ class TethysBase {
 		float therm_diff = 0.0f; // thermal diffusivity parameter
 		float col_freq =0.0f;   // colision frequency parameter
 		std::string file_infix; // base name for the output files
-		float Tmax=10;          // total time of simulation
+		float Tmax=2.0f;          // total time of simulation
 
 	public:
 		/*!

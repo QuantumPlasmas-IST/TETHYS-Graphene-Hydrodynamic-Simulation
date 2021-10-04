@@ -113,6 +113,7 @@ As standard with .ini files sections can be indicated by square brackets as in [
 |  cycl   |  Cyclotron frequency    | _&omega;<sub>c</sub>_     |
 |  therm   |  Thermal diffusivity    |  _&alpha;_|
 |  aspect   |  Aspect ratio    |  _AR_     |
+|  time   |  Simulation time    |  _T<sub>max</sub>_     |
 |  save   |  Save mode    | -    |
 
 #### 2) Electrical response 

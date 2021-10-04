@@ -46,6 +46,7 @@ class SetUpParameters {
 		float OddViscosity;
 		float CyclotronFrequency;
 		float ThermalDiffusivity;
+	    float SimulationTime=0.0f;
 		void ParametersChecking() const; ///< Runs a checking on the physical feasibility of the parameters
 		/*!
 		 * @brief Sets up the 2D grid dimensions

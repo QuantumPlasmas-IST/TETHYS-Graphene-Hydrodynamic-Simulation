@@ -232,6 +232,7 @@ void SetUpParameters::ReadIniFile(char *  file_name) {
 		if(txt == "cycl") CyclotronFrequency = stof(num);
 		if(txt == "therm") ThermalDiffusivity = stof(num);
 		if(txt == "aspect") AspectRatio = stof(num);
+		if(txt == "time") SimulationTime = stof(num);
 		if(txt == "save") SaveMode = stoi(num);
 	}
 }

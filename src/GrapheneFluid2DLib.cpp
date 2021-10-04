@@ -11,7 +11,7 @@ GrapheneFluid2D::GrapheneFluid2D(SetUpParameters &input_parameters) : Fluid2D(in
 	vel_fer = input_parameters.FermiVelocity ;//fermi_velocity;
 	col_freq = input_parameters.CollisionFrequency ; // collision_frequency;
 	cyc_freq = input_parameters.CyclotronFrequency ; //cyclotron_frequency;
-	therm_diff = input_parameters.ThermalDiffusivity;
+	therm_diff = input_parameters.ThermalDiffusivity; //thermal diffusivity
 	char buffer [100];
 	sprintf (buffer, "S=%.2fvF=%.2fvis=%.3fodd=%.3fl=%.3fwc=%.2ftherm=%.2f", vel_snd, vel_fer, kin_vis,odd_vis, col_freq,cyc_freq,therm_diff);
 	file_infix = buffer;

@@ -24,6 +24,10 @@ Fluid2D::Fluid2D(const SetUpParameters &input_parameters) : TethysBase{input_par
 	kin_vis = input_parameters.ShearViscosity;//shear_viscosity;
 	odd_vis = input_parameters.OddViscosity;//odd_viscosity;
 
+	if(input_parameters.SimulationTime > 0.0f){
+		Tmax = input_parameters.SimulationTime;
+	}
+
 	char buffer [50];
 	sprintf (buffer, "S=%.2fvF=%.2fvis=%.2fodd=%.3fl=%.2fwc=%.2f", vel_snd, vel_fer, kin_vis,odd_vis, col_freq,cyc_freq);
 	file_infix = buffer;
