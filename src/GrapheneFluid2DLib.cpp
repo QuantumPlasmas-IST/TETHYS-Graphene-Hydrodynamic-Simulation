@@ -309,4 +309,8 @@ float GrapheneFluid2D::DensityToMass(float density) {
 	return sqrt(density*density*density);
 }
 
+float GrapheneFluid2D::TemperatureSource(float n, float flx_x, float flx_y, float mass, float s) {
+	return 0.0f;
+}
+
 

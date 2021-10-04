@@ -144,7 +144,8 @@ void Fluid2D::Richtmyer(){
 
             den_mid[ks] = den_avg
 			              -0.5f*(dt/dx)*(DensityFluxX(point,'E') - DensityFluxX(point,'W'))
-			              -0.5f*(dt/dy)*(DensityFluxY(point,'N') - DensityFluxY(point,'S'));
+			              -0.5f*(dt/dy)*(DensityFluxY(point,'N') - DensityFluxY(point,'S'))
+						  +0.5f*dt* DensitySource(den_avg, flx_x_avg, flx_y_avg, 0.0f, 0.0f);
 			flxX_mid[ks] = flx_x_avg
 					-0.5f*(dt/dx)*(XMomentumFluxX(point,'E') - XMomentumFluxX(point,'W'))
 					-0.5f*(dt/dy)*(XMomentumFluxY(point,'N') - XMomentumFluxY(point,'S'))
@@ -155,8 +156,9 @@ void Fluid2D::Richtmyer(){
 					+0.5f*dt*YMomentumSource(den_avg, flx_x_avg, flx_y_avg, 0.0f, 0.0f);
 			if(therm_diff){
 				tmp_mid[ks] = tmp_avg
-				              - 0.5f * (dt / dx) * (TemperatureFluxX(point, 'E') - TemperatureFluxX(point, 'W'))
-				              - 0.5f * (dt / dy) * (TemperatureFluxY(point, 'N') - TemperatureFluxY(point, 'S'));
+				              -0.5f * (dt / dx) * (TemperatureFluxX(point, 'E') - TemperatureFluxX(point, 'W'))
+				              -0.5f * (dt / dy) * (TemperatureFluxY(point, 'N') - TemperatureFluxY(point, 'S'))
+							  +0.5f*dt* TemperatureSource(den_avg, flx_x_avg, flx_y_avg, 0.0f, 0.0f);
 			}
 		}
 
@@ -183,7 +185,8 @@ void Fluid2D::Richtmyer(){
 				                     + dt*YMomentumSource(den_old, flx_x_old, flx_y_old, 0.0f, 0.0f);
 				if(therm_diff) {
 					Tmp[kp] = tmp_old - (dt / dx) * (TemperatureFluxX(point, 'E') - TemperatureFluxX(point, 'W'))
-					          - (dt / dy) * (TemperatureFluxY(point, 'N') - TemperatureFluxY(point, 'S'));
+					          - (dt / dy) * (TemperatureFluxY(point, 'N') - TemperatureFluxY(point, 'S'))
+							  + dt* TemperatureSource(den_old, flx_x_old, flx_y_old, 0.0f, 0.0f);
 				}
 			}
 		}
@@ -890,5 +893,9 @@ float Fluid2D::Laplacian19(GridPoint p, float *input_ptr, float constant) {
 	               + sy*(1.0f-2.0f*sx)*(data_ptr[p.N] + data_ptr[p.S])
 	               + sx*(1.0f-2.0f*sy)*(data_ptr[p.W] + data_ptr[p.E]);
 return lap;
+}
+
+float Fluid2D::TemperatureSource(float n, float flx_x, float flx_y, float mass, float s) {
+	return 0;
 }
 

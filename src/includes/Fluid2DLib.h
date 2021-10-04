@@ -111,8 +111,10 @@ public :
 		virtual float XMomentumSource(float n, float flx_x, float flx_y, float mass, float s); ///< velocity X component equation (momentum equation) source term
 		virtual float YMomentumSource(float n, float flx_x, float flx_y, float mass, float s); ///< velocity y component equation (momentum equation) source term
 
+		virtual float TemperatureSource( float n, float flx_x, float flx_y, float mass, float s); ///< density equation (continuity equation) source term
 
-	    virtual float DensityFluxX(GridPoint p, char side ); ///< density equation (continuity equation) conserved flux X component
+
+		virtual float DensityFluxX(GridPoint p, char side ); ///< density equation (continuity equation) conserved flux X component
 	    virtual float DensityFluxY(GridPoint p, char side ); ///< density equation (continuity equation) conserved1 flux Y component
 
 	    virtual float XMomentumFluxX(GridPoint p, char side ); ///< velocity X component equation (momentum equation) conserved flux X component
