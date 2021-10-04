@@ -16,23 +16,23 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+    - uses: actions/checkout@v2
 
-      - name: Install HDF5
-        run: |
-          sudo apt-get update
-          sudo apt-get install libhdf5-103 libhdf5-cpp-103 libhdf5-dev libhdf5-openmpi-103
+    - name: Install HDF5
+      run: |
+       sudo apt-get update
+       sudo apt-get install libhdf5-103 libhdf5-cpp-103 libhdf5-dev libhdf5-openmpi-103
 
-      - name: Configure CMake
-        # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
-        # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
-        #run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
-        run: cmake ./
+    - name: Configure CMake
+      # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
+      # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
+      #run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+      run: cmake ./
 
-      - name: Build
-        # Build your program with the given configuration
-        #run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
-        run: make all
+    - name: Build
+      # Build your program with the given configuration
+      #run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
+      run: make all
 
         #- name: Test
         #working-directory: ${{github.workspace}}/build
@@ -40,8 +40,6 @@ jobs:
         # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
         #run: ctest -C ${{env.BUILD_TYPE}}
 
-
-
-    #- name: Run test 1
-    #  run: ctest --extra-verbose -I 1,1,,1
+    - name: Run test 1
+      run: ctest --extra-verbose -I 1,1,,1
 
