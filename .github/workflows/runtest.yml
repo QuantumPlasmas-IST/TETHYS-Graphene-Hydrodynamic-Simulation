@@ -1,0 +1,29 @@
+name: RunTest
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  runs-on: ubuntu-latest
+  permissions:
+    actions: read
+    contents: read
+    security-events: write
+
+  steps:
+    - name: Install HDF5
+      run: |
+        sudo apt-get update
+        sudo apt-get install libhdf5-103 libhdf5-cpp-103 libhdf5-dev libhdf5-openmpi-103
+
+    - name: Compile code
+      run: |
+          cmake ./
+          make all
+
+    - name:
+      run: |
+        ctest --extra-verbose -I 1,1,,1
