@@ -23,9 +23,9 @@ jobs:
 
       - name: Compile code
         run: |
-            cmake ./
-            make all
+          cmake ./
+          make all
 
-      - name:
+      - name: Run test 1
         run: |
           ctest --extra-verbose -I 1,1,,1
