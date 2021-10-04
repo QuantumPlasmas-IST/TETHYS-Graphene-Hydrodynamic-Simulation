@@ -16,17 +16,16 @@ jobs:
       security-events: write
 
     steps:
-      - name: Install HDF5
-        run: |
-          sudo apt-get update
-          sudo apt-get install libhdf5-103 libhdf5-cpp-103 libhdf5-dev libhdf5-openmpi-103
+    - name: Install HDF5
+      run: |
+        sudo apt-get update
+        sudo apt-get install libhdf5-103 libhdf5-cpp-103 libhdf5-dev libhdf5-openmpi-103
 
-      - name: Compile code
-        run: |
-          ls
-          cmake ./
-          make all
+    - name: Compile code
+      run: |
+        cmake ./
+        make all
 
-      - name: Run test 1
-        run: |
-          ctest --extra-verbose -I 1,1,,1
+    - name: Run test 1
+      run: |
+        ctest --extra-verbose -I 1,1,,1
