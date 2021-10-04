@@ -23,6 +23,7 @@ jobs:
 
       - name: Compile code
         run: |
+          ls
           cmake ./
           make all
 
