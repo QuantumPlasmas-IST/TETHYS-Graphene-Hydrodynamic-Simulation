@@ -49,6 +49,11 @@ class Fluid2D : public TethysBase
 		float * lap_flxY ;      // mass density flux laplacian component y
         float * lap_tmp ;      // temperature laplacian
 
+		float * den_dx;
+		float * den_dy;
+		float * den_dx_mid;
+		float * den_dy_mid;
+
     std::ofstream data_preview; // file stream for simplified .dat file output
 		int snapshot_per_period = 40;
 		int snapshot_step = 1;
@@ -56,8 +61,9 @@ class Fluid2D : public TethysBase
 
 
 		void VelocityGradient();
-
 		void VelocityGradientMid();
+	void DensityGradient();
+	void DensityGradientMid();
 
 		virtual float DensityToMass(float density);
 
@@ -111,7 +117,8 @@ public :
 		virtual float XMomentumSource(float n, float flx_x, float flx_y, float mass, float s); ///< velocity X component equation (momentum equation) source term
 		virtual float YMomentumSource(float n, float flx_x, float flx_y, float mass, float s); ///< velocity y component equation (momentum equation) source term
 
-		virtual float TemperatureSource( float n, float flx_x, float flx_y, float mass, float s); ///< density equation (continuity equation) source term
+		virtual float
+		TemperatureSource(float n, float flx_x, float flx_y, float den_grad_x, float den_grad_y, float mass, float s); ///< density equation (continuity equation) source term
 
 
 		virtual float DensityFluxX(GridPoint p, char side ); ///< density equation (continuity equation) conserved flux X component

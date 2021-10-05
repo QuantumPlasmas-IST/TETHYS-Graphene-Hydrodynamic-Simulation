@@ -309,8 +309,9 @@ float GrapheneFluid2D::DensityToMass(float density) {
 	return sqrt(density*density*density);
 }
 
-float GrapheneFluid2D::TemperatureSource(float n, float flx_x, float flx_y, float mass, float s) {
-	return 0.0f;
+float
+GrapheneFluid2D::TemperatureSource(float n, float flx_x, float flx_y, float den_grad_x, float den_grad_y, float mass, float s) {
+	return vel_snd * vel_snd * (den_grad_x * flx_x / sqrt(n) + den_grad_y * flx_y / sqrt(n)  ) / (vel_fer * vel_fer);
 }
 
 
