@@ -1,5 +1,8 @@
-// 2D version
-
+/************************************************************************************************\
+* 2020 Pedro Cosme , João Santos and Ivan Figueiredo                                             *
+* DOI: 10.5281/zenodo.4319281																	 *
+* Distributed under the MIT License (license terms are at http://opensource.org/licenses/MIT).   *
+\************************************************************************************************/
 
 
 #include "includes/Fluid2DLib.h"
@@ -20,6 +23,10 @@ Fluid2D::Fluid2D(const SetUpParameters &input_parameters) : TethysBase{input_par
 	vel_snd = input_parameters.SoundVelocity;//sound_velocity;
 	kin_vis = input_parameters.ShearViscosity;//shear_viscosity;
 	odd_vis = input_parameters.OddViscosity;//odd_viscosity;
+
+	if(input_parameters.SimulationTime > 0.0f){
+		Tmax = input_parameters.SimulationTime;
+	}
 
 	char buffer [50];
 	sprintf (buffer, "S=%.2fvF=%.2fvis=%.2fodd=%.3fl=%.2fwc=%.2f", vel_snd, vel_fer, kin_vis,odd_vis, col_freq,cyc_freq);
@@ -81,7 +88,6 @@ void Fluid2D::InitialCondRand(){
 	random_device rd;
 	float maxrand;
 	maxrand = (float) random_device::max();
-//#pragma omp parallel for default(none) shared(Nx,Ny,maxrand,rd)
 	for (int c = 0; c < Nx*Ny; c++ ){
 		float noise;
 		noise =  (float) rd()/maxrand ; //(float) rand()/ (float) RAND_MAX ;
@@ -110,7 +116,6 @@ void Fluid2D::InitialCondTest(){
 
 
 void Fluid2D::MassFluxToVelocity(){
-//#pragma omp parallel for default(none) shared(VelX,VelY,FlxX,FlxY,Den)
 	for(int c=0; c <= Nx * Ny - 1; c++){
 		VelX[c]= FlxX[c] / Den[c];
 		VelY[c]= FlxY[c] / Den[c];
@@ -118,7 +123,6 @@ void Fluid2D::MassFluxToVelocity(){
 }
 
 void Fluid2D::VelocityToCurrent() {
-//#pragma omp parallel for default(none) shared(Nx,Ny,VelX,VelY,CurX,CurY,Den)
 	for(int c=0; c <= Nx * Ny - 1; c++){
 		CurX[c] = VelX[c] * Den[c];
 		CurY[c] = VelY[c] * Den[c];
@@ -140,7 +144,8 @@ void Fluid2D::Richtmyer(){
 
             den_mid[ks] = den_avg
 			              -0.5f*(dt/dx)*(DensityFluxX(point,'E') - DensityFluxX(point,'W'))
-			              -0.5f*(dt/dy)*(DensityFluxY(point,'N') - DensityFluxY(point,'S'));
+			              -0.5f*(dt/dy)*(DensityFluxY(point,'N') - DensityFluxY(point,'S'))
+						  +0.5f*dt* DensitySource(den_avg, flx_x_avg, flx_y_avg, 0.0f, 0.0f);
 			flxX_mid[ks] = flx_x_avg
 					-0.5f*(dt/dx)*(XMomentumFluxX(point,'E') - XMomentumFluxX(point,'W'))
 					-0.5f*(dt/dy)*(XMomentumFluxY(point,'N') - XMomentumFluxY(point,'S'))
@@ -151,8 +156,9 @@ void Fluid2D::Richtmyer(){
 					+0.5f*dt*YMomentumSource(den_avg, flx_x_avg, flx_y_avg, 0.0f, 0.0f);
 			if(therm_diff){
 				tmp_mid[ks] = tmp_avg
-				              - 0.5f * (dt / dx) * (TemperatureFluxX(point, 'E') - TemperatureFluxX(point, 'W'))
-				              - 0.5f * (dt / dy) * (TemperatureFluxY(point, 'N') - TemperatureFluxY(point, 'S'));
+				              -0.5f * (dt / dx) * (TemperatureFluxX(point, 'E') - TemperatureFluxX(point, 'W'))
+				              -0.5f * (dt / dy) * (TemperatureFluxY(point, 'N') - TemperatureFluxY(point, 'S'))
+							  +0.5f*dt* TemperatureSource(den_avg, flx_x_avg, flx_y_avg, 0.0f, 0.0f);
 			}
 		}
 
@@ -179,7 +185,8 @@ void Fluid2D::Richtmyer(){
 				                     + dt*YMomentumSource(den_old, flx_x_old, flx_y_old, 0.0f, 0.0f);
 				if(therm_diff) {
 					Tmp[kp] = tmp_old - (dt / dx) * (TemperatureFluxX(point, 'E') - TemperatureFluxX(point, 'W'))
-					          - (dt / dy) * (TemperatureFluxY(point, 'N') - TemperatureFluxY(point, 'S'));
+					          - (dt / dy) * (TemperatureFluxY(point, 'N') - TemperatureFluxY(point, 'S'))
+							  + dt* TemperatureSource(den_old, flx_x_old, flx_y_old, 0.0f, 0.0f);
 				}
 			}
 		}
@@ -190,42 +197,6 @@ void Fluid2D::CflCondition(){
 		dy = lengY / ( float ) ( Ny - 1 );
 		dt = dx/10.0f;
 }
-
-/*
-
-float  Fluid2D::DensityFluxX(__attribute__((unused)) float n, float flx_x, __attribute__((unused)) float flx_y, __attribute__((unused)) float mass, __attribute__((unused)) float s){
-	float f_1;
-	f_1 = flx_x;
-	return f_1;
-}
-float  Fluid2D::DensityFluxY(__attribute__((unused)) float n, __attribute__((unused)) float flx_x, float flx_y, __attribute__((unused)) float mass, __attribute__((unused)) float s){
-	float f_1;
-	f_1 = flx_y;
-	return f_1;
-}
-
-
-float  Fluid2D::XMomentumFluxX(float n, float flx_x, __attribute__((unused)) float flx_y, __attribute__((unused)) float mass, __attribute__((unused))  float s){
-	float f_2;
-	f_2 = flx_x * flx_x / n + n;
-	return f_2;
-}
-float  Fluid2D::XMomentumFluxY(float n, float flx_x, float flx_y, __attribute__((unused)) float mass, __attribute__((unused))  float s){
-	float f_2;
-	f_2 = flx_x * flx_y / n;
-	return f_2;
-}
-float  Fluid2D::YMomentumFluxX(float n, float flx_x, float flx_y, __attribute__((unused)) float mass, __attribute__((unused))  float s){
-	float f_3;
-	f_3 = flx_x * flx_y / n;
-	return f_3;
-}
-float  Fluid2D::YMomentumFluxY(float n, __attribute__((unused)) float flx_x, float flx_y, __attribute__((unused)) float mass, __attribute__((unused))  float s){
-	float f_3;
-	f_3 = flx_y * flx_y / n + n;
-	return f_3;
-}
-*/
 
 void Fluid2D::CreateFluidFile(){
 	std::string previewfile = "preview_2D_" + file_infix + ".dat" ;
@@ -252,56 +223,6 @@ void Fluid2D::WriteFluidFile(float t){
 void Fluid2D::SetSimulationTime(){
 	Tmax=5.0f+0.02f*vel_snd+20.0f/vel_snd;
 }
-
-/*
-void Fluid2D::VelocityLaplacian() {
-	this->MassFluxToVelocity();
-
-//calculate laplacians
-//#pragma omp parallel for  default(none) shared(lap_flxX,lap_flxY,VelX,VelY,Nx,Ny)
-
-	for(int ks=0; ks<=Nx*Ny-Nx-Ny; ks++) { //correr todos os pontos da grelha secundaria de den_mid
-		int northeast, northwest, southeast, southwest;
-		div_t divresult;
-		divresult = div(ks, Nx - 1);
-		int j = divresult.quot;
-		int i = divresult.rem;
-		northeast = i + 1 + (j + 1) * Nx;
-		northwest = i + (j + 1) * Nx;
-		southeast = i + 1 + j * Nx;
-		southwest = i + j * Nx;
-
-		velX_lap_mid[ks] = (-4.0f * velX_mid[ks]  + VelX[northeast]  + VelX[southeast]  + VelX[northwest]  +
-		                    VelX[southwest] )/(0.5f*dx*dx);
-		velY_lap_mid[ks] = (-4.0f * velY_mid[ks]  + VelY[northeast]  + VelY[southeast]  + VelY[northwest]  +
-		                    VelY[southwest] )/(0.5f*dx*dx);
-	}
-
-
-	for(int kp=1+Nx; kp<=Nx*Ny-Nx-2; kp++){ //correr a grelha principal evitando as fronteiras
-		int northeast,northwest,southeast,southwest;
-
-		div_t divresult;
-		divresult = div (kp,Nx);
-		int j=divresult.quot;
-		int i=divresult.rem;
-
-		if( kp%Nx!=Nx-1 && kp%Nx!=0) {
-			northeast = i + j * (Nx - 1);
-			northwest = i - 1 + j * (Nx - 1);
-			southeast = i + (j - 1) * (Nx - 1);
-			southwest = i - 1 + (j - 1) * (Nx - 1);
-
-			velX_lap[kp] = (-4.0f * VelX[kp]  + velX_mid[northeast]  + velX_mid[southeast]  + velX_mid[northwest]  +
-					velX_mid[southwest] )/(0.5f*dx*dx);
-			velY_lap[kp] = (-4.0f * VelY[kp]  + velY_mid[northeast]  + velY_mid[southeast]  + velY_mid[northwest]  +
-			                velY_mid[southwest] )/(0.5f*dx*dx);
-
-		}
-	}
-}
-*/
-
 
 void Fluid2D::VelocityLaplacianFtcs() {
 	this->MassFluxToVelocity();
@@ -333,39 +254,11 @@ void Fluid2D::VelocityLaplacianFtcs() {
 
 void Fluid2D::VelocityLaplacianWeighted19() {
 	this->MassFluxToVelocity();
-//	float sx=kin_vis*dt/(dx*dx);
-//	float sy=kin_vis*dt/(dy*dy);
+
 #pragma omp parallel for default(none) shared(lap_flxX,lap_flxY,VelX,VelY)
 	for (int kp = 1 + Nx; kp <= Nx * Ny - Nx - 2; kp++) { //correr a grelha principal evitando as fronteiras
 		GridPoint point(kp,Nx,Ny,false);
-		/*
-		int north, south, east, west, northeast, northwest,southeast, southwest ;
-		div_t divresult;
-		divresult = div(kp, Nx);
-		int j;
-		j = divresult.quot;
-		int i;
-		i = divresult.rem;
-		*/
 		if (kp % Nx != Nx - 1 && kp % Nx != 0){
-			/*
-			north = i + (j + 1) * Nx;
-			south = i + (j - 1) * Nx;
-			east = i + 1 + j * Nx;
-			west = i - 1 + j * Nx;
-			northeast = i + 1 + (j + 1) * Nx;
-			northwest = i - 1 + (j + 1) * Nx;
-			southeast = i + 1 + (j - 1) * Nx;
-			southwest = i - 1 + (j - 1) * Nx;
-			lap_flxX[kp] = (4.0f*sx*sy-2.0f*sx-2.0f*sy)*VelX[kp] +
-			               sx*sy*( VelX[northeast] + VelX[southeast] + VelX[northwest] + VelX[southwest])
-			               + sy*(1.0f-2.0f*sx)*(VelX[north] + VelX[south])
-			               + sx*(1.0f-2.0f*sy)*(VelX[west] + VelX[east]);
-			lap_flxY[kp] = (4.0f*sx*sy-2.0f*sx-2.0f*sy)*VelY[kp] +
-			               sx*sy*( VelY[northeast] + VelY[southeast] + VelY[northwest] + VelY[southwest])
-			               + sy*(1.0f-2.0f*sx)*(VelY[north] + VelY[south])
-			               + sx*(1.0f-2.0f*sy)*(VelY[west] + VelY[east]);
-			*/
 			lap_flxX[kp] = Laplacian19( point, VelX, kin_vis);
 			lap_flxY[kp] = Laplacian19( point, VelY, kin_vis);
 		}
@@ -434,7 +327,7 @@ void Fluid2D::SaveSnapShot() {
 	snapshot_step = points_per_period / snapshot_per_period;
 
 	this->MassFluxToVelocity();
-	this->VelocityToCurrent();
+	//this->VelocityToCurrent();
 	string str_time = to_string(TimeStepCounter / snapshot_step);
 	str_time.insert(str_time.begin(), 5 - str_time.length(), '0');
 	string name_dataset = "snapshot_" + str_time;
@@ -1000,5 +893,9 @@ float Fluid2D::Laplacian19(GridPoint p, float *input_ptr, float constant) {
 	               + sy*(1.0f-2.0f*sx)*(data_ptr[p.N] + data_ptr[p.S])
 	               + sx*(1.0f-2.0f*sy)*(data_ptr[p.W] + data_ptr[p.E]);
 return lap;
+}
+
+float Fluid2D::TemperatureSource(float n, float flx_x, float flx_y, float mass, float s) {
+	return 0;
 }
 

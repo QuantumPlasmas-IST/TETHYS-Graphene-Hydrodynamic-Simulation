@@ -1,9 +1,12 @@
-//
-// Created by pcosme on 23/12/2020.
-//
+/************************************************************************************************\
+* 2020 Pedro Cosme , João Santos and Ivan Figueiredo                                             *
+* DOI: 10.5281/zenodo.4319281																	 *
+* Distributed under the MIT License (license terms are at http://opensource.org/licenses/MIT).   *
+\************************************************************************************************/
+
 
 #include "includes/BoundaryLib.h"
-#include "includes/DiricheletBoundaryLib.h"
+#include "includes/DirichletBoundaryLib.h"
 
 void DirichletBoundaryCondition::Density(Fluid1D& fluid_class, float left, float right){
 	int nx=fluid_class.SizeX();

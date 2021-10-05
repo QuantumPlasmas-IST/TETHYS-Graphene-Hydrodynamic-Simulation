@@ -1,3 +1,9 @@
+/************************************************************************************************\
+* 2020 Pedro Cosme , João Santos and Ivan Figueiredo                                             *
+* DOI: 10.5281/zenodo.4319281																	 *
+* Distributed under the MIT License (license terms are at http://opensource.org/licenses/MIT).   *
+\************************************************************************************************/
+
 #include "includes/TethysMathLib.h"
 
 using namespace std;
@@ -7,17 +13,9 @@ float Sound_Velocity_Anisotropy(float x, float s) {
 }
 float Sound_Velocity_Anisotropy(float x, float y, float s) {
 	float s_mod;
-	//float slope=0.05;
-	//s_mod = s * (1.0f - Slope * x);
 	s_mod=s;
-	//s_mod = s * (0.025f*(tanh(-30.0f*(x - .5f))) + .975f);
-	//s_mod = (Stair_Case_Function(x,0.5f,20.0f)*0.5f - 2.0f) + 20.0f;
-	//s_mod = s*( 1.0f + Slope*( (Stair_Case_Function(x,1.0f,20.0f)-1.0f))  );
 	return s_mod;
 }
-
-// ( ( (StairCase[x, 1/n, 20] - n)/n)*Slope + 1)*60
-//s*( 1.0f + Slope*( (Stair_Case_Function(x,1/n,20)-n)/n)  )
 
 float Integral_1_D(int n, float ds, const float * f){
 	float itg=0.0;
@@ -42,7 +40,7 @@ float Integral_2_D(int n, int m, float dx, float dy, const float * f){
 	for(int j=1; j <= m - 2; j++){
 		edges += f[j * n] + f[n - 1 + j * n];
 	}
-	for(int k= 1 + n; k <= n * m - n - 2; k++) { //correr a grelha principal evitando as fronteiras
+	for(int k= 1 + n; k <= n * m - n - 2; k++) {
 		if (k % n != n - 1 && k % n != 0) {
 			interior += f[k];
 		}

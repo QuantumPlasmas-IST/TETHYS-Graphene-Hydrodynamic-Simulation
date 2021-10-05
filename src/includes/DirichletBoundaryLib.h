@@ -1,9 +1,11 @@
-//
-// Created by pcosme on 23/12/2020.
-//
+/************************************************************************************************\
+* 2020 Pedro Cosme , João Santos and Ivan Figueiredo                                             *
+* DOI: 10.5281/zenodo.4319281																	 *
+* Distributed under the MIT License (license terms are at http://opensource.org/licenses/MIT).   *
+\************************************************************************************************/
 
-#ifndef DIRICHELETBOUNDARYLIB_H
-#define DIRICHELETBOUNDARYLIB_H
+#ifndef DIRICHLETBOUNDARYLIB_H
+#define DIRICHLETBOUNDARYLIB_H
 
 #include <H5Cpp.h>
 #include "includes/TethysBaseLib.h"
@@ -11,7 +13,7 @@
 #include "includes/Fluid1DLib.h"
 #include "includes/Fluid2DLib.h"
 #include "includes/BoundaryLib.h"
-#include "includes/DiricheletBoundaryLib.h"
+#include "includes/DirichletBoundaryLib.h"
 
 
 
@@ -50,4 +52,4 @@ class  DirichletBoundaryCondition : public BoundaryCondition
 };
 
 
-#endif //DIRICHELETBOUNDARYLIB_H
+#endif //DIRICHLETBOUNDARYLIB_H

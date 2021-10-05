@@ -1,6 +1,8 @@
-//
-// Created by pcosme on 23/12/2020.
-//
+/************************************************************************************************\
+* 2020 Pedro Cosme , João Santos and Ivan Figueiredo                                             *
+* DOI: 10.5281/zenodo.4319281																	 *
+* Distributed under the MIT License (license terms are at http://opensource.org/licenses/MIT).   *
+\************************************************************************************************/
 
 #include "includes/TethysBaseLib.h"
 #include "includes/SetUpParametersLib.h"
@@ -161,26 +163,23 @@ void SetUpParameters::ParametersFromHdf5File(const string& hdf5name){
 }
 
 void SetUpParameters::DefineGeometry() {
+	int sampling=151;
 	if(AspectRatio>1.0f){
 		Length=1.0f*AspectRatio;
 		Width=1.0f;
-		//SizeY=201;
-		SizeY=151;
+		SizeY=sampling;
 		SizeX= static_cast<int>( static_cast<float>(SizeY-1)*AspectRatio)+1;
 	}
 	if(AspectRatio==1.0f){
 		Length=1.0f;
 		Width=1.0f;
-		//SizeX=201;
-		//SizeY=201;
-		SizeX=151;
-		SizeY=151;
+		SizeX=sampling;
+		SizeY=sampling;
 	}
 	if(AspectRatio<1.0f){
 		Length=1.0f;
 		Width=1.0f/AspectRatio;
-		//SizeX=201;
-		SizeX=151;
+		SizeX=sampling;
 		SizeY= static_cast<int>( static_cast<float>(SizeX - 1) / AspectRatio) + 1;
 	}
 }
@@ -211,13 +210,13 @@ void SetUpParameters::ReadIniFile(char *  file_name) {
 
 	for(auto & vecline : veclines){
 		line = vecline;
-		vector<char> num_part, txt_part; // ao redeclarar, é apagado o conteúdo anterior
+		vector<char> num_part, txt_part;
 		if(line[0]!=';' && line[0]!='[') {
 			for (char &i : line) {
 				if (isdigit(i) || int(i) == 46)
 					num_part.push_back(i);
 				else {
-					if ((int(i) > 65 && int(i) <= 90) || (int(i) >= 97 && int(i) <= 122))
+					if ((int(i) >= 65 && int(i) <= 90) || (int(i) >= 97 && int(i) <= 122))
 						txt_part.push_back(i);
 				}
 			}
@@ -233,12 +232,13 @@ void SetUpParameters::ReadIniFile(char *  file_name) {
 		if(txt == "cycl") CyclotronFrequency = stof(num);
 		if(txt == "therm") ThermalDiffusivity = stof(num);
 		if(txt == "aspect") AspectRatio = stof(num);
+		if(txt == "time") SimulationTime = stof(num);
 		if(txt == "save") SaveMode = stoi(num);
 	}
 }
 
 void SetUpParameters::PromptParameters() {
-	cout << "Define S value: "; // throw exceptions if the velocities or frequency are negative or if S<Vf
+	cout << "Define S value: ";
 	cin >> SoundVelocity;
 	cout << "Define vF value: ";
 	cin >> FermiVelocity;

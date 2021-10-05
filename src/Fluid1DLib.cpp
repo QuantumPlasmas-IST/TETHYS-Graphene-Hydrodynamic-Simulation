@@ -1,3 +1,9 @@
+/************************************************************************************************\
+* 2020 Pedro Cosme , João Santos and Ivan Figueiredo                                             *
+* DOI: 10.5281/zenodo.4319281																	 *
+* Distributed under the MIT License (license terms are at http://opensource.org/licenses/MIT).   *
+\************************************************************************************************/
+
 #include "includes/Fluid1DLib.h"
 #include "includes/SetUpParametersLib.h"
 
@@ -7,9 +13,6 @@ using namespace H5;
 using namespace std;
 
 
-/*....................................................................*/
-/*.......... 1 Dimensional Fluid Class ...............................*/	
-/*....................................................................*/
 Fluid1D::Fluid1D(const SetUpParameters &input_parameters) : TethysBase{input_parameters.SizeX, 0, 1}{
 	Nx = input_parameters.SizeX;
 	vel_snd = input_parameters.SoundVelocity;
@@ -156,9 +159,6 @@ void Fluid1D::Richtmyer(){
 		Cur[i] = Vel[i] * Den[i];
 	}
 } 
-
-/*....................................................................*/	
-/*............ Derived Graphene Class  ...............................*/
 
 
 int Fluid1D::GetSnapshotStep() const { return snapshot_step;}

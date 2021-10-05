@@ -1,7 +1,9 @@
 /************************************************************************************************\
-* Copyright (c) 2020 Pedro Cosme and João Santos                                                 *
+* 2020 Pedro Cosme , João Santos and Ivan Figueiredo                                             *
+* DOI: 10.5281/zenodo.4319281																	 *
 * Distributed under the MIT License (license terms are at http://opensource.org/licenses/MIT).   *
 \************************************************************************************************/
+
 /*!@file
  * @brief Header file for general mathematical functions
  */
@@ -35,6 +37,7 @@ float Sound_Velocity_Anisotropy(float x, float s);
  * corresponding to a variation of substrate permittivity or even the description of a multi gated system.
  *
  * @param x position along x
+ * @param y position along y
  * @param s nominal sound velocity
  *
  * @return S(x,y) the value of local sound velocity

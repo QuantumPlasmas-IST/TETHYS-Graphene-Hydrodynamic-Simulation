@@ -1,6 +1,8 @@
-//
-// Created by pcosme on 27/12/2020.
-//
+/************************************************************************************************\
+* 2020 Pedro Cosme , João Santos and Ivan Figueiredo                                             *
+* DOI: 10.5281/zenodo.4319281																	 *
+* Distributed under the MIT License (license terms are at http://opensource.org/licenses/MIT).   *
+\************************************************************************************************/
 
 #include "includes/GrapheneFluid1DLib.h"
 
@@ -26,7 +28,6 @@ GrapheneFluid1D::~GrapheneFluid1D(){
 	delete grad_vel_mid ;
 }
 
-/*....................................................................*/
 
 float GrapheneFluid1D::DensityFlux(float n,float v,float __attribute__((unused)) s){
 	float f_1;

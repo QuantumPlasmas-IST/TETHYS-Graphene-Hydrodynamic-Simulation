@@ -1,9 +1,19 @@
+/************************************************************************************************\
+* 2020 Pedro Cosme , João Santos and Ivan Figueiredo                                             *
+* DOI: 10.5281/zenodo.4319281																	 *
+* Distributed under the MIT License (license terms are at http://opensource.org/licenses/MIT).   *
+\************************************************************************************************/
 
 #ifndef GRID2DLIB_H
 #define GRID2DLIB_H
 
 #include <cstdlib>
 
+/*!
+ * @brief Ancillary class for dealing with the mesh points.
+ *
+ * This class is responsible for finding the position of the grid neighbours, either at the main or mid grid, for the numerical methods employed.
+ * */
 class GridPoint{
 private:
 	int size_x;
@@ -27,9 +37,9 @@ public:
 	int E=0;
 	int W=0;
 	int C=0; //ponto de referencia da grelha
-	void FirstNeighbours();
-	void SecondNeighbours();
-	void ThirdNeighbours();
+	void FirstNeighbours(); ///< Finds the first neighbours of a mesh point, i.e. sets the NW NE SW and SE points
+	void SecondNeighbours(); ///< Finds the second neighbours of a mesh point, i.e. sets the N S E and W points
+	void ThirdNeighbours(); ///< Finds the second neighbours of a mesh point, i.e. sets the NW2 NE2 SW2 and SE2 points
 };
 
 

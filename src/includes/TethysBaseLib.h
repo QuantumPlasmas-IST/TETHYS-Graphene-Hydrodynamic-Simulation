@@ -1,5 +1,6 @@
 /************************************************************************************************\
-* Copyright (c) 2020 Pedro Cosme and João Santos                                                 *
+* 2020 Pedro Cosme , João Santos and Ivan Figueiredo                                             *
+* DOI: 10.5281/zenodo.4319281																	 *
 * Distributed under the MIT License (license terms are at http://opensource.org/licenses/MIT).   *
 \************************************************************************************************/
 
@@ -67,7 +68,7 @@ class TethysBase {
 		float therm_diff = 0.0f; // thermal diffusivity parameter
 		float col_freq =0.0f;   // colision frequency parameter
 		std::string file_infix; // base name for the output files
-		float Tmax=10;          // total time of simulation
+		float Tmax=2.0f;          // total time of simulation
 
 	public:
 		/*!

@@ -1,6 +1,8 @@
-//
-// Created by pcosme on 27/12/2020.
-//
+/************************************************************************************************\
+* 2020 Pedro Cosme , João Santos and Ivan Figueiredo                                             *
+* DOI: 10.5281/zenodo.4319281																	 *
+* Distributed under the MIT License (license terms are at http://opensource.org/licenses/MIT).   *
+\************************************************************************************************/
 
 #ifndef GRAPHENEFLUID2DLIB_H
 #define GRAPHENEFLUID2DLIB_H
@@ -50,30 +52,21 @@ public :
 		 * */
 		void MassFluxToVelocity() override; // Converts the mass density flux back to velocity, in graphene  v = p n^{-3/2}
 		/*Override fluxes and sources to specifics of graphene physics*/
-
-
-//		float DensityFluxX(float n, float flx_x, float flx_y,float mass, float s) override;    ///< density equation (continuity equation) conserved flux X component
-//		float DensityFluxY(float n, float flx_x, float flx_y,float mass, float s) override;    ///< density equation (continuity equation) conserved flux Y component
 		float DensitySource(float n, float flx_x, float flx_y, float mass, float s)override;   ///< density equation (continuity equation) source term
-//		float XMomentumFluxX(float n, float flx_x, float flx_y, float mass, float s) override;  ///< velocity X component equation (momentum equation) conserved flux X component
-//		float XMomentumFluxY(float n, float flx_x, float flx_y, float mass, float s) override;  ///< velocity X component equation (momentum equation) conserved flux Y component
+		float TemperatureSource(float n, float flx_x, float flx_y, float mass, float s)override;   ///< density equation (continuity equation) source term
 		float XMomentumSource(float n, float flx_x, float flx_y, float mass, float s)override; ///< velocity X component equation (momentum equation) source term
-//		float YMomentumFluxX(float n, float flx_x, float flx_y, float mass, float s) override;  ///< velocity Y component equation (momentum equation) conserved flux X component
-//		float YMomentumFluxY(float n, float flx_x, float flx_y, float mass, float s) override;  ///< velocity Y component equation (momentum equation) conserved flux Y component
 		float YMomentumSource(float n, float flx_x, float flx_y, float mass, float s)override; ///< velocity y component equation (momentum equation) source term
 
+		float DensityFluxX(GridPoint p, char side ) override; ///< density equation (continuity equation) conserved flux X component
+		float DensityFluxY(GridPoint p, char side ) override; ///< density equation (continuity equation) conserved1 flux Y component
 
-	float DensityFluxX(GridPoint p, char side ) override; ///< density equation (continuity equation) conserved flux X component
-	float DensityFluxY(GridPoint p, char side ) override; ///< density equation (continuity equation) conserved1 flux Y component
+		float XMomentumFluxX(GridPoint p, char side ) override; ///< velocity X component equation (momentum equation) conserved flux X component
+		float XMomentumFluxY(GridPoint p, char side ) override; ///< velocity X component equation (momentum equation) conserved flux Y component
 
-	float XMomentumFluxX(GridPoint p, char side ) override; ///< velocity X component equation (momentum equation) conserved flux X component
-	float XMomentumFluxY(GridPoint p, char side ) override; ///< velocity X component equation (momentum equation) conserved flux Y component
+		float YMomentumFluxX(GridPoint p, char side ) override; ///< velocity Y component equation (momentum equation) conserved flux X component
+		float YMomentumFluxY(GridPoint p, char side ) override; ///< velocity Y component equation (momentum equation) conserved flux Y component
 
-	float YMomentumFluxX(GridPoint p, char side ) override; ///< velocity Y component equation (momentum equation) conserved flux X component
-	float YMomentumFluxY(GridPoint p, char side ) override; ///< velocity Y component equation (momentum equation) conserved flux Y component
-
-
-	void MagneticSourceSemiAnalytic(); // Semi analytic method for the magnetic interaction
+		void MagneticSourceSemiAnalytic(); // Semi analytic method for the magnetic interaction
 		//void MagneticSourceFtcs();  // Forward Time Centered Space method for the magnetic interaction
 };
 

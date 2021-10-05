@@ -1,5 +1,5 @@
 # TETHYS - *Two-dimensional Emitter of THz, Hydrodynamic Simulation.*
-## Version 2.5.0
+## Version 2.5.2
 
 [![DOI](https://zenodo.org/badge/208904575.svg)](https://zenodo.org/badge/latestdoi/208904575)
 
@@ -75,27 +75,53 @@ $ make all
 ```
 
 ### Running a simulation
-
+#### 1) Fluid simulation
 To run a simulation one can simply invoke
 ```console
 $ ./TETHYS_2D 
 ```
-and the program will prompt the user to provide the necessary parameters for the simulation. Alternatively, the user can pass directly such parameters as command arguments.
+and the program will prompt the user to provide the necessary parameters for the simulation.
 The necessary inputs are:
 * Sound velocity S (vel_snd)
 * Fermi velocity v<sub>F</sub> (vel_fer)
 * Collision, of the electrons with impurities or defects, frequency (col)
 * Shear viscosity (vis)
+* Odd viscosity (odd)
 * Cyclotron frequency (cyc)
-* (save_mode)
-
+* Thermal diffusivity (therm)
+* Saving option (save_mode)
 and optionally:  
-
 * Aspect ratio of the simulation grid x:y (aspect_ratio)
-```console
-$ ./TETHYS_2D vel_snd vel_fer col vis cyc save_mode aspect_ratio
-```
 
+Alternatively, the user can pass directly such parameters as command arguments with 
+```console
+$ ./TETHYS_2D vel_snd vel_fer col vis odd cyc therm save_mode aspect_ratio
+```
+Moreover, the parameters can also be passed via a `.ini` file 
+```console
+$ ./TETHYS_2D parameters.ini
+```
+As standard with .ini files sections can be indicated by square brackets as in [section] and comment lines start with a semicolon ; The readble keywords are
+
+| Keywords | Parameter |   |
+| ----: | :----: | :---: |
+|  sound   | Sound velocity     |  _S_     |
+|  fermi   | Fermi velocity     | _v<sub>0</sub>_     |
+|  shear   | Shear viscosity     |  _&nu;<sub>s</sub>_    |
+|  odd   |  Odd/Hall viscosity    | _&nu;<sub>o</sub>_     |
+|  col   |  Collision frequency    |  1/_&tau;_     |
+|  cycl   |  Cyclotron frequency    | _&omega;<sub>c</sub>_     |
+|  therm   |  Thermal diffusivity    |  _&alpha;_|
+|  aspect   |  Aspect ratio    |  _AR_     |
+|  time   |  Simulation time    |  _T<sub>max</sub>_     |
+|  save   |  Save mode    | -    |
+
+#### 2) Electrical response 
+To later extract the electronic quantities from the fluid simulation data one should run
+
+```console
+$ ./TETHYS_ELEC_2D [name of output file].h5
+```
 
 ## Class Hierarchy
 
@@ -136,6 +162,8 @@ Standard form of numeric *major.minor.patch* starting with the initial commit 1.
   <br>&emsp;**2.3.1** Parallelization with OpenMP  *[25 Nov. 2020]*
   <br>&emsp;**2.4.0** Simulation with odd viscosity  *[12 Feb. 2021]*
   <br>&emsp;**2.5.0** Energy transport by conduction and convection  *[22 May. 2021]*
+  <br>&emsp;**2.5.1** Initialization by .ini file import  *[30 Jun. 2021]*
+  <br>&emsp;**2.5.2** cmake update   *[29 Aug. 2021]*
 ### Internal syntax
 
 | Type            | Style                                 | E.g.              |
