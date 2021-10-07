@@ -252,20 +252,6 @@ float GrapheneFluid2D::YMomentumFluxX(GridPoint p, char side) {
 	return px * py / mass  + odd_vis*dvx;
 }
 
-void GrapheneFluid2D::MagneticSourceSemiAnalytic(){
-	float px_0,py_0,sqrtn_0;
-	float wc=cyc_freq;
-	for(int kp=1+Nx; kp<=Nx*Ny-Nx-2; kp++){ //correr a grelha principal evitando as fronteiras
-		if( kp%Nx!=Nx-1 && kp%Nx!=0){
-			sqrtn_0=sqrt(Den[kp]);
-			px_0=FlxX[kp];
-			py_0=FlxY[kp];
-			FlxX[kp]= px_0 * cos(wc * dt / sqrtn_0) - py_0 * sin(wc * dt / sqrtn_0);
-			FlxY[kp]= px_0 * sin(wc * dt / sqrtn_0) + py_0 * cos(wc * dt / sqrtn_0);
-		}
-	}
-}
-
 
 float GrapheneFluid2D::DensitySource(__attribute__((unused)) float n,__attribute__((unused)) float flx_x,__attribute__((unused)) float flx_y,__attribute__((unused)) float mass,__attribute__((unused)) float s) {
 	return 0.0f;
