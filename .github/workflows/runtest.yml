@@ -1,8 +1,8 @@
 name: RunTest
 
 on:
-#  push:
-#    branches: [ master ]
+  push:
+    branches: [ master ]
   pull_request:
     branches: [ master ]
 
@@ -31,3 +31,6 @@ jobs:
 
     - name: Run test 1
       run: ctest --extra-verbose -I 1,1,,1
+
+    - name: Run test 2
+      run: ctest --extra-verbose -I 2,2,,2
