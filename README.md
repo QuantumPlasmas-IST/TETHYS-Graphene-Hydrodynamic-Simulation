@@ -1,4 +1,4 @@
-<img align="right" height="100" src="/images/logo/logo_png-01.png" alt="icon">
+<img align="right" height="100" src="./images/logo/logo_png-01.png" alt="icon">
 
 # TETHYS - *Two-dimensional Emitter of THz, Hydrodynamic Simulation.*
 ## Version 2.6.0
