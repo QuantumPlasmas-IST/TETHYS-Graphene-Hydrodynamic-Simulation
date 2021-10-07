@@ -124,7 +124,7 @@ As standard with .ini files sections can be indicated by square brackets as in [
 To later extract the electronic quantities from the fluid simulation data one should run
 
 ```console
-$ ./TETHYS_ELEC_2D [name of output file].h5
+$ ./TETHYS_ELEC_2D hdf5_2D<...>.h5
 ```
 
 ### Output description
