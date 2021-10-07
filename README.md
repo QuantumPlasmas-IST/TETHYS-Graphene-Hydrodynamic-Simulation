@@ -1,5 +1,5 @@
 # TETHYS - *Two-dimensional Emitter of THz, Hydrodynamic Simulation.*
-## Version 2.5.2
+## Version 2.6.0
 
 [![DOI](https://zenodo.org/badge/208904575.svg)](https://zenodo.org/badge/latestdoi/208904575)
 
@@ -164,6 +164,7 @@ Standard form of numeric *major.minor.patch* starting with the initial commit 1.
   <br>&emsp;**2.5.0** Energy transport by conduction and convection  *[22 May. 2021]*
   <br>&emsp;**2.5.1** Initialization by .ini file import  *[30 Jun. 2021]*
   <br>&emsp;**2.5.2** cmake update   *[29 Aug. 2021]*
+<br>&emsp;**2.6.0** Joule heating source added  *[6 Oct. 2021]*
 ### Internal syntax
 
 | Type            | Style                                 | E.g.              |
