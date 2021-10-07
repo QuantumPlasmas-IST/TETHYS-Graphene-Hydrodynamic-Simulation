@@ -57,13 +57,13 @@ class Fluid2D : public TethysBase
     std::ofstream data_preview; // file stream for simplified .dat file output
 		int snapshot_per_period = 40;
 		int snapshot_step = 1;
-		void ForwardTimeOperator();
+		void ForwardTimeOperator(); ///< Time evolution for the FTCS method employed for the parabolic operators.
 
 
-		void VelocityGradient();
-		void VelocityGradientMid();
-	void DensityGradient();
-	void DensityGradientMid();
+		void VelocityGradient(); ///< Computes the gradient of the velocity grid  by second order finite differences.
+		void VelocityGradientMid(); ///< Computes the gradient of the velocity mid grid  by second order finite differences.
+     	void DensityGradient(); ///<  Computes the gradient of the number density grid by second order finite differences.
+    	void DensityGradientMid(); ///< Computes the gradient of the number density mid grid  by second order finite differences.
 
 		virtual float DensityToMass(float density);
 
@@ -80,10 +80,10 @@ public :
 		~Fluid2D();
 		bool Snapshot() const;
 
-		void SetSound();     // Applies the anisotropy to the sound velocity array
+		void SetSound();     ///< Applies the anisotropy (in the cases there is one) to the sound velocity array
 		virtual void SetSimulationTime();   ///< Finds and set the appropriate simulation time
 		void InitialCondRand();             ///< Initial condition, zero velocity and constant density with 0.5% white noise
-		void InitialCondTest();             // Initial condition for testing and debugging
+		void InitialCondTest();             ///< Initial condition for testing and debugging
 		/*!
 		 * @brief Calculates @f$\Delta x@f$ and imposes Courant–Friedrichs–Lewy condition to @f$\Delta t@f$
 		 *
@@ -117,8 +117,7 @@ public :
 		virtual float XMomentumSource(float n, float flx_x, float flx_y, float mass, float s); ///< velocity X component equation (momentum equation) source term
 		virtual float YMomentumSource(float n, float flx_x, float flx_y, float mass, float s); ///< velocity y component equation (momentum equation) source term
 
-		virtual float
-		TemperatureSource(float n, float flx_x, float flx_y, float den_grad_x, float den_grad_y, float mass, float s); ///< density equation (continuity equation) source term
+		virtual float TemperatureSource(float n, float flx_x, float flx_y, float den_grad_x, float den_grad_y, float mass, float s); ///< density equation (continuity equation) source term
 
 
 		virtual float DensityFluxX(GridPoint p, char side ); ///< density equation (continuity equation) conserved flux X component

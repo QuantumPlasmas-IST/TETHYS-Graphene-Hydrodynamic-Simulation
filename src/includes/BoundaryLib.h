@@ -14,8 +14,6 @@
 #include "includes/Fluid2DLib.h"
 
 
-//TODO review the entire boundary class
-
 /*Base class for general boundary conditions*/
 
 /*!

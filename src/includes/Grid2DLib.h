@@ -24,19 +24,19 @@ public:
 	GridPoint(int pos,int xpoints, int ypoints,bool mid);
 	~GridPoint() = default;
 	bool IsMidGrid = false;
-	int NW=0; //primeiros vizinhos portanto pertencentes a outro tipo de grelha
+	int NW=0; //second neighbours -> different type of grid
 	int NE=0;
 	int SW=0;
 	int SE=0;
-	int NW2=0; //terceiros vizinhos mesmo tipo de grelha
+	int NW2=0; //third neighbours -> same type of grid
 	int NE2=0;
 	int SW2=0;
 	int SE2=0;
-	int N=0; //segundos vizinhos mesmo tipo de grelha
+	int N=0; //second neighbours -> same type of grid
 	int S=0;
 	int E=0;
 	int W=0;
-	int C=0; //ponto de referencia da grelha
+	int C=0; //central point
 	void FirstNeighbours(); ///< Finds the first neighbours of a mesh point, i.e. sets the NW NE SW and SE points
 	void SecondNeighbours(); ///< Finds the second neighbours of a mesh point, i.e. sets the N S E and W points
 	void ThirdNeighbours(); ///< Finds the second neighbours of a mesh point, i.e. sets the NW2 NE2 SW2 and SE2 points
