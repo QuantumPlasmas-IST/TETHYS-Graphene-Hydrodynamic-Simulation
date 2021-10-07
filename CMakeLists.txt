@@ -19,7 +19,7 @@ if(OPENMP_FOUND)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_C_FLAGS}")
 endif()
 
-add_executable(TETHYS_2D src/TETHYS_2D_Main_v260.cpp)
+add_executable(TETHYS_2D src/TETHYS_2D_Main_v261.cpp)
 add_executable(TETHYS_ELEC_2D src/TETHYS_2D_ElectronicAnalysis.cpp)
 
 file(GLOB SRC_LIB_FILES src/*Lib.cpp)
