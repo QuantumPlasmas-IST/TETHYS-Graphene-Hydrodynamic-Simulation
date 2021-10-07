@@ -98,7 +98,12 @@ Thus, all the code source files are at `src` and header files at `includes` dire
 
 #### Testing 
 
-Two automatic test are included by default in the cmake: the first one for the simulation itself, and the second for the electrical computations. To run them both use
+Two automatic test are included by default in the cmake: the first one for the simulation itself, and the second for the electrical computations. 
+First of all you should copy or move the test .ini file to the build directory
+```console
+$ mv 2DTESTparameters.ini ./build
+```
+Then, to run them both tests use
 ```console
 $ ctest --extra-verbose 
 ```
