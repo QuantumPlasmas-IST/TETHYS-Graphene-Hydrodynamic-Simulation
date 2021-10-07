@@ -123,6 +123,33 @@ To later extract the electronic quantities from the fluid simulation data one sh
 $ ./TETHYS_ELEC_2D [name of output file].h5
 ```
 
+### Output description
+
+The user can opt for simplified or full output.
+
+In the simplified version the output is a data file named ``preview_2D<...>.dat`` organised by tab separated columns with the (normalised) values of time, density at x=L, x component of velocity  at x=L , density  at x=0 and x component of velocity  at x=0 (by this order).
+
+The full output option will return a HDF5 file, ``hdf5_2D<...>.h5``, with the data of density, both velocity components and temperature, besides all the relevant simulation parameters saved as attributes of the file. Each HDF5 file has a root group called Data that houses the simulation attributes as well as the groups Density, VelocityX, VelocityY and Temperature, inside each of these three groups the simulation results are stored for each temporal snapshot, organised in a matricial form.
+
+
+
+
+```
+hdf5_2D<...>.h5
+└─📂Data
+    │ Atributes
+    │ Sound Velocity
+    └─📂 Density
+    │ │ 📄 snapshot_00000
+    │ │ 📄 snapshot_00001
+    │ │ 📄 snapshot_00002
+    │ ... 
+    └─📁 VelocityX
+    └─📁 VelocityY
+    └─📁 Temperature
+```
+
+
 ## Class Hierarchy
 
 ![Classes](./images/UML_Class_Diagram.png)
