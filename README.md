@@ -1,3 +1,5 @@
+<img align="right" height="100" src="/images/logo/logo_png-01.png" alt="icon">
+
 # TETHYS - *Two-dimensional Emitter of THz, Hydrodynamic Simulation.*
 ## Version 2.6.0
 
@@ -46,7 +48,9 @@ from the root directory
 
   <small>For the writing of the complete data.</small>
   
-_<small>As an example in Fedora systems it should be enough to install the packages: cmake; libgomp; libomp; hdf5; hdf5-devel; hdf5-static </small>_
+_<small>As an example in Fedora systems it should be enough to install the packages: cmake; libgomp; libomp; hdf5; hdf5-devel; hdf5-static. 
+Whereas for Ubuntu,: cmake; libhdf5-103; libhdf5-cpp-103; libhdf5-dev; libhdf5-openmpi-103.
+</small>_
   
   
 
