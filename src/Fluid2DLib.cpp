@@ -46,6 +46,10 @@ Fluid2D::Fluid2D(const SetUpParameters &input_parameters) : TethysBase{input_par
 	velY_dx	= new float[Nx * Ny]();
 	velY_dy	= new float[Nx * Ny]();
 
+	den_dx = new float[Nx * Ny]();
+	den_dy = new float[Nx * Ny]();
+
+
 	lap_flxX = new float[Nx*Ny](); //new grids for the laplacians
 	lap_flxY = new float[Nx*Ny](); //in fact they could be smaller but thiw way they are just 0 at the borders who do not evolve
     lap_tmp = new float[Nx*Ny]();
@@ -57,6 +61,10 @@ Fluid2D::Fluid2D(const SetUpParameters &input_parameters) : TethysBase{input_par
 	velX_dy_mid	= new float[(Nx-1)*(Ny-1)]();
 	velY_dx_mid	= new float[(Nx-1)*(Ny-1)]();
 	velY_dy_mid	= new float[(Nx-1)*(Ny-1)]();
+
+	den_dx_mid = new float[(Nx-1)*(Ny-1)]();
+	den_dy_mid = new float[(Nx-1)*(Ny-1)]();
+
 	flxX_mid	= new float[(Nx-1)*(Ny-1)]();
 	flxY_mid	= new float[(Nx-1)*(Ny-1)]();
 	vel_snd_arr_mid	= new float[(Nx-1)*(Ny-1)]();
@@ -133,6 +141,9 @@ void Fluid2D::Richtmyer(){
 	if(odd_vis) {
 		this->VelocityGradient();
 	}
+	if(therm_diff) {
+		this->DensityGradient();
+	}
 #pragma omp parallel for default(none) shared(Nx,Ny,FlxX,FlxY,Den,flxX_mid,flxY_mid,den_mid,vel_snd_arr,dt,dx)
 		for(int ks=0; ks<=Nx*Ny-Nx-Ny; ks++){ //correr todos os pontos da grelha secundaria de den_mid
 			GridPoint point(ks,Nx,Ny,true);
@@ -140,8 +151,11 @@ void Fluid2D::Richtmyer(){
 			float flx_x_avg = 0.25f * (FlxX[point.SW] + FlxX[point.SE] + FlxX[point.NW] + FlxX[point.NE]);
 			float flx_y_avg = 0.25f * (FlxY[point.SW] + FlxY[point.SE] + FlxY[point.NW] + FlxY[point.NE]);
             float tmp_avg   = 0.25f * ( Tmp[point.SW] + Tmp[point.SE]  + Tmp[point.NW]  + Tmp[point.NE]);
-
-
+			float n_dx=0.0f,n_dy=0.0f;
+			if(therm_diff) {
+				n_dx =0.25f * ( den_dx[point.SW] + den_dx[point.SE]  + den_dx[point.NW]  + den_dx[point.NE]);
+				n_dy =0.25f * ( den_dy[point.SW] + den_dy[point.SE]  + den_dy[point.NW]  + den_dy[point.NE]) ;
+			}
             den_mid[ks] = den_avg
 			              -0.5f*(dt/dx)*(DensityFluxX(point,'E') - DensityFluxX(point,'W'))
 			              -0.5f*(dt/dy)*(DensityFluxY(point,'N') - DensityFluxY(point,'S'))
@@ -158,13 +172,15 @@ void Fluid2D::Richtmyer(){
 				tmp_mid[ks] = tmp_avg
 				              -0.5f * (dt / dx) * (TemperatureFluxX(point, 'E') - TemperatureFluxX(point, 'W'))
 				              -0.5f * (dt / dy) * (TemperatureFluxY(point, 'N') - TemperatureFluxY(point, 'S'))
-							  +0.5f*dt* TemperatureSource(den_avg, flx_x_avg, flx_y_avg, 0.0f, 0.0f);
+							  +0.5f * dt * TemperatureSource(den_avg, flx_x_avg, flx_y_avg, n_dx, n_dy, 0.0f, 0.0f);
 			}
 		}
-
 	if(odd_vis) {
 		this->VelocityGradientMid();
 	}
+//	if(therm_diff) {
+//		this->DensityGradient();
+//	}
 #pragma omp parallel for default(none) shared(Nx,Ny,FlxX,FlxY,Den,flxX_mid,flxY_mid,den_mid,vel_snd_arr_mid,dt,dx)
 		for(int kp=1+Nx; kp<=Nx*Ny-Nx-2; kp++){ //correr a grelha principal evitando as fronteiras
 			GridPoint point(kp,Nx,Ny,false);
@@ -186,7 +202,7 @@ void Fluid2D::Richtmyer(){
 				if(therm_diff) {
 					Tmp[kp] = tmp_old - (dt / dx) * (TemperatureFluxX(point, 'E') - TemperatureFluxX(point, 'W'))
 					          - (dt / dy) * (TemperatureFluxY(point, 'N') - TemperatureFluxY(point, 'S'))
-							  + dt* TemperatureSource(den_old, flx_x_old, flx_y_old, 0.0f, 0.0f);
+							  + dt * TemperatureSource(den_old, flx_x_old, flx_y_old, den_dx[kp], den_dy[kp], 0.0f, 0.0f);
 				}
 			}
 		}
@@ -675,6 +691,129 @@ void Fluid2D::VelocityGradientMid() {
 	velY_dy_mid[ks] = ( 3.0f*(flxY_mid[ks]/m_0 ) -4.0f*(flxY_mid[ks-(Nx-1)]/m_y1 )+1.0f*(flxY_mid[ks-2*(Nx-1)]/m_y2 ) )/(2.0f*dy);
 }
 
+
+
+void Fluid2D::DensityGradient() {
+	int stride = Nx;
+#pragma omp parallel for default(none) shared(Nx,Ny,dx,dy,stride,Den,den_dx,den_dy)
+	for(int kp=1+Nx; kp<=Nx*Ny-Nx-2; kp++){  //correr a grelha principal evitando as fronteiras
+		if( kp%stride!=stride-1 && kp%stride!=0){ //aqui podem ser diferencas centradas quer em x quer em y
+			GridPoint point(kp,Nx,Ny,false);
+			den_dx[kp] = ( Den[point.E] - Den[point.W] )/(2.0f*dx);
+			den_dy[kp] = ( Den[point.N] - Den[point.S] )/(2.0f*dy);
+		}
+	}
+
+	for(int i=1 ; i<=Nx-2; i++){ // topo rede principal, ou seja j=(Ny - 1)
+		int top= i + (Ny - 1) * stride;
+		GridPoint point(top,Nx,Ny,false);
+		int southsouth= i + (Ny - 3) * stride;
+		den_dx[top] = ( (Den[point.E])-(Den[point.W]) )/(2.0f*dx); //OK
+		den_dy[top] = ( 3.0f*(Den[point.C]) -4.0f*(Den[point.S]) +1.0f*(Den[southsouth]) )/(2.0f*dy); //backward finite difference
+	}
+	for(int i=1 ; i<=Nx-2; i++){ // fundo rede principal, ou seja j=0
+		int bottom=i; //i+0*nx
+		GridPoint point(bottom,Nx,Ny,false);
+		int northnorth=i+2*stride;
+		den_dx[bottom] = ( (Den[point.E])-(Den[point.W]) )/(2.0f*dx);  //OK
+		den_dy[bottom] = ( -3.0f*(Den[point.C]) +4.0f*(Den[point.N])-1.0f*(Den[northnorth]) )/(2.0f*dy); //forward finite difference
+	}
+	for(int j=1; j<=Ny-2;j++){ //lado esquerdo da rede principal ou seja i=0
+		int left = 0 + j*stride;
+		GridPoint point(left,Nx,Ny,false);
+		int easteast = left + 2;
+		den_dx[left] = ( -3.0f*(Den[point.C]) +4.0f*(Den[point.E])-1.0f*(Den[easteast]) )/(2.0f*dx); //forward difference
+		den_dy[left] = ( (Den[point.N])-(Den[point.S]) )/(2.0f*dy); //OK
+	}
+	for(int j=1; j<=Ny-2;j++){ //lado direito da rede principal ou seja i=(Nx-1)
+		int right = (Nx-1) + j*stride;
+		GridPoint point(right,Nx,Ny,false);
+		int westwest = right-2;
+		den_dx[right] = ( 3.0f*(Den[point.C]) -4.0f*(Den[point.W]) +1.0f*(Den[westwest]) )/(2.0f*dx); //backwar difference
+		den_dy[right] = ( (Den[point.N])-(Den[point.S]) )/(2.0f*dy); //OK
+	}
+	//os 4 cantos em que ambas a derivadas nao podem ser centradas
+	int kp;
+	// i=0 j=0 forward x forward y
+	kp = 0 + 0*Nx;
+	den_dx[kp] = ( -3.0f*(Den[kp] ) +4.0f*(Den[kp+1] )-1.0f*(Den[kp+2] )  )/(2.0f*dx);
+	den_dy[kp] = ( -3.0f*(Den[kp] ) +4.0f*(Den[kp+1*Nx] )-1.0f*(Den[kp+2*Nx] )  )/(2.0f*dy);
+	// i=(Nx-1) j=0 backward x forward y
+	kp = (Nx-1) + 0*Nx;
+	den_dx[kp] = (  3.0f*(Den[kp] ) -4.0f*(Den[kp-1] )+1.0f*(Den[kp-2] )  )/(2.0f*dx);
+	den_dy[kp] = ( -3.0f*(Den[kp] ) +4.0f*(Den[kp+Nx] )-1.0f*(Den[kp+2*Nx] )  )/(2.0f*dy);
+	// i=0 j=(Ny-1) forward x backward y
+	kp = 0 + (Ny-1)*Nx;
+	den_dx[kp] = ( -3.0f*(Den[kp] ) +4.0f*(Den[kp+1] )-1.0f*(Den[kp+2] )  )/(2.0f*dx);
+	den_dy[kp] = (  3.0f*(Den[kp] ) -4.0f*(Den[kp-Nx] )+1.0f*(Den[kp-2*Nx] )  )/(2.0f*dy);
+	// i=(Nx-1) j=(Ny-1) backward x backward y
+	kp = (Nx-1) + (Ny-1)*Nx;
+	den_dx[kp] = ( 3.0f*(Den[kp] ) -4.0f*(Den[kp-1] )+1.0f*(Den[kp-2] ) )/(2.0f*dx);
+	den_dy[kp] = ( 3.0f*(Den[kp] ) -4.0f*(Den[kp-Nx] )+1.0f*(Den[kp-2*Nx] ) )/(2.0f*dy);
+}
+
+
+
+void Fluid2D::DensityGradientMid() {
+
+#pragma omp parallel for default(none)  shared(Nx,Ny,dx,dy,den_mid,den_dx_mid,den_dy_mid)
+	for(int ks=1+(Nx-1); ks<=(Nx-3)+(Ny-3)*(Nx-1); ks++){ //correr todos os pontos da grelha secundaria de _mid EVITANDO FRONTEIRAS
+		if( ks%(Nx-1)!=Nx-2 && ks%(Nx-1)!=0) {
+			GridPoint point(ks,Nx,Ny,true);
+			den_dx_mid[ks] = ( (den_mid[point.E]) - (den_mid[point.W]) ) / (2.0f * dx);
+			den_dy_mid[ks] = ( (den_mid[point.N]) - (den_mid[point.S]) ) / (2.0f * dy);
+		}
+	}
+	for(int i=1 ; i<=(Nx-1)-2; i++){ // topo rede principal, ou seja j=((Ny-1) - 1)
+		int top= i + ((Ny-1) - 1) * (Nx-1);
+		GridPoint point(top,Nx,Ny,true);
+		int southsouth= i + ((Ny-1) - 3) * (Nx-1);
+		den_dx_mid[top] = ( (den_mid[point.E])-(den_mid[point.W]) )/(2.0f*dx); //OK
+		den_dy_mid[top] = ( 3.0f*(den_mid[point.C]) -4.0f*(den_mid[point.S]) +1.0f*(den_mid[southsouth]) )/(2.0f*dy); //backward finite difference
+	}
+	for(int i=1 ; i<=(Nx-1)-2; i++){ // fundo rede principal, ou seja j=0
+		int bottom=i; //i+0*nx
+		GridPoint point(bottom,Nx,Ny,true);
+		int northnorth=i+2*(Nx-1);
+		den_dx_mid[bottom] = ( (den_mid[point.E])-(den_mid[point.W]) )/(2.0f*dx);  //OK
+		den_dy_mid[bottom] = ( -3.0f*(den_mid[point.C]) +4.0f*(den_mid[point.N])-1.0f*(den_mid[northnorth]) )/(2.0f*dy); //forward finite difference
+	}
+	for(int j=1; j<=(Ny-1)-2;j++){ //lado esquerdo da rede principal ou seja i=0
+		int left = 0 + j*(Nx-1);
+		GridPoint point(left,Nx,Ny,true);
+		int easteast = left + 2;
+		den_dx_mid[left] = ( -3.0f*(den_mid[point.C]) +4.0f*(den_mid[point.E])-1.0f*(den_mid[easteast])  )/(2.0f*dx); //forward difference
+		den_dy_mid[left] = ( (den_mid[point.N])-(den_mid[point.S]) )/(2.0f*dy); //OK
+	}
+	for(int j=1; j<=(Ny-1)-2;j++){ //lado direito da rede principal ou seja i=((Nx-1)-1)
+		int right = ((Nx-1)-1) + j*(Nx-1);
+		GridPoint point(right,Nx,Ny,true);
+		int westwest = right-2;
+		den_dx_mid[right] = ( 3.0f*(den_mid[point.C]) -4.0f*(den_mid[point.W]) +1.0f*(den_mid[westwest]) )/(2.0f*dx); //backwar difference
+		den_dy_mid[right] = ( (den_mid[point.N])-(den_mid[point.S]) )/(2.0f*dy); //OK
+	}
+//os 4 cantos em que ambas a derivadas nao podem ser centradas
+	int ks;
+// i=0 j=0 forward x forward y
+	ks = 0 + 0*(Nx-1);
+	den_dx_mid[ks] = ( -3.0f*(den_mid[ks] ) +4.0f*(den_mid[ks+1] )-1.0f*(den_mid[ks+2] )  )/(2.0f*dx);
+	den_dy_mid[ks] = ( -3.0f*(den_mid[ks] ) +4.0f*(den_mid[ks+1*(Nx-1)] )-1.0f*(den_mid[ks+2*(Nx-1)] )  )/(2.0f*dy);
+// i=((Nx-1)-1) j=0 backward x forward y
+	ks = ((Nx-1)-1) + 0*(Nx-1);
+	den_dx_mid[ks] = (  3.0f*(den_mid[ks] ) -4.0f*(den_mid[ks-1] )+1.0f*(den_mid[ks-2] )  )/(2.0f*dx);
+	den_dy_mid[ks] = ( -3.0f*(den_mid[ks] ) +4.0f*(den_mid[ks+(Nx-1)] )-1.0f*(den_mid[ks+2*(Nx-1)] )  )/(2.0f*dy);
+// i=0 j=((Ny-1)-1) forward x backward y
+	ks = 0 + ((Ny-1)-1)*(Nx-1);
+	den_dx_mid[ks] = ( -3.0f*(den_mid[ks] ) +4.0f*(den_mid[ks+1] )-1.0f*(den_mid[ks+2] )  )/(2.0f*dx);
+	den_dy_mid[ks] = (  3.0f*(den_mid[ks] ) -4.0f*(den_mid[ks-(Nx-1)] )+1.0f*(den_mid[ks-2*(Nx-1)] )  )/(2.0f*dy);
+// i=((Nx-1)-1) j=((Ny-1)-1) backward x backward y
+	ks = ((Nx-1)-1) + ((Ny-1)-1)*(Nx-1);
+	den_dx_mid[ks] = ( 3.0f*(den_mid[ks] ) -4.0f*(den_mid[ks-1] )+1.0f*(den_mid[ks-2] ) )/(2.0f*dx);
+	den_dy_mid[ks] = ( 3.0f*(den_mid[ks] ) -4.0f*(den_mid[ks-(Nx-1)] )+1.0f*(den_mid[ks-2*(Nx-1)] ) )/(2.0f*dy);
+}
+
+
+
 float Fluid2D::DensityToMass(float density) {
 	return density;
 }
@@ -895,7 +1034,7 @@ float Fluid2D::Laplacian19(GridPoint p, float *input_ptr, float constant) {
 return lap;
 }
 
-float Fluid2D::TemperatureSource(float n, float flx_x, float flx_y, float mass, float s) {
+float Fluid2D::TemperatureSource(float n, float flx_x, float flx_y, float den_grad_x, float den_grad_y, float mass, float s) {
 	return 0;
 }
 
