@@ -123,7 +123,8 @@ To later extract the electronic quantities from the fluid simulation data one sh
 $ ./TETHYS_ELEC_2D [name of output file].h5
 ```
 
-###Output description
+
+### Output description
 
 The user can opt for simplified or full output.
 
