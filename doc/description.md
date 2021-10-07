@@ -20,24 +20,25 @@ The complete model that the code aims to simulated is given by the equations
 @f]
 and
 @f[
-\frac{\partial \vec{v}}{\partial t} + \frac{1}{2}(\vec{v}\cdot \bm{\nabla} )\vec{v}  +\frac{v_F^2}{2n}\bm{\nabla}n+\frac{S^2}{\sqrt{n}}\bm{\nabla}n-\\-\nu_s\nabla^2\vec{v}-\nu_o\nabla^2\vec{v}^\dagger+\omega_c\vec{v}\times\vec{\hat{z}}=\frac{1-\vec{v}}{\tau},\label{eq:eulerequations2}    
+\frac{\partial \vec{v}}{\partial t} + \frac{1}{2}(\vec{v}\cdot \bm{\nabla} )\vec{v}  +\frac{v_F^2}{2n}\bm{\nabla}n+\frac{S^2}{\sqrt{n}}\bm{\nabla}n-\\-\nu_s\nabla^2\vec{v}-\nu_o\nabla^2\vec{v}^\dagger+\omega_c\vec{v}^\dagger=-\frac{\vec{v}}{\tau},\label{eq:eulerequations2}    
 @f]
 
-where @f$\vec{v}^\dagger=[-v_y,v_x]^\mathsf{T}@f$ refers to the rotated velocity vector and we consider a magnetic field @f$\vec{B}=B_0\vec{\hat{z}}@f$.  All the parameters are detailed at Table ?. Evidently, some aspects of the system, as the odd viscosity and the magnetic terms, can only have meaning in a 2D simulation.
+where @f$\vec{v}^\dagger=[-v_y,v_x]^\mathsf{T}@f$ refers to the rotated velocity vector and we consider a magnetic field @f$\vec{B}=B_0\vec{\hat{z}}@f$.  All the parameters are detailed at the table bellow. Evidently, some aspects of the system, as the odd viscosity and the magnetic terms, can only have meaning in a 2D simulation.
 The parameter @f$S@f$ has units of a velocity and can be interpreted as a sound speed of the electron fluid (not to be confused with the intrinsic sound speed of phonons in graphene). Moreover, the ratio @f$S/v_0@f$ will play a crucial role determining the properties of the hydrodynamic system, similarly to the Froude number in fluid dynamics. For typical parameters of a graphene FET, @f$S/v_0@f$ scales up to a few tens.
 While the system can easily be casted in a conservation form form the one-dimensional case, the two-dimensional scenario poses some technical difficulties in writing as a flux law. For that reason, we resorted to the mass flux density @f$\vec{p}=m^\star n\vec{v}@f$ which allows us to rewrite the model in the equivalent form   
 @f[
-\frac{\partial n}{\partial t}+\bm{\nabla}\!\cdot\!\frac{\vec{p}}{\sqrt{n}}=0 \text{  and}    
+\frac{\partial n}{\partial t}+\bm{\nabla}\!\cdot\!\frac{\vec{p}}{\sqrt{n}}=0,     
 \label{eq:moment_1}
 @f]
 @f[
-\frac{\partial \vec{p}}{\partial t}+\bm{\nabla}\!\cdot\!\left( \frac{ \vec{p}\otimes \vec{p}}{{n}^{3/2}} + v_F^2\frac{n^{3/2}}{3}\mathds{1}+S^2\frac{{n}^2}{2}\mathds{1}\right)+\\
--\nu_s\nabla^2\frac{\vec{p}}{n^{3/2}} -\nu_o\nabla^2\frac{\vec{p}^\dagger}{n^{3/2}}
-+\omega_c\frac{\vec{p}\times\vec{\hat{z}}}{\sqrt{n}}=0. \label{eq:moment_2}
+\frac{\partial \vec{p}}{\partial t}+\bm{\nabla}\!\cdot\!\left( \frac{ \vec{p}\otimes \vec{p}}{{n}^{3/2}} + v_F^2\frac{n^{3/2}}{3}+S^2\frac{{n}^2}{2}\right)-\nu_s\nabla^2\frac{\vec{p}}{n^{3/2}} -\nu_o\nabla^2\frac{\vec{p}^\dagger}{n^{3/2}}
++\omega_c\frac{\vec{p}^\dagger}{\sqrt{n}}=0
 @f]
-
-that was implemented in the 2D algorithms.
- 
+and 
+@f[
+\frac{\partial T}{\partial t} +\nabla \cdot \left[\left( \frac{T}{n^{\sfrac{3}{2}}}+\frac{3}{4\pi ^{2}}\right) \vec{p}\right]-\alpha \nabla ^{2}T=\frac{S^{2}}{v_{F}^{2}}\frac{\vec{p}}{\sqrt{n}}\cdot \bm{\nabla} n+ \Pi
+@f]
+for the number density, momentum density and temperature.
 
 | Parameter   |      Description    |   Relations  | Requirements | Typical values | 
 | :---:   |      :---      |  --- | :---:| ---  |

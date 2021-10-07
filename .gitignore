@@ -13,7 +13,7 @@
 # Mac stuff
 *DS_Store*
 
-#images
+#.images
 *.png
 
 #archives
@@ -94,5 +94,5 @@ Mkfile.old
 dkms.conf
 /venv/
 /build/
-!/images/logo/logo64x72.png
-!/images/logo/logo_png-01.png
+!/.images/logo/logo64x72.png
+!/.images/logo/logo_png-01.png

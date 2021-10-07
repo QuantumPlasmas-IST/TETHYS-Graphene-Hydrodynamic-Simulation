@@ -81,7 +81,7 @@ and then, the corrector is obtained by
 @f]
 In the matter of this scheme stability, for equal spacing @f$\Delta y=\Delta x@f$, the previous condition, defined for the one-dimensional case, has hitherto been sufficient to guarantee stability.
 
-
+<!---
 @section twodftcs Two-dimensional Forward Time Centred Space method
 
 Turning now our attention to the diffusive part of which can be written as
@@ -129,3 +129,5 @@ with @f$\varsigma=\eta\Delta t / \Delta y^2@f$ and @f$\sigma=\eta\Delta t / \Del
 @f[
 \vec{u}^{k+1}_{\substack{i\\j}}=\frac{1-4\sigma}{1+4\sigma}\vec{u}^{k-1}_{\subalign{&i\\&j}}+\frac{2\sigma}{1+4\sigma}\left(\vec{u}^{k}_{\subalign{&i+1\\&j}} +\vec{u}^{k}_{\subalign{&i-1\\&j}}+\vec{u}^{k}_{\subalign{&i\\&j+1}} +\vec{u}^{k}_{\subalign{&i\\&j-1}} \right)
 @f]
+
+-->

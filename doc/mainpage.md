@@ -119,3 +119,6 @@ hdf5_2D<...>.h5
 <br>&emsp;**2.3.1** Parallelization with OpenMP  *[25 Nov. 2020]*
 <br>&emsp;**2.4.0** Simulation with odd viscosity  *[12 Feb. 2021]*
 <br>&emsp;**2.5.0** Energy transport by conduction and convection  *[22 May. 2021]*
+<br>&emsp;**2.5.1** Initialization by .ini file import  *[30 Jun. 2021]*
+<br>&emsp;**2.5.2** cmake update   *[29 Aug. 2021]*
+<br>&emsp;**2.6.0** Joule heating source added  *[6 Oct. 2021]*
