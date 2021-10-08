@@ -1,0 +1,9 @@
+# exclude .gitignore and similar from the generated tarball
+.git*           export-ignore
+# exclude CI configurations (useless outside the repo)
+.github/workflows/main.yml  export-ignore
+.github/workflows/label.yml  export-ignore
+.github/workflows/codeeval.yml  export-ignore
+.github/workflows/runtest.yml  export-ignore
+.github/workflows/codeql-analysis.yml  export-ignore
+.github/labeler.yml   export-ignore
