@@ -73,15 +73,22 @@ int main(int argc, char **argv){
 		GrapheneFluid2D::TimeStepCounter++;
 
 		graph.Richtmyer();
+
+		/*+++++++++++++++++++++++++++++++++++++*
+		 * Change the boundary conditions here *
+		 *+++++++++++++++++++++++++++++++++++++*/
 		DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
 		DirichletBoundaryCondition::YClosedNoSlip(graph);
-
 		if(graph.GetThermDiff()!=0.0){
 			DirichletBoundaryCondition::Temperature(graph,0.22f, 0.22f, 0.22f, 0.22f);  // 300K corresponds to 0.22*Fermi temperature
 		}
 
 		if(graph.GetKinVis()!=0.0f || graph.GetThermDiff()!=0.0f  ) {
 			graph.ParabolicOperatorWeightedExplicit19();
+
+			/*+++++++++++++++++++++++++++++++++++++*
+			 * Change the boundary conditions here *
+			 *+++++++++++++++++++++++++++++++++++++*/
 			DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
 			DirichletBoundaryCondition::YClosedNoSlip(graph);
 			if(graph.GetThermDiff()!=0.0){

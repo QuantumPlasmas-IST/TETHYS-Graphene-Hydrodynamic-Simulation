@@ -110,6 +110,18 @@ $ ctest --extra-verbose
 or, if you want to run each one seperatly `ctest --extra-verbose -I 1,1,,1` or  `ctest --extra-verbose -I 2,2,,2` respectively.
 N.b. those test are intended to simultaneously assess all the different parameters and capabilities of the simulation code but they do not represent any particular physical scenario.
 
+### Configuring a simulation 
+
+To configure the boundary conditions applied to the system the user is expected to edit the `TETHYS_2D_Main_v<...>.cpp` file according to his needs. The default boundary conditions are the following:
+```cpp
+DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
+DirichletBoundaryCondition::YClosedNoSlip(graph);
+if(graph.GetThermDiff()!=0.0){
+    DirichletBoundaryCondition::Temperature(graph,0.22f, 0.22f, 0.22f, 0.22f);  
+}
+```
+to be applied imediatly after both numerical methods.  
+
 ### Running a simulation
 #### 1) Fluid simulation
 To run a simulation one can simply invoke
