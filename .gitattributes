@@ -1,5 +1,8 @@
 # exclude .gitignore and similar from the generated tarball
 .git*           export-ignore
+# exclude github specific markdown
+CODE_OF_CONDUCT.md
+CONTRIBUTING.md
 # exclude CI configurations (useless outside the repo)
 .github/workflows/main.yml  export-ignore
 .github/workflows/label.yml  export-ignore
