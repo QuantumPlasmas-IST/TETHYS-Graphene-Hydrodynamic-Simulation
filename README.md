@@ -110,9 +110,9 @@ $ ctest --extra-verbose
 or, if you want to run each one seperatly `ctest --extra-verbose -I 1,1,,1` or  `ctest --extra-verbose -I 2,2,,2` respectively.
 N.b. those test are intended to simultaneously assess all the different parameters and capabilities of the simulation code but they do not represent any particular physical scenario.
 
-### Configuring a simulation 
+### Reconfiguring a simulation 
 
-To configure the boundary conditions applied to the system the user is expected to edit the `TETHYS_2D_Main_v<...>.cpp` file according to his needs. The default boundary conditions are the following:
+TETHYS was designed and is meant to primarily simulate and study Dyakonov-Shur instability and therefore the boundary conditions required to excite such response are implemented. However, if the user wish to configure the boundary conditions applied to the system differently, he is expected to edit the `TETHYS_2D_Main_v<...>.cpp` file according to his needs. The default boundary conditions are the following:
 ```cpp
 DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
 DirichletBoundaryCondition::YClosedNoSlip(graph);
@@ -120,7 +120,7 @@ if(graph.GetThermDiff()!=0.0){
     DirichletBoundaryCondition::Temperature(graph,0.22f, 0.22f, 0.22f, 0.22f);  
 }
 ```
-to be applied imediatly after both numerical methods.  
+to be applied imediatly after both numerical methods. See doxygen documentation for further details.  
 
 ### Running a simulation
 #### 1) Fluid simulation
