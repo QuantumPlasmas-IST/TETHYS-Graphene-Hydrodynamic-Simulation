@@ -6,7 +6,7 @@ First of all, thank you for joining this project! :bow:
 
 You can either use the _Discussions_ tab or the _issues_ to start a discussion about some problem or new feature. The rule of thumb being that issues should be relativelly self contained and problem-solving oriented while the discussion have a broader spectrum. 
 
-## Git Flow :arrows_counterclockwise:
+## Git Strategy :arrows_counterclockwise:
 
 There are two long lived branches: `master` (as one would expect) and `TestingArea` (you can think of it as a _develop branch_). Aditionally you will find some (_'kinda'_) short-lived branches dedicated to solve or explore particular problems or physical scenarios, let's call them _feature branches_.  
 While working on new aspects or features you should work on on of the existing feature branches, or if none of them adress you intended topic, create one yourself. Afterwards you can pull request/merge your addition to the `TestingArea` where seceral features are then tested and harmonized. 
