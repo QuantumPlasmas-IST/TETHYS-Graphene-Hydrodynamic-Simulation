@@ -21,7 +21,7 @@ The full documentation can be generated with Doxygen simply running
 ```console
 $ doxygen Doxyfile
 ```
-from the root directory
+from the root directory , and then accessed from the `Documentation.html` file.
 
 <!--- ## Richtmyer method implementation --->
 <!--- Repository for the elaboration of the hydrodynamic model simulation. --->
