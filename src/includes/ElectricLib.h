@@ -4,6 +4,11 @@
 * Distributed under the MIT License (license terms are at http://opensource.org/licenses/MIT).   *
 \************************************************************************************************/
 
+
+/*!@file
+ * @brief Header file for the electrical analysis post-processing class
+ */
+
 #ifndef ELECTRICLIB_H
 #define ELECTRICLIB_H
 

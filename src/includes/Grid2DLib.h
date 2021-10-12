@@ -4,6 +4,11 @@
 * Distributed under the MIT License (license terms are at http://opensource.org/licenses/MIT).   *
 \************************************************************************************************/
 
+
+/*!@file
+ * @brief Header file for grid point class
+ */
+
 #ifndef GRID2DLIB_H
 #define GRID2DLIB_H
 

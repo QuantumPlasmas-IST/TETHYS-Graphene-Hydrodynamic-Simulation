@@ -4,6 +4,10 @@
 * Distributed under the MIT License (license terms are at http://opensource.org/licenses/MIT).   *
 \************************************************************************************************/
 
+/*!@file
+ * @brief Header file for fluid base class and and IO methods
+ */
+
 #ifndef TETHYSBASELIB_H
 #define TETHYSBASELIB_H
 

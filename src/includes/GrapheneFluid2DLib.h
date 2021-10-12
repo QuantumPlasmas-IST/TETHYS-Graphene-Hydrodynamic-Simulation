@@ -4,6 +4,11 @@
 * Distributed under the MIT License (license terms are at http://opensource.org/licenses/MIT).   *
 \************************************************************************************************/
 
+
+/*!@file
+ * @brief Header file for 2D Dirac-Fermi fluid
+ */
+
 #ifndef GRAPHENEFLUID2DLIB_H
 #define GRAPHENEFLUID2DLIB_H
 

@@ -5,6 +5,11 @@
 \************************************************************************************************/
 
 
+/*!@file
+ * @brief Header file for 1D general fluid
+ */
+
+
 #ifndef FLUID2DLIB_H
 #define FLUID2DLIB_H
 
