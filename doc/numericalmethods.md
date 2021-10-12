@@ -28,8 +28,8 @@ In the onedimensional case, the hyperbolic system of equations for density and v
 and was implemented for @f$n@f$ and @f$v@f$ according to
 
 @f{align}
-\vec{u}_{i+\sfrac{1}{2}}^{k+\sfrac{1}{2}} &= \frac{1}{2}\left(\vec{u}_{i+1}^k + \vec{u}_{i}^k\right) - \frac{\Delta t}{2\Delta x}\left( \mathbf{F}_{i+1}^k - \mathbf{F}_{i}^k\right)\label{eq:richt_1}\\
-\vec{u}_i^{k+1} &= \vec{u}_i^k - \frac{\Delta t}{\Delta x} \left( \mathbf{F}_{i+\sfrac{1}{2}}^{k+\sfrac{1}{2}} - \mathbf{F}_{i-\sfrac{1}{2}}^{k+\sfrac{1}{2}}\right)\label{eq:richt_2}
+\vec{u}_{i+1/2}^{k+1/2} &= \frac{1}{2}\left(\vec{u}_{i+1}^k + \vec{u}_{i}^k\right) - \frac{\Delta t}{2\Delta x}\left( \mathbf{F}_{i+1}^k - \mathbf{F}_{i}^k\right)\label{eq:richt_1}\\
+\vec{u}_i^{k+1} &= \vec{u}_i^k - \frac{\Delta t}{\Delta x} \left( \mathbf{F}_{i+1/2}^{k+1/2} - \mathbf{F}_{i-1/2}^{k+1/2}\right)\label{eq:richt_2}
 @f}
 using @f$\vec{u}@f$ and @f$\mathbf{F}(\vec{u})@f$ as defined by equation and space (indicated at subscript indices) and time (indicated at superscript indices) discretisation where @f$t=k\Delta t@f$ and @f$t=i\Delta x@f$. Since such scheme is second order both in time and space it will not introduce spurious diffusion in the solution as a first order scheme would. It will, however, introduce artificial oscillations, contiguous to discontinuities, which can be corrected by the application of a moving average smoothing filter.
 
@@ -70,64 +70,15 @@ p_xp_yn^{-3/2} \\
 
 The generalisation of leads to a more complex method having, for the first step, the form
 @f[
-\vec{u}^{k+\sfrac{1}{2}}_{\subalign{i&+\sfrac{1}{2}\\j&+\sfrac{1}{2}}}=\frac{1}{4}\left(\vec{u}^{k}_{\subalign{i\\j}}+\vec{u}^{k}_{\subalign{&i+1\\&j}}+\vec{u}^{k}_{\subalign{&i\\&j+1}}+\vec{u}^{k}_{\subalign{i&+1\\j&+1}}\right)-\\
--\frac{\Delta t}{2\Delta x}\left(\vec{F}^{k}_{\subalign{i&+1\\j&+\sfrac{1}{2}}}-\vec{F}^{k}_{\subalign{&i\\&j+\sfrac{1}{2}}} \right)
--\frac{\Delta t}{2\Delta y}\left( \vec{G}^{k}_{\subalign{i&+\sfrac{1}{2}\\j&+1}}-\vec{G}^{k}_{\subalign{&i+\sfrac{1}{2}\\&j}} \right)
-\label{eq:richt2D_1}
+\vec{u}^{k+1/2}_{i+1/2,j+1/2}=\frac{1}{4}\left(\vec{u}^{k}_{i,j}+\vec{u}^{k}_{i+1,j}+\vec{u}^{k}_{i,j+1}}+\vec{u}^{k}_{i+1,j+1}\right)
+-\frac{\Delta t}{2\Delta x}\left(\vec{F}^{k}_{i+1,j+1/2}-\vec{F}^{k}_{i,j+1/2} \right) -\frac{\Delta t}{2\Delta y}\left( \vec{G}^{k}_{i+1/2,j+1}-\vec{G}^{k}_{i+1/2, j}\right)
 @f]
 and then, the corrector is obtained by
 @f[
-\vec{u}^{k+1}_{\substack{i\\j}}=\vec{u}^{k}_{\subalign{&i\\&j}}-\frac{\Delta t}{\Delta x}\left(\vec{F}^{k+\sfrac{1}{2}}_{\subalign{&i+\sfrac{1}{2}\\&j}}-\vec{F}^{k+\sfrac{1}{2}}_{\subalign{&i-\sfrac{1}{2}\\&j}}\right)-\frac{\Delta t}{\Delta y}\left(\vec{G}^{k+\sfrac{1}{2}}_{\subalign{&i\\&j+\sfrac{1}{2}}}-\vec{G}^{k+\sfrac{1}{2}}_{\subalign{&i\\&j-\sfrac{1}{2}}}\right)\label{eq:richt2D_2}
+\vec{u}^{k+1}_{i,j}=\vec{u}^{k}_{i,j}-\frac{\Delta t}{\Delta x}\left(\vec{F}^{k+1/2}_{i+1/2,j}-\vec{F}^{k+1/2}_{i-1/2,j}\right)-\frac{\Delta t}{\Delta y}\left(\vec{G}^{k+1/2}_{i,j+1/2}}-\vec{G}^{k+1/2}_{i,j-1/2}\right)
 @f]
 In the matter of this scheme stability, for equal spacing @f$\Delta y=\Delta x@f$, the previous condition, defined for the one-dimensional case, has hitherto been sufficient to guarantee stability.
 
-<!---
-@section twodftcs Two-dimensional Forward Time Centred Space method
+@section twodftcs19 Two-dimensional weighted FTCS method
 
-Turning now our attention to the diffusive part of which can be written as
-@f[
-\frac{\partial \vec{u}}{\partial t}=\nabla^2\vec{D}(\vec{u})+\vec{b}(\vec{u})
-@f]
-with the viscous term
-@f[
-\vec{D}(\vec{u})=\begin{bmatrix}      
-0\\
-(\nu_s\,p_x-\nu_o\,p_y)n^{-3/2}\\
-(\nu_s\,p_y+\nu_o\,p_x)n^{-3/2}
-\end{bmatrix}
-@f]
-and the magnetic source term
-@f[
-\vec{b}(\vec{u})=\begin{bmatrix}      
-0\\
--\omega_c\, p_yn^{-1/2}\\
-\hphantom{-}\omega_c\, p_xn^{-1/2}
-\end{bmatrix},
-@f]
-applying a forward time and centred space stencil yields the scheme:
-@f[
-\vec{u}^{k+1}_{\substack{i\\j}}=\vec{u}^{k}_{\subalign{&i\\&j}}+\frac{\Delta t}{\Delta x^2}\left(\vec{D}^{k}_{\subalign{&i+1\\&j}} -2\vec{D}^{k}_{\subalign{&i\\&j}}+\vec{D}^{k}_{\subalign{&i-1\\&j}} \right)+\\+\frac{\Delta t}{\Delta y^2}\left(\vec{D}^{k}_{\subalign{&i\\&j+1}} -2\vec{D}^{k}_{\subalign{&i\\&j}}+\vec{D}^{k}_{\subalign{&i\\&j-1}} \right) +\Delta t\vec{b}^{k}_{\subalign{&i\\&j}}
-@f]
 
-It is important to notice that this method, being such a direct calculation has a strong constraint on the stability. For a purely diffusive system as @f$\partial_t u =\nu_s\,\partial^2_{xx} u@f$ it is well established that stability requires
-@f[
-2\nu_s \Delta t \leq \frac{\Delta x^2\Delta y^2}{\Delta x^2+ \Delta y^2},
-@f]
-which is somewhat narrower than the CFL condition for the hyperbolic part and imposes a maximum value of the @f$\nu_s@f$ parameter. Notwithstanding, given that the typical values for shear viscosity on graphene are so low this restriction is of little consequence. Yet, for the dispersive case of odd viscosity no general criterion is known.
-
-@section twoddff Two-dimensional Du Fort--Frankel method
-
-@f[
-\vec{u}^{k+1}_{\substack{i\\j}}=\vec{u}^{k-1}_{\subalign{&i\\&j}}+\frac{2\Delta t}{\Delta x^2}\left[\vec{D}^{k}_{\subalign{&i+1\\&j}} -\left(\vec{D}^{k+1}_{\subalign{&i\\&j}} + \vec{D}^{k-1}_{\subalign{&i\\&j}} \right)+\vec{D}^{k}_{\subalign{&i-1\\&j}} \right]+\\+\frac{2\Delta t}{\Delta y^2}\left[\vec{D}^{k}_{\subalign{&i\\&j+1}} -\left(\vec{D}^{k+1}_{\subalign{&i\\&j}} + \vec{D}^{k-1}_{\subalign{&i\\&j}} \right)+\vec{D}^{k}_{\subalign{&i\\&j-1}} \right]
-@f]
-
-for a linear diffusion function @f$\partial_t u=\eta \nabla^2u@f$ can be simplified to
-@f[  
-\vec{u}^{k+1}_{\substack{i\\j}}=\frac{1-2\sigma-2\varsigma}{1+2\sigma+2\varsigma}\vec{u}^{k-1}_{\subalign{&i\\&j}}+\frac{2\sigma}{1+2\sigma+2\varsigma}\left[\vec{u}^{k}_{\subalign{&i+1\\&j}} +\vec{u}^{k}_{\subalign{&i-1\\&j}} \right]+\\+\frac{2\varsigma}{1+2\sigma+2\varsigma}\left[\vec{u}^{k}_{\subalign{&i\\&j+1}} +\vec{u}^{k}_{\subalign{&i\\&j-1}} \right]
-@f]
-with @f$\varsigma=\eta\Delta t / \Delta y^2@f$ and @f$\sigma=\eta\Delta t / \Delta x^2@f$. Evidently, for the equal grid @f$\Delta x=\Delta y@f$ case:
-@f[
-\vec{u}^{k+1}_{\substack{i\\j}}=\frac{1-4\sigma}{1+4\sigma}\vec{u}^{k-1}_{\subalign{&i\\&j}}+\frac{2\sigma}{1+4\sigma}\left(\vec{u}^{k}_{\subalign{&i+1\\&j}} +\vec{u}^{k}_{\subalign{&i-1\\&j}}+\vec{u}^{k}_{\subalign{&i\\&j+1}} +\vec{u}^{k}_{\subalign{&i\\&j-1}} \right)
-@f]
-
--->
