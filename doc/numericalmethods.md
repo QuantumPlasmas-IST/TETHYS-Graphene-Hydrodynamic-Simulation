@@ -82,3 +82,22 @@ In the matter of this scheme stability, for equal spacing @f$\Delta y=\Delta x@f
 @section twodftcs19 Two-dimensional weighted FTCS method
 
 
+Here we briefly present the weighted FTCS method \cite Hayman1988, which is used to solve the parabolic part of the differential equations. Hence, we aim to solve an equation of the type
+@f[
+\frac{\partial \vec{u}}{\partial t}=\vec{\alpha}\cdot \nabla^2\vec{u},
+@f]
+with @f$vec{\alpha}= \left[0, \nu_s, \nu_s, \alpha\right]^\top@f$ a vector of diffusion coefficients. It must be noted that, for this method, the mass flux is converted to velocity before applying the algorithm, so @f$\vec{u}=\left[n, v_x, v_y, T\right]^\top@f$.
+Instead of simply applying the central difference operator at each grid point, a stencil of 9 points (the central point and its 1<sup>st</sup> and 2<sup>nd</sup> neighbours) is used to calculate the Laplacian. The contribution of each term is taken into account using a weight parameter @f$\theta@f$ such that
+@f[
+\frac{\partial^2 u}{\partial x^2}\approx (1-2\theta)\delta^2_xu_{i,j}+\theta\left(\delta^2_xu_{i,j-1}+\delta^2_xu_{i,j+1}\right)
+@f]
+and
+@f[
+\frac{\partial^2 u}{\partial y^2}\approx (1-2\theta)\delta^2_yu_{i,j}+\theta\left(\delta^2_yu_{i-1,j}+\delta^2_yu_{i+1,j}\right),
+@f]
+where @f$\delta^2_x@f$ and @f$\delta^2_y@f$ are the central difference operators along @f$x@f$ and @f$y@f$, respectively. It is seen that the weights that minimize the second-order errors, following the approach of _modified equivalent partial differential equation_ \cite Warming1974, lead to the following expression for the time evolution \cite Hayman1988 :
+@f[
+\vec{u}^{k+1}_{i,j}=\Delta_x\Delta_y\left(\vec{u}^{k}_{i-1,j-1}+\vec{u}^{k}_{i-1,j+1}+\vec{u}^{k}_{i+1,j-1}+\vec{u}^{k}_{i+1,j+1}\right)+\Delta_y(1-2\Delta_x)\left(\vec{u}^{k}_{i,j-1}+\vec{u}^{k}_{i,j+1}\right)
++\Delta_x(1-2\Delta_y)\left(\vec{u}^{k}_{i-1,j} + \vec{u}^{k}_{i+1,j}\right)+(1-2\Delta_x)(1-2\Delta_y)\vec{u}^{k}_{i,j}
+@f]
+with @f$\Delta_x=\frac{\alpha \Delta t}{\Delta x^2}@f$ and  @f$\Delta_y=\frac{\alpha \Delta t}{\Delta y^2}@f$. 
