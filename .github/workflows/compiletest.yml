@@ -27,3 +27,7 @@ jobs:
       run: |
        brew update
        brew install hdf5
+    - name: Configure CMake
+      run: cmake ./
+    - name: Build
+      run: make all
