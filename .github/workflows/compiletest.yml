@@ -22,7 +22,6 @@ jobs:
   build_on_MacOs:
     runs-on: macos-latest
     steps:
-    - name: Check out repository code
     - uses: actions/checkout@v2
     - name: Install HDF5
       run: |
