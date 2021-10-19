@@ -1,17 +1,15 @@
-#include "includes/TethysBaseLib.h"
-//#include "includes/SetUpParametersLib.h"
+/************************************************************************************************\
+* 2020 Pedro Cosme , João Santos and Ivan Figueiredo                                             *
+* DOI: 10.5281/zenodo.4319281																	 *
+* Distributed under the MIT License (license terms are at http://opensource.org/licenses/MIT).   *
+\************************************************************************************************/
 
+#include "includes/TethysBaseLib.h"
 
 using namespace H5;
 using namespace std;
 
 
-
-
-
-/*....................................................................*/
-/*........ General Functions .........................................*/
-/*....................................................................*/
 void TethysBase::BannerDisplay() {
 cout<<"\n" ;
 	cout<<"╔═════════════════════════════════════════════════════════════════════════╗\n";
@@ -21,7 +19,7 @@ cout<<"\n" ;
 	cout<<"║\033[2m      ▐█▌      ▐█▌    ▗▉      ▐█▌      ▐█▌   ▐█▌      ▐█▌    ▗       ██  \033[0m║\n";
 	cout<<"║\033[2m     ▆███▆    ▆███▆▆▆██▉     ▆███▆    ▆███▆ ▆███▆    ▆███▆   ▐█▆▆▆▆▆██▘  \033[0m║\n";
 	cout<<"║                                                                         ║\n";
-	cout<<"║ \033[1mTwo-dimensional Emitter of THz, Hydrodynamic Simulation.  Version 2.5.0\033[0m ║\n";
+	cout<<"║ \033[1mTwo-dimensional Emitter of THz, Hydrodynamic Simulation.  Version 2.6.1\033[0m ║\n";
 	cout<<"╚═════════════════════════════════════════════════════════════════════════╝\n";
 }
 
@@ -33,7 +31,7 @@ void TethysBase::WelcomeScreen() const {
 	} else {
 		cout << "Phase velocity\t\033[1mS'\t" << this->PhaseVel() << " v\342\202\200\033[0m\n";
 	}
-	cout << "Shear Viscosity \t\033[1m\316\267s\t" << kin_vis << "\033[0m\n";
+	cout << "Shear Viscosity \t\033[1m\316\275s\t" << kin_vis << "\033[0m\n";
 	if (kin_vis != 0.0) {
 		if (2.0f * kin_vis * dt > 0.95 * dx * dx * dy * dy / (dx * dx + dy * dy)) {
 			cout << "Reynolds n. \t\033[1mRe\t" << 1.0 / kin_vis
@@ -42,26 +40,21 @@ void TethysBase::WelcomeScreen() const {
 			cout << "Reynolds n. \t\033[1mRe\t" << 1.0 / kin_vis << "\033[0m\n";
 		}
 	}
-	cout << "Odd Viscosity \t\033[1m\316\267o\t" << odd_vis << "\033[0m\n";
+	cout << "Odd Viscosity \t\033[1m\316\275o\t" << odd_vis << "\033[0m\n";
 	if (kin_vis != 0.0) {
 			cout << "Odd Reynolds n. \t\033[1mRe\t" << 1.0 / odd_vis << "\033[0m\n";
 	}
 	if (col_freq != 0.0) {
 		if (col_freq >= 0.75){
-			cout << "Collision rate \t\033[1m\316\275\t" << col_freq << " v\342\202\200/L\033[0m";
+			cout << "Collision rate \t\033[1m 1/\317\204 \t" << col_freq << " v\342\202\200/L\033[0m";
 			cout << "\033[1;5;7;31m WARNING Dyakonov-Shur plasmons expected to decay.  \033[0m" << endl;
 		}else {
-			cout << "Collision rate \t\033[1m\316\275\t" << col_freq << " v\342\202\200/L\033[0m\n";
+			cout << "Collision rate \t\033[1m 1/\317\204 \t" << col_freq << " v\342\202\200/L\033[0m\n";
 		}
 	}
-	cout << "Cyclotron frequency \t\033[1m\317\211c\t" << cyc_freq << " v\342\202\200/L\n\033[0m\n";
-	cout << "Theoretical frequency \033[1m\317\211=\317\211'+i\317\211''\033[0m\n";
-	cout << "\033[1m\317\211'\t" << this->RealFreq() << " v\342\202\200/L\t2\317\200/\317\211'\t" << 2.0 * MAT_PI /
-	                                                                                                 this->RealFreq()
-	     << " L/v\342\202\200\033[0m\n";
-	cout << "\033[1m\317\211''\t" << this->ImagFreq() << " v\342\202\200/L\t2\317\200/\317\211''\t" << 2.0 * MAT_PI /
-	                                                                                                   this->ImagFreq()
-	     << " L/v\342\202\200\033[0m\n";
+	cout << "Cyclotron frequency \t\033[1m\317\211c\t" << cyc_freq << " v\342\202\200/L\033[0m\n";
+	cout << "Thermal diffusivity \t\033[1m\316\261\t" << therm_diff << "\033[0m\n";
+
 	cout << "\nDetermined maximum simulated time\t\033[1m\nT\342\202\230\342\202\220\342\202\223\t" << Tmax
 	     << " L/v\342\202\200\t\342\211\210" << Tmax / dt << "\033[0m\t time steps" << endl;
 	cout << "Discretisation\n";

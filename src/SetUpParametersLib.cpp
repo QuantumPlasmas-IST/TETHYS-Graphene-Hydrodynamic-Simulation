@@ -1,6 +1,8 @@
-//
-// Created by pcosme on 23/12/2020.
-//
+/************************************************************************************************\
+* 2020 Pedro Cosme , João Santos and Ivan Figueiredo                                             *
+* DOI: 10.5281/zenodo.4319281																	 *
+* Distributed under the MIT License (license terms are at http://opensource.org/licenses/MIT).   *
+\************************************************************************************************/
 
 #include "includes/TethysBaseLib.h"
 #include "includes/SetUpParametersLib.h"
@@ -234,6 +236,7 @@ void SetUpParameters::ReadIniFile(char *  file_name) {
 		if(txt == "cycl") CyclotronFrequency = stof(num);
 		if(txt == "therm") ThermalDiffusivity = stof(num);
 		if(txt == "aspect") AspectRatio = stof(num);
+		if(txt == "time") SimulationTime = stof(num);
 		if(txt == "save") SaveMode = stoi(num);
 	}
 }

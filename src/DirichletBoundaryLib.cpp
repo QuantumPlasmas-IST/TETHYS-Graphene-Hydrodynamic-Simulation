@@ -1,9 +1,12 @@
-//
-// Created by pcosme on 23/12/2020.
-//
+/************************************************************************************************\
+* 2020 Pedro Cosme , João Santos and Ivan Figueiredo                                             *
+* DOI: 10.5281/zenodo.4319281																	 *
+* Distributed under the MIT License (license terms are at http://opensource.org/licenses/MIT).   *
+\************************************************************************************************/
+
 
 #include "includes/BoundaryLib.h"
-#include "includes/DiricheletBoundaryLib.h"
+#include "includes/DirichletBoundaryLib.h"
 
 void DirichletBoundaryCondition::Density(Fluid1D& fluid_class, float left, float right){
 	int nx=fluid_class.SizeX();
@@ -20,12 +23,10 @@ void DirichletBoundaryCondition::VelocityX(Fluid1D& fluid_class, float left, flo
 void DirichletBoundaryCondition::Density(Fluid2D& fluid_class, float left, float right, float top, float bottom){
 	int nx=fluid_class.SizeX();
 	int ny=fluid_class.SizeY();
-//#pragma omp parallel for default(none) shared(fluid_class,nx,ny,left,right)
 	for (int j=0; j < ny; j++){
 		fluid_class.Den[j * nx] = left;
 		fluid_class.Den[nx - 1 + j * nx] = right;
 	}
-//#pragma omp parallel for default(none) shared(fluid_class,nx,ny,top,bottom)
 	for (int i=0; i < nx; i++){
 		fluid_class.Den[i + (ny - 1) * nx] = top;
 		fluid_class.Den[i] = bottom;
@@ -35,12 +36,10 @@ void DirichletBoundaryCondition::Density(Fluid2D& fluid_class, float left, float
 void DirichletBoundaryCondition::MassFluxX(Fluid2D& fluid_class, float left, float right, float top, float bottom){
 	int nx=fluid_class.SizeX();
 	int ny=fluid_class.SizeY();
-//#pragma omp parallel for default(none) shared(fluid_class,nx,ny,left,right)
 	for (int j=0; j < ny; j++){
 		fluid_class.FlxX[j * nx] = left;
 		fluid_class.FlxX[nx - 1 + j * nx] = right;
 	}
-//#pragma omp parallel for default(none) shared(fluid_class,nx,ny,top,bottom)
 	for (int i=0; i < nx; i++){
 		fluid_class.FlxX[i + (ny - 1) * nx] = top;
 		fluid_class.FlxX[i] = bottom;
@@ -50,12 +49,10 @@ void DirichletBoundaryCondition::MassFluxX(Fluid2D& fluid_class, float left, flo
 void DirichletBoundaryCondition::MassFluxY(Fluid2D& fluid_class, float left, float right, float top, float bottom){
 	int nx=fluid_class.SizeX();
 	int ny=fluid_class.SizeY();
-//#pragma omp parallel for default(none) shared(fluid_class,nx,ny,left,right)
 	for (int j=0; j < ny; j++){
 		fluid_class.FlxY[j * nx] = left;
 		fluid_class.FlxY[nx - 1 + j * nx] = right;
 	}
-//#pragma omp parallel for default(none) shared(fluid_class,nx,ny,top,bottom)
 	for (int i=0; i < nx; i++){
 		fluid_class.FlxY[i + (ny - 1) * nx] = top;
 		fluid_class.FlxY[i ] = bottom;
@@ -94,7 +91,6 @@ void DirichletBoundaryCondition::Jet(Fluid2D &fluid_class, float left, float lef
 	int ny=fluid_class.SizeY();
 	int n_width_left= static_cast<int>(static_cast<float>(ny) * left_width);
 	int n_width_right= static_cast<int>(static_cast<float>(ny) * right_width);
-//#pragma omp parallel for default(none) shared(fluid_class,nx,ny,n_width_left,n_width_right,left,right)
 	for (int j=0; j < ny; j++){
 		if( j>=(ny-n_width_left)/2 && j<= (ny+n_width_left)/2){
 			fluid_class.FlxX[0 + j * nx] = left;
@@ -112,7 +108,6 @@ void DirichletBoundaryCondition::Jet(Fluid2D &fluid_class, float left, float lef
 void DirichletBoundaryCondition::DensityRight(Fluid2D &fluid_class, float right) {
 	int nx=fluid_class.SizeX();
 	int ny=fluid_class.SizeY();
-//#pragma omp parallel for default(none) shared(fluid_class,nx,ny,right)
 	for (int j=0; j < ny; j++){
 		fluid_class.Den[nx - 1 + j * nx] = right;
 	}
@@ -121,7 +116,6 @@ void DirichletBoundaryCondition::DensityRight(Fluid2D &fluid_class, float right)
 void DirichletBoundaryCondition::MassFluxXRight(Fluid2D &fluid_class, float right) {
 	int nx=fluid_class.SizeX();
 	int ny=fluid_class.SizeY();
-//#pragma omp parallel for  default(none) shared(fluid_class,nx,ny,right)
 	for (int j=0; j < ny; j++){
 		fluid_class.FlxX[nx - 1 + j * nx] = right;
 	}
@@ -130,7 +124,6 @@ void DirichletBoundaryCondition::MassFluxXRight(Fluid2D &fluid_class, float righ
 void DirichletBoundaryCondition::MassFluxYRight(Fluid2D &fluid_class, float right) {
 	int nx=fluid_class.SizeX();
 	int ny=fluid_class.SizeY();
-//#pragma omp parallel for default(none) shared(fluid_class,nx,ny,right)
 	for (int j=0; j < ny; j++){
 		fluid_class.FlxY[nx - 1 + j * nx] = right;
 	}
@@ -139,7 +132,6 @@ void DirichletBoundaryCondition::MassFluxYRight(Fluid2D &fluid_class, float righ
 void DirichletBoundaryCondition::DensityLeft(Fluid2D &fluid_class, float left) {
 	int nx=fluid_class.SizeX();
 	int ny=fluid_class.SizeY();
-//#pragma omp parallel for default(none) shared(fluid_class,nx,ny,left)
 	for (int j=0; j < ny; j++){
 		fluid_class.Den[j * nx] = left;
 	}
@@ -209,12 +201,10 @@ void DirichletBoundaryCondition::MassFluxYBottom(Fluid2D &fluid_class, float bot
 void DirichletBoundaryCondition::Temperature(Fluid2D& fluid_class, float left, float right, float top, float bottom){
 	int nx=fluid_class.SizeX();
 	int ny=fluid_class.SizeY();
-//#pragma omp parallel for default(none) shared(fluid_class,nx,ny,left,right)
 	for (int j=0; j < ny; j++){
 		fluid_class.Tmp[j * nx] = left;
 		fluid_class.Tmp[nx - 1 + j * nx] = right;
 	}
-//#pragma omp parallel for default(none) shared(fluid_class,nx,ny,top,bottom)
 	for (int i=0; i < nx; i++){
 		fluid_class.Tmp[i + (ny - 1) * nx] = top;
 		fluid_class.Tmp[i] = bottom;
@@ -224,7 +214,6 @@ void DirichletBoundaryCondition::Temperature(Fluid2D& fluid_class, float left, f
 void DirichletBoundaryCondition::TemperatureRight(Fluid2D &fluid_class, float right) {
 	int nx=fluid_class.SizeX();
 	int ny=fluid_class.SizeY();
-//#pragma omp parallel for default(none) shared(fluid_class,nx,ny,right)
 	for (int j=0; j < ny; j++){
 		fluid_class.Tmp[nx - 1 + j * nx] = right;
 	}
@@ -233,7 +222,6 @@ void DirichletBoundaryCondition::TemperatureRight(Fluid2D &fluid_class, float ri
 void DirichletBoundaryCondition::TemperatureLeft(Fluid2D &fluid_class, float left) {
 	int nx=fluid_class.SizeX();
 	int ny=fluid_class.SizeY();
-//#pragma omp parallel for default(none) shared(fluid_class,nx,ny,left)
 	for (int j=0; j < ny; j++){
 		fluid_class.Tmp[j * nx] = left;
 	}

@@ -1,6 +1,9 @@
-//
-// Created by pcosme on 27/12/2020.
-//
+/************************************************************************************************\
+* 2020 Pedro Cosme , João Santos and Ivan Figueiredo                                             *
+* DOI: 10.5281/zenodo.4319281																	 *
+* Distributed under the MIT License (license terms are at http://opensource.org/licenses/MIT).   *
+\************************************************************************************************/
+
 
 #include "includes/GrapheneFluid2DLib.h"
 
@@ -8,9 +11,9 @@ GrapheneFluid2D::GrapheneFluid2D(SetUpParameters &input_parameters) : Fluid2D(in
 	vel_fer = input_parameters.FermiVelocity ;//fermi_velocity;
 	col_freq = input_parameters.CollisionFrequency ; // collision_frequency;
 	cyc_freq = input_parameters.CyclotronFrequency ; //cyclotron_frequency;
-	therm_diff = input_parameters.ThermalDiffusivity;
-	char buffer [50];
-	sprintf (buffer, "S=%.2fvF=%.2fvis=%.2fodd=%.3fl=%.2fwc=%.2f", vel_snd, vel_fer, kin_vis,odd_vis, col_freq,cyc_freq);
+	therm_diff = input_parameters.ThermalDiffusivity; //thermal diffusivity
+	char buffer [100];
+	sprintf (buffer, "S=%.2fvF=%.2fvis=%.3fodd=%.3fl=%.3fwc=%.2ftherm=%.2f", vel_snd, vel_fer, kin_vis,odd_vis, col_freq,cyc_freq,therm_diff);
 	file_infix = buffer;
 }
 
@@ -21,7 +24,6 @@ void GrapheneFluid2D::SetSimulationTime(){
 }
 
 void GrapheneFluid2D::MassFluxToVelocity(){
-//#pragma omp parallel for default(none) shared(VelX,VelY,FlxX,FlxY,Den,Nx,Ny)
 float den;
 	for(int c=0; c <= Nx * Ny - 1; c++){
 		den = Den[c];
@@ -53,43 +55,6 @@ void GrapheneFluid2D::CflCondition(){ // Eventual redefinition
 	}
 }
 
-/*
-float  GrapheneFluid2D::DensityFluxX(float n, float flx_x, __attribute__((unused)) float flx_y, __attribute__((unused)) float mass, __attribute__((unused))  float s){
-	float f_1;
-	f_1 = flx_x / sqrt(n);
-	return f_1;
-}
-
-float  GrapheneFluid2D::DensityFluxY(float n, __attribute__((unused)) float flx_x, float flx_y, __attribute__((unused)) float mass, __attribute__((unused))  float s){
-	float f_1;
-	f_1 = flx_y / sqrt(n);
-	return f_1;
-}
-
-float  GrapheneFluid2D::XMomentumFluxX(float n, float flx_x, __attribute__((unused)) float flx_y, float mass, float s){
-	float f_2;
-	f_2 = flx_x * flx_x / mass + vel_fer * vel_fer * mass / 3.0f + 0.5f * s * s * n * n;
-	return f_2;
-}
-
-float  GrapheneFluid2D::XMomentumFluxY(__attribute__((unused)) float n, float flx_x, float flx_y, float mass, __attribute__((unused)) float s){
-	float f_2;
-	f_2 = flx_x * flx_y / mass;
-	return f_2;
-}
-
-float  GrapheneFluid2D::YMomentumFluxX(__attribute__((unused)) float n, float flx_x, float flx_y, float mass, __attribute__((unused)) float s){
-	float f_3;
-	f_3 = flx_x * flx_y / mass;
-	return f_3;
-}
-
-float  GrapheneFluid2D::YMomentumFluxY(float n, __attribute__((unused)) float flx_x, float flx_y, float mass, float s){
-	float f_3;
-	f_3 = flx_y * flx_y / mass + vel_fer * vel_fer * mass / 3.0f + 0.5f * s * s * n * n;
-	return f_3;
-}
-*/
 
 
 float GrapheneFluid2D::DensityFluxX(GridPoint p, char side) {
@@ -288,38 +253,6 @@ float GrapheneFluid2D::YMomentumFluxX(GridPoint p, char side) {
 }
 
 
-
-
-
-
-void GrapheneFluid2D::MagneticSourceSemiAnalytic(){
-	float px_0,py_0,sqrtn_0;
-	float wc=cyc_freq;
-	for(int kp=1+Nx; kp<=Nx*Ny-Nx-2; kp++){ //correr a grelha principal evitando as fronteiras
-		if( kp%Nx!=Nx-1 && kp%Nx!=0){
-			sqrtn_0=sqrt(Den[kp]);
-			px_0=FlxX[kp];
-			py_0=FlxY[kp];
-			FlxX[kp]= px_0 * cos(wc * dt / sqrtn_0) - py_0 * sin(wc * dt / sqrtn_0);
-			FlxY[kp]= px_0 * sin(wc * dt / sqrtn_0) + py_0 * cos(wc * dt / sqrtn_0);
-		}
-	}
-}
-
-/*
-void GrapheneFluid2D::MagneticSourceFtcs(){
-	float px_0,py_0,sqrtn_0;
-	for(int kp=1+Nx; kp<=Nx*Ny-Nx-2; kp++){ //correr a grelha principal evitando as fronteiras
-		if( kp%Nx!=Nx-1 && kp%Nx!=0){
-			sqrtn_0=sqrt(Den[kp]);
-			px_0=FlxX[kp];
-			py_0=FlxY[kp];
-			FlxX[kp]= px_0 -  dt * cyc_freq * py_0 / sqrtn_0;
-			FlxY[kp]= py_0 +  dt * cyc_freq * px_0 / sqrtn_0;
-		}
-	}
-}
-*/
 float GrapheneFluid2D::DensitySource(__attribute__((unused)) float n,__attribute__((unused)) float flx_x,__attribute__((unused)) float flx_y,__attribute__((unused)) float mass,__attribute__((unused)) float s) {
 	return 0.0f;
 }
@@ -360,6 +293,11 @@ delete[] velY_dy_mid;
 
 float GrapheneFluid2D::DensityToMass(float density) {
 	return sqrt(density*density*density);
+}
+
+float
+GrapheneFluid2D::TemperatureSource(float n, float flx_x, float flx_y, float den_grad_x, float den_grad_y, float mass, float s) {
+	return vel_snd * vel_snd * (den_grad_x * flx_x / sqrt(n) + den_grad_y * flx_y / sqrt(n)  ) / (vel_fer * vel_fer);
 }
 
 

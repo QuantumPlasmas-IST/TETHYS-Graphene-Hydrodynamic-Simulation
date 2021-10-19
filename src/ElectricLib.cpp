@@ -1,3 +1,9 @@
+/************************************************************************************************\
+* 2020 Pedro Cosme , João Santos and Ivan Figueiredo                                             *
+* DOI: 10.5281/zenodo.4319281																	 *
+* Distributed under the MIT License (license terms are at http://opensource.org/licenses/MIT).   *
+\************************************************************************************************/
+
 #include "includes/ElectricLib.h"
 #include "includes/GrapheneFluid2DLib.h"
 #include "includes/GrapheneFluid1DLib.h"
@@ -29,7 +35,7 @@ void ElectroAnalysis::CreateElectroFile(const string &infix_string){
 	data_electro << scientific;
 }
 
-void ElectroAnalysis::WriteElectroFile(float t,const GrapheneFluid1D& graphene){//TODO por em conformidade com o 2d talvez
+void ElectroAnalysis::WriteElectroFile(float t,const GrapheneFluid1D& graphene){
 	float q_net = ElectroAnalysis::NetCharge(graphene);
 	float i_avg = ElectroAnalysis::AverageCurrent(graphene);
 	float p_ohm = ElectroAnalysis::OhmPower(graphene);
@@ -37,8 +43,6 @@ void ElectroAnalysis::WriteElectroFile(float t,const GrapheneFluid1D& graphene){
 	float dipole=ElectroAnalysis::ElectricDipole(graphene);
 	data_electro << t << "\t" << q_net << "\t" << i_avg << "\t" << q_net * q_net * 0.5 << "\t" << p_ohm << "\t" << dipole << "\t" << dipole_var << "\n";
 }
-
-// TODO rever as definicoes dos integrais principalmente nos valores medios a ver se nao falta multiplicar nennum pelo aspect ratio6015
 
 void ElectroAnalysis::ComputeElectroBase(float t, const GrapheneFluid2D& graphene){
 	TmpArr.push_back(t);
