@@ -1,7 +1,13 @@
-//
-// Created by pcosme on 23/12/2020.
-//
+/************************************************************************************************\
+* 2020 Pedro Cosme , João Santos and Ivan Figueiredo                                             *
+* DOI: 10.5281/zenodo.4319281																	 *
+* Distributed under the MIT License (license terms are at http://opensource.org/licenses/MIT).   *
+\************************************************************************************************/
 
+
+/*!@file
+ * @brief Header file for Robin BC
+ */
 
 #ifndef ROBINBOUNDARYLIB_H
 #define ROBINBOUNDARYLIB_H
@@ -10,7 +16,7 @@
 #include "includes/TethysMathLib.h"
 #include "includes/Fluid1DLib.h"
 #include "includes/Fluid2DLib.h"
-#include "includes/DiricheletBoundaryLib.h"
+#include "includes/DirichletBoundaryLib.h"
 
 /*!
  * @brief Class for Robin type boundary conditions.

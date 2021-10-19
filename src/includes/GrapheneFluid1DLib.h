@@ -1,6 +1,14 @@
-//
-// Created by pcosme on 27/12/2020.
-//
+/************************************************************************************************\
+* 2020 Pedro Cosme , João Santos and Ivan Figueiredo                                             *
+* DOI: 10.5281/zenodo.4319281																	 *
+* Distributed under the MIT License (license terms are at http://opensource.org/licenses/MIT).   *
+\************************************************************************************************/
+
+
+/*!@file
+ * @brief Header file for 1D Dirac-Fermi fluid
+ */
+
 
 #ifndef GRAPHENEFLUID1DLIB_H
 #define GRAPHENEFLUID1DLIB_H

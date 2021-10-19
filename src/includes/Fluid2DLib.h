@@ -1,7 +1,14 @@
 /************************************************************************************************\
-* Copyright (c) 2020 Pedro Cosme and João Santos                                                 *
+* 2020 Pedro Cosme , João Santos and Ivan Figueiredo                                             *
+* DOI: 10.5281/zenodo.4319281																	 *
 * Distributed under the MIT License (license terms are at http://opensource.org/licenses/MIT).   *
 \************************************************************************************************/
+
+
+/*!@file
+ * @brief Header file for 1D general fluid
+ */
+
 
 #ifndef FLUID2DLIB_H
 #define FLUID2DLIB_H
@@ -47,15 +54,21 @@ class Fluid2D : public TethysBase
 		float * lap_flxY ;      // mass density flux laplacian component y
         float * lap_tmp ;      // temperature laplacian
 
+		float * den_dx;
+		float * den_dy;
+		float * den_dx_mid;
+		float * den_dy_mid;
+
     std::ofstream data_preview; // file stream for simplified .dat file output
 		int snapshot_per_period = 40;
 		int snapshot_step = 1;
-		void ForwardTimeOperator();
+		void ForwardTimeOperator(); ///< Time evolution for the FTCS method employed for the parabolic operators.
 
 
-		void VelocityGradient();
-
-		void VelocityGradientMid();
+		void VelocityGradient(); ///< Computes the gradient of the velocity grid  by second order finite differences.
+		void VelocityGradientMid(); ///< Computes the gradient of the velocity mid grid  by second order finite differences.
+     	void DensityGradient(); ///<  Computes the gradient of the number density grid by second order finite differences.
+    	void DensityGradientMid(); ///< Computes the gradient of the number density mid grid  by second order finite differences.
 
 		virtual float DensityToMass(float density);
 
@@ -72,10 +85,10 @@ public :
 		~Fluid2D();
 		bool Snapshot() const;
 
-		void SetSound();     // Applies the anisotropy to the sound velocity array
+		void SetSound();     ///< Applies the anisotropy (in the cases there is one) to the sound velocity array
 		virtual void SetSimulationTime();   ///< Finds and set the appropriate simulation time
 		void InitialCondRand();             ///< Initial condition, zero velocity and constant density with 0.5% white noise
-		void InitialCondTest();             // Initial condition for testing and debugging
+		void InitialCondTest();             ///< Initial condition for testing and debugging
 		/*!
 		 * @brief Calculates @f$\Delta x@f$ and imposes Courant–Friedrichs–Lewy condition to @f$\Delta t@f$
 		 *
@@ -105,31 +118,24 @@ public :
 		 */
 		void Richtmyer();                   // Central Algorithm for solving the hyperbolic conservation law
 
+		virtual float DensitySource( float n, float flx_x, float flx_y, float mass, float s); ///< density equation (continuity equation) source term
+		virtual float XMomentumSource(float n, float flx_x, float flx_y, float mass, float s); ///< velocity X component equation (momentum equation) source term
+		virtual float YMomentumSource(float n, float flx_x, float flx_y, float mass, float s); ///< velocity y component equation (momentum equation) source term
 
-//		virtual float DensityFluxX( float n, float flx_x,  float flx_y,  float mass,  float s); ///< density equation (continuity equation) conserved flux X component
-//		virtual float DensityFluxY( float n,  float flx_x, float flx_y,  float mass,  float s); ///< density equation (continuity equation) conserved1 flux Y component
-//		virtual float XMomentumFluxX(float n, float flx_x, float flx_y, float mass, float s); ///< velocity X component equation (momentum equation) conserved flux X component
-//		virtual float XMomentumFluxY(float n, float flx_x, float flx_y, float mass, float s); ///< velocity X component equation (momentum equation) conserved flux Y component
-//		virtual float YMomentumFluxX(float n, float flx_x, float flx_y, float mass, float s); ///< velocity Y component equation (momentum equation) conserved flux X component
-//		virtual float YMomentumFluxY(float n, float flx_x, float flx_y, float mass, float s); ///< velocity Y component equation (momentum equation) conserved flux Y component
-
-	virtual float DensitySource( float n, float flx_x, float flx_y, float mass, float s); ///< density equation (continuity equation) source term
-	virtual float XMomentumSource(float n, float flx_x, float flx_y, float mass, float s); ///< velocity X component equation (momentum equation) source term
-	virtual float YMomentumSource(float n, float flx_x, float flx_y, float mass, float s); ///< velocity y component equation (momentum equation) source term
+		virtual float TemperatureSource(float n, float flx_x, float flx_y, float den_grad_x, float den_grad_y, float mass, float s); ///< density equation (continuity equation) source term
 
 
-    virtual float DensityFluxX(GridPoint p, char side ); ///< density equation (continuity equation) conserved flux X component
-    virtual float DensityFluxY(GridPoint p, char side ); ///< density equation (continuity equation) conserved1 flux Y component
+		virtual float DensityFluxX(GridPoint p, char side ); ///< density equation (continuity equation) conserved flux X component
+	    virtual float DensityFluxY(GridPoint p, char side ); ///< density equation (continuity equation) conserved1 flux Y component
 
-    virtual float XMomentumFluxX(GridPoint p, char side ); ///< velocity X component equation (momentum equation) conserved flux X component
-    virtual float XMomentumFluxY(GridPoint p, char side ); ///< velocity X component equation (momentum equation) conserved flux Y component
+	    virtual float XMomentumFluxX(GridPoint p, char side ); ///< velocity X component equation (momentum equation) conserved flux X component
+	    virtual float XMomentumFluxY(GridPoint p, char side ); ///< velocity X component equation (momentum equation) conserved flux Y component
 
-    virtual float YMomentumFluxX(GridPoint p, char side ); ///< velocity Y component equation (momentum equation) conserved flux X component
-    virtual float YMomentumFluxY(GridPoint p, char side ); ///< velocity Y component equation (momentum equation) conserved flux Y component
+	    virtual float YMomentumFluxX(GridPoint p, char side ); ///< velocity Y component equation (momentum equation) conserved flux X component
+	    virtual float YMomentumFluxY(GridPoint p, char side ); ///< velocity Y component equation (momentum equation) conserved flux Y component
 
-    float TemperatureFluxX(GridPoint p, char side );
-    float TemperatureFluxY(GridPoint p, char side );
-
+	    float TemperatureFluxX(GridPoint p, char side ); ///< Temperature equation (heat equation) conserved flux X component
+	    float TemperatureFluxY(GridPoint p, char side ); ///< Temperature equation (heat equation) conserved flux Y component
 
 
 		/*!
@@ -181,7 +187,7 @@ public :
 		 * @brief Saves the grid of the spatial distribution of the parameter S at the output HDF5 file
 		 *
 		 * */
-		void SaveSound();
+		void SaveSound(); ///< Records a mesh of eventual sound velocity anisotropy at the HDF5 file
 		int GetSnapshotStep() const; ///< Returns the number of the present snapshot @return snapshot_step order number of the snapshot
 		int GetSnapshotFreq() const; ///< Returns the number of snapshots per period to record  @return snapshot_per_period number of the snapshots per period
 
@@ -217,7 +223,7 @@ public :
 		*
 		* @see VelocityLaplacianWeighted19()
 		* */
-		void ParabolicOperatorWeightedExplicit19(); // Forward Time Centered Space method for the viscous terms
+		void ParabolicOperatorWeightedExplicit19(); ///< Forward Time Centered Space method for the diffusive terms
         void TemperatureLaplacianWeighted19();
 };
 

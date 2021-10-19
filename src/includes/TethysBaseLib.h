@@ -1,7 +1,12 @@
 /************************************************************************************************\
-* Copyright (c) 2020 Pedro Cosme and João Santos                                                 *
+* 2020 Pedro Cosme , João Santos and Ivan Figueiredo                                             *
+* DOI: 10.5281/zenodo.4319281																	 *
 * Distributed under the MIT License (license terms are at http://opensource.org/licenses/MIT).   *
 \************************************************************************************************/
+
+/*!@file
+ * @brief Header file for fluid base class and and IO methods
+ */
 
 #ifndef TETHYSBASELIB_H
 #define TETHYSBASELIB_H
@@ -67,7 +72,7 @@ class TethysBase {
 		float therm_diff = 0.0f; // thermal diffusivity parameter
 		float col_freq =0.0f;   // colision frequency parameter
 		std::string file_infix; // base name for the output files
-		float Tmax=10;          // total time of simulation
+		float Tmax=2.0f;          // total time of simulation
 
 	public:
 		/*!
@@ -129,9 +134,9 @@ class TethysBase {
 		float GetLengthX() const;   ///< @returns   total length along x
 		float GetLengthY() const;   ///< @returns   total length along y
 
-		float ImagFreq() const;
-		float PhaseVel() const;
-		float RealFreq() const;
+		float ImagFreq() const; ///< @returns Expected growth rate of Dyakonov-Shur instability for the given parameters
+ 		float PhaseVel() const; ///< @returns Corrected phase velocity of the plasmons for the given parameters, taking in account both S and v_F
+		float RealFreq() const; ///< @returns Expected frequency of Dyakonov-Shur instability for the given parameters
 
 
 		std::string GetInfix() const;   ///< @returns   file name infix
