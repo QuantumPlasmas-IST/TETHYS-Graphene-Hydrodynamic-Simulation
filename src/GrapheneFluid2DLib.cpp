@@ -7,6 +7,7 @@
 
 #include "includes/GrapheneFluid2DLib.h"
 
+
 GrapheneFluid2D::GrapheneFluid2D(SetUpParameters &input_parameters) : Fluid2D(input_parameters) {
 	vel_fer = input_parameters.FermiVelocity ;//fermi_velocity;
 	col_freq = input_parameters.CollisionFrequency ; // collision_frequency;
@@ -107,37 +108,48 @@ float GrapheneFluid2D::XMomentumFluxX(GridPoint p, char side) {
 	float * vel_ptr;
 	float * den_ptr;
 	float * px_ptr;
+	float * tmp_ptr;
 	float *dvel_ptr;
 	float sound =0.0f;
 	float den =1.0f;
 	float px =0.0f;
 	float dvy=0.0f;
+	float tmp=0.0f;
 	float mass;
 	if(p.IsMidGrid){  // se ESTÁ na grelha média tem de APONTAR pra outra grelha
 		vel_ptr = vel_snd_arr;
 		den_ptr = Den;
 		px_ptr = FlxX;
 		dvel_ptr = velY_dx;
+
+		tmp_ptr=Tmp;
 	}else{
 		vel_ptr = vel_snd_arr_mid;
 		den_ptr = den_mid;
 		px_ptr = flxX_mid;
 		dvel_ptr = velY_dx_mid;
+
+		tmp_ptr=tmp_mid;
 	}
 	if (side == 'E'){
 		sound= 0.5f*(vel_ptr[p.NE] + vel_ptr[p.SE]);
 		den = 0.5f*(den_ptr[p.NE] + den_ptr[p.SE]);
 		px = 0.5f*(px_ptr[p.NE] + px_ptr[p.SE]);
 		dvy =  0.5f*(dvel_ptr[p.NE] + dvel_ptr[p.SE]);
+
+		tmp=  0.5f*(tmp_ptr[p.NE] + tmp_ptr[p.SE]);
 	}
 	if (side == 'W'){
 		sound = 0.5f*(vel_ptr[p.NW] + vel_ptr[p.SW]);
 		den = 0.5f*(den_ptr[p.NW] + den_ptr[p.SW]);
 		px = 0.5f*(px_ptr[p.NW] + px_ptr[p.SW]);
 		dvy =  0.5f*(dvel_ptr[p.NW] + dvel_ptr[p.SW]);
+
+		tmp=  0.5f*(tmp_ptr[p.NW] + tmp_ptr[p.SW]);
 	}
 	mass=DensityToMass(den);
-	return px * px / mass + vel_fer * vel_fer * mass / 3.0f + 0.5f * sound * sound * den * den - odd_vis*dvy;
+	float Seebeck=ThermoElectric::ThermoPower(den, tmp);
+	return px * px / mass + vel_fer * vel_fer * mass / 3.0f + 0.5f * sound * sound * den * den - odd_vis*dvy + den*Seebeck*tmp;
 }
 
 float GrapheneFluid2D::XMomentumFluxY(GridPoint p, char side) {
@@ -174,7 +186,7 @@ float GrapheneFluid2D::XMomentumFluxY(GridPoint p, char side) {
 		dvy =  0.5f*(dvel_ptr[p.SE] + dvel_ptr[p.SW]);
 	}
 	mass=DensityToMass(den);
-	return px * py / mass - odd_vis*dvy;
+	return px * py / mass - odd_vis*dvy ;
 }
 
 
@@ -183,36 +195,47 @@ float GrapheneFluid2D::YMomentumFluxY(GridPoint p, char side) {
 	float * den_ptr;
 	float * py_ptr;
 	float * dvel_ptr;
+	float * tmp_ptr;
 	float sound =0.0f;
 	float den =1.0f;
 	float py =0.0f;
 	float dvx =0.0f;
+	float tmp =0.0f;
 	float mass;
 	if(p.IsMidGrid){
 		vel_ptr = vel_snd_arr;
 		den_ptr = Den;
 		py_ptr = FlxY;
 		dvel_ptr = velX_dy;
+
+		tmp_ptr = Tmp;
 	}else{
 		vel_ptr = vel_snd_arr_mid;
 		den_ptr = den_mid;
 		py_ptr = flxY_mid;
 		dvel_ptr = velX_dy_mid;
+
+		tmp_ptr = tmp_mid;
 	}
 	if (side == 'N'){
 		sound= 0.5f*(vel_ptr[p.NE] + vel_ptr[p.NW]);
 		den = 0.5f*(den_ptr[p.NE] + den_ptr[p.NW]);
 		py = 0.5f*(py_ptr[p.NE] + py_ptr[p.NW]);
 		dvx =  0.5f*(dvel_ptr[p.NE] + dvel_ptr[p.NW]);
+
+		tmp =  0.5f*(tmp_ptr[p.NE] + tmp_ptr[p.NW]);
 	}
 	if (side == 'S'){
 		sound = 0.5f*(vel_ptr[p.SE] + vel_ptr[p.SW]);
 		den = 0.5f*(den_ptr[p.SE] + den_ptr[p.SW]);
 		py = 0.5f*(py_ptr[p.SE] + py_ptr[p.SW]);
 		dvx =  0.5f*(dvel_ptr[p.SE] + dvel_ptr[p.SW]);
+
+		tmp =  0.5f*(tmp_ptr[p.SE] + tmp_ptr[p.SW]);
 	}
 	mass=DensityToMass(den);
-	return py * py / mass + vel_fer * vel_fer * mass / 3.0f + 0.5f * sound * sound * den * den + odd_vis*dvx;
+	float Seebeck=ThermoElectric::ThermoPower(den, tmp);
+	return py * py / mass + vel_fer * vel_fer * mass / 3.0f + 0.5f * sound * sound * den * den + odd_vis*dvx + den*Seebeck*tmp;
 }
 
 float GrapheneFluid2D::YMomentumFluxX(GridPoint p, char side) {

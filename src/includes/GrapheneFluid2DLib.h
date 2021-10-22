@@ -13,7 +13,7 @@
 #define GRAPHENEFLUID2DLIB_H
 
 #include "includes/Fluid2DLib.h"
-
+#include "includes/ThermoElectricLib.h"
 /*!
  * @brief Graphene electronic fluid class in two dimensions.
  *

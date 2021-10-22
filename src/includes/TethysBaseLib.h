@@ -43,6 +43,9 @@ using namespace H5;
 #	define PHYS_FERMI_CNVC 0.07599088773175f
 #endif
 
+#ifndef PHYS_SEEBECK_0
+#	define PHYS_SEEBECK_0 6.57973626739291f
+#endif
 
 const FloatType      HDF5FLOAT(PredType::NATIVE_FLOAT);
 const IntType        HDF5INT(PredType::NATIVE_INT);

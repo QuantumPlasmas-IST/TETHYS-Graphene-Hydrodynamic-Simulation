@@ -6,6 +6,7 @@
 
 
 #include "includes/Fluid2DLib.h"
+#include "includes/ThermoElectricLib.h"
 #include "includes/SetUpParametersLib.h"
 
 
