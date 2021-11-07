@@ -46,6 +46,8 @@ public:
 	 *
 	 * */
 	static void DSFeedbackBc(GrapheneFluid2D &fluid_class, float gain);
+	static void DSExcitedBc(GrapheneFluid2D &fluid_class, float forcing);
+
 };
 
 
