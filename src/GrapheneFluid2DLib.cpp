@@ -276,16 +276,16 @@ float GrapheneFluid2D::YMomentumFluxX(GridPoint p, char side) {
 }
 
 
-float GrapheneFluid2D::DensitySource(__attribute__((unused)) float n,__attribute__((unused)) float flx_x,__attribute__((unused)) float flx_y,__attribute__((unused)) float mass,__attribute__((unused)) float s) {
+float GrapheneFluid2D::DensitySource(float n, float flx_x, float flx_y) {
 	return 0.0f;
 }
 
-float GrapheneFluid2D::XMomentumSource(float n, float flx_x, float flx_y, __attribute__((unused)) float mass, __attribute__((unused)) float s) {
-	return -1.0f*col_freq*flx_x  - cyc_freq*flx_y/sqrt(n);
+float GrapheneFluid2D::XMomentumSource(float n, float flx_x, float flx_y, float tmp_grad_x, float tmp_grad_y) {
+	return -1.0f*col_freq*flx_x  - cyc_freq*flx_y/sqrt(n)  - vel_fer*n*tmp_grad_x;
 }
 
-float GrapheneFluid2D::YMomentumSource(float n, float flx_x, float flx_y, __attribute__((unused)) float mass, __attribute__((unused)) float s) {
-	return -1.0f*col_freq*flx_y  + cyc_freq*flx_x/sqrt(n);
+float GrapheneFluid2D::YMomentumSource(float n, float flx_x, float flx_y, float tmp_grad_x, float tmp_grad_y) {
+	return -1.0f*col_freq*flx_y  + cyc_freq*flx_x/sqrt(n) - vel_fer*n*tmp_grad_y;
 }
 
 
@@ -319,7 +319,7 @@ float GrapheneFluid2D::DensityToMass(float density) {
 }
 
 float
-GrapheneFluid2D::TemperatureSource(float n, float flx_x, float flx_y, float den_grad_x, float den_grad_y, float mass, float s) {
+GrapheneFluid2D::TemperatureSource(float n, float flx_x, float flx_y, float den_grad_x, float den_grad_y) {
 	return vel_snd * vel_snd * (den_grad_x * flx_x / sqrt(n) + den_grad_y * flx_y / sqrt(n)  ) / (vel_fer * vel_fer);
 }
 
