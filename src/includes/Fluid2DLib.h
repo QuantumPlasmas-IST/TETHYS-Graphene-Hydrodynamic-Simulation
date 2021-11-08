@@ -59,10 +59,17 @@ class Fluid2D : public TethysBase
 		float * den_dx_mid;
 		float * den_dy_mid;
 
+	float * tmp_dx;
+	float * tmp_dy;
+	float * tmp_dx_mid;
+	float * tmp_dy_mid;
+
     std::ofstream data_preview; // file stream for simplified .dat file output
 		int snapshot_per_period = 40;
 		int snapshot_step = 1;
 		void ForwardTimeOperator(); ///< Time evolution for the FTCS method employed for the parabolic operators.
+
+	//TODO juntar estes 6 métodos num só
 
 
 		void VelocityGradient(); ///< Computes the gradient of the velocity grid  by second order finite differences.
@@ -70,7 +77,11 @@ class Fluid2D : public TethysBase
      	void DensityGradient(); ///<  Computes the gradient of the number density grid by second order finite differences.
     	void DensityGradientMid(); ///< Computes the gradient of the number density mid grid  by second order finite differences.
 
-		virtual float DensityToMass(float density);
+	void TemperatureGradient(); ///< Computes the gradient of the velocity grid  by second order finite differences.
+	void TemperatureGradientMid(); ///< Computes the gradient of the velocity mid grid  by second order finite differences.
+
+
+	virtual float DensityToMass(float density);
 
 public :
 		float * Den ;       // number density
@@ -118,11 +129,11 @@ public :
 		 */
 		void Richtmyer();                   // Central Algorithm for solving the hyperbolic conservation law
 
-		virtual float DensitySource( float n, float flx_x, float flx_y, float mass, float s); ///< density equation (continuity equation) source term
-		virtual float XMomentumSource(float n, float flx_x, float flx_y, float mass, float s); ///< velocity X component equation (momentum equation) source term
-		virtual float YMomentumSource(float n, float flx_x, float flx_y, float mass, float s); ///< velocity y component equation (momentum equation) source term
+		virtual float DensitySource(float n, float flx_x, float flx_y); ///< density equation (continuity equation) source term
+		virtual float XMomentumSource(float n, float flx_x, float flx_y, float tmp_grad_x, float tmp_grad_y); ///< velocity X component equation (momentum equation) source term
+		virtual float YMomentumSource(float n, float flx_x, float flx_y, float tmp_grad_x, float tmp_grad_y); ///< velocity y component equation (momentum equation) source term
 
-		virtual float TemperatureSource(float n, float flx_x, float flx_y, float den_grad_x, float den_grad_y, float mass, float s); ///< density equation (continuity equation) source term
+		virtual float TemperatureSource(float n, float flx_x, float flx_y, float den_grad_x, float den_grad_y); ///< density equation (continuity equation) source term
 
 
 		virtual float DensityFluxX(GridPoint p, char side ); ///< density equation (continuity equation) conserved flux X component
