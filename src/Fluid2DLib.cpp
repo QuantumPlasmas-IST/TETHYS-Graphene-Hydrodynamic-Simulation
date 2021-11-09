@@ -232,8 +232,10 @@ void Fluid2D::CreateFluidFile(){
 
 void Fluid2D::WriteFluidFile(float t){
 	int j=Ny/2;
+	int i=Nx/2;
 	int pos_end = Nx - 1 + j*Nx ;
 	int pos_ini = j*Nx ;
+	int pos_mid = i+j*Nx ;
 		if(!isfinite(Den[pos_end]) || !isfinite(Den[pos_ini]) || !isfinite(FlxX[pos_end]) || !isfinite(FlxX[pos_ini])){
 			cerr << "ERROR: numerical method failed to converge" <<"\nExiting"<< endl;
 			CloseHdf5File();
@@ -243,7 +245,8 @@ void Fluid2D::WriteFluidFile(float t){
 	<< Den[pos_end]  << "\t"
 	<< FlxX[pos_end] << "\t"
 	<< Den[pos_ini]  << "\t"
-	<< FlxX[pos_ini] << "\n";
+	<< FlxX[pos_ini] << "\t"
+	<< Tmp[pos_mid] << "\n";
 }
 
 void Fluid2D::SetSimulationTime(){
