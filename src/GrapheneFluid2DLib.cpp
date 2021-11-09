@@ -284,13 +284,13 @@ float GrapheneFluid2D::DensitySource(float n, float flx_x, float flx_y) {
 float
 GrapheneFluid2D::XMomentumSource(float n, float flx_x, float flx_y, float tmp, float tmp_grad_x, float tmp_grad_y) {
 	float Seebeck=ThermoElectric::ThermoPower(n, tmp);
-	return -1.0f*col_freq*flx_x  - cyc_freq*flx_y/sqrt(n)  - vel_fer*Seebeck*n*tmp_grad_x;
+	return -1.0f*col_freq*flx_x  - cyc_freq*flx_y/sqrt(n); //  - vel_fer*Seebeck*n*tmp_grad_x;
 }
 
 float
 GrapheneFluid2D::YMomentumSource(float n, float flx_x, float flx_y, float tmp, float tmp_grad_x, float tmp_grad_y) {
 	float Seebeck=ThermoElectric::ThermoPower(n, tmp);
-	return -1.0f*col_freq*flx_y  + cyc_freq*flx_x/sqrt(n) - vel_fer*Seebeck*n*tmp_grad_y;
+	return -1.0f*col_freq*flx_y  + cyc_freq*flx_x/sqrt(n); // - vel_fer*Seebeck*n*tmp_grad_y;
 }
 
 
