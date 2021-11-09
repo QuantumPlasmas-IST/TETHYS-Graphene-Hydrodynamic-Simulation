@@ -131,8 +131,8 @@ public :
 		void Richtmyer();                   // Central Algorithm for solving the hyperbolic conservation law
 
 		virtual float DensitySource(float n, float flx_x, float flx_y); ///< density equation (continuity equation) source term
-		virtual float XMomentumSource(float n, float flx_x, float flx_y, float tmp_grad_x, float tmp_grad_y); ///< velocity X component equation (momentum equation) source term
-		virtual float YMomentumSource(float n, float flx_x, float flx_y, float tmp_grad_x, float tmp_grad_y); ///< velocity y component equation (momentum equation) source term
+		virtual float XMomentumSource(float n, float flx_x, float flx_y, float tmp, float tmp_grad_x, float tmp_grad_y); ///< velocity X component equation (momentum equation) source term
+		virtual float YMomentumSource(float n, float flx_x, float flx_y, float tmp, float tmp_grad_x, float tmp_grad_y); ///< velocity y component equation (momentum equation) source term
 
 		virtual float TemperatureSource(float n, float flx_x, float flx_y, float den_grad_x, float den_grad_y); ///< density equation (continuity equation) source term
 

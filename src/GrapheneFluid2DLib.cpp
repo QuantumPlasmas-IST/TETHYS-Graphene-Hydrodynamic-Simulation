@@ -149,8 +149,8 @@ float GrapheneFluid2D::XMomentumFluxX(GridPoint p, char side) {
 		tmp=  0.5f*(tmp_ptr[p.NW] + tmp_ptr[p.SW]);
 	}
 	mass=DensityToMass(den);
-	float Seebeck=ThermoElectric::ThermoPower(den, tmp);
-	return px * px / mass + vel_fer * vel_fer * mass / 3.0f + 0.5f * sound * sound * den * den - odd_vis*dvy + den*Seebeck*tmp;
+	//float Seebeck=ThermoElectric::ThermoPower(den, tmp);
+	return px * px / mass + vel_fer * vel_fer * mass / 3.0f + 0.5f * sound * sound * den * den - odd_vis*dvy ;//+ den*Seebeck*tmp;
 }
 
 float GrapheneFluid2D::XMomentumFluxY(GridPoint p, char side) {
@@ -235,8 +235,8 @@ float GrapheneFluid2D::YMomentumFluxY(GridPoint p, char side) {
 		tmp =  0.5f*(tmp_ptr[p.SE] + tmp_ptr[p.SW]);
 	}
 	mass=DensityToMass(den);
-	float Seebeck=ThermoElectric::ThermoPower(den, tmp);
-	return py * py / mass + vel_fer * vel_fer * mass / 3.0f + 0.5f * sound * sound * den * den + odd_vis*dvx + den*Seebeck*tmp;
+	//float Seebeck=ThermoElectric::ThermoPower(den, tmp);
+	return py * py / mass + vel_fer * vel_fer * mass / 3.0f + 0.5f * sound * sound * den * den + odd_vis*dvx ;//+ den*Seebeck*tmp;
 }
 
 float GrapheneFluid2D::YMomentumFluxX(GridPoint p, char side) {
@@ -281,12 +281,16 @@ float GrapheneFluid2D::DensitySource(float n, float flx_x, float flx_y) {
 	return 0.0f;
 }
 
-float GrapheneFluid2D::XMomentumSource(float n, float flx_x, float flx_y, float tmp_grad_x, float tmp_grad_y) {
-	return -1.0f*col_freq*flx_x  - cyc_freq*flx_y/sqrt(n)  - vel_fer*n*tmp_grad_x;
+float
+GrapheneFluid2D::XMomentumSource(float n, float flx_x, float flx_y, float tmp, float tmp_grad_x, float tmp_grad_y) {
+	float Seebeck=ThermoElectric::ThermoPower(n, tmp);
+	return -1.0f*col_freq*flx_x  - cyc_freq*flx_y/sqrt(n)  - vel_fer*Seebeck*n*tmp_grad_x;
 }
 
-float GrapheneFluid2D::YMomentumSource(float n, float flx_x, float flx_y, float tmp_grad_x, float tmp_grad_y) {
-	return -1.0f*col_freq*flx_y  + cyc_freq*flx_x/sqrt(n) - vel_fer*n*tmp_grad_y;
+float
+GrapheneFluid2D::YMomentumSource(float n, float flx_x, float flx_y, float tmp, float tmp_grad_x, float tmp_grad_y) {
+	float Seebeck=ThermoElectric::ThermoPower(n, tmp);
+	return -1.0f*col_freq*flx_y  + cyc_freq*flx_x/sqrt(n) - vel_fer*Seebeck*n*tmp_grad_y;
 }
 
 

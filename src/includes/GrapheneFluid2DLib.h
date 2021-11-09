@@ -65,8 +65,8 @@ public :
 		/*Override fluxes and sources to specifics of graphene physics*/
 		float DensitySource(float n, float flx_x, float flx_y) override;   ///< density equation (continuity equation) source term
 		float TemperatureSource(float n, float flx_x, float flx_y, float den_grad_x, float den_grad_y) override;   ///< density equation (continuity equation) source term
-		float XMomentumSource(float n, float flx_x, float flx_y, float tmp_grad_x, float tmp_grad_y) override; ///< velocity X component equation (momentum equation) source term
-		float YMomentumSource(float n, float flx_x, float flx_y, float tmp_grad_x, float tmp_grad_y) override; ///< velocity y component equation (momentum equation) source term
+		float XMomentumSource(float n, float flx_x, float flx_y, float tmp, float tmp_grad_x, float tmp_grad_y) override; ///< velocity X component equation (momentum equation) source term
+		float YMomentumSource(float n, float flx_x, float flx_y, float tmp, float tmp_grad_x, float tmp_grad_y) override; ///< velocity y component equation (momentum equation) source term
 
 		float DensityFluxX(GridPoint p, char side ) override; ///< density equation (continuity equation) conserved flux X component
 		float DensityFluxY(GridPoint p, char side ) override; ///< density equation (continuity equation) conserved1 flux Y component

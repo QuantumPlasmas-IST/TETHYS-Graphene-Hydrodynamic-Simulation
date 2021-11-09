@@ -173,11 +173,11 @@ void Fluid2D::Richtmyer(){
 			flxX_mid[ks] = flx_x_avg
 					-0.5f*(dt/dx)*(XMomentumFluxX(point,'E') - XMomentumFluxX(point,'W'))
 					-0.5f*(dt/dy)*(XMomentumFluxY(point,'N') - XMomentumFluxY(point,'S'))
-					+0.5f*dt* XMomentumSource(den_avg, flx_x_avg, flx_y_avg, t_dx, t_dy);
+					+0.5f*dt* XMomentumSource(den_avg, flx_x_avg, flx_y_avg, tmp_avg, t_dx, t_dy);
 			flxY_mid[ks] = flx_y_avg
 					-0.5f*(dt/dx)*(YMomentumFluxX(point,'E') - YMomentumFluxX(point,'W'))
 					-0.5f*(dt/dy)*(YMomentumFluxY(point,'N') - YMomentumFluxY(point,'S'))
-					+0.5f*dt* YMomentumSource(den_avg, flx_x_avg, flx_y_avg, t_dx, t_dy);
+					+0.5f*dt* YMomentumSource(den_avg, flx_x_avg, flx_y_avg, tmp_avg, t_dx, t_dy);
 			if(therm_diff){
 				tmp_mid[ks] = tmp_avg
 				              -0.5f * (dt / dx) * (TemperatureFluxX(point, 'E') - TemperatureFluxX(point, 'W'))
@@ -205,10 +205,10 @@ void Fluid2D::Richtmyer(){
 						          + dt* DensitySource(den_old, flx_x_old, flx_y_old);
 				FlxX[kp] = flx_x_old - (dt/dx)*(XMomentumFluxX(point,'E') - XMomentumFluxX(point,'W'))
 						             - (dt/dy)*(XMomentumFluxY(point,'N') - XMomentumFluxY(point,'S'))
-						             + dt* XMomentumSource(den_old, flx_x_old, flx_y_old, tmp_dx[kp], tmp_dy[kp]);
+						             + dt* XMomentumSource(den_old, flx_x_old, flx_y_old, tmp_old, tmp_dx[kp], tmp_dy[kp]);
 				FlxY[kp] = flx_y_old - (dt/dx)*(YMomentumFluxX(point,'E') - YMomentumFluxX(point,'W'))
 						             - (dt/dy)*(YMomentumFluxY(point,'N') - YMomentumFluxY(point,'S'))
-				                     + dt* YMomentumSource(den_old, flx_x_old, flx_y_old, tmp_dx[kp], tmp_dy[kp]);
+				                     + dt* YMomentumSource(den_old, flx_x_old, flx_y_old, tmp_old, tmp_dx[kp], tmp_dy[kp]);
 				if(therm_diff) {
 					Tmp[kp] = tmp_old - (dt / dx) * (TemperatureFluxX(point, 'E') - TemperatureFluxX(point, 'W'))
 					          - (dt / dy) * (TemperatureFluxY(point, 'N') - TemperatureFluxY(point, 'S'))
@@ -419,10 +419,10 @@ float Fluid2D::DensitySource(float n, float flx_x, float flx_y) {
 	return 0.0f;
 }
 
-float Fluid2D::XMomentumSource(float n, float flx_x, float flx_y, float tmp_grad_x, float tmp_grad_y) {
+float Fluid2D::XMomentumSource(float n, float flx_x, float flx_y, float tmp, float tmp_grad_x, float tmp_grad_y) {
 	return 0.0f;
 }
-float Fluid2D::YMomentumSource(float n, float flx_x, float flx_y, float tmp_grad_x, float tmp_grad_y) {
+float Fluid2D::YMomentumSource(float n, float flx_x, float flx_y, float tmp, float tmp_grad_x, float tmp_grad_y) {
 	return 0.0f;
 }
 
