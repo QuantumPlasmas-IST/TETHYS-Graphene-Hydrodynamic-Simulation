@@ -39,7 +39,7 @@ int main(int argc, char **argv){
 	/*.........Fixed or variable vel_snd value........................*/
 	graph.SetSound();
 	//graph.SetSimulationTime();
-	//graph.SetTmax(5.0f);
+	 graph.SetTmax(5.0f);
 
 	/*................................................................*/
 
@@ -81,7 +81,7 @@ int main(int argc, char **argv){
 		 * Change the boundary conditions here *
 		 *+++++++++++++++++++++++++++++++++++++*/
 		DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
-		DirichletBoundaryCondition::YClosedNoSlip(graph);
+		DirichletBoundaryCondition::YClosedFreeSlip(graph);
 		if(graph.GetThermDiff()!=0.0){
 			DirichletBoundaryCondition::Temperature(graph,0.22f, 0.22f, 0.22f, 0.22f);  // 300K corresponds to 0.22*Fermi temperature
 		}
@@ -93,7 +93,7 @@ int main(int argc, char **argv){
 			 * Change the boundary conditions here *
 			 *+++++++++++++++++++++++++++++++++++++*/
 			DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
-			DirichletBoundaryCondition::YClosedNoSlip(graph);
+			DirichletBoundaryCondition::YClosedFreeSlip(graph);
 			if(graph.GetThermDiff()!=0.0){
 				DirichletBoundaryCondition::Temperature(graph,0.22f, 0.22f, 0.22f, 0.22f); // 300K corresponds to 0.22*Fermi temperature
 			}

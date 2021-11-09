@@ -1113,8 +1113,10 @@ float Fluid2D::TemperatureFluxX(GridPoint p, char side) {
 	    tmp = 0.5f*(tmp_ptr[p.NW] + tmp_ptr[p.SW]);
     }
     //return px * vel_fer * vel_fer + px / DensityToMass(den);
-	float Seebeck=ThermoElectric::ThermoPower(den, tmp);
-	return PHYS_FERMI_CNVC*px  + tmp*px / DensityToMass(den) + PHYS_FERMI_CNVC*Seebeck*tmp*px / DensityToMass(den);
+	//float Seebeck=ThermoElectric::ThermoPower(den, tmp);
+	float Seebeck=1.16f;
+	//return PHYS_FERMI_CNVC*px*0.0f  + tmp*px / DensityToMass(den) + PHYS_FERMI_CNVC*Seebeck*tmp*px / DensityToMass(den);
+	return PHYS_FERMI_CNVC*px + tmp*px / DensityToMass(den);
 }
 
 
@@ -1145,8 +1147,10 @@ float Fluid2D::TemperatureFluxY(GridPoint p, char side) {
 	    tmp = 0.5f*(tmp_ptr[p.SE] + tmp_ptr[p.SW]);
     }
     //return 0.0f*py * vel_fer * vel_fer  + py / DensityToMass(den) ;
-	float Seebeck=ThermoElectric::ThermoPower(den, tmp);
-	return PHYS_FERMI_CNVC*py  + tmp*py / DensityToMass(den) + PHYS_FERMI_CNVC*Seebeck*tmp*py / DensityToMass(den);
+	//float Seebeck=ThermoElectric::ThermoPower(den, tmp);
+	float Seebeck=1.16f;
+	//return PHYS_FERMI_CNVC*py*0.0f  + tmp*py / DensityToMass(den) + PHYS_FERMI_CNVC*Seebeck*tmp*py / DensityToMass(den);
+	return PHYS_FERMI_CNVC*py + tmp*py / DensityToMass(den);
 }
 
 
