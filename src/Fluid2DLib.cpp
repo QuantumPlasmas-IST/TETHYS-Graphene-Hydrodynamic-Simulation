@@ -147,8 +147,10 @@ void Fluid2D::Richtmyer(){
 		this->VelocityGradient();
 	}
 	if(therm_diff) {
-		this->DensityGradient();
-		this->TemperatureGradient();
+		//this->DensityGradient();
+		//this->TemperatureGradient();
+		this->ComputeGradient(Tmp,tmp_dx,tmp_dy);
+		this->ComputeGradient(Den,den_dx,den_dy);
 	}
 #pragma omp parallel for default(none) shared(Nx,Ny,FlxX,FlxY,Den,flxX_mid,flxY_mid,den_mid,vel_snd_arr,dt,dx)
 		for(int ks=0; ks<=Nx*Ny-Nx-Ny; ks++){ //correr todos os pontos da grelha secundaria de den_mid
@@ -1162,3 +1164,61 @@ float Fluid2D::TemperatureSource(float n, float flx_x, float flx_y, float den_gr
 	return 0;
 }
 
+void Fluid2D::ComputeGradient(float *input_ptr, float *output_ptr_dx, float *output_ptr_dy) {
+	int stride = Nx;
+#pragma omp parallel for default(none) shared(Nx,Ny,dx,dy,stride,input_ptr,output_ptr_dx,output_ptr_dy)
+	for(int kp=1+Nx; kp<=Nx*Ny-Nx-2; kp++){
+		if( kp%stride!=stride-1 && kp%stride!=0){
+			GridPoint point(kp,Nx,Ny,false);
+			output_ptr_dx[kp] = ( input_ptr[point.E] - input_ptr[point.W] )/(2.0f*dx);
+			output_ptr_dy[kp] = ( input_ptr[point.N] - input_ptr[point.S] )/(2.0f*dy);
+		}
+	}
+
+	for(int i=1 ; i<=Nx-2; i++){ // topo rede principal, ou seja j=(Ny - 1)
+		int top= i + (Ny - 1) * stride;
+		GridPoint point(top,Nx,Ny,false);
+		int southsouth= i + (Ny - 3) * stride;
+		output_ptr_dx[top] = ( (input_ptr[point.E])-(input_ptr[point.W]) )/(2.0f*dx); //OK
+		output_ptr_dy[top] = ( 3.0f*(input_ptr[point.C]) -4.0f*(input_ptr[point.S]) +1.0f*(input_ptr[southsouth]) )/(2.0f*dy); //backward finite difference
+	}
+	for(int i=1 ; i<=Nx-2; i++){ // fundo rede principal, ou seja j=0
+		int bottom=i; //i+0*nx
+		GridPoint point(bottom,Nx,Ny,false);
+		int northnorth=i+2*stride;
+		output_ptr_dx[bottom] = ( (input_ptr[point.E])-(input_ptr[point.W]) )/(2.0f*dx);
+		output_ptr_dy[bottom] = ( -3.0f*(input_ptr[point.C]) +4.0f*(input_ptr[point.N])-1.0f*(input_ptr[northnorth]) )/(2.0f*dy); //forward finite difference
+	}
+	for(int j=1; j<=Ny-2;j++){ //lado esquerdo da rede principal ou seja i=0
+		int left = 0 + j*stride;
+		GridPoint point(left,Nx,Ny,false);
+		int easteast = left + 2;
+		output_ptr_dx[left] = ( -3.0f*(input_ptr[point.C]) +4.0f*(input_ptr[point.E])-1.0f*(input_ptr[easteast]) )/(2.0f*dx); //forward difference
+		output_ptr_dy[left] = ( (input_ptr[point.N])-(input_ptr[point.S]) )/(2.0f*dy); //OK
+	}
+	for(int j=1; j<=Ny-2;j++){ //lado direito da rede principal ou seja i=(Nx-1)
+		int right = (Nx-1) + j*stride;
+		GridPoint point(right,Nx,Ny,false);
+		int westwest = right-2;
+		output_ptr_dx[right] = ( 3.0f*(input_ptr[point.C]) -4.0f*(input_ptr[point.W]) +1.0f*(input_ptr[westwest]) )/(2.0f*dx); //backwar difference
+		output_ptr_dy[right] = ( (input_ptr[point.N])-(input_ptr[point.S]) )/(2.0f*dy);
+	}
+
+	int kp;
+	// i=0 j=0 forward x forward y
+	kp = 0 + 0*Nx;
+	output_ptr_dx[kp] = ( -3.0f*(input_ptr[kp] ) +4.0f*(input_ptr[kp+1] )-1.0f*(input_ptr[kp+2] )  )/(2.0f*dx);
+	output_ptr_dy[kp] = ( -3.0f*(input_ptr[kp] ) +4.0f*(input_ptr[kp+1*Nx] )-1.0f*(input_ptr[kp+2*Nx] )  )/(2.0f*dy);
+	// i=(Nx-1) j=0 backward x forward y
+	kp = (Nx-1) + 0*Nx;
+	output_ptr_dx[kp] = (  3.0f*(input_ptr[kp] ) -4.0f*(input_ptr[kp-1] )+1.0f*(input_ptr[kp-2] )  )/(2.0f*dx);
+	output_ptr_dy[kp] = ( -3.0f*(input_ptr[kp] ) +4.0f*(input_ptr[kp+Nx] )-1.0f*(input_ptr[kp+2*Nx] )  )/(2.0f*dy);
+	// i=0 j=(Ny-1) forward x backward y
+	kp = 0 + (Ny-1)*Nx;
+	output_ptr_dx[kp] = ( -3.0f*(input_ptr[kp] ) +4.0f*(input_ptr[kp+1] )-1.0f*(input_ptr[kp+2] )  )/(2.0f*dx);
+	output_ptr_dy[kp] = (  3.0f*(input_ptr[kp] ) -4.0f*(input_ptr[kp-Nx] )+1.0f*(input_ptr[kp-2*Nx] )  )/(2.0f*dy);
+	// i=(Nx-1) j=(Ny-1) backward x backward y
+	kp = (Nx-1) + (Ny-1)*Nx;
+	output_ptr_dx[kp] = ( 3.0f*(input_ptr[kp] ) -4.0f*(input_ptr[kp-1] )+1.0f*(input_ptr[kp-2] ) )/(2.0f*dx);
+	output_ptr_dy[kp] = ( 3.0f*(input_ptr[kp] ) -4.0f*(input_ptr[kp-Nx] )+1.0f*(input_ptr[kp-2*Nx] ) )/(2.0f*dy);
+}

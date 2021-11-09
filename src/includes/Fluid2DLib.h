@@ -71,6 +71,7 @@ class Fluid2D : public TethysBase
 
 	//TODO juntar estes 6 métodos num só
 
+	void ComputeGradient(float *input_ptr, float *output_ptr_dx, float *output_ptr_dy);
 
 		void VelocityGradient(); ///< Computes the gradient of the velocity grid  by second order finite differences.
 		void VelocityGradientMid(); ///< Computes the gradient of the velocity mid grid  by second order finite differences.

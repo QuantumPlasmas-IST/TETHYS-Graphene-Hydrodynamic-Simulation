@@ -40,7 +40,8 @@ void GrapheneFluid2D::CflCondition(){ // Eventual redefinition
 	if(vel_snd<0.36f*vel_fer){
 		lambda=1.2f*vel_fer;
 	}else{
-		lambda=1.97f*vel_snd + 0.5f*vel_fer;
+	//	lambda=1.97f*vel_snd + 0.5f*vel_fer;
+		lambda=2.0f*vel_snd + 0.5f*vel_fer;
 	}
 	dt = dx/lambda;
 	/*  CFL condition for FTCS method
