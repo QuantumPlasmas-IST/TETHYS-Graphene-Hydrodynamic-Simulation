@@ -4,6 +4,11 @@
 * Distributed under the MIT License (license terms are at http://opensource.org/licenses/MIT).   *
 \************************************************************************************************/
 
+
+/*!@file
+ * @brief Header file for initialization class
+ */
+
 #ifndef SETUPPARAMETERSLIB_H
 #define SETUPPARAMETERSLIB_H
 #include <fstream>

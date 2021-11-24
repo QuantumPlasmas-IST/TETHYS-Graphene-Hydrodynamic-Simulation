@@ -1,6 +1,12 @@
-//
-// Created by pcosme on 23/12/2020.
-//
+/************************************************************************************************\
+* 2020 Pedro Cosme , João Santos and Ivan Figueiredo                                             *
+* DOI: 10.5281/zenodo.4319281																	 *
+* Distributed under the MIT License (license terms are at http://opensource.org/licenses/MIT).   *
+\************************************************************************************************/
+
+/*!@file
+ * @brief Header file for Dyakonov-Shur BC
+ */
 
 #ifndef DYAKONOVSHURBOUNDARYLIB_H
 #define DYAKONOVSHURBOUNDARYLIB_H
@@ -46,8 +52,6 @@ public:
 	 *
 	 * */
 	static void DSFeedbackBc(GrapheneFluid2D &fluid_class, float gain);
-	static void DSExcitedBc(GrapheneFluid2D &fluid_class, float forcing);
-
 };
 
 

@@ -4,6 +4,11 @@
 * Distributed under the MIT License (license terms are at http://opensource.org/licenses/MIT).   *
 \************************************************************************************************/
 
+
+/*!@file
+ * @brief Header file for 2D Dirac-Fermi fluid
+ */
+
 #ifndef GRAPHENEFLUID2DLIB_H
 #define GRAPHENEFLUID2DLIB_H
 
@@ -17,6 +22,12 @@
  * */
 class GrapheneFluid2D : public Fluid2D{
 protected:
+	/*!
+	 * @brief Converts the number density to efective mass
+	 *
+	 * Since the mass of the fluid element is not a constant the in the graphene electronic fluid, one needs to perform the transformation
+	   @f[ m^\star = n^{3/2} @f]
+	 * */
 	float DensityToMass(float density) override;
 
 public :
@@ -53,8 +64,7 @@ public :
 		void MassFluxToVelocity() override; // Converts the mass density flux back to velocity, in graphene  v = p n^{-3/2}
 		/*Override fluxes and sources to specifics of graphene physics*/
 		float DensitySource(float n, float flx_x, float flx_y, float mass, float s)override;   ///< density equation (continuity equation) source term
-		float
-		TemperatureSource(float n, float flx_x, float flx_y, float den_grad_x, float den_grad_y, float mass, float s) override;   ///< density equation (continuity equation) source term
+		float TemperatureSource(float n, float flx_x, float flx_y, float den_grad_x, float den_grad_y, float mass, float s) override;   ///< density equation (continuity equation) source term
 		float XMomentumSource(float n, float flx_x, float flx_y, float mass, float s)override; ///< velocity X component equation (momentum equation) source term
 		float YMomentumSource(float n, float flx_x, float flx_y, float mass, float s)override; ///< velocity y component equation (momentum equation) source term
 
@@ -67,8 +77,7 @@ public :
 		float YMomentumFluxX(GridPoint p, char side ) override; ///< velocity Y component equation (momentum equation) conserved flux X component
 		float YMomentumFluxY(GridPoint p, char side ) override; ///< velocity Y component equation (momentum equation) conserved flux Y component
 
-		void MagneticSourceSemiAnalytic(); // Semi analytic method for the magnetic interaction
-		//void MagneticSourceFtcs();  // Forward Time Centered Space method for the magnetic interaction
+
 };
 
 

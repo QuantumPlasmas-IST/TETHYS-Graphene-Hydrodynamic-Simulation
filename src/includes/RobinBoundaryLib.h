@@ -5,6 +5,10 @@
 \************************************************************************************************/
 
 
+/*!@file
+ * @brief Header file for Robin BC
+ */
+
 #ifndef ROBINBOUNDARYLIB_H
 #define ROBINBOUNDARYLIB_H
 #include <H5Cpp.h>

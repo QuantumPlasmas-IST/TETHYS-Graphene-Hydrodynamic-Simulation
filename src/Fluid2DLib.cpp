@@ -245,7 +245,7 @@ void Fluid2D::VelocityLaplacianFtcs() {
 
 //calculate laplacians
 #pragma omp parallel for  default(none) shared(lap_flxX,lap_flxY,VelX,VelY,Nx,Ny)
-	for (int kp = 1 + Nx; kp <= Nx * Ny - Nx - 2; kp++) { //correr a grelha principal evitando as fronteiras
+	for (int kp = 1 + Nx; kp <= Nx * Ny - Nx - 2; kp++) {
 		int north, south, east, west;
 		div_t divresult;
 		divresult = div(kp, Nx);
@@ -272,7 +272,7 @@ void Fluid2D::VelocityLaplacianWeighted19() {
 	this->MassFluxToVelocity();
 
 #pragma omp parallel for default(none) shared(lap_flxX,lap_flxY,VelX,VelY)
-	for (int kp = 1 + Nx; kp <= Nx * Ny - Nx - 2; kp++) { //correr a grelha principal evitando as fronteiras
+	for (int kp = 1 + Nx; kp <= Nx * Ny - Nx - 2; kp++) {
 		GridPoint point(kp,Nx,Ny,false);
 		if (kp % Nx != Nx - 1 && kp % Nx != 0){
 			lap_flxX[kp] = Laplacian19( point, VelX, kin_vis);
@@ -283,7 +283,7 @@ void Fluid2D::VelocityLaplacianWeighted19() {
 
 void Fluid2D::TemperatureLaplacianWeighted19() {
 #pragma omp parallel for default(none) shared(lap_tmp,Tmp)
-    for (int kp = 1 + Nx; kp <= Nx * Ny - Nx - 2; kp++) { //correr a grelha principal evitando as fronteiras
+    for (int kp = 1 + Nx; kp <= Nx * Ny - Nx - 2; kp++) {
 	    GridPoint point(kp,Nx,Ny,false);
         if (kp % Nx != Nx - 1 && kp % Nx != 0){
 	        lap_tmp[kp] = Laplacian19( point, Tmp, therm_diff );
@@ -343,7 +343,6 @@ void Fluid2D::SaveSnapShot() {
 	snapshot_step = points_per_period / snapshot_per_period;
 
 	this->MassFluxToVelocity();
-	//this->VelocityToCurrent();
 	string str_time = to_string(TimeStepCounter / snapshot_step);
 	str_time.insert(str_time.begin(), 5 - str_time.length(), '0');
 	string name_dataset = "snapshot_" + str_time;
@@ -419,7 +418,7 @@ float Fluid2D::YMomentumSource(__attribute__((unused)) float n, __attribute__((u
 
 void Fluid2D::ForwardTimeOperator() {
 #pragma omp parallel for default(none) shared(Nx,Ny,FlxX,FlxY,lap_flxX,lap_flxY,dt,cyc_freq)
-	for (int kp = 1 + Nx; kp <= Nx * Ny - Nx - 2; kp++) { //correr a grelha principal evitando as fronteiras
+	for (int kp = 1 + Nx; kp <= Nx * Ny - Nx - 2; kp++) {
 		float flx_x_old, flx_y_old, tmp_old;
 		if (kp % Nx != Nx - 1 && kp % Nx != 0) {
 			flx_x_old = FlxX[kp];
@@ -437,8 +436,8 @@ void Fluid2D::VelocityGradient() {
 	int stride = Nx;
 	float m_east,m_west,m_north,m_south;
 #pragma omp parallel for default(none) private(m_east,m_west,m_north,m_south) shared(Nx,Ny,dx,dy,stride,FlxX,FlxY,Den,velX_dx,velX_dy,velY_dx,velY_dy)
-	for(int kp=1+Nx; kp<=Nx*Ny-Nx-2; kp++){  //correr a grelha principal evitando as fronteiras
-		if( kp%stride!=stride-1 && kp%stride!=0){ //aqui podem ser diferencas centradas quer em x quer em y
+	for(int kp=1+Nx; kp<=Nx*Ny-Nx-2; kp++){
+		if( kp%stride!=stride-1 && kp%stride!=0){
 			GridPoint point(kp,Nx,Ny,false);
 			m_east =  DensityToMass(Den[point.E]);
 			m_west =  DensityToMass(Den[point.W]);
@@ -451,7 +450,7 @@ void Fluid2D::VelocityGradient() {
 		}
 	}
 
-	for(int i=1 ; i<=Nx-2; i++){ // topo rede principal, ou seja j=(Ny - 1)
+	for(int i=1 ; i<=Nx-2; i++){
 		float m_top,m_southsouth;
 		int top= i + (Ny - 1) * stride;
 		GridPoint point(top,Nx,Ny,false);
@@ -461,12 +460,12 @@ void Fluid2D::VelocityGradient() {
 		m_west =  DensityToMass(Den[point.W]);
 		m_south = DensityToMass(Den[point.S]);
 		m_southsouth = DensityToMass(Den[southsouth]);
-		velX_dx[top] = ( (FlxX[point.E]/m_east)-(FlxX[point.W]/m_west) )/(2.0f*dx); //OK
+		velX_dx[top] = ( (FlxX[point.E]/m_east)-(FlxX[point.W]/m_west) )/(2.0f*dx);
 		velX_dy[top] = ( 3.0f*(FlxX[point.C]/m_top) -4.0f*(FlxX[point.S]/m_south) +1.0f*(FlxX[southsouth]/m_southsouth) )/(2.0f*dy); //backward finite difference
-		velY_dx[top] = ( (FlxY[point.E]/m_east)-(FlxY[point.W]/m_west) )/(2.0f*dx); //OK
+		velY_dx[top] = ( (FlxY[point.E]/m_east)-(FlxY[point.W]/m_west) )/(2.0f*dx);
 		velY_dy[top] = ( 3.0f*(FlxY[point.C]/m_top) -4.0f*(FlxY[point.S]/m_south) +1.0f*(FlxY[southsouth]/m_southsouth)  )/(2.0f*dy); //backward finite difference
 	}
-	for(int i=1 ; i<=Nx-2; i++){ // fundo rede principal, ou seja j=0
+	for(int i=1 ; i<=Nx-2; i++){
 		float m_bottom,m_northnorth;
 		int bottom=i; //i+0*nx
 		GridPoint point(bottom,Nx,Ny,false);
@@ -476,12 +475,12 @@ void Fluid2D::VelocityGradient() {
 		m_west =   DensityToMass(Den[point.W]);
 		m_north =  DensityToMass(Den[point.N]);
 		m_northnorth = DensityToMass(Den[northnorth]);
-		velX_dx[bottom] = ( (FlxX[point.E]/m_east)-(FlxX[point.W]/m_west) )/(2.0f*dx);  //OK
+		velX_dx[bottom] = ( (FlxX[point.E]/m_east)-(FlxX[point.W]/m_west) )/(2.0f*dx);
 		velX_dy[bottom] = ( -3.0f*(FlxX[point.C]/m_bottom) +4.0f*(FlxX[point.N]/m_north)-1.0f*(FlxX[northnorth]/m_northnorth) )/(2.0f*dy); //forward finite difference
-		velY_dx[bottom] = ( (FlxY[point.E]/m_east)-(FlxY[point.W]/m_west) )/(2.0f*dx); //OK
+		velY_dx[bottom] = ( (FlxY[point.E]/m_east)-(FlxY[point.W]/m_west) )/(2.0f*dx);
 		velY_dy[bottom] = ( -3.0f*(FlxY[point.C]/m_bottom) +4.0f*(FlxY[point.N]/m_north)-1.0f*(FlxY[northnorth]/m_northnorth) )/(2.0f*dy); //forward finite difference
 	}
-	for(int j=1; j<=Ny-2;j++){ //lado esquerdo da rede principal ou seja i=0
+	for(int j=1; j<=Ny-2;j++){
 		float m_left, m_easteast;
 		int left = 0 + j*stride;
 		GridPoint point(left,Nx,Ny,false);
@@ -492,11 +491,11 @@ void Fluid2D::VelocityGradient() {
 		m_east =  DensityToMass(Den[point.E]);
 		m_easteast = DensityToMass(Den[easteast]);
 		velX_dx[left] = ( -3.0f*(FlxX[point.C]/m_left) +4.0f*(FlxX[point.E]/m_east)-1.0f*(FlxX[easteast]/m_easteast) )/(2.0f*dx); //forward difference
-		velX_dy[left] = ( (FlxX[point.N]/m_north)-(FlxX[point.S]/m_south) )/(2.0f*dy); //OK
+		velX_dy[left] = ( (FlxX[point.N]/m_north)-(FlxX[point.S]/m_south) )/(2.0f*dy);
 		velY_dx[left] = ( -3.0f*(FlxY[point.C]/m_left) +4.0f*(FlxY[point.E]/m_east)-1.0f*(FlxY[easteast]/m_easteast) )/(2.0f*dx); //forward difference
-		velY_dy[left] = ( (FlxY[point.N]/m_north)-(FlxY[point.S]/m_south) )/(2.0f*dy); //OK
+		velY_dy[left] = ( (FlxY[point.N]/m_north)-(FlxY[point.S]/m_south) )/(2.0f*dy);
 	}
-	for(int j=1; j<=Ny-2;j++){ //lado direito da rede principal ou seja i=(Nx-1)
+	for(int j=1; j<=Ny-2;j++){
 		float m_rigth, m_westwest;
 		int right = (Nx-1) + j*stride;
 		GridPoint point(right,Nx,Ny,false);
@@ -507,11 +506,10 @@ void Fluid2D::VelocityGradient() {
 		m_west =  DensityToMass(Den[point.W]);
 		m_westwest = DensityToMass(Den[westwest]);
 		velX_dx[right] = ( 3.0f*(FlxX[point.C]/m_rigth) -4.0f*(FlxX[point.W]/m_west) +1.0f*(FlxX[westwest]/m_westwest) )/(2.0f*dx); //backwar difference
-		velX_dy[right] = ( (FlxX[point.N]/m_north)-(FlxX[point.S]/m_south) )/(2.0f*dy); //OK
+		velX_dy[right] = ( (FlxX[point.N]/m_north)-(FlxX[point.S]/m_south) )/(2.0f*dy);
 		velY_dx[right] = ( 3.0f*(FlxY[point.C]/m_rigth) -4.0f*(FlxY[point.W]/m_west) +1.0f*(FlxY[westwest]/m_westwest) )/(2.0f*dx);
-		velY_dy[right] = ( (FlxY[point.N]/m_north)-(FlxY[point.S]/m_south) )/(2.0f*dy); //OK
+		velY_dy[right] = ( (FlxY[point.N]/m_north)-(FlxY[point.S]/m_south) )/(2.0f*dy);
 	}
-	//os 4 cantos em que ambas a derivadas nao podem ser centradas
 	int kp;
 	// i=0 j=0 forward x forward y
 	kp = 0 + 0*Nx;
@@ -567,20 +565,20 @@ void Fluid2D::VelocityGradient() {
 void Fluid2D::VelocityGradientMid() {
 	float m_east,m_west,m_north,m_south;
 #pragma omp parallel for default(none) private(m_east,m_west,m_north,m_south) shared(Nx,Ny,dx,dy,flxX_mid,flxY_mid,den_mid,velX_dx_mid,velX_dy_mid,velY_dx_mid,velY_dy_mid)
-	for(int ks=1+(Nx-1); ks<=(Nx-3)+(Ny-3)*(Nx-1); ks++){ //correr todos os pontos da grelha secundaria de _mid EVITANDO FRONTEIRAS
+	for(int ks=1+(Nx-1); ks<=(Nx-3)+(Ny-3)*(Nx-1); ks++){
 		if( ks%(Nx-1)!=Nx-2 && ks%(Nx-1)!=0) {
 			GridPoint point(ks,Nx,Ny,true);
 			m_east = DensityToMass(den_mid[point.E]);
 			m_west = DensityToMass(den_mid[point.W]);
-			m_north = DensityToMass(den_mid[point.N]); //valgrind
+			m_north = DensityToMass(den_mid[point.N]);
 			m_south = DensityToMass(den_mid[point.S]);
 			velX_dx_mid[ks] = ( (flxX_mid[point.E]/m_east) - (flxX_mid[point.W]/m_west) ) / (2.0f * dx);
-			velX_dy_mid[ks] = ( (flxX_mid[point.N]/m_north) - (flxX_mid[point.S]/m_south) ) / (2.0f * dy); //valgrind
+			velX_dy_mid[ks] = ( (flxX_mid[point.N]/m_north) - (flxX_mid[point.S]/m_south) ) / (2.0f * dy);
 			velY_dx_mid[ks] = ( (flxY_mid[point.E]/m_east) - (flxY_mid[point.W]/m_west) ) / (2.0f * dx);
-			velY_dy_mid[ks] = ( (flxY_mid[point.N]/m_north) - (flxY_mid[point.S]/m_south) ) / (2.0f * dy); //valgrind
+			velY_dy_mid[ks] = ( (flxY_mid[point.N]/m_north) - (flxY_mid[point.S]/m_south) ) / (2.0f * dy);
 		}
 	}
-	for(int i=1 ; i<=(Nx-1)-2; i++){ // topo rede principal, ou seja j=((Ny-1) - 1)
+	for(int i=1 ; i<=(Nx-1)-2; i++){
 		float m_top,m_southsouth;
 		int top= i + ((Ny-1) - 1) * (Nx-1);
 		GridPoint point(top,Nx,Ny,true);
@@ -590,9 +588,9 @@ void Fluid2D::VelocityGradientMid() {
 		m_west = DensityToMass(den_mid[point.W]);
 		m_south = DensityToMass(den_mid[point.S]);
 		m_southsouth = DensityToMass(den_mid[southsouth]);
-		velX_dx_mid[top] = ( (flxX_mid[point.E]/m_east)-(flxX_mid[point.W]/m_west) )/(2.0f*dx); //OK
+		velX_dx_mid[top] = ( (flxX_mid[point.E]/m_east)-(flxX_mid[point.W]/m_west) )/(2.0f*dx);
 		velX_dy_mid[top] = ( 3.0f*(flxX_mid[point.C]/m_top) -4.0f*(flxX_mid[point.S]/m_south) +1.0f*(flxX_mid[southsouth]/m_southsouth) )/(2.0f*dy); //backward finite difference
-		velY_dx_mid[top] = ( (flxY_mid[point.E]/m_east)-(flxY_mid[point.W]/m_west) )/(2.0f*dx); //OK
+		velY_dx_mid[top] = ( (flxY_mid[point.E]/m_east)-(flxY_mid[point.W]/m_west) )/(2.0f*dx);
 		velY_dy_mid[top] = ( 3.0f*(flxY_mid[point.C]/m_top) -4.0f*(flxY_mid[point.S]/m_south) +1.0f*(flxY_mid[southsouth]/m_southsouth)  )/(2.0f*dy); //backward finite difference
 	}
 	for(int i=1 ; i<=(Nx-1)-2; i++){ // fundo rede principal, ou seja j=0
@@ -605,9 +603,9 @@ void Fluid2D::VelocityGradientMid() {
 		m_west = DensityToMass(den_mid[point.W]);
 		m_north = DensityToMass(den_mid[point.N]);
 		m_northnorth = DensityToMass(den_mid[northnorth]);
-		velX_dx_mid[bottom] = ( (flxX_mid[point.E]/m_east)-(flxX_mid[point.W]/m_west) )/(2.0f*dx);  //OK
+		velX_dx_mid[bottom] = ( (flxX_mid[point.E]/m_east)-(flxX_mid[point.W]/m_west) )/(2.0f*dx);
 		velX_dy_mid[bottom] = ( -3.0f*(flxX_mid[point.C]/m_bottom) +4.0f*(flxX_mid[point.N]/m_north)-1.0f*(flxX_mid[northnorth]/m_northnorth) )/(2.0f*dy); //forward finite difference
-		velY_dx_mid[bottom] = ( (flxY_mid[point.E]/m_east)-(flxY_mid[point.W]/m_west) )/(2.0f*dx); //OK
+		velY_dx_mid[bottom] = ( (flxY_mid[point.E]/m_east)-(flxY_mid[point.W]/m_west) )/(2.0f*dx);
 		velY_dy_mid[bottom] = ( -3.0f*(flxY_mid[point.C]/m_bottom) +4.0f*(flxY_mid[point.N]/m_north)-1.0f*(flxY_mid[northnorth]/m_northnorth) )/(2.0f*dy); //forward finite difference
 	}
 	for(int j=1; j<=(Ny-1)-2;j++){ //lado esquerdo da rede principal ou seja i=0
@@ -621,9 +619,9 @@ void Fluid2D::VelocityGradientMid() {
 		m_easteast = DensityToMass(den_mid[easteast]);
 		m_left= DensityToMass(den_mid[point.C]);
 		velX_dx_mid[left] = ( -3.0f*(flxX_mid[point.C]/m_left) +4.0f*(flxX_mid[point.E]/m_east)-1.0f*(flxX_mid[easteast]/m_easteast)  )/(2.0f*dx); //forward difference
-		velX_dy_mid[left] = ( (flxX_mid[point.N]/m_north)-(flxX_mid[point.S]/m_south) )/(2.0f*dy); //OK
+		velX_dy_mid[left] = ( (flxX_mid[point.N]/m_north)-(flxX_mid[point.S]/m_south) )/(2.0f*dy);
 		velY_dx_mid[left] = ( -3.0f*(flxY_mid[point.C]/m_left) +4.0f*(flxY_mid[point.E]/m_east)-1.0f*(flxY_mid[easteast]/m_easteast) )/(2.0f*dx); //forward difference
-		velY_dy_mid[left] = ( (flxY_mid[point.N]/m_north)-(flxY_mid[point.S]/m_south) )/(2.0f*dy); //OK
+		velY_dy_mid[left] = ( (flxY_mid[point.N]/m_north)-(flxY_mid[point.S]/m_south) )/(2.0f*dy);
 	}
 	for(int j=1; j<=(Ny-1)-2;j++){ //lado direito da rede principal ou seja i=((Nx-1)-1)
 		float m_rigth, m_westwest;
@@ -636,11 +634,11 @@ void Fluid2D::VelocityGradientMid() {
 		m_west = DensityToMass(den_mid[point.W]);
 		m_westwest = DensityToMass(den_mid[westwest]);
 		velX_dx_mid[right] = ( 3.0f*(flxX_mid[point.C]/m_rigth) -4.0f*(flxX_mid[point.W]/m_west) +1.0f*(flxX_mid[westwest]/m_westwest) )/(2.0f*dx); //backwar difference
-		velX_dy_mid[right] = ( (flxX_mid[point.N]/m_north)-(flxX_mid[point.S]/m_south) )/(2.0f*dy); //OK
+		velX_dy_mid[right] = ( (flxX_mid[point.N]/m_north)-(flxX_mid[point.S]/m_south) )/(2.0f*dy);
 		velY_dx_mid[right] = ( 3.0f*(flxY_mid[point.C]/m_rigth) -4.0f*(flxY_mid[point.W]/m_west) +1.0f*(flxY_mid[westwest]/m_westwest) )/(2.0f*dx);
-		velY_dy_mid[right] = ( (flxY_mid[point.N]/m_north)-(flxY_mid[point.S]/m_south) )/(2.0f*dy); //OK
+		velY_dy_mid[right] = ( (flxY_mid[point.N]/m_north)-(flxY_mid[point.S]/m_south) )/(2.0f*dy);
 	}
-//os 4 cantos em que ambas a derivadas nao podem ser centradas
+
 	int ks;
 // i=0 j=0 forward x forward y
 	ks = 0 + 0*(Nx-1);
@@ -696,8 +694,8 @@ void Fluid2D::VelocityGradientMid() {
 void Fluid2D::DensityGradient() {
 	int stride = Nx;
 #pragma omp parallel for default(none) shared(Nx,Ny,dx,dy,stride,Den,den_dx,den_dy)
-	for(int kp=1+Nx; kp<=Nx*Ny-Nx-2; kp++){  //correr a grelha principal evitando as fronteiras
-		if( kp%stride!=stride-1 && kp%stride!=0){ //aqui podem ser diferencas centradas quer em x quer em y
+	for(int kp=1+Nx; kp<=Nx*Ny-Nx-2; kp++){
+		if( kp%stride!=stride-1 && kp%stride!=0){
 			GridPoint point(kp,Nx,Ny,false);
 			den_dx[kp] = ( Den[point.E] - Den[point.W] )/(2.0f*dx);
 			den_dy[kp] = ( Den[point.N] - Den[point.S] )/(2.0f*dy);
@@ -715,7 +713,7 @@ void Fluid2D::DensityGradient() {
 		int bottom=i; //i+0*nx
 		GridPoint point(bottom,Nx,Ny,false);
 		int northnorth=i+2*stride;
-		den_dx[bottom] = ( (Den[point.E])-(Den[point.W]) )/(2.0f*dx);  //OK
+		den_dx[bottom] = ( (Den[point.E])-(Den[point.W]) )/(2.0f*dx);
 		den_dy[bottom] = ( -3.0f*(Den[point.C]) +4.0f*(Den[point.N])-1.0f*(Den[northnorth]) )/(2.0f*dy); //forward finite difference
 	}
 	for(int j=1; j<=Ny-2;j++){ //lado esquerdo da rede principal ou seja i=0
@@ -730,9 +728,9 @@ void Fluid2D::DensityGradient() {
 		GridPoint point(right,Nx,Ny,false);
 		int westwest = right-2;
 		den_dx[right] = ( 3.0f*(Den[point.C]) -4.0f*(Den[point.W]) +1.0f*(Den[westwest]) )/(2.0f*dx); //backwar difference
-		den_dy[right] = ( (Den[point.N])-(Den[point.S]) )/(2.0f*dy); //OK
+		den_dy[right] = ( (Den[point.N])-(Den[point.S]) )/(2.0f*dy);
 	}
-	//os 4 cantos em que ambas a derivadas nao podem ser centradas
+
 	int kp;
 	// i=0 j=0 forward x forward y
 	kp = 0 + 0*Nx;
@@ -768,14 +766,14 @@ void Fluid2D::DensityGradientMid() {
 		int top= i + ((Ny-1) - 1) * (Nx-1);
 		GridPoint point(top,Nx,Ny,true);
 		int southsouth= i + ((Ny-1) - 3) * (Nx-1);
-		den_dx_mid[top] = ( (den_mid[point.E])-(den_mid[point.W]) )/(2.0f*dx); //OK
+		den_dx_mid[top] = ( (den_mid[point.E])-(den_mid[point.W]) )/(2.0f*dx);
 		den_dy_mid[top] = ( 3.0f*(den_mid[point.C]) -4.0f*(den_mid[point.S]) +1.0f*(den_mid[southsouth]) )/(2.0f*dy); //backward finite difference
 	}
 	for(int i=1 ; i<=(Nx-1)-2; i++){ // fundo rede principal, ou seja j=0
 		int bottom=i; //i+0*nx
 		GridPoint point(bottom,Nx,Ny,true);
 		int northnorth=i+2*(Nx-1);
-		den_dx_mid[bottom] = ( (den_mid[point.E])-(den_mid[point.W]) )/(2.0f*dx);  //OK
+		den_dx_mid[bottom] = ( (den_mid[point.E])-(den_mid[point.W]) )/(2.0f*dx);
 		den_dy_mid[bottom] = ( -3.0f*(den_mid[point.C]) +4.0f*(den_mid[point.N])-1.0f*(den_mid[northnorth]) )/(2.0f*dy); //forward finite difference
 	}
 	for(int j=1; j<=(Ny-1)-2;j++){ //lado esquerdo da rede principal ou seja i=0
@@ -783,14 +781,14 @@ void Fluid2D::DensityGradientMid() {
 		GridPoint point(left,Nx,Ny,true);
 		int easteast = left + 2;
 		den_dx_mid[left] = ( -3.0f*(den_mid[point.C]) +4.0f*(den_mid[point.E])-1.0f*(den_mid[easteast])  )/(2.0f*dx); //forward difference
-		den_dy_mid[left] = ( (den_mid[point.N])-(den_mid[point.S]) )/(2.0f*dy); //OK
+		den_dy_mid[left] = ( (den_mid[point.N])-(den_mid[point.S]) )/(2.0f*dy);
 	}
 	for(int j=1; j<=(Ny-1)-2;j++){ //lado direito da rede principal ou seja i=((Nx-1)-1)
 		int right = ((Nx-1)-1) + j*(Nx-1);
 		GridPoint point(right,Nx,Ny,true);
 		int westwest = right-2;
 		den_dx_mid[right] = ( 3.0f*(den_mid[point.C]) -4.0f*(den_mid[point.W]) +1.0f*(den_mid[westwest]) )/(2.0f*dx); //backwar difference
-		den_dy_mid[right] = ( (den_mid[point.N])-(den_mid[point.S]) )/(2.0f*dy); //OK
+		den_dy_mid[right] = ( (den_mid[point.N])-(den_mid[point.S]) )/(2.0f*dy);
 	}
 //os 4 cantos em que ambas a derivadas nao podem ser centradas
 	int ks;

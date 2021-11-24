@@ -4,6 +4,8 @@
 * Distributed under the MIT License (license terms are at http://opensource.org/licenses/MIT).   *
 \************************************************************************************************/
 
+
+
 #include "includes/Fluid2DLib.h"
 #include "includes/SetUpParametersLib.h"
 #include "includes/DirichletBoundaryLib.h"
@@ -21,16 +23,12 @@ using namespace std;
 int main(int argc, char **argv){
 
 	SetUpParameters parameters(argc, argv);
-	//parameters.PrintParameters();
 	parameters.DefineGeometry();
 
 	float t=0.0;
 	float dt;		// time step
 
 	GrapheneFluid2D graph(parameters);
-
-	//graph.SetThermDiff(0.6);
-
 
 	/*......CFL routine to determine dt...............................*/
 	graph.CflCondition();
@@ -62,46 +60,42 @@ int main(int argc, char **argv){
 	/*................................................................*/
 
 	/*................Setting.the.lateral.boundaries..................*/
-	DyakonovShurBoundaryCondition::SetSlope(0.0f);
-	DyakonovShurBoundaryCondition::SetBottomEdge(graph);
-	DyakonovShurBoundaryCondition::SetTopEdge(graph);
+	BoundaryCondition::SetSlope(0.0f);
+	BoundaryCondition::SetBottomEdge(graph);
+	BoundaryCondition::SetTopEdge(graph);
 	/*................................................................*/
 
 
 	cout << "\033[1;7;5;33m Program Running \033[0m"<<endl;
 	while (t <=  graph.GetTmax() ){
 		int percentage=100*GrapheneFluid2D::TimeStepCounter/(graph.GetTmax()/dt);
-		cout << percentage<<"%\033[?25l";
+		cout << percentage<<"%\033[?25l"; //prints the percentage of simulation completed
 
 		t += dt;
-		//float forcing=1.0f + 0.2f*sin(t*64.0f);
-
-
 		GrapheneFluid2D::TimeStepCounter++;
 
-
-		float forcingcurrent=0.5f*sin(graph.RealFreq()*t);
 		graph.Richtmyer();
-		//DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
-		DyakonovShurBoundaryCondition::DSExcitedBc(graph, forcingcurrent);
-		DyakonovShurBoundaryCondition::YClosedFreeSlip(graph);
 
+		/*+++++++++++++++++++++++++++++++++++++*
+		 * Change the boundary conditions here *
+		 *+++++++++++++++++++++++++++++++++++++*/
+		DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
+		DirichletBoundaryCondition::YClosedNoSlip(graph);
 		if(graph.GetThermDiff()!=0.0){
-			DirichletBoundaryCondition::Temperature(graph,0.22f, 0.22f, 0.22f, 0.22f);
+			DirichletBoundaryCondition::Temperature(graph,0.22f, 0.22f, 0.22f, 0.22f);  // 300K corresponds to 0.22*Fermi temperature
 		}
-
 
 		if(graph.GetKinVis()!=0.0f || graph.GetThermDiff()!=0.0f  ) {
 			graph.ParabolicOperatorWeightedExplicit19();
-			//DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
-			DyakonovShurBoundaryCondition::DSExcitedBc(graph, forcingcurrent);
-			DyakonovShurBoundaryCondition::YClosedFreeSlip(graph);
 
+			/*+++++++++++++++++++++++++++++++++++++*
+			 * Change the boundary conditions here *
+			 *+++++++++++++++++++++++++++++++++++++*/
+			DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
+			DirichletBoundaryCondition::YClosedNoSlip(graph);
 			if(graph.GetThermDiff()!=0.0){
-				DirichletBoundaryCondition::Temperature(graph,0.22f, 0.22f, 0.22f, 0.22f);
+				DirichletBoundaryCondition::Temperature(graph,0.22f, 0.22f, 0.22f, 0.22f); // 300K corresponds to 0.22*Fermi temperature
 			}
-
-
 		}
 
 		//Record full hdf5 data

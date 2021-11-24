@@ -4,6 +4,10 @@
 * Distributed under the MIT License (license terms are at http://opensource.org/licenses/MIT).   *
 \************************************************************************************************/
 
+/*!@file
+ * @brief Header file for fluid base class and and IO methods
+ */
+
 #ifndef TETHYSBASELIB_H
 #define TETHYSBASELIB_H
 
@@ -130,9 +134,9 @@ class TethysBase {
 		float GetLengthX() const;   ///< @returns   total length along x
 		float GetLengthY() const;   ///< @returns   total length along y
 
-		float ImagFreq() const;
-		float PhaseVel() const;
-		float RealFreq() const;
+		float ImagFreq() const; ///< @returns Expected growth rate of Dyakonov-Shur instability for the given parameters
+ 		float PhaseVel() const; ///< @returns Corrected phase velocity of the plasmons for the given parameters, taking in account both S and v_F
+		float RealFreq() const; ///< @returns Expected frequency of Dyakonov-Shur instability for the given parameters
 
 
 		std::string GetInfix() const;   ///< @returns   file name infix

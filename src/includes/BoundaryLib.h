@@ -4,6 +4,10 @@
 * Distributed under the MIT License (license terms are at http://opensource.org/licenses/MIT).   *
 \************************************************************************************************/
 
+/*!@file
+ * @brief Header file for BC base class
+ */
+
 #ifndef BOUNDARYLIB_H
 #define BOUNDARYLIB_H
 
@@ -13,8 +17,6 @@
 #include "includes/Fluid1DLib.h"
 #include "includes/Fluid2DLib.h"
 
-
-//TODO review the entire boundary class
 
 /*Base class for general boundary conditions*/
 
