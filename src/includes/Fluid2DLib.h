@@ -82,7 +82,7 @@ class Fluid2D : public TethysBase
 	void TemperatureGradientMid(); ///< Computes the gradient of the velocity mid grid  by second order finite differences.
 
 
-	virtual float DensityToMass(float density);
+	virtual float MassDensity(float density);
 
 public :
 		float * Den ;       // number density

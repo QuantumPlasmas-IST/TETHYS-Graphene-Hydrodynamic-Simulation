@@ -28,7 +28,7 @@ protected:
 	 * Since the mass of the fluid element is not a constant the in the graphene electronic fluid, one needs to perform the transformation
 	   @f[ m^\star = n^{3/2} @f]
 	 * */
-	float DensityToMass(float density) override;
+	float MassDensity(float density) override;
 
 public :
 	explicit GrapheneFluid2D(SetUpParameters &input_parameters);
