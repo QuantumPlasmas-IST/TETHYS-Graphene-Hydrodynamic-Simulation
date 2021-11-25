@@ -32,6 +32,7 @@ int main(int argc, char **argv){
 
 	/*......CFL routine to determine dt...............................*/
 	graph.CflCondition();
+	graph.SetDt(graph.GetDt()*0.5f);
 	dt=graph.GetDt();
 	/*................................................................*/
 	
@@ -56,7 +57,7 @@ int main(int argc, char **argv){
 	graph.WelcomeScreen();
 
 	/*...............Initialization...................................*/
-	graph.InitialCondRand();
+	graph.InitialCondWave();
 	/*................................................................*/
 
 	/*................Setting.the.lateral.boundaries..................*/
@@ -79,8 +80,12 @@ int main(int argc, char **argv){
 		/*+++++++++++++++++++++++++++++++++++++*
 		 * Change the boundary conditions here *
 		 *+++++++++++++++++++++++++++++++++++++*/
-		DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
-		DirichletBoundaryCondition::YClosedNoSlip(graph);
+		//DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
+		//DirichletBoundaryCondition::YClosedNoSlip(graph);
+
+		BoundaryCondition::XPeriodic(graph);
+		BoundaryCondition::YPeriodic(graph);
+
 		if(graph.GetThermDiff()!=0.0){
 			DirichletBoundaryCondition::Temperature(graph,0.22f, 0.22f, 0.22f, 0.22f);  // 300K corresponds to 0.22*Fermi temperature
 		}
@@ -91,8 +96,14 @@ int main(int argc, char **argv){
 			/*+++++++++++++++++++++++++++++++++++++*
 			 * Change the boundary conditions here *
 			 *+++++++++++++++++++++++++++++++++++++*/
-			DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
-			DirichletBoundaryCondition::YClosedNoSlip(graph);
+		//	DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
+		//	DirichletBoundaryCondition::YClosedNoSlip(graph);
+
+
+			BoundaryCondition::XPeriodic(graph);
+			BoundaryCondition::YPeriodic(graph);
+
+
 			if(graph.GetThermDiff()!=0.0){
 				DirichletBoundaryCondition::Temperature(graph,0.22f, 0.22f, 0.22f, 0.22f); // 300K corresponds to 0.22*Fermi temperature
 			}

@@ -106,6 +106,16 @@ void Fluid2D::InitialCondRand(){
 	}
 }
 
+void Fluid2D::InitialCondWave() {
+	for (int i = 0; i < Nx; i++ ){
+		for (int j=0; j<Ny; j++){
+			Den[i + j * Nx] = 1.0f+0.3f*sin(2.0f*MAT_PI*i*dx/lengX) ;
+			//Den[i + j * Nx] = 1.0f+0.3f/cosh((i*dx-0.5f)*20.0f);
+			VelX[i + j * Nx] = 0.0f;
+		}
+	}
+}
+
 void Fluid2D::InitialCondTest(){
 	for (int i = 0; i < Nx; i++ ){
 		for (int j=0; j<Ny; j++){
@@ -1035,4 +1045,6 @@ return lap;
 float Fluid2D::TemperatureSource(float n, float flx_x, float flx_y, float den_grad_x, float den_grad_y, float mass, float s) {
 	return 0;
 }
+
+
 
