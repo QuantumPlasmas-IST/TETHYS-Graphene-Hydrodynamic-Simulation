@@ -75,7 +75,7 @@ void SetUpParameters::ParametersChecking() const{
 		cerr << msg <<"\nExiting"<< endl;
 		exit(EXIT_FAILURE);
 	}
-	if(FermiVelocity<=0.0f){
+	if(FermiVelocity<0.0f){
 		msg = "ERROR: Unphysical Fermi Velocity";
 		cerr << msg <<"\nExiting"<< endl;
 		exit(EXIT_FAILURE);

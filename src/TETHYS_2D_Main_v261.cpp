@@ -32,7 +32,7 @@ int main(int argc, char **argv){
 
 	/*......CFL routine to determine dt...............................*/
 	graph.CflCondition();
-	graph.SetDt(graph.GetDt()*0.5f);
+	graph.SetDt(graph.GetDt()*0.25f);
 	dt=graph.GetDt();
 	/*................................................................*/
 	

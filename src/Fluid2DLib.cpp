@@ -109,7 +109,8 @@ void Fluid2D::InitialCondRand(){
 void Fluid2D::InitialCondWave() {
 	for (int i = 0; i < Nx; i++ ){
 		for (int j=0; j<Ny; j++){
-			Den[i + j * Nx] = 1.0f+0.3f*sin(2.0f*MAT_PI*i*dx/lengX) ;
+			//Den[i + j * Nx] = 1.0f+0.3f*sin(2.0f*MAT_PI*i*dx/lengX) ;
+			Den[i + j * Nx] = 1.0f+0.05f*sin(5.0f*2.0f*MAT_PI*i*dx/lengX) ;
 			//Den[i + j * Nx] = 1.0f+0.3f/cosh((i*dx-0.5f)*20.0f);
 			VelX[i + j * Nx] = 0.0f;
 		}
