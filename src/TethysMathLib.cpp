@@ -5,19 +5,20 @@
 \************************************************************************************************/
 
 #include "includes/TethysMathLib.h"
+#include "TethysBaseLib.h"
 
 using namespace std;
 
-float Sound_Velocity_Anisotropy(float x, float s) {
+float MathUtils::Sound_Velocity_Anisotropy(float x, float s) {
 	return s;
 }
-float Sound_Velocity_Anisotropy(float x, float y, float s) {
+float  MathUtils::Sound_Velocity_Anisotropy(float x, float y, float s) {
 	float s_mod;
 	s_mod=s;
 	return s_mod;
 }
 
-float Integral_1_D(int n, float ds, const float * f){
+float  MathUtils::Integral_1_D(int n, float ds, const float * f){
 	float itg=0.0;
 	for(int j=1; j < n / 2; j++){
 		itg += f[2*j-2] + 4*f[2*j-1] + f[2*j];
@@ -26,7 +27,7 @@ float Integral_1_D(int n, float ds, const float * f){
 	return itg;
 }
 
-float Integral_2_D(int n, int m, float dx, float dy, const float * f){
+float  MathUtils::Integral_2_D(int n, int m, float dx, float dy, const float * f){
 	float itg;
 	float interior=0.0f;
 	float edges=0.0f;
@@ -51,7 +52,7 @@ float Integral_2_D(int n, int m, float dx, float dy, const float * f){
 }
 
 
-void Average_Filter(const float * vec_in, float * vec_out, int size , int width ){
+void  MathUtils::Average_Filter(const float * vec_in, float * vec_out, int size , int width ){
 	for ( int i = 0; i < size; i++ ){
 		if(i>=width &&i<=size-1-width){
 			for(int k = i-width; k <= i+width;k++){
@@ -67,7 +68,7 @@ void Average_Filter(const float * vec_in, float * vec_out, int size , int width 
 
 
 
-float Signal_Average(int n, float dt, const float * f){
+float  MathUtils::Signal_Average(int n, float dt, const float * f){
 	float avg=0.0;
 	for(int j=1; j < n / 2; j++){
 		avg += f[2*j-2] + 4*f[2*j-1] + f[2*j];
@@ -76,17 +77,17 @@ float Signal_Average(int n, float dt, const float * f){
 	avg = avg/(static_cast<float>(n) * dt);
 	return avg;
 }
-float Gauss_Kernel(int position , float t){
+float  MathUtils::Gauss_Kernel(int position , float t){
 	auto pos=static_cast<float>(position);
 	return exp(-0.5f * pos * pos / t) / (sqrt(2.0f * MAT_PI * t));
 }
 
-float Gauss_Kernel_Derivative(int position , float t){
+float  MathUtils::Gauss_Kernel_Derivative(int position , float t){
 	auto pos=static_cast<float>(position);
 	return (-pos * exp(-0.5f * pos * pos / t) / t) / (sqrt(2.0f * MAT_PI * t));
 }
 
-void Convolve_Gauss(unsigned int type, unsigned int m, float t, const float * in, float * out, unsigned long size){
+void  MathUtils::Convolve_Gauss(unsigned int type, unsigned int m, float t, const float * in, float * out, unsigned long size){
 	if(type==0){
 		for(unsigned int i=0;i<size;i++){
 			if(i >= m && i < size - m){
@@ -107,6 +108,8 @@ void Convolve_Gauss(unsigned int type, unsigned int m, float t, const float * in
 	}
 }
 
-float Stair_Case_Function(float x, float step_width, float smoothness) {
+float  MathUtils::Stair_Case_Function(float x, float step_width, float smoothness) {
 	return (0.5f*tanh(smoothness*((-(x - 1.0f)/step_width - floor(-(x - 1.0f)/step_width)) - 0.5f))/tanh(0.5f*smoothness) + 0.5f +floor(-(x - 1.0f)/step_width));
 }
+
+

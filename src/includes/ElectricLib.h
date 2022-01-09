@@ -28,7 +28,7 @@
  * This class provides the methods to compute such quantities from the data stored on the GrapheneFluid1D or GrapheneFluid2D classes.
  *
  **/
-class ElectroAnalysis{
+class ElectroAnalysis : public MathUtils {
 private:
 	std::ofstream data_electro;
 	vector<float> TmpArr;

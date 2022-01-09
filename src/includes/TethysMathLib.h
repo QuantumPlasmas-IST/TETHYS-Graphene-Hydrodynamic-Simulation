@@ -12,10 +12,16 @@
 #define TETHYSMATHLIB_H
 
 #include <H5Cpp.h>
-#include "includes/TethysBaseLib.h"
+//#include "includes/TethysBaseLib.h"
 
 
 using namespace std;
+
+class MathUtils{
+public:
+	MathUtils()=default;
+	~MathUtils()=default;
+
 
 /*!
  * @brief 1D Function of local anisotropy of S
@@ -28,7 +34,7 @@ using namespace std;
  *
  * @return S(x) the value of local sound velocity
  * */
-float Sound_Velocity_Anisotropy(float x, float s);
+static float Sound_Velocity_Anisotropy(float x, float s);
 
 /*!
  * @brief 2D Function of local anisotropy of S
@@ -43,7 +49,7 @@ float Sound_Velocity_Anisotropy(float x, float s);
  * @return S(x,y) the value of local sound velocity
 
  * */
-float Sound_Velocity_Anisotropy(float x, float y, float s);
+static float Sound_Velocity_Anisotropy(float x, float y, float s);
 
 /*!
  * @brief Smooth staircase function
@@ -59,7 +65,7 @@ float Sound_Velocity_Anisotropy(float x, float y, float s);
  * @return @f$ f(x) @f$
  *
  * */
-float Stair_Case_Function(float x, float step_width, float smoothness);
+static float Stair_Case_Function(float x, float step_width, float smoothness);
 
 /*!
  * @brief Performs 1D convolution of array with a gaussian kernel or its derivative
@@ -88,7 +94,7 @@ void Convolve_Gauss(unsigned int type, unsigned int m, float t, const float * in
  *
  * @return @f$ g(x) @f$
  * */
-float Gauss_Kernel(int pos , float t); //
+static float Gauss_Kernel(int pos , float t); //
 
 /*!
  * @brief Gaussian kernel function derivative
@@ -100,7 +106,7 @@ float Gauss_Kernel(int pos , float t); //
  *
  * @return @f$ g'(x) @f$
  * */
-float Gauss_Kernel_Derivative(int pos , float t); //
+static float Gauss_Kernel_Derivative(int pos , float t); //
 
 
 /*!
@@ -114,7 +120,7 @@ float Gauss_Kernel_Derivative(int pos , float t); //
  *
  * @return Time average of sampled function
  * */
-float Signal_Average(int n, float dt, const float * f);
+static float Signal_Average(int n, float dt, const float * f);
 
 /*!
  * @brief 1D Numerical integration using composite Simpson's rule
@@ -125,7 +131,7 @@ float Signal_Average(int n, float dt, const float * f);
  *
  * @returns 4th order approximation of integral
  * */
-float Integral_1_D(int n, float ds, const float * f);
+static float Integral_1_D(int n, float ds, const float * f);
 
 
 /*!
@@ -139,7 +145,7 @@ float Integral_1_D(int n, float ds, const float * f);
  *
  * @returns 4th order approximation of integral
  * */
-float Integral_2_D(int n, int m, float dx, float dy, const float * f);
+static float Integral_2_D(int n, int m, float dx, float dy, const float * f);
 
 
 /*!
@@ -147,12 +153,13 @@ float Integral_2_D(int n, int m, float dx, float dy, const float * f);
  *
  * Average moving filter for the smoothing of 1D simulation, suppressing the spurious oscillations inherent to the 2nd order solver
  *
- * @param vec_in Input array to be smoothed
- * @param vec_out Output array to store the smoothed result
+ * @param array_in Input array to be smoothed
+ * @param array_out Output array to store the smoothed result
  * @param size Size of the arrays
  * @param width Window filter width
  *
  * */
-void Average_Filter(const float * vec_in, float * vec_out, int size , int width );
+static void Average_Filter(const float * array_in, float * array_out, int size , int width );
+};
 
 #endif

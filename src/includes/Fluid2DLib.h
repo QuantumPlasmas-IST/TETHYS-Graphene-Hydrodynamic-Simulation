@@ -54,6 +54,9 @@ class Fluid2D : public TethysBase
 		float * lap_flxY ;      // mass density flux laplacian component y
         float * lap_tmp ;      // temperature laplacian
 
+		float * lap_den;
+		float * lap_den_mid;
+
 		float * den_dx;
 		float * den_dy;
 		float * den_dx_mid;
@@ -69,6 +72,10 @@ class Fluid2D : public TethysBase
 		void VelocityGradientMid(); ///< Computes the gradient of the velocity mid grid  by second order finite differences.
      	void DensityGradient(); ///<  Computes the gradient of the number density grid by second order finite differences.
     	void DensityGradientMid(); ///< Computes the gradient of the number density mid grid  by second order finite differences.
+
+		void DensityLaplacian(); ///<  Computes the laplacian of the number density grid by second order finite differences.
+		void DensityLaplacianMid(); ///< Computes the laplacian of the number density mid grid  by second order finite differences.
+
 
 		virtual float DensityToMass(float density);
 

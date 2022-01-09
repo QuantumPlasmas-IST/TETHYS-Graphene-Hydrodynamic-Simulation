@@ -4,6 +4,8 @@
 * Distributed under the MIT License (license terms are at http://opensource.org/licenses/MIT).   *
 \************************************************************************************************/
 
+#include "TethysBaseLib.h"
+#include "includes/TethysMathLib.h"
 #include "includes/TethysBaseLib.h"
 
 using namespace H5;
@@ -214,7 +216,7 @@ bool TethysBase::Hdf5FileOpen=false;
 int TethysBase::TimeStepCounter=0;
 float TethysBase::TimeStamp=0.0f;
 
-TethysBase::TethysBase(int size_nx, int size_ny, int dimension){
+TethysBase:: TethysBase(int size_nx, int size_ny, int dimension){
 	Nx = size_nx;
 	Ny = size_ny;
 	RANK=dimension;
@@ -338,4 +340,16 @@ float TethysBase::GetThermDiff() const {
 }
 
 
+void TethysBase::LaplacianField(const float *array_in, float *array_out, int size) {
+	for (int i = 0; i < size; ++i) {
+		array_out[i]=2*array_in[i];
+	}
+}
 
+void TethysBase::GradientField(const float *array_in, float *array_out_x, float *array_out_y, int size) {
+//***
+//
+//
+//
+// ***//
+}

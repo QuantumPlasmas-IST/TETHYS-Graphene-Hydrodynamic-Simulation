@@ -49,6 +49,8 @@ Fluid2D::Fluid2D(const SetUpParameters &input_parameters) : TethysBase{input_par
 	den_dx = new float[Nx * Ny]();
 	den_dy = new float[Nx * Ny]();
 
+	lap_den = new float[Nx*Ny]();
+	lap_den_mid =new float[(Nx-1)*(Ny-1)]();
 
 	lap_flxX = new float[Nx*Ny](); //new grids for the laplacians
 	lap_flxY = new float[Nx*Ny](); //in fact they could be smaller but thiw way they are just 0 at the borders who do not evolve
@@ -155,6 +157,7 @@ void Fluid2D::Richtmyer(){
 	if(therm_diff) {
 		this->DensityGradient();
 	}
+	//this->DensityLaplacian();
 #pragma omp parallel for default(none) shared(Nx,Ny,FlxX,FlxY,Den,flxX_mid,flxY_mid,den_mid,vel_snd_arr,dt,dx)
 		for(int ks=0; ks<=Nx*Ny-Nx-Ny; ks++){ //correr todos os pontos da grelha secundaria de den_mid
 			GridPoint point(ks,Nx,Ny,true);
@@ -820,6 +823,89 @@ void Fluid2D::DensityGradientMid() {
 	den_dx_mid[ks] = ( 3.0f*(den_mid[ks] ) -4.0f*(den_mid[ks-1] )+1.0f*(den_mid[ks-2] ) )/(2.0f*dx);
 	den_dy_mid[ks] = ( 3.0f*(den_mid[ks] ) -4.0f*(den_mid[ks-(Nx-1)] )+1.0f*(den_mid[ks-2*(Nx-1)] ) )/(2.0f*dy);
 }
+
+
+
+void Fluid2D::DensityLaplacian(){
+	int stride = Nx;
+#pragma omp parallel for default(none) shared(Nx,Ny,dx,dy,stride,Den,lap_den)
+	for(int kp=1+Nx; kp<=Nx*Ny-Nx-2; kp++){
+		if( kp%stride!=stride-1 && kp%stride!=0){
+			GridPoint point(kp,Nx,Ny,false);
+			lap_den[kp] = (-4.0f*Den[point.C] +  Den[point.N] + Den[point.S] + Den[point.E] + Den[point.W] )/(dx*dx);
+		}
+	}
+
+	// -2	5	-4	1
+	for(int i=1 ; i<=Nx-2; i++){ // topo rede principal, ou seja j=(Ny - 1)
+		int top= i + (Ny - 1) * stride;
+		GridPoint point(top,Nx,Ny,false);
+		int southsouth= i + (Ny - 3) * stride;
+		int southsouthsouth= i + (Ny - 4) * stride;
+		float aux1 = -2.0f*Den[point.C] + Den[point.E] + Den[point.W]; //OK
+		float aux2 = -2.0f*Den[point.C] +5.0f*Den[point.S] -4.0f*Den[southsouth] +1.0f*Den[southsouthsouth];
+		lap_den[top] = (aux1+aux2)/(dx*dx);
+	}
+
+	// 2	−5	4	−1
+	for(int i=1 ; i<=Nx-2; i++){ // fundo rede principal, ou seja j=0
+		int bottom=i; //i+0*nx
+		GridPoint point(bottom,Nx,Ny,false);
+		int northnorth=i+2*stride;
+		int northnorthnorth=i+3*stride;
+		float aux1 = -2.0f*Den[point.C] + Den[point.E] + Den[point.W]; //OK
+		float aux2 =  2.0f*Den[point.C] -5.0f*Den[point.S] +4.0f*Den[northnorth] -1.0f*Den[northnorthnorth];
+		lap_den[bottom] = (aux1+aux2)/(dx*dx);
+	}
+
+	// 2	−5	4	−1
+	for(int j=1; j<=Ny-2;j++){ //lado esquerdo da rede principal ou seja i=0
+		int left = 0 + j*stride;
+		GridPoint point(left,Nx,Ny,false);
+		int easteast = left + 2;
+		int easteasteast = left + 3;
+		float aux1 =  -2.0f*Den[point.C] + Den[point.N] + Den[point.S];;
+		float aux2 =  2.0f*Den[point.C] -5.0f*Den[point.E] +4.0f*Den[easteast] -1.0f*Den[easteasteast];
+		lap_den[left] = (aux1+aux2)/(dx*dx);
+	}
+
+	// -2	5	-4	1
+	for(int j=1; j<=Ny-2;j++){ //lado direito da rede principal ou seja i=(Nx-1)
+		int right = (Nx-1) + j*stride;
+		GridPoint point(right,Nx,Ny,false);
+		int westwest = right-2;
+		int westwestwest = right-3;
+		float aux1 =  -2.0f*Den[point.C] + Den[point.N] + Den[point.S];;
+		float aux2 =  -2.0f*Den[point.C] +5.0f*Den[point.W] -4.0f*Den[westwest] +1.0f*Den[westwestwest];
+		lap_den[right] = (aux1+aux2)/(dx*dx);
+	}
+
+
+	//2	−5	4	−1
+	int kp;
+	// i=0 j=0 forward x forward y
+	kp = 0 + 0*Nx;
+	float aux1 = 2.0f*Den[kp] -5.0f*Den[kp+1] +4.0f*Den[kp+2] -1.0f*Den[kp+3];
+	float aux2 = 2.0f*Den[kp] -5.0f*Den[kp+Nx] +4.0f*Den[kp+2*Nx] -1.0f*Den[kp+3*Nx];
+	lap_den[kp] = (aux1+aux2)/(dx*dx);
+	// i=(Nx-1) j=0 backward x forward y
+	kp = (Nx-1) + 0*Nx;
+	aux1 = -2.0f*Den[kp] +5.0f*Den[kp-1] -4.0f*Den[kp-2] +1.0f*Den[kp-3];
+	aux2 = 2.0f*Den[kp] -5.0f*Den[kp+Nx] +4.0f*Den[kp+2*Nx] -1.0f*Den[kp+3*Nx];
+	lap_den[kp] =(aux1+aux2)/(dx*dx);
+	// i=0 j=(Ny-1) forward x backward y
+	kp = 0 + (Ny-1)*Nx;
+	aux1 = 2.0f*Den[kp] -5.0f*Den[kp+1] +4.0f*Den[kp+2] -1.0f*Den[kp+3];
+	aux2 = -2.0f*Den[kp] +5.0f*Den[kp-Nx] -4.0f*Den[kp-2*Nx] +1.0f*Den[kp-3*Nx];
+	lap_den[kp] = (aux1+aux2)/(dx*dx);
+	// i=(Nx-1) j=(Ny-1) backward x backward y
+	kp = (Nx-1) + (Ny-1)*Nx;
+	aux1 = -2.0f*Den[kp] +5.0f*Den[kp-1] -4.0f*Den[kp-2] +1.0f*Den[kp-3];
+	aux2 = -2.0f*Den[kp] +5.0f*Den[kp-Nx] -4.0f*Den[kp-2*Nx] +1.0f*Den[kp-3*Nx];
+	lap_den[kp] = (aux1+aux2)/(dx*dx);
+
+}
+
 
 
 

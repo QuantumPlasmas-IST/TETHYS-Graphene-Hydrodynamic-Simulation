@@ -25,8 +25,13 @@
 #include <exception>
 #include <functional>
 
+
+#include <gsl/gsl_cblas.h>
+
 #include <H5Cpp.h>
 #include <omp.h>
+#include "includes/TethysMathLib.h"
+//#include "includes/TethysBaseLib.h"
 
 using namespace std;
 using namespace H5;
@@ -54,7 +59,7 @@ const IntType        HDF5INT(PredType::NATIVE_INT);
  * This base class, from which the subsequent fluid classes are derived, establish the dimensios of the simulation grid and manage the creation of the HDF5 structures
  *
  * */
-class TethysBase {
+class TethysBase : public MathUtils {
 	protected:
 		int   Nx ;          // Simulation region (dataset) dimensions
 		int   Ny ;
@@ -149,6 +154,14 @@ class TethysBase {
 
 		static void BannerDisplay() ; ///< launches the initial ASCII art banner
 		void WelcomeScreen() const; ///< launches screen with the relevant info
+
+
+	void LaplacianField(const float * array_in, float * array_out, int size );
+
+	void GradientField(const float * array_in, float * array_out_x, float * array_out_y, int size );
+
 };
+
+
 #endif
 

@@ -11,6 +11,7 @@
 #include "includes/DirichletBoundaryLib.h"
 #include "includes/DyakonovShurBoundaryLib.h"
 #include "includes/GrapheneFluid2DLib.h"
+#include "TethysBaseLib.h"
 
 #ifndef MAT_PI
 #	define MAT_PI 3.14159265358979323846
@@ -57,7 +58,8 @@ int main(int argc, char **argv){
 	graph.WelcomeScreen();
 
 	/*...............Initialization...................................*/
-	graph.InitialCondWave();
+	//graph.InitialCondWave();
+	graph.InitialCondRand();
 	/*................................................................*/
 
 	/*................Setting.the.lateral.boundaries..................*/
@@ -65,6 +67,7 @@ int main(int argc, char **argv){
 	BoundaryCondition::SetBottomEdge(graph);
 	BoundaryCondition::SetTopEdge(graph);
 	/*................................................................*/
+
 
 
 	cout << "\033[1;7;5;33m Program Running \033[0m"<<endl;
@@ -80,11 +83,12 @@ int main(int argc, char **argv){
 		/*+++++++++++++++++++++++++++++++++++++*
 		 * Change the boundary conditions here *
 		 *+++++++++++++++++++++++++++++++++++++*/
-		//DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
+		DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
 		//DirichletBoundaryCondition::YClosedNoSlip(graph);
+		DirichletBoundaryCondition::YClosedFreeSlip(graph);
 
-		BoundaryCondition::XPeriodic(graph);
-		BoundaryCondition::YPeriodic(graph);
+		//BoundaryCondition::XPeriodic(graph);
+		//BoundaryCondition::YPeriodic(graph);
 
 		if(graph.GetThermDiff()!=0.0){
 			DirichletBoundaryCondition::Temperature(graph,0.22f, 0.22f, 0.22f, 0.22f);  // 300K corresponds to 0.22*Fermi temperature
@@ -96,12 +100,12 @@ int main(int argc, char **argv){
 			/*+++++++++++++++++++++++++++++++++++++*
 			 * Change the boundary conditions here *
 			 *+++++++++++++++++++++++++++++++++++++*/
-		//	DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
-		//	DirichletBoundaryCondition::YClosedNoSlip(graph);
+			DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
+			//DirichletBoundaryCondition::YClosedNoSlip(graph);
+			DirichletBoundaryCondition::YClosedFreeSlip(graph);
 
-
-			BoundaryCondition::XPeriodic(graph);
-			BoundaryCondition::YPeriodic(graph);
+		//	BoundaryCondition::XPeriodic(graph);
+		//	BoundaryCondition::YPeriodic(graph);
 
 
 			if(graph.GetThermDiff()!=0.0){
