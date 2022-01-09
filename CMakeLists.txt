@@ -12,6 +12,9 @@ include_directories(src/includes)
 find_package(HDF5 REQUIRED COMPONENTS CXX)
 include_directories(${HDF5_INCLUDE_DIRS})
 
+find_package(GSL REQUIRED)
+link_libraries(GSL::gsl GSL::gslcblas)
+
 #set(CMAKE_CXX_FLAGS "-Wall -Wextra -Wno-unused-parameter -O2")
 set(CMAKE_CXX_FLAGS "-O2")
 FIND_PACKAGE(OpenMP REQUIRED)
