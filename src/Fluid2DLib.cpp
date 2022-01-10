@@ -173,34 +173,37 @@ void Fluid2D::Richtmyer(){
 	}
 	//this->DensityLaplacian();
 	LaplacianField(Den,lap_den,dx,Nx,Ny);
-#pragma omp parallel for default(none) shared(Nx,Ny,FlxX,FlxY,Den,flxX_mid,flxY_mid,den_mid,vel_snd_arr,dt,dx)
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	ChooseGridPointers("MidGrid");
+#pragma omp parallel for default(none) shared(Nx,Ny,FlxX,FlxY,Den,flxX_mid,flxY_mid,den_mid,vel_snd_arr,dt,dx) //TODO atençao que agora quem deve ficar shared hao de ser os ponteiros definidos anteriormente e nao estes!
 		for(int ks=0; ks<=Nx*Ny-Nx-Ny; ks++){ //correr todos os pontos da grelha secundaria de den_mid
-			GridPoint point(ks,Nx,Ny,true);
-			float den_avg   = 0.25f * ( Den[point.SW] + Den[point.SE]  + Den[point.NW]  + Den[point.NE]);
-			float flx_x_avg = 0.25f * (FlxX[point.SW] + FlxX[point.SE] + FlxX[point.NW] + FlxX[point.NE]);
-			float flx_y_avg = 0.25f * (FlxY[point.SW] + FlxY[point.SE] + FlxY[point.NW] + FlxY[point.NE]);
-            float tmp_avg   = 0.25f * ( Tmp[point.SW] + Tmp[point.SE]  + Tmp[point.NW]  + Tmp[point.NE]);
+			GridPoint midpoint(ks, Nx, Ny, true);
+
+			float den_avg   = 0.25f * (Den[midpoint.SW] + Den[midpoint.SE] + Den[midpoint.NW] + Den[midpoint.NE]);
+			float flx_x_avg = 0.25f * (FlxX[midpoint.SW] + FlxX[midpoint.SE] + FlxX[midpoint.NW] + FlxX[midpoint.NE]);
+			float flx_y_avg = 0.25f * (FlxY[midpoint.SW] + FlxY[midpoint.SE] + FlxY[midpoint.NW] + FlxY[midpoint.NE]);
+            float tmp_avg   = 0.25f * (Tmp[midpoint.SW] + Tmp[midpoint.SE] + Tmp[midpoint.NW] + Tmp[midpoint.NE]);
 			float n_dx=0.0f,n_dy=0.0f;
 			if(therm_diff) {
-				n_dx =0.25f * ( den_dx[point.SW] + den_dx[point.SE]  + den_dx[point.NW]  + den_dx[point.NE]);
-				n_dy =0.25f * ( den_dy[point.SW] + den_dy[point.SE]  + den_dy[point.NW]  + den_dy[point.NE]) ;
+				n_dx =0.25f * (den_dx[midpoint.SW] + den_dx[midpoint.SE] + den_dx[midpoint.NW] + den_dx[midpoint.NE]);
+				n_dy =0.25f * (den_dy[midpoint.SW] + den_dy[midpoint.SE] + den_dy[midpoint.NW] + den_dy[midpoint.NE]) ;
 			}
             den_mid[ks] = den_avg
-			              -0.5f*(dt/dx)*(DensityFluxX(point,'E') - DensityFluxX(point,'W'))
-			              -0.5f*(dt/dy)*(DensityFluxY(point,'N') - DensityFluxY(point,'S'))
+			              -0.5f*(dt/dx)*(DensityFluxX(midpoint, 'E') - DensityFluxX(midpoint, 'W'))
+			              -0.5f*(dt/dy)*(DensityFluxY(midpoint, 'N') - DensityFluxY(midpoint, 'S'))
 						  +0.5f*dt* DensitySource(den_avg, flx_x_avg, flx_y_avg, 0.0f, 0.0f);
 			flxX_mid[ks] = flx_x_avg
-					-0.5f*(dt/dx)*(XMomentumFluxX(point,'E') - XMomentumFluxX(point,'W'))
-					-0.5f*(dt/dy)*(XMomentumFluxY(point,'N') - XMomentumFluxY(point,'S'))
+					-0.5f*(dt/dx)*(XMomentumFluxX(midpoint, 'E') - XMomentumFluxX(midpoint, 'W'))
+					-0.5f*(dt/dy)*(XMomentumFluxY(midpoint, 'N') - XMomentumFluxY(midpoint, 'S'))
 					+0.5f*dt*XMomentumSource(den_avg, flx_x_avg, flx_y_avg, 0.0f, 0.0f);
 			flxY_mid[ks] = flx_y_avg
-					-0.5f*(dt/dx)*(YMomentumFluxX(point,'E') - YMomentumFluxX(point,'W'))
-					-0.5f*(dt/dy)*(YMomentumFluxY(point,'N') - YMomentumFluxY(point,'S'))
+					-0.5f*(dt/dx)*(YMomentumFluxX(midpoint, 'E') - YMomentumFluxX(midpoint, 'W'))
+					-0.5f*(dt/dy)*(YMomentumFluxY(midpoint, 'N') - YMomentumFluxY(midpoint, 'S'))
 					+0.5f*dt*YMomentumSource(den_avg, flx_x_avg, flx_y_avg, 0.0f, 0.0f);
 			if(therm_diff){
 				tmp_mid[ks] = tmp_avg
-				              -0.5f * (dt / dx) * (TemperatureFluxX(point, 'E') - TemperatureFluxX(point, 'W'))
-				              -0.5f * (dt / dy) * (TemperatureFluxY(point, 'N') - TemperatureFluxY(point, 'S'))
+				              -0.5f * (dt / dx) * (TemperatureFluxX(midpoint, 'E') - TemperatureFluxX(midpoint, 'W'))
+				              -0.5f * (dt / dy) * (TemperatureFluxY(midpoint, 'N') - TemperatureFluxY(midpoint, 'S'))
 							  +0.5f * dt * TemperatureSource(den_avg, flx_x_avg, flx_y_avg, n_dx, n_dy, 0.0f, 0.0f);
 			}
 		}
@@ -214,27 +217,28 @@ void Fluid2D::Richtmyer(){
 //	if(therm_diff) {
 //		this->DensityGradient();
 //	}
+	ChooseGridPointers("MainGrid");
 #pragma omp parallel for default(none) shared(Nx,Ny,FlxX,FlxY,Den,flxX_mid,flxY_mid,den_mid,vel_snd_arr_mid,dt,dx)
 		for(int kp=1+Nx; kp<=Nx*Ny-Nx-2; kp++){ //correr a grelha principal evitando as fronteiras
-			GridPoint point(kp,Nx,Ny,false);
+			GridPoint mainpoint(kp, Nx, Ny, false);
 			if( kp%Nx!=Nx-1 && kp%Nx!=0){
 				float den_old = Den[kp];
 				float flx_x_old = FlxX[kp];
 				float flx_y_old = FlxY[kp];
                 float tmp_old = Tmp[kp];
 
-                Den[kp] = den_old - (dt/dx)*(DensityFluxX(point,'E') - DensityFluxX(point,'W'))
-						          - (dt/dy)*(DensityFluxY(point,'N') - DensityFluxY(point,'S'))
+                Den[kp] = den_old - (dt/dx)*(DensityFluxX(mainpoint, 'E') - DensityFluxX(mainpoint, 'W'))
+						          - (dt/dy)*(DensityFluxY(mainpoint, 'N') - DensityFluxY(mainpoint, 'S'))
 						          + dt*DensitySource(den_old, flx_x_old, flx_y_old, 0.0f, 0.0f);
-				FlxX[kp] = flx_x_old - (dt/dx)*(XMomentumFluxX(point,'E') - XMomentumFluxX(point,'W'))
-						             - (dt/dy)*(XMomentumFluxY(point,'N') - XMomentumFluxY(point,'S'))
+				FlxX[kp] = flx_x_old - (dt/dx)*(XMomentumFluxX(mainpoint, 'E') - XMomentumFluxX(mainpoint, 'W'))
+						             - (dt/dy)*(XMomentumFluxY(mainpoint, 'N') - XMomentumFluxY(mainpoint, 'S'))
 						             + dt*XMomentumSource(den_old, flx_x_old, flx_y_old, 0.0f, 0.0f);
-				FlxY[kp] = flx_y_old - (dt/dx)*(YMomentumFluxX(point,'E') - YMomentumFluxX(point,'W'))
-						             - (dt/dy)*(YMomentumFluxY(point,'N') - YMomentumFluxY(point,'S'))
+				FlxY[kp] = flx_y_old - (dt/dx)*(YMomentumFluxX(mainpoint, 'E') - YMomentumFluxX(mainpoint, 'W'))
+						             - (dt/dy)*(YMomentumFluxY(mainpoint, 'N') - YMomentumFluxY(mainpoint, 'S'))
 				                     + dt*YMomentumSource(den_old, flx_x_old, flx_y_old, 0.0f, 0.0f);
 				if(therm_diff) {
-					Tmp[kp] = tmp_old - (dt / dx) * (TemperatureFluxX(point, 'E') - TemperatureFluxX(point, 'W'))
-					          - (dt / dy) * (TemperatureFluxY(point, 'N') - TemperatureFluxY(point, 'S'))
+					Tmp[kp] = tmp_old - (dt / dx) * (TemperatureFluxX(mainpoint, 'E') - TemperatureFluxX(mainpoint, 'W'))
+					          - (dt / dy) * (TemperatureFluxY(mainpoint, 'N') - TemperatureFluxY(mainpoint, 'S'))
 							  + dt * TemperatureSource(den_old, flx_x_old, flx_y_old, den_dx[kp], den_dy[kp], 0.0f, 0.0f);
 				}
 			}
@@ -934,9 +938,9 @@ float Fluid2D::DensityToMass(float density) {
 }
 
 float Fluid2D::DensityFluxX(GridPoint p, char side) {
-	float * px_ptr;
+//	float * px_ptr;
 	float px =0.0f;
-	if(p.IsMidGrid){
+/*	if(p.IsMidGrid){
 		px_ptr = FlxX;
 	}else{
 		px_ptr = flxX_mid;
@@ -946,13 +950,15 @@ float Fluid2D::DensityFluxX(GridPoint p, char side) {
 	}
 	if (side == 'W'){
 		px = 0.5f*(px_ptr[p.NW] + px_ptr[p.SW]);
-	}
+	}*/
+	px = SideAverage(ptr_px,p,side);
 	return px;
 }
 
 float Fluid2D::DensityFluxY(GridPoint p, char side) {
-	float * py_ptr;
+	//float * py_ptr;
 	float py=0.0f;
+	/*
 	if(p.IsMidGrid){
 		py_ptr = FlxY;
 	}else{
@@ -963,15 +969,17 @@ float Fluid2D::DensityFluxY(GridPoint p, char side) {
 	}
 	if (side == 'S'){
 		py = 0.5f*(py_ptr[p.SE] + py_ptr[p.SW]);
-	}
+	}*/
+	py = SideAverage(ptr_py,p,side);
 	return py;
 }
 
 float Fluid2D::XMomentumFluxX(GridPoint p, char side) {
-	float * den_ptr;
-	float * px_ptr;
+//	float * den_ptr;
+//	float * px_ptr;
 	float den=1.0f;
 	float px=0.0f;
+/*
 	if(p.IsMidGrid){
 		den_ptr = Den;
 		px_ptr = FlxX;
@@ -987,16 +995,21 @@ float Fluid2D::XMomentumFluxX(GridPoint p, char side) {
 		den = 0.5f*(den_ptr[p.NW] + den_ptr[p.SW]);
 		px = 0.5f*(px_ptr[p.NW] + px_ptr[p.SW]);
 	}
+ */
+	den = SideAverage(ptr_den,p,side);
+	px = SideAverage(ptr_px,p,side);
 	return px * px / den + den;
 }
 
 float Fluid2D::XMomentumFluxY(GridPoint p, char side) {
-	float * den_ptr;
-	float * px_ptr;
-	float * py_ptr;
+	//float * den_ptr;
+	//float * px_ptr;
+	//float * py_ptr;
+
 	float den =1.0f;
 	float px=0.0f;
 	float py=0.0f;
+/*
 	if(p.IsMidGrid){
 		den_ptr = Den;
 		px_ptr = FlxX;
@@ -1015,16 +1028,23 @@ float Fluid2D::XMomentumFluxY(GridPoint p, char side) {
 		den = 0.5f*(den_ptr[p.SE] + den_ptr[p.SW]);
 		px = 0.5f*(px_ptr[p.SE] + px_ptr[p.SW]);
 		py = 0.5f*(py_ptr[p.SE] + py_ptr[p.SW]);
-	}
+	}*/
+	den = SideAverage(ptr_den,p,side);
+	px = SideAverage(ptr_px,p,side);
+	py = SideAverage(ptr_py,p,side);
 	return px * py / den;
 }
 
 
 float Fluid2D::YMomentumFluxY(GridPoint p, char side) {
-	float * den_ptr;
-	float * py_ptr;
+	//float * den_ptr;
+	//float * py_ptr;
 	float den=1.0f;
 	float py =0.0f;
+	den = SideAverage(ptr_den,p,side);
+
+	py = SideAverage(ptr_py,p,side);
+	/*
 	if(p.IsMidGrid){
 		den_ptr = Den;
 		py_ptr = FlxY;
@@ -1039,17 +1059,21 @@ float Fluid2D::YMomentumFluxY(GridPoint p, char side) {
 	if (side == 'S'){
 		den = 0.5f*(den_ptr[p.SE] + den_ptr[p.SW]);
 		py = 0.5f*(py_ptr[p.SE] + py_ptr[p.SW]);
-	}
+	}*/
 	return py * py / den + den;
 }
 
 float Fluid2D::YMomentumFluxX(GridPoint p, char side) {
-	float * den_ptr;
-	float * px_ptr;
-	float * py_ptr;
+	//float * den_ptr;
+	//float * px_ptr;
+	//float * py_ptr;
 	float den=1.0f;
 	float px =0.0f;
 	float py=0.0f;
+	den = SideAverage(ptr_den,p,side);
+	px = SideAverage(ptr_px,p,side);
+	py = SideAverage(ptr_py,p,side);
+	/*
 	if(p.IsMidGrid){
 		den_ptr = Den;
 		px_ptr = FlxX;
@@ -1068,19 +1092,23 @@ float Fluid2D::YMomentumFluxX(GridPoint p, char side) {
 		den = 0.5f*(den_ptr[p.NW] + den_ptr[p.SW]);
 		px = 0.5f*(px_ptr[p.NW] + px_ptr[p.SW]);
 		py = 0.5f*(py_ptr[p.NW] + py_ptr[p.SW]);
-	}
+	}*/
 	return px * py / den;
 }
 
 
 float Fluid2D::TemperatureFluxX(GridPoint p, char side) {
-    float * px_ptr;
-	float * den_ptr;
-	float * tmp_ptr;
+    //float * px_ptr;
+	//float * den_ptr;
+	//float * tmp_ptr;
 	float tmp=1.0f;
     float px =0.0f;
 	float den=1.0f;
 
+	den = SideAverage(ptr_den,p,side);
+	px = SideAverage(ptr_px,p,side);
+	tmp = SideAverage(ptr_tmp,p,side);
+	/*
     if(p.IsMidGrid){
 	    den_ptr = Den;
         px_ptr = FlxX;
@@ -1099,19 +1127,28 @@ float Fluid2D::TemperatureFluxX(GridPoint p, char side) {
 	    den = 0.5f*(den_ptr[p.NW] + den_ptr[p.SW]);
         px = 0.5f*(px_ptr[p.NW] + px_ptr[p.SW]);
 	    tmp = 0.5f*(tmp_ptr[p.NW] + tmp_ptr[p.SW]);
-    }
+    }*/
+
+
     //return px * vel_fer * vel_fer + px / DensityToMass(den);
 	return PHYS_FERMI_CNVC*px  + tmp*px / DensityToMass(den);
 }
 
 
 float Fluid2D::TemperatureFluxY(GridPoint p, char side) {
-    float * py_ptr;
+    //float * py_ptr;
     float py=0.0f;
-	float * tmp_ptr;
+	//float * tmp_ptr;
 	float tmp=1.0f;
-	float * den_ptr;
+	//float * den_ptr;
 	float den=1.0f;
+
+	den = SideAverage(ptr_den,p,side);
+	py = SideAverage(ptr_py,p,side);
+	tmp = SideAverage(ptr_tmp,p,side);
+
+
+	/*
     if(p.IsMidGrid){
 	    den_ptr = Den;
         py_ptr = FlxY;
@@ -1131,6 +1168,8 @@ float Fluid2D::TemperatureFluxY(GridPoint p, char side) {
         py = 0.5f*(py_ptr[p.SE] + py_ptr[p.SW]);
 	    tmp = 0.5f*(tmp_ptr[p.SE] + tmp_ptr[p.SW]);
     }
+    */
+
     //return 0.0f*py * vel_fer * vel_fer  + py / DensityToMass(den) ;
 	return PHYS_FERMI_CNVC*py  + tmp*py / DensityToMass(den) ;
 }
@@ -1153,5 +1192,48 @@ float Fluid2D::TemperatureSource(float n, float flx_x, float flx_y, float den_gr
 	return 0;
 }
 
+void Fluid2D::ChooseGridPointers(string grid) {
+	if(grid == "MidGrid"){  // se ESTÁ na grelha média tem de APONTAR pra outra grelha
+		ptr_snd = vel_snd_arr;
+		ptr_den = Den;
+		ptr_px = FlxX;
+		ptr_py = FlxY;
+		ptr_dendx = den_dx;
+		ptr_dendy = den_dy;
+		ptr_velXdx = velX_dx;
+		ptr_velXdy = velX_dy;
+		ptr_velYdx = velY_dx;
+		ptr_velYdy = velY_dy;
+		ptr_tmp = Tmp;
+		ptr_lap_den = lap_den ;
+	}if(grid == "MainGrid"){ // e vice-versa
+		ptr_snd = vel_snd_arr_mid;
+		ptr_den = den_mid;
+		ptr_px = flxX_mid;
+		ptr_py = flxY_mid;
+		ptr_dendx = den_dx_mid;
+		ptr_dendy = den_dy_mid;
+		ptr_velXdx = velX_dx_mid;
+		ptr_velXdy = velX_dy_mid;
+		ptr_velYdx = velY_dx_mid;
+		ptr_velYdy = velY_dy_mid;
+		ptr_tmp = tmp_mid;
+		ptr_lap_den = lap_den_mid ;
+	}
+}
 
-
+float Fluid2D::SideAverage(float * input_array, GridPoint p,char side){
+	float avg=0.0f;
+	switch(side) {
+		case 'N': avg=0.5f*(input_array[p.NE]+input_array[p.NW]);
+			break;
+		case 'S': avg=0.5f*(input_array[p.SE]+input_array[p.SW]);
+			break;
+		case 'E': avg=0.5f*(input_array[p.NE]+input_array[p.SE]);
+			break;
+		case 'W': avg=0.5f*(input_array[p.NW]+input_array[p.SW]);
+			break;
+		default: avg=0.0f;
+	}
+	return avg;
+}

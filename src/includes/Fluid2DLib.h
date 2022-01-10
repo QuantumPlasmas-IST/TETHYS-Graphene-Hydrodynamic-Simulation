@@ -65,7 +65,7 @@ class Fluid2D : public TethysBase
 		float * den_dx_mid;
 		float * den_dy_mid;
 
-    std::ofstream data_preview; // file stream for simplified .dat file output
+        std::ofstream data_preview; // file stream for simplified .dat file output
 		int snapshot_per_period = 40;
 		int snapshot_step = 1;
 		void ForwardTimeOperator(); ///< Time evolution for the FTCS method employed for the parabolic operators.
@@ -81,6 +81,22 @@ class Fluid2D : public TethysBase
 
 
 		virtual float DensityToMass(float density);
+
+		void ChooseGridPointers(string grid);
+		float SideAverage(float * input_array, GridPoint p,char side);
+
+		float * ptr_snd;
+		float * ptr_den ;
+		float * ptr_px ;
+		float * ptr_py ;
+		float * ptr_dendx ;
+		float * ptr_dendy ;
+		float * ptr_velXdx ;
+		float * ptr_velXdy ;
+		float * ptr_velYdx ;
+		float * ptr_velYdy ;
+		float * ptr_tmp ;
+		float * ptr_lap_den ;
 
 public :
 		float * Den ;       // number density
