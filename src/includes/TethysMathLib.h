@@ -12,6 +12,7 @@
 #define TETHYSMATHLIB_H
 
 #include <H5Cpp.h>
+#include "includes/Grid2DLib.h"
 //#include "includes/TethysBaseLib.h"
 
 
@@ -81,7 +82,7 @@ static float Stair_Case_Function(float x, float step_width, float smoothness);
  * @see Gauss_Kernel
  * @see Gauss_Kernel_Derivative
  * */
-void Convolve_Gauss(unsigned int type, unsigned int m, float t, const float * in, float * out, unsigned long size);
+static void Convolve_Gauss(unsigned int type, unsigned int m, float t, const float * in, float * out, unsigned long size);
 //void Convolve_Gauss(int type, float m, float t, float * in, float * out, int size);
 
 /*!
@@ -160,6 +161,13 @@ static float Integral_2_D(int n, int m, float dx, float dy, const float * f);
  *
  * */
 static void Average_Filter(const float * array_in, float * array_out, int size , int width );
+
+
+static void LaplacianField(const float *array_in, float *array_out, float dx, int size_x, int size_y);
+
+static void GradientField(const float *array_in, float *array_out_x, float *array_out_y, float dx, float dy, int size_x, int size_y);
+
+
 };
 
 #endif

@@ -340,16 +340,3 @@ float TethysBase::GetThermDiff() const {
 }
 
 
-void TethysBase::LaplacianField(const float *array_in, float *array_out, int size) {
-	for (int i = 0; i < size; ++i) {
-		array_out[i]=2*array_in[i];
-	}
-}
-
-void TethysBase::GradientField(const float *array_in, float *array_out_x, float *array_out_y, int size) {
-//***
-//
-//
-//
-// ***//
-}

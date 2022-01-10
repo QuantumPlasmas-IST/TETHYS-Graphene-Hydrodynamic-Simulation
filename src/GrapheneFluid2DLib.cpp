@@ -23,12 +23,21 @@ void GrapheneFluid2D::SetSimulationTime(){
 	this->SetTmax(5.0f+0.02f*s+20.0f/s);
 }
 
-void GrapheneFluid2D::MassFluxToVelocity(){
+void GrapheneFluid2D::MassFluxToVelocity(string grid) {
 float den;
-	for(int c=0; c <= Nx * Ny - 1; c++){
-		den = Den[c];
-		VelX[c] = FlxX[c] / sqrt(den*den*den);
-		VelY[c] = FlxY[c] / sqrt(den*den*den);
+	if(grid=="MainGrid"){
+		for(int c=0; c <= Nx * Ny - 1; c++){
+			den = Den[c];
+			VelX[c] = FlxX[c] / sqrt(den*den*den);
+			VelY[c] = FlxY[c] / sqrt(den*den*den);
+		}
+	}
+	if(grid=="MidGrid"){
+		for(int c=0; c <= (Nx-1) * (Ny-1) - 1; c++){
+			den = den_mid[c];
+			velX_mid[c] = flxX_mid[c] / sqrt(den*den*den);
+			velY_mid[c] = flxY_mid[c] / sqrt(den*den*den);
+		}
 	}
 }
 

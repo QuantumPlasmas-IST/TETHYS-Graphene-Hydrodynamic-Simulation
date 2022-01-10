@@ -59,6 +59,8 @@ Fluid2D::Fluid2D(const SetUpParameters &input_parameters) : TethysBase{input_par
 	// 1st Aux. Grid variables (Nx-1)*(Ny-1)
 	tmp_mid		= new float[(Nx-1)*(Ny-1)]();
 	den_mid		= new float[(Nx-1)*(Ny-1)]();
+	velX_mid	= new float[(Nx-1)*(Ny-1)]();
+	velY_mid	= new float[(Nx-1)*(Ny-1)]();
 	velX_dx_mid	= new float[(Nx-1)*(Ny-1)]();
 	velX_dy_mid	= new float[(Nx-1)*(Ny-1)]();
 	velY_dx_mid	= new float[(Nx-1)*(Ny-1)]();
@@ -136,10 +138,18 @@ void Fluid2D::InitialCondTest(){
 }
 
 
-void Fluid2D::MassFluxToVelocity(){
-	for(int c=0; c <= Nx * Ny - 1; c++){
-		VelX[c]= FlxX[c] / Den[c];
-		VelY[c]= FlxY[c] / Den[c];
+void Fluid2D::MassFluxToVelocity(string grid) {
+	if(grid=="MainGrid"){
+		for(int c=0; c <= Nx * Ny - 1; c++){
+			VelX[c]= FlxX[c] / Den[c];
+			VelY[c]= FlxY[c] / Den[c];
+		}
+	}
+	if(grid=="MidGrid"){
+		for(int c=0; c <= (Nx-1) * (Ny-1) - 1; c++){
+			velX_mid[c]= flxX_mid[c] / den_mid[c];
+			velY_mid[c]= flxY_mid[c] / den_mid[c];
+		}
 	}
 }
 
@@ -152,12 +162,17 @@ void Fluid2D::VelocityToCurrent() {
 
 void Fluid2D::Richtmyer(){
 	if(odd_vis) {
-		this->VelocityGradient();
+		//this->VelocityGradient();
+		this->MassFluxToVelocity("MainGrid");
+		GradientField(VelX,velX_dx,velX_dy,dx,dy,Nx,Ny);
+		GradientField(VelY,velY_dx,velY_dy,dx,dy,Nx,Ny);
 	}
 	if(therm_diff) {
-		this->DensityGradient();
+		//this->DensityGradient();
+		GradientField(Den,den_dx,den_dy,dx,dy,Nx,Ny);
 	}
 	//this->DensityLaplacian();
+	LaplacianField(Den,lap_den,dx,Nx,Ny);
 #pragma omp parallel for default(none) shared(Nx,Ny,FlxX,FlxY,Den,flxX_mid,flxY_mid,den_mid,vel_snd_arr,dt,dx)
 		for(int ks=0; ks<=Nx*Ny-Nx-Ny; ks++){ //correr todos os pontos da grelha secundaria de den_mid
 			GridPoint point(ks,Nx,Ny,true);
@@ -190,7 +205,11 @@ void Fluid2D::Richtmyer(){
 			}
 		}
 	if(odd_vis) {
-		this->VelocityGradientMid();
+		//this->VelocityGradientMid();
+		this->MassFluxToVelocity("MidGrid");
+		GradientField(velX_mid,velX_dx_mid,velX_dy_mid,dx,dy,Nx-1,Ny-1);
+		GradientField(velY_mid,velY_dx_mid,velY_dy_mid,dx,dy,Nx-1,Ny-1);
+
 	}
 //	if(therm_diff) {
 //		this->DensityGradient();
@@ -255,7 +274,7 @@ void Fluid2D::SetSimulationTime(){
 }
 
 void Fluid2D::VelocityLaplacianFtcs() {
-	this->MassFluxToVelocity();
+	this->MassFluxToVelocity("MainGrid");
 
 //calculate laplacians
 #pragma omp parallel for  default(none) shared(lap_flxX,lap_flxY,VelX,VelY,Nx,Ny)
@@ -283,7 +302,7 @@ void Fluid2D::VelocityLaplacianFtcs() {
 }
 
 void Fluid2D::VelocityLaplacianWeighted19() {
-	this->MassFluxToVelocity();
+	this->MassFluxToVelocity("MainGrid");
 
 #pragma omp parallel for default(none) shared(lap_flxX,lap_flxY,VelX,VelY)
 	for (int kp = 1 + Nx; kp <= Nx * Ny - Nx - 2; kp++) {
@@ -356,7 +375,7 @@ void Fluid2D::SaveSnapShot() {
 	int points_per_period = static_cast<int>((2.0 * MAT_PI / this->RealFreq()) / dt);
 	snapshot_step = points_per_period / snapshot_per_period;
 
-	this->MassFluxToVelocity();
+	this->MassFluxToVelocity("MainGrid");
 	string str_time = to_string(TimeStepCounter / snapshot_step);
 	str_time.insert(str_time.begin(), 5 - str_time.length(), '0');
 	string name_dataset = "snapshot_" + str_time;
@@ -864,7 +883,7 @@ void Fluid2D::DensityLaplacian(){
 		GridPoint point(left,Nx,Ny,false);
 		int easteast = left + 2;
 		int easteasteast = left + 3;
-		float aux1 =  -2.0f*Den[point.C] + Den[point.N] + Den[point.S];;
+		float aux1 =  -2.0f*Den[point.C] + Den[point.N] + Den[point.S];
 		float aux2 =  2.0f*Den[point.C] -5.0f*Den[point.E] +4.0f*Den[easteast] -1.0f*Den[easteasteast];
 		lap_den[left] = (aux1+aux2)/(dx*dx);
 	}
@@ -875,7 +894,7 @@ void Fluid2D::DensityLaplacian(){
 		GridPoint point(right,Nx,Ny,false);
 		int westwest = right-2;
 		int westwestwest = right-3;
-		float aux1 =  -2.0f*Den[point.C] + Den[point.N] + Den[point.S];;
+		float aux1 =  -2.0f*Den[point.C] + Den[point.N] + Den[point.S];
 		float aux2 =  -2.0f*Den[point.C] +5.0f*Den[point.W] -4.0f*Den[westwest] +1.0f*Den[westwestwest];
 		lap_den[right] = (aux1+aux2)/(dx*dx);
 	}

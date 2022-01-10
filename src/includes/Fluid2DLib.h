@@ -38,6 +38,9 @@ class Fluid2D : public TethysBase
 		float * flxX_mid ;
 		float * flxY_mid ;
 
+		float * velX_mid;
+		float * velY_mid;
+
 		float * velX_dx;
 		float * velX_dy;
 
@@ -152,7 +155,7 @@ public :
 		* Since the mass of the fluid element is constant one needs only to perform the transformation
 		@f[ \vec{v} = \frac{\vec{p}}{n} @f]
 		* */
-		virtual void MassFluxToVelocity(); // Converts the mass flux density p=mnv to velocity
+		virtual void MassFluxToVelocity(string grid); // Converts the mass flux density p=mnv to velocity
 
 		/*!
 		* @brief Converts velocity field to current density on the entire simulation grid.

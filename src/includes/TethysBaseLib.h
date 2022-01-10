@@ -156,9 +156,6 @@ class TethysBase : public MathUtils {
 		void WelcomeScreen() const; ///< launches screen with the relevant info
 
 
-	void LaplacianField(const float * array_in, float * array_out, int size );
-
-	void GradientField(const float * array_in, float * array_out_x, float * array_out_y, int size );
 
 };
 
