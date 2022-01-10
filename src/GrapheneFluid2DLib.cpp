@@ -69,8 +69,8 @@ void GrapheneFluid2D::CflCondition(){ // Eventual redefinition
 float GrapheneFluid2D::DensityFluxX(GridPoint p, char side) {
 //	float * den_ptr;
 //	float * px_ptr;
-	float den = 1.0f;
-	float px = 0.0f;
+	float den;
+	float px;
 	/*
 	if(p.IsMidGrid){
 		den_ptr = Den; // se ESTÁ na grelha média tem de APONTAR pra outra grelha
@@ -97,8 +97,8 @@ float GrapheneFluid2D::DensityFluxX(GridPoint p, char side) {
 float GrapheneFluid2D::DensityFluxY(GridPoint p, char side) {
 //	float * den_ptr;
 //	float * py_ptr;
-	float den = 1.0f;
-	float py = 0.0f;
+	float den;
+	float py;
 /*
 	if(p.IsMidGrid){  // se ESTÁ na grelha média tem de APONTAR pra outra grelha
 		den_ptr = Den;
@@ -126,10 +126,10 @@ float GrapheneFluid2D::XMomentumFluxX(GridPoint p, char side) {
 //	float * px_ptr;
 //	float * dvel_ptr;
 
-	float sound =0.0f;
-	float den =1.0f;
-	float px =0.0f;
-	float dvy=0.0f;
+	float sound;
+	float den;
+	float px;
+	float dvy;
 	float mass;
 
 
@@ -137,6 +137,8 @@ float GrapheneFluid2D::XMomentumFluxX(GridPoint p, char side) {
 	den = SideAverage(ptr_den,p,side);
 	px = SideAverage(ptr_px,p,side);
 	dvy = SideAverage(ptr_velYdx,p,side);
+
+	mass=DensityToMass(den);
 /*
 	if(p.IsMidGrid){  // se ESTÁ na grelha média tem de APONTAR pra outra grelha
 		vel_ptr = vel_snd_arr;
@@ -164,29 +166,24 @@ float GrapheneFluid2D::XMomentumFluxX(GridPoint p, char side) {
 */
 
 
-	mass=DensityToMass(den);
 	return px * px / mass + vel_fer * vel_fer * mass / 3.0f + 0.5f * sound * sound * den * den - odd_vis*dvy;
 }
 
 float GrapheneFluid2D::XMomentumFluxY(GridPoint p, char side) {
-	float * den_ptr;
-	float * px_ptr;
-	float * py_ptr;
-	float *dvel_ptr;
 
-	float den =1.0f;
-	float px =0.0f;
-	float py =0.0f;
-	float dvy=0.0f;
+	float den;
+	float py;
+	float px;
+	float dvy;
 	float mass;
 
 
 
 	den = SideAverage(ptr_den,p,side);
-	px = SideAverage(ptr_px,p,side);
+	px = SideAverage(ptr_px, p, side);
 	py = SideAverage(ptr_py,p,side);
-	dvy = SideAverage(ptr_velYdy,p,side);
-
+	dvy = SideAverage(ptr_velYdy, p, side);
+	mass=DensityToMass(den);
 /*
 	if(p.IsMidGrid){
 		den_ptr = Den;
@@ -212,25 +209,24 @@ float GrapheneFluid2D::XMomentumFluxY(GridPoint p, char side) {
 		dvy =  0.5f*(dvel_ptr[p.SE] + dvel_ptr[p.SW]);
 	}*/
 
-	mass=DensityToMass(den);
+
 	return px * py / mass - odd_vis*dvy;
 }
 
 
 float GrapheneFluid2D::YMomentumFluxY(GridPoint p, char side) {
-	float * vel_ptr;
-	float * den_ptr;
-	float * py_ptr;
-	float * dvel_ptr;
-	float sound =0.0f;
-	float den =1.0f;
-	float py =0.0f;
-	float dvx =0.0f;
+
+	float sound ;
+	float den;
+	float py;
+	float dvx;
 	float mass;
 
+	sound = SideAverage(ptr_snd,p,side);
 	den = SideAverage(ptr_den,p,side);
 	py = SideAverage(ptr_py,p,side);
 	dvx = SideAverage(ptr_velXdy,p,side);
+	mass=DensityToMass(den);
 /*
 	if(p.IsMidGrid){
 		vel_ptr = vel_snd_arr;
@@ -255,26 +251,23 @@ float GrapheneFluid2D::YMomentumFluxY(GridPoint p, char side) {
 		py = 0.5f*(py_ptr[p.SE] + py_ptr[p.SW]);
 		dvx =  0.5f*(dvel_ptr[p.SE] + dvel_ptr[p.SW]);
 	}*/
-	mass=DensityToMass(den);
+
 	return py * py / mass + vel_fer * vel_fer * mass / 3.0f + 0.5f * sound * sound * den * den + odd_vis*dvx;
 }
 
 float GrapheneFluid2D::YMomentumFluxX(GridPoint p, char side) {
-	float * den_ptr;
-	float * px_ptr;
-	float * py_ptr;
-	float * dvel_ptr;
-	float den =1.0f;
-	float px =0.0f;
-	float py =0.0f;
-	float dvx=0.0f;
+
+	float den;
+	float px;
+	float py;
+	float dvx;
 	float mass;
 
 	den = SideAverage(ptr_den,p,side);
 	px = SideAverage(ptr_px,p,side);
 	py = SideAverage(ptr_py,p,side);
 	dvx = SideAverage(ptr_velXdx,p,side);
-
+	mass=DensityToMass(den);
 /*
 	if(p.IsMidGrid){
 		den_ptr = Den;
@@ -299,7 +292,7 @@ float GrapheneFluid2D::YMomentumFluxX(GridPoint p, char side) {
 		py = 0.5f*(py_ptr[p.NW] + py_ptr[p.SW]);
 		dvx =  0.5f*(dvel_ptr[p.NW] + dvel_ptr[p.SW]);
 	}*/
-	mass=DensityToMass(den);
+
 	return px * py / mass  + odd_vis*dvx;
 }
 

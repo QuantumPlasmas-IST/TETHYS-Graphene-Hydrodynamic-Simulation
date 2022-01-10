@@ -939,7 +939,7 @@ float Fluid2D::DensityToMass(float density) {
 
 float Fluid2D::DensityFluxX(GridPoint p, char side) {
 //	float * px_ptr;
-	float px =0.0f;
+	float px;
 /*	if(p.IsMidGrid){
 		px_ptr = FlxX;
 	}else{
@@ -957,7 +957,7 @@ float Fluid2D::DensityFluxX(GridPoint p, char side) {
 
 float Fluid2D::DensityFluxY(GridPoint p, char side) {
 	//float * py_ptr;
-	float py=0.0f;
+	float py;
 	/*
 	if(p.IsMidGrid){
 		py_ptr = FlxY;
@@ -977,8 +977,8 @@ float Fluid2D::DensityFluxY(GridPoint p, char side) {
 float Fluid2D::XMomentumFluxX(GridPoint p, char side) {
 //	float * den_ptr;
 //	float * px_ptr;
-	float den=1.0f;
-	float px=0.0f;
+	float den;
+	float px;
 /*
 	if(p.IsMidGrid){
 		den_ptr = Den;
@@ -1006,9 +1006,9 @@ float Fluid2D::XMomentumFluxY(GridPoint p, char side) {
 	//float * px_ptr;
 	//float * py_ptr;
 
-	float den =1.0f;
-	float px=0.0f;
-	float py=0.0f;
+	float den;
+	float px;
+	float py;
 /*
 	if(p.IsMidGrid){
 		den_ptr = Den;
@@ -1039,8 +1039,8 @@ float Fluid2D::XMomentumFluxY(GridPoint p, char side) {
 float Fluid2D::YMomentumFluxY(GridPoint p, char side) {
 	//float * den_ptr;
 	//float * py_ptr;
-	float den=1.0f;
-	float py =0.0f;
+	float den;
+	float py;
 	den = SideAverage(ptr_den,p,side);
 
 	py = SideAverage(ptr_py,p,side);
@@ -1067,9 +1067,9 @@ float Fluid2D::YMomentumFluxX(GridPoint p, char side) {
 	//float * den_ptr;
 	//float * px_ptr;
 	//float * py_ptr;
-	float den=1.0f;
-	float px =0.0f;
-	float py=0.0f;
+	float den;
+	float px;
+	float py;
 	den = SideAverage(ptr_den,p,side);
 	px = SideAverage(ptr_px,p,side);
 	py = SideAverage(ptr_py,p,side);
@@ -1101,9 +1101,9 @@ float Fluid2D::TemperatureFluxX(GridPoint p, char side) {
     //float * px_ptr;
 	//float * den_ptr;
 	//float * tmp_ptr;
-	float tmp=1.0f;
-    float px =0.0f;
-	float den=1.0f;
+	float tmp;
+    float px;
+	float den;
 
 	den = SideAverage(ptr_den,p,side);
 	px = SideAverage(ptr_px,p,side);
@@ -1137,11 +1137,11 @@ float Fluid2D::TemperatureFluxX(GridPoint p, char side) {
 
 float Fluid2D::TemperatureFluxY(GridPoint p, char side) {
     //float * py_ptr;
-    float py=0.0f;
+    float py;
 	//float * tmp_ptr;
-	float tmp=1.0f;
+	float tmp;
 	//float * den_ptr;
-	float den=1.0f;
+	float den;
 
 	den = SideAverage(ptr_den,p,side);
 	py = SideAverage(ptr_py,p,side);
@@ -1222,8 +1222,8 @@ void Fluid2D::ChooseGridPointers(string grid) {
 	}
 }
 
-float Fluid2D::SideAverage(float * input_array, GridPoint p,char side){
-	float avg=0.0f;
+float Fluid2D::SideAverage(const float * input_array, GridPoint p,char side){
+	float avg;
 	switch(side) {
 		case 'N': avg=0.5f*(input_array[p.NE]+input_array[p.NW]);
 			break;

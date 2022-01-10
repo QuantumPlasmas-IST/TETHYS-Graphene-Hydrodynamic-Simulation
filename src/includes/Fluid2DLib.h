@@ -83,7 +83,7 @@ class Fluid2D : public TethysBase
 		virtual float DensityToMass(float density);
 
 		void ChooseGridPointers(string grid);
-		float SideAverage(float * input_array, GridPoint p,char side);
+		float SideAverage(const float * input_array, GridPoint p,char side);
 
 		float * ptr_snd;
 		float * ptr_den ;
