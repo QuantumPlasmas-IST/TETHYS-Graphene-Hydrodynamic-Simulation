@@ -71,13 +71,13 @@ class Fluid2D : public TethysBase
 		void ForwardTimeOperator(); ///< Time evolution for the FTCS method employed for the parabolic operators.
 
 
-		void VelocityGradient(); ///< Computes the gradient of the velocity grid  by second order finite differences.
-		void VelocityGradientMid(); ///< Computes the gradient of the velocity mid grid  by second order finite differences.
-     	void DensityGradient(); ///<  Computes the gradient of the number density grid by second order finite differences.
-    	void DensityGradientMid(); ///< Computes the gradient of the number density mid grid  by second order finite differences.
+//		void VelocityGradient(); ///< Computes the gradient of the velocity grid  by second order finite differences.
+//		void VelocityGradientMid(); ///< Computes the gradient of the velocity mid grid  by second order finite differences.
+//     	void DensityGradient(); ///<  Computes the gradient of the number density grid by second order finite differences.
+//    	void DensityGradientMid(); ///< Computes the gradient of the number density mid grid  by second order finite differences.
 
-		void DensityLaplacian(); ///<  Computes the laplacian of the number density grid by second order finite differences.
-		void DensityLaplacianMid(); ///< Computes the laplacian of the number density mid grid  by second order finite differences.
+	//	void DensityLaplacian(); ///<  Computes the laplacian of the number density grid by second order finite differences.
+	//	void DensityLaplacianMid(); ///< Computes the laplacian of the number density mid grid  by second order finite differences.
 
 
 		virtual float DensityToMass(float density);

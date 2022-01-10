@@ -4,8 +4,7 @@
 * Distributed under the MIT License (license terms are at http://opensource.org/licenses/MIT).   *
 \************************************************************************************************/
 
-#include "TethysBaseLib.h"
-#include "includes/TethysMathLib.h"
+
 #include "includes/TethysBaseLib.h"
 
 using namespace H5;

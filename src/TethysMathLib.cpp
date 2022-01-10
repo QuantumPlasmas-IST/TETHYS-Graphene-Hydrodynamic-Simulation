@@ -117,44 +117,39 @@ void MathUtils::LaplacianField(const float *array_in, float *array_out, float dx
 #pragma omp parallel for default(none) shared(size_x,size_y,dx,stride,array_in,array_out)
 	for(int kp=1+size_x; kp<=size_x*size_y-size_x-2; kp++){
 		if( kp%stride!=stride-1 && kp%stride!=0){
-			GridPoint point(kp,size_x,size_y,false);
-			array_out[kp] = (-4.0f*array_in[point.C] +  array_in[point.N] + array_in[point.S] + array_in[point.E] + array_in[point.W] )/(dx*dx);
+			array_out[kp] = (-4.0f*array_in[kp] +  array_in[kp+stride] + array_in[kp-stride] + array_in[kp+1] + array_in[kp-1] )/(dx*dx);
 		}
 	}
 // -2	5	-4	1
 	for(int i=1 ; i<=size_x-2; i++){ // topo rede principal, ou seja j=(size_y - 1)
 		int top= i + (size_y - 1) * stride;
-		GridPoint point(top,size_x,size_y,false);
 		int southsouth= i + (size_y - 3) * stride;
 		int southsouthsouth= i + (size_y - 4) * stride;
-		float aux1 = -2.0f*array_in[point.C] + array_in[point.E] + array_in[point.W]; //OK
-		float aux2 = 2.0f*array_in[point.C] -5.0f*array_in[point.S] +4.0f*array_in[southsouth] -1.0f*array_in[southsouthsouth];
+		float aux1 = -2.0f*array_in[top] + array_in[top+1] + array_in[top-1]; //OK
+		float aux2 = 2.0f*array_in[top] -5.0f*array_in[top-stride] +4.0f*array_in[southsouth] -1.0f*array_in[southsouthsouth];
 		array_out[top] = (aux1+aux2)/(dx*dx);
 	}
 // 2	−5	4	−1
 	for(int i=1 ; i<=size_x-2; i++){ // fundo rede principal, ou seja j=0
 		int bottom=i; //i+0*nx
-		GridPoint point(bottom,size_x,size_y,false);
 		int northnorth=i+2*stride;
 		int northnorthnorth=i+3*stride;
-		float aux1 = -2.0f*array_in[point.C] + array_in[point.E] + array_in[point.W]; //OK
-		float aux2 =  2.0f*array_in[point.C] -5.0f*array_in[point.N] +4.0f*array_in[northnorth] -1.0f*array_in[northnorthnorth];
+		float aux1 = -2.0f*array_in[bottom] + array_in[bottom+1] + array_in[bottom-1]; //OK
+		float aux2 =  2.0f*array_in[bottom] -5.0f*array_in[bottom+stride] +4.0f*array_in[northnorth] -1.0f*array_in[northnorthnorth];
 		array_out[bottom] = (aux1+aux2)/(dx*dx);
 	}
 // 2	−5	4	−1
 	for(int j=1; j<=size_y-2;j++){ //lado esquerdo da rede principal ou seja i=0
 		int left = 0 + j*stride;
-		GridPoint point(left,size_x,size_y,false);
 		int easteast = left + 2;
 		int easteasteast = left + 3;
-		float aux1 =  -2.0f*array_in[point.C] + array_in[point.N] + array_in[point.S];
-		float aux2 =  2.0f*array_in[point.C] -5.0f*array_in[point.E] +4.0f*array_in[easteast] -1.0f*array_in[easteasteast];
+		float aux1 =  -2.0f*array_in[left] + array_in[left+stride] + array_in[left-stride];
+		float aux2 =  2.0f*array_in[left] -5.0f*array_in[left+1] +4.0f*array_in[easteast] -1.0f*array_in[easteasteast];
 		array_out[left] = (aux1+aux2)/(dx*dx);
 	}
 // -2	5	-4	1
 	for(int j=1; j<=size_y-2;j++){ //lado direito da rede principal ou seja i=(Nx-1)
 		int right = (size_x-1) + j*stride;
-		GridPoint point(right,size_x,size_y,false);
 		int westwest = right-2;
 		int westwestwest = right-3;
 		float aux1 =  -2.0f*array_in[right] + array_in[right+stride] + array_in[right-stride];

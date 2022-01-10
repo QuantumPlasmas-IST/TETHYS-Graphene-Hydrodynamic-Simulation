@@ -138,7 +138,7 @@ void Fluid2D::InitialCondTest(){
 }
 
 
-void Fluid2D::MassFluxToVelocity(string grid) {
+void Fluid2D::MassFluxToVelocity(const string grid) {
 	if(grid=="MainGrid"){
 		for(int c=0; c <= Nx * Ny - 1; c++){
 			VelX[c]= FlxX[c] / Den[c];
@@ -164,7 +164,7 @@ void Fluid2D::Richtmyer(){
 	if(odd_vis) {
 		//this->VelocityGradient();
 		this->MassFluxToVelocity("MainGrid");
-		GradientField(VelX,velX_dx,velX_dy,dx,dy,Nx,Ny);
+		GradientField(VelX,velX_dx,velX_dy,dx,dy,Nx,Ny); // TODO é capaz de ser mais intelignente separar estes dois calculos de gradiente por metade dos cores ja que sao calculos independente e mais ou menos equivalentes
 		GradientField(VelY,velY_dx,velY_dy,dx,dy,Nx,Ny);
 	}
 	if(therm_diff) {
@@ -207,7 +207,7 @@ void Fluid2D::Richtmyer(){
 	if(odd_vis) {
 		//this->VelocityGradientMid();
 		this->MassFluxToVelocity("MidGrid");
-		GradientField(velX_mid,velX_dx_mid,velX_dy_mid,dx,dy,Nx-1,Ny-1);
+		GradientField(velX_mid,velX_dx_mid,velX_dy_mid,dx,dy,Nx-1,Ny-1); // TODO é capaz de ser mais intelignente separar estes dois calculos de gradiente por metade dos cores ja que sao calculos independente e mais ou menos equivalentes
 		GradientField(velY_mid,velY_dx_mid,velY_dy_mid,dx,dy,Nx-1,Ny-1);
 
 	}
@@ -465,6 +465,7 @@ void Fluid2D::ForwardTimeOperator() {
 	}
 }
 
+/*
 void Fluid2D::VelocityGradient() {
 	int stride = Nx;
 	float m_east,m_west,m_north,m_south;
@@ -592,9 +593,9 @@ void Fluid2D::VelocityGradient() {
 	velY_dx[kp] = ( 3.0f*(FlxY[kp]/m_0 ) -4.0f*(FlxY[kp-1]/m_x1 )+1.0f*(FlxY[kp-2]/m_x2 ) )/(2.0f*dx);
 	velY_dy[kp] = ( 3.0f*(FlxY[kp]/m_0 ) -4.0f*(FlxY[kp-Nx]/m_y1 )+1.0f*(FlxY[kp-2*Nx]/m_y2 ) )/(2.0f*dy);
 }
+*/
 
-
-
+/*
 void Fluid2D::VelocityGradientMid() {
 	float m_east,m_west,m_north,m_south;
 #pragma omp parallel for default(none) private(m_east,m_west,m_north,m_south) shared(Nx,Ny,dx,dy,flxX_mid,flxY_mid,den_mid,velX_dx_mid,velX_dy_mid,velY_dx_mid,velY_dy_mid)
@@ -721,9 +722,9 @@ void Fluid2D::VelocityGradientMid() {
 	velY_dx_mid[ks] = ( 3.0f*(flxY_mid[ks]/m_0 ) -4.0f*(flxY_mid[ks-1]/m_x1 )+1.0f*(flxY_mid[ks-2]/m_x2 ) )/(2.0f*dx);
 	velY_dy_mid[ks] = ( 3.0f*(flxY_mid[ks]/m_0 ) -4.0f*(flxY_mid[ks-(Nx-1)]/m_y1 )+1.0f*(flxY_mid[ks-2*(Nx-1)]/m_y2 ) )/(2.0f*dy);
 }
+*/
 
-
-
+/*
 void Fluid2D::DensityGradient() {
 	int stride = Nx;
 #pragma omp parallel for default(none) shared(Nx,Ny,dx,dy,stride,Den,den_dx,den_dy)
@@ -782,9 +783,9 @@ void Fluid2D::DensityGradient() {
 	den_dx[kp] = ( 3.0f*(Den[kp] ) -4.0f*(Den[kp-1] )+1.0f*(Den[kp-2] ) )/(2.0f*dx);
 	den_dy[kp] = ( 3.0f*(Den[kp] ) -4.0f*(Den[kp-Nx] )+1.0f*(Den[kp-2*Nx] ) )/(2.0f*dy);
 }
+*/
 
-
-
+/*
 void Fluid2D::DensityGradientMid() {
 
 #pragma omp parallel for default(none)  shared(Nx,Ny,dx,dy,den_mid,den_dx_mid,den_dy_mid)
@@ -842,9 +843,9 @@ void Fluid2D::DensityGradientMid() {
 	den_dx_mid[ks] = ( 3.0f*(den_mid[ks] ) -4.0f*(den_mid[ks-1] )+1.0f*(den_mid[ks-2] ) )/(2.0f*dx);
 	den_dy_mid[ks] = ( 3.0f*(den_mid[ks] ) -4.0f*(den_mid[ks-(Nx-1)] )+1.0f*(den_mid[ks-2*(Nx-1)] ) )/(2.0f*dy);
 }
+*/
 
-
-
+/*
 void Fluid2D::DensityLaplacian(){
 	int stride = Nx;
 #pragma omp parallel for default(none) shared(Nx,Ny,dx,dy,stride,Den,lap_den)
@@ -924,7 +925,7 @@ void Fluid2D::DensityLaplacian(){
 	lap_den[kp] = (aux1+aux2)/(dx*dx);
 
 }
-
+*/
 
 
 
