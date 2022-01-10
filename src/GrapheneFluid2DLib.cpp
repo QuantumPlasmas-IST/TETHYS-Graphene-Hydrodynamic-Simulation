@@ -249,7 +249,7 @@ float GrapheneFluid2D::YMomentumFluxX(GridPoint p, char side) {
 		den = 0.5f*(den_ptr[p.NE] + den_ptr[p.SE]);
 		px = 0.5f*(px_ptr[p.NE] + px_ptr[p.SE]);
 		py = 0.5f*(py_ptr[p.NE] + py_ptr[p.SE]);
-		dvx =  0.5f*(dvel_ptr[p.NE] + dvel_ptr[p.NW]);
+		dvx =  0.5f*(dvel_ptr[p.NE] + dvel_ptr[p.SE]);
 	}
 	if (side == 'W'){
 		den = 0.5f*(den_ptr[p.NW] + den_ptr[p.SW]);
