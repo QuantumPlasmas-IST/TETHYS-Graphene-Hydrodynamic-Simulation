@@ -5,7 +5,6 @@
 \************************************************************************************************/
 
 #include "includes/TethysMathLib.h"
-#include "TethysBaseLib.h"
 
 using namespace std;
 
@@ -19,7 +18,7 @@ float  MathUtils::Sound_Velocity_Anisotropy(float x, float y, float s) {
 }
 
 float  MathUtils::Integral_1_D(int n, float ds, const float * f){
-	float itg=0.0;
+	float itg=0.0f;
 	for(int j=1; j < n / 2; j++){
 		itg += f[2*j-2] + 4*f[2*j-1] + f[2*j];
 	}
@@ -69,7 +68,7 @@ void  MathUtils::Average_Filter(const float * vec_in, float * vec_out, int size 
 
 
 float  MathUtils::Signal_Average(int n, float dt, const float * f){
-	float avg=0.0;
+	float avg=0.0f;
 	for(int j=1; j < n / 2; j++){
 		avg += f[2*j-2] + 4*f[2*j-1] + f[2*j];
 	}
@@ -109,7 +108,7 @@ void  MathUtils::Convolve_Gauss(unsigned int type, unsigned int m, float t, cons
 }
 
 float  MathUtils::Stair_Case_Function(float x, float step_width, float smoothness) {
-	return (0.5f*tanh(smoothness*((-(x - 1.0f)/step_width - floor(-(x - 1.0f)/step_width)) - 0.5f))/tanh(0.5f*smoothness) + 0.5f +floor(-(x - 1.0f)/step_width));
+	return (0.5f*tanh(smoothness*((-(x - 1.0F)/step_width - floor(-(x - 1.0f)/step_width)) - 0.5f))/tanh(0.5f*smoothness) + 0.5f +floor(-(x - 1.0f)/step_width));
 }
 
 void MathUtils::LaplacianField(const float *array_in, float *array_out, float dx, int size_x, int size_y) {
@@ -186,43 +185,38 @@ MathUtils::GradientField(const float *array_in, float *array_out_x, float *array
 #pragma omp parallel for default(none) shared(size_x, size_y, dx, dy, stride, array_in, array_out_x, array_out_y)
 	for (int kp = 1 + size_x; kp <= size_x * size_y - size_x - 2; kp++) {
 		if (kp % stride != stride - 1 && kp % stride != 0) {
-			GridPoint point(kp, size_x, size_y, false);
-			array_out_x[kp] = (array_in[point.E] - array_in[point.W]) / (2.0f * dx);
-			array_out_y[kp] = (array_in[point.N] - array_in[point.S]) / (2.0f * dy);
+			array_out_x[kp] = (array_in[kp+1] - array_in[kp-1]) / (2.0f * dx);
+			array_out_y[kp] = (array_in[kp+stride] - array_in[kp-stride]) / (2.0f * dy);
 		}
 	}
 
 	for (int i = 1; i <= size_x - 2; i++) { // topo rede principal, ou seja j=(size_y - 1)
 		int top = i + (size_y - 1) * stride;
-		GridPoint point(top, size_x, size_y, false);
 		int southsouth = i + (size_y - 3) * stride;
-		array_out_x[top] = ((array_in[point.E]) - (array_in[point.W])) / (2.0f * dx); //OK
-		array_out_y[top] = (3.0f * (array_in[point.C]) - 4.0f * (array_in[point.S]) + 1.0f * (array_in[southsouth])) /
+		array_out_x[top] = ((array_in[top+1]) - (array_in[top-1])) / (2.0f * dx); //OK
+		array_out_y[top] = (3.0f * (array_in[top]) - 4.0f * (array_in[top-stride]) + 1.0f * (array_in[southsouth])) /
 		                   (2.0f * dy); //backward finite difference
 	}
 	for (int i = 1; i <= size_x - 2; i++) { // fundo rede principal, ou seja j=0
 		int bottom = i; //i+0*nx
-		GridPoint point(bottom, size_x, size_y, false);
 		int northnorth = i + 2 * stride;
-		array_out_x[bottom] = ((array_in[point.E]) - (array_in[point.W])) / (2.0f * dx);
-		array_out_y[bottom] = (-3.0f * (array_in[point.C]) + 4.0f * (array_in[point.N]) - 1.0f * (array_in[northnorth])) /
+		array_out_x[bottom] = ((array_in[bottom+1]) - (array_in[bottom-1])) / (2.0f * dx);
+		array_out_y[bottom] = (-3.0f * (array_in[bottom]) + 4.0f * (array_in[bottom+stride]) - 1.0f * (array_in[northnorth])) /
 		                      (2.0f * dy); //forward finite difference
 	}
 	for (int j = 1; j <= size_y - 2; j++) { //lado esquerdo da rede principal ou seja i=0
 		int left = 0 + j * stride;
-		GridPoint point(left, size_x, size_y, false);
 		int easteast = left + 2;
-		array_out_x[left] = (-3.0f * (array_in[point.C]) + 4.0f * (array_in[point.E]) - 1.0f * (array_in[easteast])) /
+		array_out_x[left] = (-3.0f * (array_in[left]) + 4.0f * (array_in[left+1]) - 1.0f * (array_in[easteast])) /
 		                    (2.0f * dx); //forward difference
-		array_out_y[left] = ((array_in[point.N]) - (array_in[point.S])) / (2.0f * dy); //OK
+		array_out_y[left] = ((array_in[left+stride]) - (array_in[left-stride])) / (2.0f * dy); //OK
 	}
 	for (int j = 1; j <= size_y - 2; j++) { //lado direito da rede principal ou seja i=(size_x-1)
 		int right = (size_x - 1) + j * stride;
-		GridPoint point(right, size_x, size_y, false);
 		int westwest = right - 2;
-		array_out_x[right] = (3.0f * (array_in[point.C]) - 4.0f * (array_in[point.W]) + 1.0f * (array_in[westwest])) /
+		array_out_x[right] = (3.0f * (array_in[right]) - 4.0f * (array_in[right-1]) + 1.0f * (array_in[westwest])) /
 		                     (2.0f * dx); //backwar difference
-		array_out_y[right] = ((array_in[point.N]) - (array_in[point.S])) / (2.0f * dy);
+		array_out_y[right] = ((array_in[right+stride]) - (array_in[right-stride])) / (2.0f * dy);
 	}
 
 	int kp;

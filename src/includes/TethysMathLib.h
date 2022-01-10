@@ -11,11 +11,19 @@
 #ifndef TETHYSMATHLIB_H
 #define TETHYSMATHLIB_H
 
+#include <cmath>
 #include <H5Cpp.h>
-#include "includes/Grid2DLib.h"
-
 
 using namespace std;
+
+
+#ifndef MAT_PI
+#	define MAT_PI 3.14159265358979f
+#endif
+
+#ifndef MAT_EULER
+#	define MAT_EULER 2.71828182845905f
+#endif
 
 class MathUtils{
 public:

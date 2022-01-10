@@ -88,8 +88,8 @@ void BoundaryCondition::XPeriodic(Fluid2D& fluid_class){
 		right = nx - 1 + j * nx;
 		fluid_class.Den[left]=fluid_class.Den[right - 1];
 		fluid_class.Den[right]=fluid_class.Den[1 + j * nx];
-		fluid_class.FlxY[left] = 0.0; 					//flux only on x at x=0
-		fluid_class.FlxY[right] = 0.0 ;					//idem at x=L
+		fluid_class.FlxY[left] = 0.0f; 					//flux only on x at x=0
+		fluid_class.FlxY[right] = 0.0f ;					//idem at x=L
 		fluid_class.FlxX[left] = fluid_class.FlxX[right - 1];
 		fluid_class.FlxX[right] =  fluid_class.FlxX[left + 1];
 	}	

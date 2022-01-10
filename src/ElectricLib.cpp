@@ -140,7 +140,7 @@ float ElectroAnalysis::ElectricDipole(const GrapheneFluid1D& graphene){
 }
 
 float ElectroAnalysis::OhmPower(const GrapheneFluid1D& graphene){
-	float itg=0.0;
+	float itg=0.0f;
 	for(int j=1;j<graphene.SizeX()/2;j++){
 		itg += graphene.CurCor[2 * j - 2] * graphene.CurCor[2 * j - 2]/sqrt(graphene.DenCor[2 * j - 2]) + 4 * graphene.CurCor[2 * j - 1] * graphene.CurCor[2 * j - 1] /sqrt(graphene.DenCor[2 * j - 1]) + graphene.CurCor[2 * j] * graphene.CurCor[2 * j]/sqrt(graphene.DenCor[2 * j]);
 	}
