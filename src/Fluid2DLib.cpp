@@ -175,7 +175,7 @@ void Fluid2D::Richtmyer(){
 	LaplacianField(Den,lap_den,dx,Nx,Ny);
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	ChooseGridPointers("MidGrid");
-#pragma omp parallel for default(none) shared(Nx,Ny,FlxX,FlxY,Den,flxX_mid,flxY_mid,den_mid,vel_snd_arr,dt,dx) //TODO atençao que agora quem deve ficar shared hao de ser os ponteiros definidos anteriormente e nao estes!
+#pragma omp parallel for default(none) shared(Nx,Ny,dt,dx,dy,Den,FlxX,FlxY,Tmp,den_dx,den_dy,ptr_den,ptr_px,ptr_py,ptr_snd,ptr_tmp,ptr_velXdx,ptr_velXdy,ptr_velYdx,ptr_velYdy,ptr_dendx,ptr_dendy)
 		for(int ks=0; ks<=Nx*Ny-Nx-Ny; ks++){ //correr todos os pontos da grelha secundaria de den_mid
 			GridPoint midpoint(ks, Nx, Ny, true);
 
@@ -218,7 +218,7 @@ void Fluid2D::Richtmyer(){
 //		this->DensityGradient();
 //	}
 	ChooseGridPointers("MainGrid");
-#pragma omp parallel for default(none) shared(Nx,Ny,FlxX,FlxY,Den,flxX_mid,flxY_mid,den_mid,vel_snd_arr_mid,dt,dx)
+#pragma omp parallel for default(none) shared(Nx,Ny,dt,dx,dy,FlxX,FlxY,Den,Tmp,den_dx,den_dy,ptr_den,ptr_px,ptr_py,ptr_snd,ptr_tmp,ptr_velXdx,ptr_velXdy,ptr_velYdx,ptr_velYdy,ptr_dendx,ptr_dendy)
 		for(int kp=1+Nx; kp<=Nx*Ny-Nx-2; kp++){ //correr a grelha principal evitando as fronteiras
 			GridPoint mainpoint(kp, Nx, Ny, false);
 			if( kp%Nx!=Nx-1 && kp%Nx!=0){
