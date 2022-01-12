@@ -71,7 +71,7 @@ int main(int argc, char **argv){
 
 
 	cout << "\033[1;7;5;33m Program Running \033[0m"<<endl;
-	while (t <=  graph.GetTmax() ){
+	while (t <= graph.GetTmax() ){
 		int percentage=100*GrapheneFluid2D::TimeStepCounter/(graph.GetTmax()/dt);
 		cout << percentage<<"%\033[?25l"; //prints the percentage of simulation completed
 

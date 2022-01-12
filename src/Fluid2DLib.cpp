@@ -214,9 +214,11 @@ void Fluid2D::Richtmyer(){
 		GradientField(velY_mid,velY_dx_mid,velY_dy_mid,dx,dy,Nx-1,Ny-1);
 
 	}
-//	if(therm_diff) {
+	if(therm_diff) {
 //		this->DensityGradient();
-//	}
+	GradientField(den_mid,den_dx_mid,den_dy_mid,dx,dy,Nx-1,Ny-1);
+	}
+	LaplacianField(den_mid,lap_den_mid,dx,Nx-1,Ny-1);
 	ChooseGridPointers("MainGrid");
 #pragma omp parallel for default(none) shared(Nx,Ny,dt,dx,dy,FlxX,FlxY,Den,Tmp,den_dx,den_dy,ptr_den,ptr_px,ptr_py,ptr_snd,ptr_tmp,ptr_velXdx,ptr_velXdy,ptr_velYdx,ptr_velYdy,ptr_dendx,ptr_dendy)
 		for(int kp=1+Nx; kp<=Nx*Ny-Nx-2; kp++){ //correr a grelha principal evitando as fronteiras

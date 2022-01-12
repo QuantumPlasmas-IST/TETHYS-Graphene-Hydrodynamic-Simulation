@@ -131,14 +131,17 @@ float GrapheneFluid2D::XMomentumFluxX(GridPoint p, char side) {
 	float px;
 	float dvy;
 	float mass;
-
+	float d2den;
 
 	sound = SideAverage(ptr_snd,p,side);
 	den = SideAverage(ptr_den,p,side);
 	px = SideAverage(ptr_px,p,side);
 	dvy = SideAverage(ptr_velYdx,p,side);
 
+
 	mass=DensityToMass(den);
+
+
 /*
 	if(p.IsMidGrid){  // se ESTÁ na grelha média tem de APONTAR pra outra grelha
 		vel_ptr = vel_snd_arr;
@@ -165,8 +168,9 @@ float GrapheneFluid2D::XMomentumFluxX(GridPoint p, char side) {
 	}
 */
 
-
-	return px * px / mass + vel_fer * vel_fer * mass / 3.0f + 0.5f * sound * sound * den * den - odd_vis*dvy;
+	d2den = SideAverage(ptr_lap_den,p,side);
+	float B=0.0005f;
+	return px * px / mass + vel_fer * vel_fer * mass / 3.0f + 0.5f * sound * sound * den * den - odd_vis*dvy  + B*d2den ;
 }
 
 float GrapheneFluid2D::XMomentumFluxY(GridPoint p, char side) {
@@ -252,7 +256,11 @@ float GrapheneFluid2D::YMomentumFluxY(GridPoint p, char side) {
 		dvx =  0.5f*(dvel_ptr[p.SE] + dvel_ptr[p.SW]);
 	}*/
 
-	return py * py / mass + vel_fer * vel_fer * mass / 3.0f + 0.5f * sound * sound * den * den + odd_vis*dvx;
+
+	float d2den = SideAverage(ptr_lap_den,p,side);
+	float B=0.0005f;
+
+	return py * py / mass + vel_fer * vel_fer * mass / 3.0f + 0.5f * sound * sound * den * den + odd_vis*dvx + B*d2den;
 }
 
 float GrapheneFluid2D::YMomentumFluxX(GridPoint p, char side) {
@@ -319,12 +327,18 @@ delete[] FlxY;
 delete[] CurX;
 delete[] CurY;
 delete[] den_mid;
+delete[] velX_mid;
+delete[] velY_mid;
 delete[] flxX_mid;
 delete[] flxY_mid;
 delete[] lap_flxX;
 delete[] lap_flxY;
 delete[] vel_snd_arr;
 delete[] vel_snd_arr_mid;
+delete[] den_dx;
+delete[] den_dy;
+delete[] den_dx_mid;
+delete[] den_dy_mid;
 delete[] velX_dx;
 delete[] velX_dx_mid;
 delete[] velX_dy;
@@ -333,6 +347,11 @@ delete[] velY_dx;
 delete[] velY_dx_mid;
 delete[] velY_dy;
 delete[] velY_dy_mid;
+delete[] lap_den;
+delete[] lap_tmp;
+delete[] lap_den_mid;
+delete[] tmp_mid;
+delete[] Tmp;
 }
 
 float GrapheneFluid2D::DensityToMass(float density) {
