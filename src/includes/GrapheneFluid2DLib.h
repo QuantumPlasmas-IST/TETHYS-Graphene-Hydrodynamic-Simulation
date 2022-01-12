@@ -61,7 +61,7 @@ public :
 		 * Since the mass of the fluid element is not a constant the in the graphene electronic fluid, one needs to perform the transformation
 		   @f[ \vec{v} = \frac{\vec{p}}{n^{3/2}} @f]
 		 * */
-		void MassFluxToVelocity(string grid) override; // Converts the mass density flux back to velocity, in graphene  v = p n^{-3/2}
+//		//void MassFluxToVelocity(string grid) override; // Converts the mass density flux back to velocity, in graphene  v = p n^{-3/2}
 		/*Override fluxes and sources to specifics of graphene physics*/
 		float DensitySource(float n, float flx_x, float flx_y, float mass, float s)override;   ///< density equation (continuity equation) source term
 		float TemperatureSource(float n, float flx_x, float flx_y, float den_grad_x, float den_grad_y, float mass, float s) override;   ///< density equation (continuity equation) source term

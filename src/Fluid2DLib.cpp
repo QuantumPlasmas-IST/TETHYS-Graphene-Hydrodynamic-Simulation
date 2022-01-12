@@ -139,16 +139,19 @@ void Fluid2D::InitialCondTest(){
 
 
 void Fluid2D::MassFluxToVelocity(const string grid) {
+	float den;
 	if(grid=="MainGrid"){
 		for(int c=0; c <= Nx * Ny - 1; c++){
-			VelX[c]= FlxX[c] / Den[c];
-			VelY[c]= FlxY[c] / Den[c];
+			den = Den[c];
+			VelX[c]= FlxX[c] / DensityToMass(den);
+			VelY[c]= FlxY[c] / DensityToMass(den);
 		}
 	}
 	if(grid=="MidGrid"){
 		for(int c=0; c <= (Nx-1) * (Ny-1) - 1; c++){
-			velX_mid[c]= flxX_mid[c] / den_mid[c];
-			velY_mid[c]= flxY_mid[c] / den_mid[c];
+			den = den_mid[c];
+			velX_mid[c]= flxX_mid[c] / DensityToMass(den);
+			velY_mid[c]= flxY_mid[c] / DensityToMass(den);
 		}
 	}
 }
@@ -567,7 +570,7 @@ float Fluid2D::TemperatureSource(float n, float flx_x, float flx_y, float den_gr
 	return 0;
 }
 
-void Fluid2D::ChooseGridPointers(string grid) {
+void Fluid2D::ChooseGridPointers(const string &grid) {
 	if(grid == "MidGrid"){  // se ESTÁ na grelha média tem de APONTAR pra outra grelha
 		ptr_snd = vel_snd_arr;
 		ptr_den = Den;

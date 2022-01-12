@@ -23,6 +23,7 @@ void GrapheneFluid2D::SetSimulationTime(){
 	this->SetTmax(5.0f+0.02f*s+20.0f/s);
 }
 
+/*
 void GrapheneFluid2D::MassFluxToVelocity(const string grid) {
 float den;
 	if(grid=="MainGrid"){
@@ -40,6 +41,7 @@ float den;
 		}
 	}
 }
+*/
 
 void GrapheneFluid2D::CflCondition(){ // Eventual redefinition
 	dx = lengX / ( float ) ( Nx - 1 );
