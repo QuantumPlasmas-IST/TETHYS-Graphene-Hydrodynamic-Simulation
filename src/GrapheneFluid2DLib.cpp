@@ -103,8 +103,8 @@ float GrapheneFluid2D::XMomentumFluxX(GridPoint p, char side) {
 	mass=DensityToMass(den);
 
 	d2den = SideAverage(ptr_lap_den,p,side);
-	float B=0.001f;
-	return px * px / mass + vel_fer * vel_fer * mass / 3.0f + 0.5f * sound * sound * den * den - odd_vis*dvy  + B*d2den ;
+
+	return px * px / mass + vel_fer * vel_fer * mass / 3.0f + 0.5f * sound * sound * den * den - odd_vis*dvy  + coefBohm*d2den ;
 }
 
 float GrapheneFluid2D::XMomentumFluxY(GridPoint p, char side) {
@@ -142,9 +142,8 @@ float GrapheneFluid2D::YMomentumFluxY(GridPoint p, char side) {
 	mass=DensityToMass(den);
 
 	float d2den = SideAverage(ptr_lap_den,p,side);
-	float B=0.001f;
 
-	return py * py / mass + vel_fer * vel_fer * mass / 3.0f + 0.5f * sound * sound * den * den + odd_vis*dvx + B*d2den;
+	return py * py / mass + vel_fer * vel_fer * mass / 3.0f + 0.5f * sound * sound * den * den + odd_vis*dvx + coefBohm*d2den;
 }
 
 float GrapheneFluid2D::YMomentumFluxX(GridPoint p, char side) {

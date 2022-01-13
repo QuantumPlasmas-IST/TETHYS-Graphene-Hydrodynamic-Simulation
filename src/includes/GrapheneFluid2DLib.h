@@ -30,6 +30,9 @@ protected:
 	 * */
 	float DensityToMass(float density) override;
 
+
+	float coefBohm = 0.001f;
+
 public :
 	explicit GrapheneFluid2D(SetUpParameters &input_parameters);
 		~GrapheneFluid2D();
