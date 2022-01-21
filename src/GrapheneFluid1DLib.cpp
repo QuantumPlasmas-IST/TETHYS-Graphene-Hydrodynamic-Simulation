@@ -35,9 +35,9 @@ float GrapheneFluid1D::DensityFlux(float n,float v,float __attribute__((unused))
 	return f_1;
 }
 
-float GrapheneFluid1D::VelocityFlux(float n, float v, __attribute__((unused))float dv, float s){
+float GrapheneFluid1D::VelocityFlux(float n, float v, float dv, float s){
 	float f_2;
-		f_2 = 0.25f * v * v + vel_fer * vel_fer * 0.5f * log(n) + 2.0f * s * s * sqrt(n);//- kin_vis * dv;
+		f_2 = 0.25f * v * v + vel_fer * vel_fer * 0.5f * log(n) + 2.0f * s * s * sqrt(n)- kin_vis * dv;
 	return f_2;
 }
 

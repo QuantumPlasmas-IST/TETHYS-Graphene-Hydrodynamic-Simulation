@@ -25,6 +25,8 @@ endif()
 
 #add_executable(TEST_laplacian src/laplacian_main.cpp)
 
+
+add_executable(TETHYS_1D src/TETHYS_1D_Main_v134.cpp)
 add_executable(TETHYS_2D src/TETHYS_2D_Main_v261.cpp)
 add_executable(TETHYS_ELEC_2D src/TETHYS_2D_ElectronicAnalysis.cpp)
 
@@ -33,11 +35,16 @@ add_library(tethys_library STATIC ${SRC_LIB_FILES})
 
 #target_link_libraries(TEST_laplacian PUBLIC tethys_library)
 
+target_link_libraries(TETHYS_1D PUBLIC tethys_library)
+
 target_link_libraries(TETHYS_2D PUBLIC tethys_library)
 target_link_libraries(TETHYS_ELEC_2D PUBLIC tethys_library)
 
 #target_include_directories(TEST_laplacian PRIVATE ${HDF5_INCLUDE_DIRS})
 #target_link_libraries(TEST_laplacian PRIVATE ${HDF5_CXX_LIBRARIES})
+
+target_include_directories(TETHYS_1D PRIVATE ${HDF5_INCLUDE_DIRS})
+target_link_libraries(TETHYS_1D PRIVATE ${HDF5_CXX_LIBRARIES})
 
 target_include_directories(TETHYS_2D PRIVATE ${HDF5_INCLUDE_DIRS})
 target_link_libraries(TETHYS_2D PRIVATE ${HDF5_CXX_LIBRARIES})
