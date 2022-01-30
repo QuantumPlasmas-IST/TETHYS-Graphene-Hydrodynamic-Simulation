@@ -110,6 +110,21 @@ void Fluid2D::InitialCondRand(){
 	}
 }
 
+void Fluid2D::InitialCondGeneral(function<float(float, float)> fden, function<float(float, float)> fvx, function<float(
+		float, float)> fvy) {
+	float x,y;
+	for (int i = 0; i < Nx; i++ ){
+		for (int j=0; j<Ny; j++){
+			x=i*dx;
+			y=j*dy;
+			Den[i + j * Nx] = fden(x,y);
+			VelX[i + j * Nx] = fvx(x,y);
+			VelY[i + j * Nx] = fvy(x,y);
+		}
+	}
+}
+
+
 void Fluid2D::InitialCondWave() {
 	for (int i = 0; i < Nx; i++ ){
 		for (int j=0; j<Ny; j++){
@@ -615,3 +630,4 @@ float Fluid2D::SideAverage(const float * input_array, GridPoint p,char side){
 	}
 	return avg;
 }
+

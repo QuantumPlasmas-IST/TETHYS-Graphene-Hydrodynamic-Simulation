@@ -13,6 +13,7 @@
 #ifndef FLUID2DLIB_H
 #define FLUID2DLIB_H
 
+#include <functional>
 #include <H5Cpp.h>
 #include "includes/TethysBaseLib.h"
 #include "includes/TethysMathLib.h"
@@ -106,6 +107,8 @@ public :
 		void InitialCondRand();             ///< Initial condition, zero velocity and constant density with 0.5% white noise
 		void InitialCondWave();
 		void InitialCondTest();             ///< Initial condition for testing and debugging
+		void InitialCondGeneral(function<float(float, float)> fden , function<float(float, float)> fvx ,
+		                        function<float(float, float)> fvy  );
 		/*!
 		 * @brief Calculates @f$\Delta x@f$ and imposes Courant–Friedrichs–Lewy condition to @f$\Delta t@f$
 		 *
