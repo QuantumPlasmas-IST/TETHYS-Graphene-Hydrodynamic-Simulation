@@ -11,7 +11,13 @@
 #ifndef TETHYSMATHLIB_H
 #define TETHYSMATHLIB_H
 
+
+
 #include <cmath>
+
+#include <gsl/gsl_vector.h>
+#include <gsl/gsl_multiroots.h>
+
 #include <H5Cpp.h>
 
 using namespace std;
@@ -173,8 +179,7 @@ static void Average_Filter(const float * array_in, float * array_out, int size ,
 static void LaplacianField(const float *array_in, float *array_out, float dx, int size_x, int size_y);
 
 static void GradientField(const float *array_in, float *array_out_x, float *array_out_y, float dx, float dy, int size_x, int size_y);
-
-
+static void GradientField(const float *array_in, float *array_out, float dx, int size_x);
 };
 
 #endif

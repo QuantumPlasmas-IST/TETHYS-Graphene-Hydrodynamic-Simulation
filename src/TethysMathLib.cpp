@@ -239,3 +239,12 @@ MathUtils::GradientField(const float *array_in, float *array_out_x, float *array
 }
 
 
+
+void MathUtils::GradientField(const float *array_in, float *array_out, float dx,  int size) {
+	for ( int i = 1; i <= size-2 ; i++ )
+	{
+		array_out[i] = (-0.5f * array_in[i - 1] + 0.5f * array_in[i + 1]) / dx;
+	}
+	array_out[0] = (-1.5f * array_in[0] + 2.0f * array_in[1] - 0.5f * array_in[2]) / dx;
+	array_out[size - 1] = (0.5f * array_in[size - 1 - 2] - 2.0f * array_in[size - 1 - 1] + 1.5f * array_in[size - 1]) / dx;
+}
