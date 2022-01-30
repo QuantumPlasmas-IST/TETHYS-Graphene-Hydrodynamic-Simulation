@@ -131,7 +131,17 @@ void Fluid1D::SetSound(){
 		vel_snd_arr_mid[i]= vel_snd;//Sound_Velocity_Anisotropy( static_cast<float>(i)*dx, vel_snd);
 	}
 }
-		
+void Fluid1D::SetSound(std::function<float(float)> func) {
+	for(int i = 0; i<Nx  ;i++){
+		vel_snd_arr[i]= func(i*dx);
+	}
+	for(int i = 0; i<Nx-1  ;i++){
+		vel_snd_arr_mid[i]= func((i+0.5)*dx);
+	}
+}
+
+
+
 void Fluid1D::InitialCondRand(){
 	random_device rd;
 	float maxrand;
@@ -433,6 +443,7 @@ float Fluid1D::SideAverage(const float *input_array, GridPoint1D p, char side) {
 	}
 	return value;
 }
+
 
 
 

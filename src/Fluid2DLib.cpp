@@ -12,7 +12,6 @@
 using namespace H5;
 using namespace std;
 
-
 Fluid2D::Fluid2D(const SetUpParameters &input_parameters) : TethysBase{input_parameters.SizeX, input_parameters.SizeY, 2}{
 	Nx = input_parameters.SizeX;
 	Ny = input_parameters.SizeY;
@@ -77,21 +76,31 @@ Fluid2D::Fluid2D(const SetUpParameters &input_parameters) : TethysBase{input_par
 Fluid2D::~Fluid2D() = default;
 
 void Fluid2D::SetSound(){
+	for(int kp=0; kp<=Nx*Ny-1; kp++) {
+		vel_snd_arr[kp] = vel_snd;
+	}
+	for(int ks=0; ks<=Nx*Ny-Nx-Ny; ks++) {
+		vel_snd_arr_mid[ks]= vel_snd;
+	}
+}
+
+void Fluid2D::SetSound(std::function<float(float,float)> func){
 	for(int kp=0; kp<=Nx*Ny-1; kp++) { //correr a grelha principal evitando as fronteiras
 		div_t divresult;
 		divresult = div(kp, Nx);
 		auto j = static_cast<float>(divresult.quot);
 		auto i = static_cast<float>(divresult.rem);
-		vel_snd_arr[kp]= Sound_Velocity_Anisotropy(i*dx, j*dy , vel_snd);
+		vel_snd_arr[kp]= func(i*dx,j*dy);
 	}
 	for(int ks=0; ks<=Nx*Ny-Nx-Ny; ks++) { //correr todos os pontos da grelha secundaria
 		div_t divresult;
 		divresult = div(ks, Nx - 1);
 		auto j = static_cast<float>(divresult.quot);
 		auto i = static_cast<float>(divresult.rem);
-		vel_snd_arr_mid[ks]= Sound_Velocity_Anisotropy((i+0.5f)*dx, (j+0.5f)*dy , vel_snd);
+		vel_snd_arr_mid[ks]=  func((i+0.5f)*dx,(j+0.5f)*dy);
 	}
 }
+
 
 
 
@@ -195,7 +204,7 @@ void Fluid2D::Richtmyer(){
 	ChooseGridPointers("MidGrid");
 #pragma omp parallel for default(none) shared(Nx,Ny,dt,dx,dy,Den,FlxX,FlxY,Tmp,den_dx,den_dy,ptr_den,ptr_px,ptr_py,ptr_snd,ptr_tmp,ptr_velXdx,ptr_velXdy,ptr_velYdx,ptr_velYdy,ptr_dendx,ptr_dendy)
 		for(int ks=0; ks<=Nx*Ny-Nx-Ny; ks++){ //correr todos os pontos da grelha secundaria de den_mid
-			GridPoint midpoint(ks, Nx, Ny, true);
+			GridPoint2D midpoint(ks, Nx, Ny, true);
 
 			float den_avg   = 0.25f * (Den[midpoint.SW] + Den[midpoint.SE] + Den[midpoint.NW] + Den[midpoint.NE]);
 			float flx_x_avg = 0.25f * (FlxX[midpoint.SW] + FlxX[midpoint.SE] + FlxX[midpoint.NW] + FlxX[midpoint.NE]);
@@ -240,7 +249,7 @@ void Fluid2D::Richtmyer(){
 	ChooseGridPointers("MainGrid");
 #pragma omp parallel for default(none) shared(Nx,Ny,dt,dx,dy,FlxX,FlxY,Den,Tmp,den_dx,den_dy,ptr_den,ptr_px,ptr_py,ptr_snd,ptr_tmp,ptr_velXdx,ptr_velXdy,ptr_velYdx,ptr_velYdy,ptr_dendx,ptr_dendy)
 		for(int kp=1+Nx; kp<=Nx*Ny-Nx-2; kp++){ //correr a grelha principal evitando as fronteiras
-			GridPoint mainpoint(kp, Nx, Ny, false);
+			GridPoint2D mainpoint(kp, Nx, Ny, false);
 			if( kp%Nx!=Nx-1 && kp%Nx!=0){
 				float den_old = Den[kp];
 				float flx_x_old = FlxX[kp];
@@ -330,7 +339,7 @@ void Fluid2D::VelocityLaplacianWeighted19() {
 
 #pragma omp parallel for default(none) shared(lap_flxX,lap_flxY,VelX,VelY)
 	for (int kp = 1 + Nx; kp <= Nx * Ny - Nx - 2; kp++) {
-		GridPoint point(kp,Nx,Ny,false);
+		GridPoint2D point(kp,Nx,Ny,false);
 		if (kp % Nx != Nx - 1 && kp % Nx != 0){
 			lap_flxX[kp] = Laplacian19( point, VelX, kin_vis);
 			lap_flxY[kp] = Laplacian19( point, VelY, kin_vis);
@@ -341,7 +350,7 @@ void Fluid2D::VelocityLaplacianWeighted19() {
 void Fluid2D::TemperatureLaplacianWeighted19() {
 #pragma omp parallel for default(none) shared(lap_tmp,Tmp)
     for (int kp = 1 + Nx; kp <= Nx * Ny - Nx - 2; kp++) {
-	    GridPoint point(kp,Nx,Ny,false);
+	    GridPoint2D point(kp,Nx,Ny,false);
         if (kp % Nx != Nx - 1 && kp % Nx != 0){
 	        lap_tmp[kp] = Laplacian19( point, Tmp, therm_diff );
         }
@@ -494,82 +503,82 @@ float Fluid2D::DensityToMass(float density) {
 	return density;
 }
 
-float Fluid2D::DensityFluxX(GridPoint p, char side) {
+float Fluid2D::DensityFluxX(GridPoint2D p, char side) {
 	float px;
-	px = SideAverage(ptr_px,p,side);
+	px = SideAverage(ptr_px, p, side);
 	return px;
 }
 
-float Fluid2D::DensityFluxY(GridPoint p, char side) {
+float Fluid2D::DensityFluxY(GridPoint2D p, char side) {
 	float py;
-	py = SideAverage(ptr_py,p,side);
+	py = SideAverage(ptr_py, p, side);
 	return py;
 }
 
-float Fluid2D::XMomentumFluxX(GridPoint p, char side) {
+float Fluid2D::XMomentumFluxX(GridPoint2D p, char side) {
 	float den;
 	float px;
-	den = SideAverage(ptr_den,p,side);
-	px = SideAverage(ptr_px,p,side);
+	den = SideAverage(ptr_den, p, side);
+	px = SideAverage(ptr_px, p, side);
 	return px * px / den + den;
 }
 
-float Fluid2D::XMomentumFluxY(GridPoint p, char side) {
+float Fluid2D::XMomentumFluxY(GridPoint2D p, char side) {
 	float den;
 	float px;
 	float py;
-	den = SideAverage(ptr_den,p,side);
-	px = SideAverage(ptr_px,p,side);
-	py = SideAverage(ptr_py,p,side);
+	den = SideAverage(ptr_den, p, side);
+	px = SideAverage(ptr_px, p, side);
+	py = SideAverage(ptr_py, p, side);
 	return px * py / den;
 }
 
 
-float Fluid2D::YMomentumFluxY(GridPoint p, char side) {
+float Fluid2D::YMomentumFluxY(GridPoint2D p, char side) {
 	float den;
 	float py;
-	den = SideAverage(ptr_den,p,side);
-	py = SideAverage(ptr_py,p,side);
+	den = SideAverage(ptr_den, p, side);
+	py = SideAverage(ptr_py, p, side);
 	return py * py / den + den;
 }
 
-float Fluid2D::YMomentumFluxX(GridPoint p, char side) {
+float Fluid2D::YMomentumFluxX(GridPoint2D p, char side) {
 	float den;
 	float px;
 	float py;
-	den = SideAverage(ptr_den,p,side);
-	px = SideAverage(ptr_px,p,side);
-	py = SideAverage(ptr_py,p,side);
+	den = SideAverage(ptr_den, p, side);
+	px = SideAverage(ptr_px, p, side);
+	py = SideAverage(ptr_py, p, side);
 	return px * py / den;
 }
 
 
-float Fluid2D::TemperatureFluxX(GridPoint p, char side) {
+float Fluid2D::TemperatureFluxX(GridPoint2D p, char side) {
 	float tmp;
     float px;
 	float den;
 
-	den = SideAverage(ptr_den,p,side);
-	px = SideAverage(ptr_px,p,side);
-	tmp = SideAverage(ptr_tmp,p,side);
+	den = SideAverage(ptr_den, p, side);
+	px = SideAverage(ptr_px, p, side);
+	tmp = SideAverage(ptr_tmp, p, side);
 	return PHYS_FERMI_CNVC*px  + tmp*px / DensityToMass(den);
 }
 
 
-float Fluid2D::TemperatureFluxY(GridPoint p, char side) {
+float Fluid2D::TemperatureFluxY(GridPoint2D p, char side) {
     float py;
 	float tmp;
 	float den;
 
-	den = SideAverage(ptr_den,p,side);
-	py = SideAverage(ptr_py,p,side);
-	tmp = SideAverage(ptr_tmp,p,side);
+	den = SideAverage(ptr_den, p, side);
+	py = SideAverage(ptr_py, p, side);
+	tmp = SideAverage(ptr_tmp, p, side);
 	return PHYS_FERMI_CNVC*py  + tmp*py / DensityToMass(den) ;
 }
 
 
 
-float Fluid2D::Laplacian19(GridPoint p, float *input_ptr, float constant) {
+float Fluid2D::Laplacian19(GridPoint2D p, float *input_ptr, float constant) {
 	float sx=constant*dt/(dx*dx);
 	float sy=constant*dt/(dy*dy);
 	float * data_ptr = input_ptr;
@@ -615,7 +624,7 @@ void Fluid2D::ChooseGridPointers(const string &grid) {
 	}
 }
 
-float Fluid2D::SideAverage(const float * input_array, GridPoint p,char side){
+float Fluid2D::SideAverage(const float * input_array, GridPoint2D p, char side){
 	float avg;
 	switch(side) {
 		case 'N': avg=0.5f*(input_array[p.NE]+input_array[p.NW]);

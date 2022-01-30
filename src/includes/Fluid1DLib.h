@@ -84,6 +84,7 @@ public :
 //	    void Hopscotch();
 //		void BTCS();
 		void SetSound();            ///< Applies the anisotropy to the sound velocity array
+	    void SetSound(std::function<float(float)> func);            ///< Applies the anisotropy to the sound velocity array
 		virtual void CflCondition();    ///< Calculates dx and imposes Courant–Friedrichs–Lewy condition to dt
 	//	virtual float DensityFlux(float n,float v, __attribute__((unused)) float s);    ///< density equation (continuity equation) conserved flux
 	//	virtual float VelocityFlux(float n, float v, float dv, float s, float d2n); ///< velocity equation (momentum equation) conserved flux
