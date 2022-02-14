@@ -1,0 +1,37 @@
+/************************************************************************************************\
+* 2022 Pedro Cosme , João Santos and Ivan Figueiredo                                             *
+* 																 *
+* Distributed under the MIT License (license terms are at http://opensource.org/licenses/MIT).   *
+\************************************************************************************************/
+
+
+#ifndef STATEVECLIB_H
+#define STATEVECLIB_H
+
+
+class StateVec{
+private:
+	float density;
+	float velocity;
+public:
+	StateVec()=default; //default constructor
+	StateVec(const StateVec&); //copy constructor
+	StateVec(float den,float vel);
+	~StateVec()=default;
+
+	float& v();
+	float& n();
+
+	StateVec& operator=(const StateVec&);
+	StateVec operator + (StateVec const &obj) const ;
+	StateVec operator - (StateVec const &obj) const ;
+	StateVec operator * (StateVec const &obj) const ;
+	StateVec operator / (StateVec const &obj) const ;
+	friend StateVec operator*(const StateVec &obj, float value);
+	friend StateVec operator*(float value, const StateVec &obj);
+	friend StateVec operator/(const StateVec &obj, float value);
+};
+
+#endif //STATEVECLIB_H
+
+
