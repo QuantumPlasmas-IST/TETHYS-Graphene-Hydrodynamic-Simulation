@@ -86,5 +86,8 @@ StateVec operator/(const StateVec &obj, float value){
 	return res;
 }
 
+std::ostream &operator<<(std::ostream &outstream, const StateVec &obj) {
+	return outstream << obj.density <<"\t"<< obj.velocity;
+}
 
 

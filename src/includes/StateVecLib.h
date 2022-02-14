@@ -8,6 +8,7 @@
 #ifndef STATEVECLIB_H
 #define STATEVECLIB_H
 
+#include <iostream>
 
 class StateVec{
 private:
@@ -30,6 +31,7 @@ public:
 	friend StateVec operator*(const StateVec &obj, float value);
 	friend StateVec operator*(float value, const StateVec &obj);
 	friend StateVec operator/(const StateVec &obj, float value);
+	friend std::ostream& operator<<(std::ostream& outstream, const StateVec &obj);
 };
 
 #endif //STATEVECLIB_H
