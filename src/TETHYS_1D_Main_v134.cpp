@@ -4,6 +4,8 @@
 #include "includes/DyakonovShurBoundaryLib.h"
 #include "includes/GrapheneFluid1DLib.h"
 
+#include <functional>
+
 #ifndef MAT_PI
 #	define MAT_PI 3.14159265358979323846
 #endif
@@ -33,6 +35,10 @@ int main(int argc, char **argv){
 	/*................................................................*/
 	
 	/*.........Fixed or variable vel_snd value........................*/
+
+	float sound = graph.GetVelSnd();
+//	std::function<float(float)> variationS = [=](float x){ return sound+.5f* tanh(6.0f*cos(2.0f*MAT_PI*2.0f*x)); };
+//	graph.SetSound(variationS);
 	graph.SetSound();
 	graph.SetSimulationTime();
 
@@ -48,21 +54,36 @@ int main(int argc, char **argv){
 	graph.WelcomeScreen();
 
 
+
 	/*...............Initialization...................................*/
-	graph.InitialCondRand();
-	DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
+	//graph.InitialCondRand();
+	//DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
+	graph.InitialCondTest();
+
 	/*................................................................*/
 
 	cout << "\033[1;7;5;33m Program Running \033[0m"<<endl;
-	graph.SetTmax(15.0);
+
+	graph.BohmOperator(0);
+
+	///graph.Hopscotch();
+
+
+	graph.SetTmax(1.0);
 	//Main cycle
 	while(t <= graph.GetTmax() ) {
 		t += dt;
 		GrapheneFluid1D::TimeStepCounter++;
 		// Main algorithm		
 		graph.Richtmyer();
+		//graph.Vliegenthart();
 		// Impose boundary conditions
-		DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
+		//DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
+		BoundaryCondition::XPeriodic(graph);
+
+		graph.BohmOperator(0.015);
+		BoundaryCondition::XPeriodic(graph);
+
 		// Applying average filters for smoothing 	
 		graph.Smooth(2);
 		//Record full data

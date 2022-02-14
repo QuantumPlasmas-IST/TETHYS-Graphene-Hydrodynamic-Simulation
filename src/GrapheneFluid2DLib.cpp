@@ -7,6 +7,8 @@
 
 #include "includes/GrapheneFluid2DLib.h"
 
+
+
 GrapheneFluid2D::GrapheneFluid2D(SetUpParameters &input_parameters) : Fluid2D(input_parameters) {
 	vel_fer = input_parameters.FermiVelocity ;//fermi_velocity;
 	col_freq = input_parameters.CollisionFrequency ; // collision_frequency;
@@ -68,25 +70,25 @@ void GrapheneFluid2D::CflCondition(){ // Eventual redefinition
 
 
 
-float GrapheneFluid2D::DensityFluxX(GridPoint p, char side) {
+float GrapheneFluid2D::DensityFluxX(GridPoint2D p, char side) {
 	float den;
 	float px;
 
-	px = SideAverage(ptr_px,p,side);
-	den = SideAverage(ptr_den,p,side);
+	px = SideAverage(ptr_px, p, side);
+	den = SideAverage(ptr_den, p, side);
 
 	return px / sqrt(den);
 }
 
-float GrapheneFluid2D::DensityFluxY(GridPoint p, char side) {
+float GrapheneFluid2D::DensityFluxY(GridPoint2D p, char side) {
 	float den;
 	float py;
-	py = SideAverage(ptr_py,p,side);
-	den = SideAverage(ptr_den,p,side);
+	py = SideAverage(ptr_py, p, side);
+	den = SideAverage(ptr_den, p, side);
 	return py / sqrt(den);
 }
 
-float GrapheneFluid2D::XMomentumFluxX(GridPoint p, char side) {
+float GrapheneFluid2D::XMomentumFluxX(GridPoint2D p, char side) {
 
 	float sound;
 	float den;
@@ -95,19 +97,19 @@ float GrapheneFluid2D::XMomentumFluxX(GridPoint p, char side) {
 	float mass;
 	float d2den;
 
-	sound = SideAverage(ptr_snd,p,side);
-	den = SideAverage(ptr_den,p,side);
-	px = SideAverage(ptr_px,p,side);
-	dvy = SideAverage(ptr_velYdx,p,side);
+	sound = SideAverage(ptr_snd, p, side);
+	den = SideAverage(ptr_den, p, side);
+	px = SideAverage(ptr_px, p, side);
+	dvy = SideAverage(ptr_velYdx, p, side);
 
 	mass=DensityToMass(den);
 
-	d2den = SideAverage(ptr_lap_den,p,side);
+	d2den = SideAverage(ptr_lap_den, p, side);
 
 	return px * px / mass + vel_fer * vel_fer * mass / 3.0f + 0.5f * sound * sound * den * den - odd_vis*dvy  + coefBohm*d2den ;
 }
 
-float GrapheneFluid2D::XMomentumFluxY(GridPoint p, char side) {
+float GrapheneFluid2D::XMomentumFluxY(GridPoint2D p, char side) {
 
 	float den;
 	float py;
@@ -117,9 +119,9 @@ float GrapheneFluid2D::XMomentumFluxY(GridPoint p, char side) {
 
 
 
-	den = SideAverage(ptr_den,p,side);
+	den = SideAverage(ptr_den, p, side);
 	px = SideAverage(ptr_px, p, side);
-	py = SideAverage(ptr_py,p,side);
+	py = SideAverage(ptr_py, p, side);
 	dvy = SideAverage(ptr_velYdy, p, side);
 	mass=DensityToMass(den);
 
@@ -127,7 +129,7 @@ float GrapheneFluid2D::XMomentumFluxY(GridPoint p, char side) {
 }
 
 
-float GrapheneFluid2D::YMomentumFluxY(GridPoint p, char side) {
+float GrapheneFluid2D::YMomentumFluxY(GridPoint2D p, char side) {
 
 	float sound ;
 	float den;
@@ -135,18 +137,18 @@ float GrapheneFluid2D::YMomentumFluxY(GridPoint p, char side) {
 	float dvx;
 	float mass;
 
-	sound = SideAverage(ptr_snd,p,side);
-	den = SideAverage(ptr_den,p,side);
-	py = SideAverage(ptr_py,p,side);
-	dvx = SideAverage(ptr_velXdy,p,side);
+	sound = SideAverage(ptr_snd, p, side);
+	den = SideAverage(ptr_den, p, side);
+	py = SideAverage(ptr_py, p, side);
+	dvx = SideAverage(ptr_velXdy, p, side);
 	mass=DensityToMass(den);
 
-	float d2den = SideAverage(ptr_lap_den,p,side);
+	float d2den = SideAverage(ptr_lap_den, p, side);
 
 	return py * py / mass + vel_fer * vel_fer * mass / 3.0f + 0.5f * sound * sound * den * den + odd_vis*dvx + coefBohm*d2den;
 }
 
-float GrapheneFluid2D::YMomentumFluxX(GridPoint p, char side) {
+float GrapheneFluid2D::YMomentumFluxX(GridPoint2D p, char side) {
 
 	float den;
 	float px;
@@ -154,10 +156,10 @@ float GrapheneFluid2D::YMomentumFluxX(GridPoint p, char side) {
 	float dvx;
 	float mass;
 
-	den = SideAverage(ptr_den,p,side);
-	px = SideAverage(ptr_px,p,side);
-	py = SideAverage(ptr_py,p,side);
-	dvx = SideAverage(ptr_velXdx,p,side);
+	den = SideAverage(ptr_den, p, side);
+	px = SideAverage(ptr_px, p, side);
+	py = SideAverage(ptr_py, p, side);
+	dvx = SideAverage(ptr_velXdx, p, side);
 	mass=DensityToMass(den);
 
 	return px * py / mass  + odd_vis*dvx;

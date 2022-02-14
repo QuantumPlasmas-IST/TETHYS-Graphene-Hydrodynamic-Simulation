@@ -92,7 +92,7 @@ void GridPoint1D::FirstNeighbours() {
 }
 
 void GridPoint1D::SecondNeighbours() { //TODO rever se isto esta bem em 1D
-	E2 = C + 3;
+	E2 = C + 2;
 	W2 = C - 2;
 }
 

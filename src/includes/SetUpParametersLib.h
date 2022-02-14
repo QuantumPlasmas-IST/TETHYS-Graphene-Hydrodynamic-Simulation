@@ -44,6 +44,7 @@ class SetUpParameters {
 		float Length=1.0f;
 		float Width=1.0f;
 		float AspectRatio=1.0f;
+
 		float SoundVelocity;
 		float FermiVelocity;
 		float CollisionFrequency;
@@ -51,6 +52,7 @@ class SetUpParameters {
 		float OddViscosity;
 		float CyclotronFrequency;
 		float ThermalDiffusivity;
+
 	    float SimulationTime=0.0f;
 		void ParametersChecking() const; ///< Runs a checking on the physical feasibility of the parameters
 		/*!
