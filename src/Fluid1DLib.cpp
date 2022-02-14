@@ -5,6 +5,7 @@
 \************************************************************************************************/
 
 #include "includes/Fluid1DLib.h"
+#include "includes/Cell1DLib.h"
 #include "includes/SetUpParametersLib.h"
 
 
@@ -42,6 +43,11 @@ Fluid1D::Fluid1D(const SetUpParameters &input_parameters) : TethysBase{input_par
 	d3_den_mid = new float[Nx - 1]();
 	d3_den = new float[Nx]();
 
+Umain = new StateVec[Nx]();
+Uaux = new StateVec[Nx]();
+
+	SetFDmatrix2(Nx);
+	SetFDmatrix3(Nx);
 }	
 
 Fluid1D::~Fluid1D() = default;
@@ -99,10 +105,19 @@ float Fluid1D::VelocityFlux(GridPoint1D p, char side) {
 	return 0.5f * v * v + n - kin_vis * dv;
 }
 
+float Fluid1D::VelocityFlux(StateVec U) {
+	return 0.5f*U.v()*U.v()+U.n();
+}
+
+
 float Fluid1D::DensityFlux(GridPoint1D p, char side) {
 	float v= SideAverage(ptr_vel,p,side);
 	float n= SideAverage(ptr_den,p,side);
 	return n * v;
+}
+
+float Fluid1D::DensityFlux(StateVec U) {
+	return U.n()*U.v();
 }
 
 
@@ -136,7 +151,7 @@ void Fluid1D::SetSound(std::function<float(float)> func) {
 		vel_snd_arr[i]= func(i*dx);
 	}
 	for(int i = 0; i<Nx-1  ;i++){
-		vel_snd_arr_mid[i]= func((i+0.5)*dx);
+		vel_snd_arr_mid[i]= func((i+0.5f)*dx);
 	}
 }
 
@@ -156,8 +171,11 @@ void Fluid1D::InitialCondRand(){
 void Fluid1D::InitialCondTest(){
 	for (int i = 0; i < Nx; i++ ){
 		//Vel[i] = 1.0f+tanh(10.0f*(dx*static_cast<float>(i)-0.5f));
-		Den[i]=1.0f+0.05f/(vel_snd*cosh(10.0f*(i*dx-.5f)));
-		Vel[i]=0.0f+0.05f/cosh(10.0f*(i*dx-.5f));
+		//Den[i]=1.0f+0.05f/(vel_snd*cosh(10.0f*(i*dx-.5f)));
+		//Vel[i]=0.0f+0.05f/cosh(10.0f*(i*dx-.5f));
+		Den[i]=1.0;
+		//Vel[i]=  (i<Nx/2) ? 1.0f : -0.5f;
+		Vel[i]=  (i>Nx/3 && i<2*Nx/3 ) ? 1.0f : 0.1f;
 	}
 }
 
@@ -186,7 +204,29 @@ void Fluid1D::WriteFluidFile(float t){
 	data_preview << t << "\t" << Den[pos_end] << "\t" << Vel[pos_end] << "\t" << Den[pos_ini] << "\t" << Vel[pos_ini] << "\n";
 }
 
+void Fluid1D::BohmOperator(float bohm) {
 
+	//double beta = 0.001*dt/(dx*dx*dx);
+	//gsl_matrix_scale(FDmatrix3, beta); // beta*F3
+
+	gsl_vector *sol = gsl_vector_alloc (Nx);
+	gsl_vector *rhs = gsl_vector_alloc (Nx);
+
+	for (int i=0;i<Nx;i++){
+		gsl_vector_set(rhs,i,Den[i]); //copiar o array de floats para o vectordouble
+	}
+	gsl_blas_dgemv(CblasNoTrans, -1.0*bohm*dt/(dx*dx*dx), FDmatrix3, rhs, 0.0, sol);
+
+	for (int i=0;i<Nx;i++){
+		Vel[i]=Vel[i]+gsl_vector_get(sol,i);
+	}
+
+
+	//gsl_linalg_LU_solve (BTCSmatrix, permutation_matrix, rhs, sol);
+	gsl_vector_free (sol);
+
+
+}
 
 void Fluid1D::Richtmyer(){
 	//
@@ -291,54 +331,6 @@ void Fluid1D::VelocityToCurrent() {
 }
 
 
-/*
-void Fluid1D::Hopscotch() {
-
-	gsl_multiroot_function RootFunc;
-	RootFunc.f = &Fluid1D::gslwrapperHopscotchFunction;
-	RootFunc.n = 4;
-	RootFunc.params = this;
-
-	const gsl_multiroot_fsolver_type *T;
-	gsl_multiroot_fsolver *s;
-
-
-
-	int status;
-	size_t i, iter = 0;
-	double x_init[4] = {-10.0, -5.0,0,0};
-
-	gsl_vector *x = gsl_vector_alloc (4);
-	gsl_vector_set (x, 0, x_init[0]);
-	gsl_vector_set (x, 1, x_init[1]);
-	gsl_vector_set (x, 2, x_init[2]);
-	gsl_vector_set (x, 3, x_init[3]);
-
-	T = gsl_multiroot_fsolver_hybrids;
-	s = gsl_multiroot_fsolver_alloc (T, 4);
-	gsl_multiroot_fsolver_set (s, &RootFunc, x);
-
-	while (status == GSL_CONTINUE && iter < 1000){
-		iter++;
-		status = gsl_multiroot_fsolver_iterate (s);
-		printf ("iter = %3u x = % .3f % .3f "
-		        "f(x) = % .3e % .3e\n",
-		        iter,
-		        gsl_vector_get (s->x, 0),
-		        gsl_vector_get (s->x, 1),
-		        gsl_vector_get (s->f, 0),
-		        gsl_vector_get (s->f, 1));
-		if (status)   // check if solver is stuck
-			break;
-		status = gsl_multiroot_test_residual (s->f, 1e-7);
-	}
-
-
-	printf ("status = %s\n", gsl_strerror (status));
-	gsl_multiroot_fsolver_free (s);
-	gsl_vector_free (x);
-}
-*/
 
 /*
 void Fluid1D::Vliegenthart() {
@@ -444,10 +436,107 @@ float Fluid1D::SideAverage(const float *input_array, GridPoint1D p, char side) {
 	return value;
 }
 
+/*
+void Fluid1D::SetBTCSmatrix(float beta) {
+	BTCSmatrix = gsl_matrix_calloc (Nx, Nx) ;
+	gsl_matrix_set_identity(BTCSmatrix);
+
+	gsl_matrix_scale(FDmatrix3, beta); // beta*F3
+	gsl_matrix_sub(BTCSmatrix, FDmatrix3); // Identity - (beta*F3)
+
+	permutation_matrix = gsl_permutation_alloc (Nx);
+	gsl_linalg_LU_decomp (BTCSmatrix, permutation_matrix, &permutation_index_s);
+
+}
+*/
+
+void Fluid1D::RungeKuttaTVD() {
+	float DenNumFluxW;
+	float DenNumFluxE;
+	float VelNumFluxW;
+	float VelNumFluxE;
+	StateVec UEleft(Umain[0]);
+	StateVec UEright(Umain[0]);
+	StateVec UWleft(Umain[0]);
+	StateVec UWright(Umain[0]);
+
+	for (int i = 1; i < Nx-1; ++i) {
+		Umain[i].n()=Den[i];
+		Umain[i].v()=Vel[i];
+		CellHandler1D cell(i, this, Umain);
+
+		UEleft  = cell.TVD('E','L');
+		UEright = cell.TVD('E','R');
+		UWleft  = cell.TVD('W','L');
+		UWright = cell.TVD('W','R');
+
+		DenNumFluxW= NumericalFlux::Central(this,UWleft,UWright).n();
+		DenNumFluxE= NumericalFlux::Central(this,UEleft,UEright).n();
+		VelNumFluxW= NumericalFlux::Central(this,UWleft,UWright).v();
+		VelNumFluxE= NumericalFlux::Central(this,UEleft,UEright).v();
+
+		Uaux[i].n()=Umain[i].n()-(dt/dx)*(DenNumFluxW-DenNumFluxE);
+		Uaux[i].v()=Umain[i].v()-(dt/dx)*(VelNumFluxW-VelNumFluxE);
+	}
+	for (int i = 1; i < Nx-1; ++i) {
+		CellHandler1D cell(i, this, Uaux);
+		UEleft  = cell.TVD('E','L');
+		UEright = cell.TVD('E','R');
+		UWleft  = cell.TVD('W','L');
+		UWright = cell.TVD('W','R');
+
+		DenNumFluxW= NumericalFlux::Central(this,UWleft,UWright).n();
+		DenNumFluxE= NumericalFlux::Central(this,UEleft,UEright).n();
+		VelNumFluxW= NumericalFlux::Central(this,UWleft,UWright).v();
+		VelNumFluxE= NumericalFlux::Central(this,UEleft,UEright).v();
+
+		Den[i]=0.5f*(Umain[i].n()+Uaux[i].n())-(0.5f*dt/dx)*(DenNumFluxW-DenNumFluxE);
+		Vel[i]=0.5f*(Umain[i].v()+Uaux[i].v())-(0.5f*dt/dx)*(VelNumFluxW-VelNumFluxE);
+	}
 
 
+}
 
+void Fluid1D::McCormack() {
+	for (int i = 1; i < Nx-1; ++i) {
+		Umain[i].n()=Den[i];
+		Umain[i].v()=Vel[i];
+		Uaux[i].n()=Umain[i].n()-(dt/dx)*(DensityFlux(Umain[i+1])-DensityFlux(Umain[i]));
+		Uaux[i].v()=Umain[i].v()-(dt/dx)*(VelocityFlux(Umain[i+1])-VelocityFlux(Umain[i]));
+	}
+	for (int i = 1; i < Nx-1; ++i) {
+		Den[i]=0.5f*(Umain[i].n()+Uaux[i].n())-(0.5f*dt/dx)*(DensityFlux(Uaux[i])-DensityFlux(Uaux[i-1]));
+		Vel[i]=0.5f*(Umain[i].v()+Uaux[i].v())-(0.5f*dt/dx)*(VelocityFlux(Uaux[i])-VelocityFlux(Uaux[i-1]));
+		}
+}
 
+void Fluid1D::Upwind(){
+	for (int i = 1; i < Nx-1; ++i) {
+		Umain[i].n()=Den[i];
+		Umain[i].v()=Vel[i];
+		Den[i]=Umain[i].n()-(dt/dx)*(DensityFlux(Umain[i])-DensityFlux(Umain[i-1]));
+		Vel[i]=Umain[i].v()-(dt/dx)*(VelocityFlux(Umain[i])-VelocityFlux(Umain[i-1]));
+	}
+}
 
+void Fluid1D::LaxFriedrichs(){
+	for (int i = 1; i < Nx-1; ++i) {
+		Umain[i].n()=Den[i];
+		Umain[i].v()=Vel[i];
+		Den[i]=0.5f*(Umain[i-1].n()+Umain[i+1].n())-0.5f*(dt/dx)*(DensityFlux(Umain[i+1])-DensityFlux(Umain[i-1]));
+		Vel[i]=0.5f*(Umain[i-1].v()+Umain[i+1].v())-0.5f*(dt/dx)*(VelocityFlux(Umain[i+1])-VelocityFlux(Umain[i-1]));
+	}
+}
 
+float Fluid1D::JacobianSpectralRadius(StateVec U) {
+	float l1=abs(U.v()+ sqrt(U.n()));
+	float l2=abs(U.v()- sqrt(U.n()));
+	return max(l1,l2);
+}
 
+StateVec Fluid1D::ConservedFlux(StateVec U) {
+	StateVec Uout{};
+	Uout.n()= this->DensityFlux(U);
+	Uout.v()= this->VelocityFlux(U);
+	return Uout;
+}
