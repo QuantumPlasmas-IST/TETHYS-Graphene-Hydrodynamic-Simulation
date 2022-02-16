@@ -51,13 +51,15 @@ float GrapheneFluid1D::VelocityFlux(GridPoint1D p, char side) {
 	float n=SideAverage(ptr_den,p,side);
 	float s= SideAverage(ptr_snd,p,side);
 	float dv=SideAverage(ptr_veldx,p,side);
-	return 0.25f * v * v + vel_fer * vel_fer * 0.5f * log(n) + 2.0f * s * s * sqrt(n)- kin_vis * dv;
+	return 0.25f * v * v + vel_fer * vel_fer * 0.5f * log(n) + 2.0f * s * s * sqrt(n) - kin_vis * dv;
 }
 
 float GrapheneFluid1D::VelocityFlux(StateVec U) {
-	return 0.25f * U.v() * U.v() + vel_fer * vel_fer * 0.5f * log(U.n()) + 2.0f * vel_snd * vel_snd * sqrt(U.n()) ; //TODO falta o termo dv para a voscosidade
+	return 0.25f * U.v() * U.v()  + 2.0f * vel_snd * vel_snd * sqrt(U.n()) ; //TODO falta o termo dv para a voscosidade
+//	return 0.25f * U.v() * U.v() + vel_fer * vel_fer * 0.5f * log(U.n())  ; //TODO falta o termo dv para a voscosidade
 	// TODO falta fazer para velocidade do som variavel
 }
+
 float GrapheneFluid1D::DensityFlux(GridPoint1D p, char side) {
 	float v= SideAverage(ptr_vel,p,side);
 	float n=SideAverage(ptr_den,p,side);
@@ -94,9 +96,9 @@ void GrapheneFluid1D::CflCondition(){
 }
 
 float GrapheneFluid1D::JacobianSpectralRadius(StateVec U) {
-	float SQRT= sqrt(16.0f*sqrt(U.n())*vel_snd*vel_snd+U.v()*U.v()+8.0f*vel_fer*vel_fer   );
-	float l1=abs(3.0f*U.v() + SQRT);
-	float l2=abs(3.0f*U.v() - SQRT);
+	float SQRT = sqrt(16.0f*sqrt(U.n())*vel_snd*vel_snd+U.v()*U.v() );
+	float l1 = abs(3.0f*U.v() + SQRT);
+	float l2 = abs(3.0f*U.v() - SQRT);
 	return 0.25f*max(l1,l2);
 }
 

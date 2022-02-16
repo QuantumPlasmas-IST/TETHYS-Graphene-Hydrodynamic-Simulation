@@ -68,21 +68,32 @@ class Fluid1D : public TethysBase{
 //	int HopscotchFunction(const gsl_vector *x, gsl_vector *f);
 //	static int gslwrapperHopscotchFunction(const gsl_vector *x, void *p, gsl_vector *f);
 
+	void RichtmyerStep1Old();
+	void RichtmyerStep2Old();
 	void RichtmyerStep1();
 	void RichtmyerStep2();
+
+
 	void VelocityToCurrent();
 
 //	gsl_matrix * BTCSmatrix ;
 //	int permutation_index_s;
 //	gsl_permutation * permutation_matrix ;
 
+
 	virtual float JacobianSpectralRadius( StateVec U);
+	virtual float JacobianSignum( StateVec U,std::string key);
+
+
 	friend class NumericalFlux;
 
 public :
 
+	void Richtmyer();
+
 	StateVec * Umain;
 	StateVec * Uaux;
+	StateVec * Umid;
 
 		float * Den ;       // number density
 		float * Vel ;       // fluid velocity
@@ -98,7 +109,7 @@ public :
 		void SetSimulationTime();   ///< Finds and set the appropriate simulation time that is 1) Longer than the saturation time 2) Contains enough oscillation periods in the saturated region
 		void InitialCondRand();     ///< Initial condition, zero velocity and constant density with 0.5% white noise
 		void InitialCondTest();     ///< Initial condition for testing and debugging
-		void Richtmyer(); ///< Central Algorithm for solving the hyperbolic conservation law
+		void RichtmyerOld(); ///< Central Algorithm for solving the hyperbolic conservation law
 	void McCormack();
 	void Upwind();
 	void LaxFriedrichs();
