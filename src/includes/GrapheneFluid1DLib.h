@@ -38,8 +38,8 @@ class GrapheneFluid1D : public Fluid1D{
 	//	float DensityFlux(float n,float v,__attribute__((unused)) float s) override;
 	//	float VelocityFlux(float n, float v, float dv, float s, float d2n) override;
 
-	float DensityFlux(GridPoint1D p, char side) override;    ///< density equation (continuity equation) conserved flux
-	float VelocityFlux(GridPoint1D p, char side) override; ///< velocity equation (momentum equation) conserved flux
+//	float DensityFlux(GridPoint1D p, char side) override;    ///< density equation (continuity equation) conserved flux
+//	float VelocityFlux(GridPoint1D p, char side) override; ///< velocity equation (momentum equation) conserved flux
 	float DensityFlux(StateVec U) override;
 	float VelocityFlux(StateVec U) override;
 
