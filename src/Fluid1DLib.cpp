@@ -165,8 +165,11 @@ void Fluid1D::InitialCondRand(){
 
 	for (int i = 0; i < Nx; i++ ){
 		float noise = (float) rd()/ maxrand ;
-		Den[i] = 1.0f + 0.005f * (noise - 0.5f);
-		Vel[i] =0.0f;
+	//	Den[i] = 1.0f + 0.005f * (noise - 0.5f);
+	//	Vel[i] =0.0f;
+
+		Umain[i].n()= 1.0f + 0.005f * (noise - 0.5f);
+		Umain[i].v()=0.0f;
 	}
 }
 
@@ -175,9 +178,12 @@ void Fluid1D::InitialCondTest(){   //TODO change initial conditions to U stateVe
 		//Vel[i] = 1.0f+tanh(10.0f*(dx*static_cast<float>(i)-0.5f));
 		//Den[i]=1.0f+0.05f/(vel_snd*cosh(10.0f*(i*dx-.5f)));
 		//Vel[i]=0.0f+0.05f/cosh(10.0f*(i*dx-.5f));
-		Den[i]=1.0;
+	    //Den[i]=1.0;
 		//Vel[i]=  (i<Nx/2) ? 1.0f : -0.5f;
-		Vel[i]=  (i>Nx/3 && i<2*Nx/3 ) ? 1.0f : 0.1f;
+		//Vel[i]=  (i>Nx/3 && i<2*Nx/3 ) ? 1.0f : 0.1f;
+
+		Umain[i].n()=1.0;
+	    Umain[i].v()=(i>Nx/3 && i<2*Nx/3 ) ? 1.0f : 0.1f;
 	}
 }
 
@@ -203,7 +209,8 @@ void Fluid1D::WriteFluidFile(float t){
 		cerr << "ERROR: numerical method failed to converge" <<"\nExiting"<< endl;
 		exit(EXIT_FAILURE);
 	}
-	data_preview << t << "\t" << Den[pos_end] << "\t" << Vel[pos_end] << "\t" << Den[pos_ini] << "\t" << Vel[pos_ini] << "\n";
+//	data_preview << t << "\t" << Den[pos_end] << "\t" << Vel[pos_end] << "\t" << Den[pos_ini] << "\t" << Vel[pos_ini] << "\n";
+	data_preview << t << "\t" << Umain[pos_end/2] << "\n";
 }
 
 void Fluid1D::BohmOperator(float bohm) {
@@ -396,14 +403,16 @@ bool Fluid1D::Snapshot() const {
 
 
 void Fluid1D::SaveSnapShot(){
+
 	hsize_t dim_atr[1] = { 1 };
 	DataSpace atr_dataspace = DataSpace (1, dim_atr );
 
 	int points_per_period = static_cast<int>((2.0 * MAT_PI / RealFreq()) / dt);
-	snapshot_step = points_per_period / snapshot_per_period;
-	string str_time = to_string(TimeStepCounter / snapshot_step);
-	string name_dataset = "snapshot_" + str_time;
+	snapshot_step = 1; //points_per_period / snapshot_per_period;
 
+	string str_time = to_string(TimeStepCounter );/// snapshot_step);
+	str_time.insert(str_time.begin(), 5 - str_time.length(), '0');
+	string name_dataset = "snapshot_" + str_time;
 
 	DataSet dataset_den = GrpDen->createDataSet(name_dataset, HDF5FLOAT, *DataspaceDen);
 	Attribute atr_step_den = dataset_den.createAttribute("time step", HDF5INT, atr_dataspace);
@@ -577,4 +586,19 @@ float Fluid1D::JacobianSignum(StateVec U, std::string key) {
 		entry=l2*0.5f;
 	}else entry=0.0f;
 return entry;
+}
+
+void Fluid1D::CopyFields() {
+	for (int i = 0; i < Nx; ++i) {
+		Den[i]=Umain[i].n();
+		Vel[i]=Umain[i].v();
+		Cur[i]=Umain[i].v()*Umain[i].n();
+	}
+}
+
+
+void Fluid1D::SaveSound() {
+	DataSet dataset_vel_snd = GrpDat->createDataSet("Sound velocity", HDF5FLOAT, *DataspaceVelSnd);
+	dataset_vel_snd.write(vel_snd_arr, HDF5FLOAT);
+	dataset_vel_snd.close();
 }
