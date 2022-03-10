@@ -86,7 +86,7 @@ int main(int argc, char **argv){
 		//BoundaryCondition::XPeriodic(graph);
 
 		// Applying average filters for smoothing 	
-		graph.Smooth(2);
+		//graph.Smooth(2);
 		//Record full data
 		if (parameters.SaveMode  && graph.Snapshot()) {
 			graph.SaveSnapShot();
