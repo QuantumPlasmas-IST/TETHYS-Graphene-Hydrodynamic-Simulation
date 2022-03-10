@@ -14,14 +14,19 @@ class StateVec{
 private:
 	float density;
 	float velocity;
+	float sound=1.0f;
 public:
 	StateVec()=default; //default constructor
 	StateVec(const StateVec&); //copy constructor
+//	StateVec(float den,float vel,float snd);
 	StateVec(float den,float vel);
 	~StateVec()=default;
 
+
+
 	float& v();
 	float& n();
+	float& S();
 
 	StateVec& operator=(const StateVec&);
 	StateVec operator + (StateVec const &obj) const ;
