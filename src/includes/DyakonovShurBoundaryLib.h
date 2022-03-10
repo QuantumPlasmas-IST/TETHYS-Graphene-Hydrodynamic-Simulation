@@ -33,7 +33,6 @@ public:
 	 * @f[ n(x=0)=n_0  @f] and @f[j(x=L)\equiv n(x=L)v(x=L)=n_0v_0 @f]
 	 * */
 	static void DyakonovShurBc(Fluid1D &fluid_class);
-	static void DyakonovShurBcU(Fluid1D &fluid_class);
 
 
 	/*!
