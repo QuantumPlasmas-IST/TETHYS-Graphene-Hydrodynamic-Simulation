@@ -262,10 +262,10 @@ void Fluid1D::RungeKuttaTVD() {
 	//	UWleft  = cell.TVD(Umain,i,'W','L');
 	//	UWright = cell.TVD(Umain,i,'W','R');
 
-		UEleft  = Umain[i-1];//cell.TVD('E','L');
-		UEright = Umain[i];//;//cell.TVD('E','R');
-		UWleft  = Umain[i];//cell.TVD('W','L');
-		UWright = Umain[i+1];//;//cell.TVD('W','R');
+		UEleft  = Umain[i-1];
+		UEright = Umain[i];
+		UWleft  = Umain[i];
+		UWright = Umain[i+1];
 
 		DenNumFluxW= NumericalFlux::Central(this,UWleft,UWright).n();
 		DenNumFluxE= NumericalFlux::Central(this,UEleft,UEright).n();
@@ -284,10 +284,10 @@ void Fluid1D::RungeKuttaTVD() {
 	//	UWright = cell.TVD(Uaux,i,'W','R');
 
 
-		UEleft  = Uaux[i-1];//cell.TVD('E','L');
-		UEright = Uaux[i];//cell.TVD('E','R');
-		UWleft  = Uaux[i];//cell.TVD('W','L');
-		UWright = Uaux[i+1];//cell.TVD('W','R');
+		UEleft  = Uaux[i-1];
+		UEright = Uaux[i];
+		UWleft  = Uaux[i];
+		UWright = Uaux[i+1];
 
 		DenNumFluxW= NumericalFlux::Central(this,UWleft,UWright).n();
 		DenNumFluxE= NumericalFlux::Central(this,UEleft,UEright).n();

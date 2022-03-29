@@ -26,16 +26,8 @@ float CellHandler1D::VanLeer(StateVec*Uin,int i) {  //TODO cada variável tem o 
 	numer=Numer.v();
 	denom=Denom.v();
 
-	if(denom!=0){
-		r=numer/denom;
-		f=(r+abs(r))/(1+abs(r));
-	} else{
-		if(numer<=tolerance){
-			f=0;
-		} else{
-			f=limit;
-		}
-	}
+	r=numer/(denom+tolerance);
+	f=(r+abs(r))/(1+abs(r));
 	return f;
 }
 
