@@ -329,7 +329,3 @@ void MathUtils::SetFDmatrix3(int size) {
 	gsl_matrix_set(FDmatrix3, size-1-1, size-1-5, 1.5);
 
 }
-
-float MathUtils::Signum(float x) {
-	return x/abs(x);
-}

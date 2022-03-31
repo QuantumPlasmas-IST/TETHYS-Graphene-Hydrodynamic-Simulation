@@ -105,18 +105,10 @@ StateVec NumericalFlux::Central(Fluid1D *fluido, StateVec L, StateVec R) {
 
 StateVec NumericalFlux::Characteristic(Fluid1D *fluido, StateVec L, StateVec R) {
 	StateVec Ureturn(fluido->DensityFlux(R)+fluido->DensityFlux(L),fluido->VelocityFlux(R)+fluido->VelocityFlux(L));
-
-	StateVec u{};
-	u= 0.5f*(L+R);
-
-	float Fden,Fvel;
-
-	Fden = fluido->DensityFlux(R)-fluido->DensityFlux(L);
-	Fvel = fluido->VelocityFlux(R)-fluido->VelocityFlux(L);
-
-	Ureturn.n() = Ureturn.n() - ( fluido->JacobianSignum(u,"11")*Fden + fluido->JacobianSignum(u,"12")*Fvel );
-	Ureturn.v() = Ureturn.v() - ( fluido->JacobianSignum(u,"21")*Fden + fluido->JacobianSignum(u,"22")*Fvel );
-
+	float u = 0.5f*(L+R).v();
+	float A=(u/abs(u));
+	Ureturn.n() = Ureturn.n() -A*(fluido->DensityFlux(R)-fluido->DensityFlux(L)  );
+	Ureturn.v() = Ureturn.v() -A*(fluido->VelocityFlux(R)-fluido->VelocityFlux(L)  );
 	return 0.5f*Ureturn;
 }
 

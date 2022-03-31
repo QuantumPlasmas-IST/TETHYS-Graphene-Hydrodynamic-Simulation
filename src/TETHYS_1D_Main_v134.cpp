@@ -56,9 +56,9 @@ int main(int argc, char **argv){
 
 
 	/*...............Initialization...................................*/
-	graph.InitialCondRand();
+	//graph.InitialCondRand();
 	//DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
-	//graph.InitialCondTest();
+	graph.InitialCondTest();
 
 	/*................................................................*/
 
@@ -76,14 +76,13 @@ int main(int argc, char **argv){
 		GrapheneFluid1D::TimeStepCounter++;
 		// Main algorithm		
 		graph.Richtmyer();
-		//graph.RungeKuttaTVD();
-
+		//graph.Vliegenthart();
 		// Impose boundary conditions
-		DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
-		//BoundaryCondition::XPeriodic(graph);
+		//DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
+		BoundaryCondition::XPeriodic(graph);
 
-		//graph.BohmOperator(0.015);
-		//BoundaryCondition::XPeriodic(graph);
+		graph.BohmOperator(0.015);
+		BoundaryCondition::XPeriodic(graph);
 
 		// Applying average filters for smoothing 	
 		graph.Smooth(2);

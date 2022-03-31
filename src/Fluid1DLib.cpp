@@ -45,7 +45,6 @@ Fluid1D::Fluid1D(const SetUpParameters &input_parameters) : TethysBase{input_par
 
 Umain = new StateVec[Nx]();
 Uaux = new StateVec[Nx]();
-Umid = new StateVec[Nx-1]();
 
 	SetFDmatrix2(Nx);
 	SetFDmatrix3(Nx);
@@ -103,11 +102,11 @@ float Fluid1D::VelocityFlux(GridPoint1D p, char side) {
 	float v= SideAverage(ptr_vel,p,side);
 	float n= SideAverage(ptr_den,p,side);
 	float dv=SideAverage(ptr_veldx,p,side);
-	return 0.5f * v * v + n*vel_snd*vel_snd - kin_vis * dv;
+	return 0.5f * v * v + n - kin_vis * dv;
 }
 
 float Fluid1D::VelocityFlux(StateVec U) {
-	return 0.5f*U.v()*U.v()+U.n()*vel_snd*vel_snd;
+	return 0.5f*U.v()*U.v()+U.n();
 }
 
 
@@ -166,12 +165,11 @@ void Fluid1D::InitialCondRand(){
 	for (int i = 0; i < Nx; i++ ){
 		float noise = (float) rd()/ maxrand ;
 		Den[i] = 1.0f + 0.005f * (noise - 0.5f);
-		Vel[i] =0.0f;
 	}
 }
 
-void Fluid1D::InitialCondTest(){   //TODO change initial conditions to U stateVec
- 	for (int i = 0; i < Nx; i++ ){
+void Fluid1D::InitialCondTest(){
+	for (int i = 0; i < Nx; i++ ){
 		//Vel[i] = 1.0f+tanh(10.0f*(dx*static_cast<float>(i)-0.5f));
 		//Den[i]=1.0f+0.05f/(vel_snd*cosh(10.0f*(i*dx-.5f)));
 		//Vel[i]=0.0f+0.05f/cosh(10.0f*(i*dx-.5f));
@@ -230,44 +228,22 @@ void Fluid1D::BohmOperator(float bohm) {
 
 }
 
-void Fluid1D::RichtmyerOld(){
+void Fluid1D::Richtmyer(){
 	//
 	//Calculating the velocity gradient at k time
 	//
 
-	//GradientField(Vel, GradVel, dx,  Nx);
+	GradientField(Vel, GradVel, dx,  Nx);
 
 
 	this->RichtmyerStep1();
 	//
 	//  Calculating the velocity gradient at k+1/2 time
 	//
-	//GradientField(vel_mid, grad_vel_mid, dx,  Nx-1);
+	GradientField(vel_mid, grad_vel_mid, dx,  Nx-1);
 
 	this->RichtmyerStep2();
-//	this->VelocityToCurrent();
-}
-
-
-void Fluid1D::Richtmyer(){
-this->RichtmyerStep1();
-this->RichtmyerStep2();
-}
-void Fluid1D::RichtmyerStep1() {
-	for ( int i = 0; i <= Nx - 2; i++ ){
-		float den_avg   = 0.5f * (Umain[i+1] + Umain[i] ).n();
-		float vel_avg   = 0.5f * (Umain[i+1] + Umain[i] ).v();
-		Umid[i].n() = den_avg - 0.5f*(dt/dx)*(DensityFlux(Umain[i+1]) - DensityFlux(Umain[i]));
-		Umid[i].v() = vel_avg - 0.5f*(dt/dx)*(VelocityFlux(Umain[i+1]) - VelocityFlux(Umain[i]));
-	}
-}
-void Fluid1D::RichtmyerStep2() {
-	for ( int i = 1; i <= Nx - 2; i++ ){
-		float den_old = Umain[i].n();
-		float vel_old = Umain[i].v();
-		Umain[i].n() = den_old - (dt/dx)*(DensityFlux(Umid[i]) - DensityFlux(Umid[i-1]));
-		Umain[i].v() = vel_old - (dt/dx)*(VelocityFlux(Umid[i]) - VelocityFlux(Umid[i-1]));
-	}
+	this->VelocityToCurrent();
 }
 
 
@@ -312,7 +288,7 @@ void Fluid1D::RichtmyerStep2() {
 */
 
 
-void Fluid1D::RichtmyerStep1Old() {
+void Fluid1D::RichtmyerStep1() {
 	ChooseGridPointers("MidGrid");
 	//
 	//Half step calculate density and velocity at time k+0.5 at the spatial midpoints
@@ -330,7 +306,7 @@ void Fluid1D::RichtmyerStep1Old() {
 		             + ( 0.5f*dt    ) * VelocitySource(0.5f * (Den[i] + Den[i + 1]), 0.5f * (Vel[i] + Vel[i + 1]),vel_snd_arr[i], 	0.0 );
 	}
 }
-void Fluid1D::RichtmyerStep2Old() {
+void Fluid1D::RichtmyerStep2() {
 	ChooseGridPointers("MainGrid");
 	//
 	// Remaining step
@@ -345,7 +321,6 @@ void Fluid1D::RichtmyerStep2Old() {
 		         +  dt * VelocitySource(den_old, vel_old, vel_snd_arr[i], 0.0f);
 	}
 }
-
 
 
 
@@ -486,7 +461,8 @@ void Fluid1D::RungeKuttaTVD() {
 	StateVec UWright(Umain[0]);
 
 	for (int i = 1; i < Nx-1; ++i) {
-
+		Umain[i].n()=Den[i];
+		Umain[i].v()=Vel[i];
 		CellHandler1D cell(i, this, Umain);
 
 		UEleft  = cell.TVD('E','L');
@@ -514,29 +490,32 @@ void Fluid1D::RungeKuttaTVD() {
 		VelNumFluxW= NumericalFlux::Central(this,UWleft,UWright).v();
 		VelNumFluxE= NumericalFlux::Central(this,UEleft,UEright).v();
 
-		Umain[i].n()=0.5f*(Umain[i].n()+Uaux[i].n())-(0.5f*dt/dx)*(DenNumFluxW-DenNumFluxE);
-		Umain[i].v()=0.5f*(Umain[i].v()+Uaux[i].v())-(0.5f*dt/dx)*(VelNumFluxW-VelNumFluxE);
+		Den[i]=0.5f*(Umain[i].n()+Uaux[i].n())-(0.5f*dt/dx)*(DenNumFluxW-DenNumFluxE);
+		Vel[i]=0.5f*(Umain[i].v()+Uaux[i].v())-(0.5f*dt/dx)*(VelNumFluxW-VelNumFluxE);
 	}
 
 
 }
 
 void Fluid1D::McCormack() {
-
 	for (int i = 1; i < Nx-1; ++i) {
+		Umain[i].n()=Den[i];
+		Umain[i].v()=Vel[i];
 		Uaux[i].n()=Umain[i].n()-(dt/dx)*(DensityFlux(Umain[i+1])-DensityFlux(Umain[i]));
 		Uaux[i].v()=Umain[i].v()-(dt/dx)*(VelocityFlux(Umain[i+1])-VelocityFlux(Umain[i]));
 	}
 	for (int i = 1; i < Nx-1; ++i) {
-		Umain[i].n()=0.5f*(Umain[i].n()+Uaux[i].n())-(0.5f*dt/dx)*(DensityFlux(Uaux[i])-DensityFlux(Uaux[i-1]));
-		Umain[i].v()=0.5f*(Umain[i].v()+Uaux[i].v())-(0.5f*dt/dx)*(VelocityFlux(Uaux[i])-VelocityFlux(Uaux[i-1]));
-	}
+		Den[i]=0.5f*(Umain[i].n()+Uaux[i].n())-(0.5f*dt/dx)*(DensityFlux(Uaux[i])-DensityFlux(Uaux[i-1]));
+		Vel[i]=0.5f*(Umain[i].v()+Uaux[i].v())-(0.5f*dt/dx)*(VelocityFlux(Uaux[i])-VelocityFlux(Uaux[i-1]));
+		}
 }
 
 void Fluid1D::Upwind(){
 	for (int i = 1; i < Nx-1; ++i) {
-		Umain[i].n()=Umain[i].n()-(dt/dx)*(DensityFlux(Umain[i])-DensityFlux(Umain[i-1]));
-		Umain[i].v()=Umain[i].v()-(dt/dx)*(VelocityFlux(Umain[i])-VelocityFlux(Umain[i-1]));
+		Umain[i].n()=Den[i];
+		Umain[i].v()=Vel[i];
+		Den[i]=Umain[i].n()-(dt/dx)*(DensityFlux(Umain[i])-DensityFlux(Umain[i-1]));
+		Vel[i]=Umain[i].v()-(dt/dx)*(VelocityFlux(Umain[i])-VelocityFlux(Umain[i-1]));
 	}
 }
 
@@ -550,8 +529,8 @@ void Fluid1D::LaxFriedrichs(){
 }
 
 float Fluid1D::JacobianSpectralRadius(StateVec U) {
-	float l1=abs(U.v()+ vel_snd*sqrt(U.n()));
-	float l2=abs(U.v()- vel_snd*sqrt(U.n()));
+	float l1=abs(U.v()+ sqrt(U.n()));
+	float l2=abs(U.v()- sqrt(U.n()));
 	return max(l1,l2);
 }
 
@@ -560,21 +539,4 @@ StateVec Fluid1D::ConservedFlux(StateVec U) {
 	Uout.n()= this->DensityFlux(U);
 	Uout.v()= this->VelocityFlux(U);
 	return Uout;
-}
-
-float Fluid1D::JacobianSignum(StateVec U, std::string key) {
-
-	float l1= Signum(U.v()+vel_snd*sqrt(U.n()));
-	float l2= Signum(U.v()-vel_snd*sqrt(U.n()));
-	float entry=0;
-	if(key=="11"){
-		entry=l1*0.5f;
-	}else if(key=="12"){
-		entry=l2* sqrt(U.n())/(2.0f*vel_snd);
-	}else if(key=="21"){
-		entry=l1* vel_snd/sqrt(U.n());
-	}else if(key=="22"){
-		entry=l2*0.5f;
-	}else entry=0.0f;
-return entry;
 }
