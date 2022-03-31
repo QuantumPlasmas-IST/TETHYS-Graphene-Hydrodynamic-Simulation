@@ -56,20 +56,20 @@ int main(int argc, char **argv){
 
 
 	/*...............Initialization...................................*/
-	//graph.InitialCondRand();
+	graph.InitialCondRand();
 	//DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
-	graph.InitialCondTest();
+	//graph.InitialCondTest();
 
 	/*................................................................*/
 
 	cout << "\033[1;7;5;33m Program Running \033[0m"<<endl;
 
-	graph.BohmOperator(0);
+//	graph.BohmOperator(0);
 
 	///graph.Hopscotch();
 
 
-	graph.SetTmax(1.0);
+	graph.SetTmax(10.0);
 	//Main cycle
 	while(t <= graph.GetTmax() ) {
 		t += dt;
@@ -78,14 +78,9 @@ int main(int argc, char **argv){
 		graph.Richtmyer();
 		//graph.Vliegenthart();
 		// Impose boundary conditions
-		//DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
-		BoundaryCondition::XPeriodic(graph);
+		DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
+		//BoundaryCondition::XPeriodic(graph);
 
-		graph.BohmOperator(0.015);
-		BoundaryCondition::XPeriodic(graph);
-
-		// Applying average filters for smoothing 	
-		graph.Smooth(2);
 		//Record full data
 		if (parameters.SaveMode  && graph.Snapshot()) {
 			graph.SaveSnapShot();

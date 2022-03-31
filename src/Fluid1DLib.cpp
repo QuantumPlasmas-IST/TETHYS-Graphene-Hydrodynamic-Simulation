@@ -46,8 +46,8 @@ Fluid1D::Fluid1D(const SetUpParameters &input_parameters) : TethysBase{input_par
 Umain = new StateVec[Nx]();
 Uaux = new StateVec[Nx]();
 
-	SetFDmatrix2(Nx);
-	SetFDmatrix3(Nx);
+//	SetFDmatrix2(Nx);
+//	SetFDmatrix3(Nx);
 }	
 
 Fluid1D::~Fluid1D() = default;
@@ -203,7 +203,7 @@ void Fluid1D::WriteFluidFile(float t){
 	}
 	data_preview << t << "\t" << Den[pos_end] << "\t" << Vel[pos_end] << "\t" << Den[pos_ini] << "\t" << Vel[pos_ini] << "\n";
 }
-
+/*
 void Fluid1D::BohmOperator(float bohm) {
 
 	//double beta = 0.001*dt/(dx*dx*dx);
@@ -226,7 +226,7 @@ void Fluid1D::BohmOperator(float bohm) {
 	gsl_vector_free (sol);
 
 
-}
+}*/
 
 void Fluid1D::Richtmyer(){
 	//
