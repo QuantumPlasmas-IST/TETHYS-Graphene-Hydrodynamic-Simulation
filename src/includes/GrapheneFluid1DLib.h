@@ -24,7 +24,8 @@
  * */
 class GrapheneFluid1D : public Fluid1D{
 	private:
-
+//	void BohmPotencial(string grid) override;
+//	void BohmSource(string grid) override;
 	float JacobianSpectralRadius( StateVec U) override;
 	friend class NumericalFlux;
 
@@ -34,7 +35,11 @@ class GrapheneFluid1D : public Fluid1D{
 		/*Override CFL condition to the case of graphene equations */
 		void CflCondition() override;
 		/*Override fluxes and sources to specifics of graphene physics*/
+	//	float DensityFlux(float n,float v,__attribute__((unused)) float s) override;
+	//	float VelocityFlux(float n, float v, float dv, float s, float d2n) override;
 
+//	float DensityFlux(GridPoint1D p, char side) override;    ///< density equation (continuity equation) conserved flux
+//	float VelocityFlux(GridPoint1D p, char side) override; ///< velocity equation (momentum equation) conserved flux
 	float DensityFlux(StateVec U) override;
 	float VelocityFlux(StateVec U) override;
 
