@@ -10,21 +10,12 @@
 StateVec::StateVec(const StateVec & obj) {
 density=obj.density;
 velocity=obj.velocity;
-sound=obj.sound;
 }
 
-/*
-StateVec::StateVec(float den, float vel,float snd) {
-	density=den;
-	velocity=vel;
-	sound=snd;
-}
-*/
 
 StateVec::StateVec(float den, float vel) {
 	density=den;
 	velocity=vel;
-	sound=1.0f;
 }
 
 
@@ -37,44 +28,40 @@ float &StateVec::v() {
 }
 
 
-float &StateVec::S() {
-	return sound;
-}
 
 StateVec &StateVec::operator=(const StateVec & obj) {
 	if(this != &obj) {
-		this->density=obj.density;
-		this->velocity=obj.velocity;
-		this->sound=obj.sound;
+		density=obj.density;
+		velocity=obj.velocity;
 	}
 	return *this;
 }
 
 StateVec StateVec::operator+(const StateVec &obj) const {
 	StateVec res{};
-	res.density =this->density + obj.density;
-	res.velocity = this->velocity + obj.velocity;
+	res.density = density + obj.density;
+	res.velocity = velocity + obj.velocity;
 	return res;
 }
 
 StateVec StateVec::operator-(const StateVec &obj) const {
 	StateVec res{};
-	res.density = this->density - obj.density;
-	res.velocity = this->velocity - obj.velocity;
+	res.density = density - obj.density;
+	res.velocity = velocity - obj.velocity;
 	return res;
 }
 
 StateVec StateVec::operator*(const StateVec &obj) const {
 	StateVec res{};
-	res.density = this->density * obj.density;
-	res.velocity = this->velocity * obj.velocity;
+	res.density = density * obj.density;
+	res.velocity = velocity * obj.velocity;
 	return res;
 }
 
 StateVec StateVec::operator/(const StateVec &obj) const{
 	StateVec res{};
-	res.density = this->density / obj.density;
-	res.velocity = this->velocity / obj.velocity;
+	res.density = density / obj.density;
+	res.velocity = velocity / obj.velocity;
 	return res;
 }
 
@@ -100,8 +87,7 @@ StateVec operator/(const StateVec &obj, float value){
 }
 
 std::ostream &operator<<(std::ostream &outstream, const StateVec &obj) {
-	return outstream << obj.density <<"\t"<< obj.velocity <<"\t"<< obj.sound;
+	return outstream << obj.density <<"\t"<< obj.velocity;
 }
-
 
 
