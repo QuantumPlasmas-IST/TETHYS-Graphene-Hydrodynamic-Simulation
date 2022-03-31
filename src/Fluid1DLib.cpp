@@ -118,13 +118,6 @@ void Fluid1D::InitialCondTest(){   //TODO change initial conditions to U stateVe
 	}
 }
 
-/*
-void Fluid1D::Smooth(int width){
-	Average_Filter(Den, DenCor, Nx, width);
-	Average_Filter(Vel, VelCor, Nx, width);
-	Average_Filter(Cur, CurCor, Nx, width);
-}
-*/
 
 
 void Fluid1D::CreateFluidFile(){
@@ -230,19 +223,6 @@ void Fluid1D::SaveSnapShot(){
 	dataset_vel_x.write(Vel, HDF5FLOAT);
 	dataset_vel_x.close();
 }
-
-/*float Fluid1D::SideAverage(const float *input_array, GridPoint1D p, char side) {
-	float value;
-	switch(side) {
-		case 'E': value=input_array[p.E];
-			break;
-		case 'W': value=input_array[p.W];
-			break;
-		default: value=0.0f;
-	}
-	return value;
-}*/
-
 
 void Fluid1D::RungeKuttaTVD() {
 	float DenNumFluxW;

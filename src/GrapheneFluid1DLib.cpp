@@ -31,8 +31,7 @@ GrapheneFluid1D::~GrapheneFluid1D(){
 
 
 float GrapheneFluid1D::VelocityFlux(StateVec U) {
-	return 0.25f * U.v() * U.v()  + 2.0f * vel_snd * vel_snd * sqrt(U.n()) ; //TODO falta o termo dv para a voscosidade
-//	return 0.25f * U.v() * U.v() + vel_fer * vel_fer * 0.5f * log(U.n())  ; //TODO falta o termo dv para a voscosidade
+	return 0.25f * U.v() * U.v() + vel_fer * vel_fer * 0.5f * log(U.n()) + 2.0f * vel_snd * vel_snd * sqrt(U.n()) ; //TODO falta o termo dv para a voscosidade
 	// TODO falta fazer para velocidade do som variavel
 }
 
@@ -53,7 +52,7 @@ float GrapheneFluid1D::DensitySource(__attribute__((unused)) float n, __attribut
 }
 
 float GrapheneFluid1D::VelocitySource(float n, float v, float s, float d3den) {
-	return -1.0f * col_freq * v - 0.0f*d3den;
+	return -1.0f * col_freq * v;
 }
 
 void GrapheneFluid1D::CflCondition(){
@@ -73,59 +72,3 @@ float GrapheneFluid1D::JacobianSpectralRadius(StateVec U) {
 	float l2 = abs(3.0f*U.v() - SQRT);
 	return 0.25f*max(l1,l2);
 }
-
-
-
-
-/*
-void GrapheneFluid1D::BohmPotencial(string grid) {
-	if(grid=="main"){
-		for ( int i = 1; i <= Nx-2 ; i++ )
-		{
-			lap_den[i] = ( Den[i-1]-2.0f*Den[i] + Den[i+1]) / (dx*dx);
-		}
-		lap_den[0]= (2.0f*Den[0]-5.0f*Den[1]+4.0f*Den[2]-1.0f*Den[3])/ (dx*dx);
-		lap_den[Nx-1]=(-2.0f*Den[Nx-1]+5.0f*Den[Nx-2]-4.0f*Den[Nx-3]+1.0f*Den[Nx-4])/ (dx*dx);
-	}
-	if(grid=="mid"){
-		for ( int i = 1; i <= Nx-2 ; i++ )
-		{
-			lap_den_mid[i] = ( den_mid[i-1]-2.0f*den_mid[i] + den_mid[i+1]) / (dx*dx);
-		}
-		lap_den_mid[0]= (2.0f*den_mid[0]-5.0f*Den[1]+4.0f*den_mid[2]-1.0f*den_mid[3])/ (dx*dx);
-		lap_den_mid[Nx-1]=(-2.0f*den_mid[Nx-1]+5.0f*den_mid[Nx-2]-4.0f*den_mid[Nx-3]+1.0f*den_mid[Nx-4])/ (dx*dx);
-	}
-}
-*/
-
-/*
-void GrapheneFluid1D::BohmSource(string grid) {
-	float dx3  = dx*dx*dx;
-	if(grid=="mid"){
-		for ( int i = 2; i <= Nx-3 ; i++ )
-		{
-			d3_den[i] = ( -0.5f*Den[i-2]+ Den[i-1]  -Den[i+1] + 0.5f*Den[i+2] ) / dx3;
-			//d3_den_mid[i] = 2.0f*( -1.0f*Den[i-2]+ 3.0f*Den[i-1]  -3.0f*Den[i+1] + Den[i+2] ) / dx3;
-		}
-		//d3_den_mid[0]= 2.0f*(-5.0f*Den[0]	 +7.0f*Den[1]    +Den[2]	-3.0f*Den[3] )/ dx3;
-		//d3_den_mid[1]= 2.0f*(-5.0f*Den[1]	 +7.0f*Den[2]    +Den[3]	-3.0f*Den[4] )/ dx3;
-		//d3_den_mid[Nx-1]=2.0f*(5.0f*Den[Nx-1]-7.0f*Den[Nx-2] -Den[Nx-3]	+3.0f*Den[Nx-4] )/ dx3;
-		//d3_den_mid[Nx-2]=2.0f*(5.0f*Den[Nx-2]-7.0f*Den[Nx-3] -Den[Nx-4]	+3.0f*Den[Nx-5] )/ dx3;
-	}
-	if(grid=="main"){
-		for ( int i = 2; i <= Nx-3 ; i++ )
-		{
-			d3_den_mid[i] = 0.5f*( -1.0f*den_mid[i-2]+ 2.0f*den_mid[i-1]  -2.0f*den_mid[i+1] + den_mid[i+2] ) / dx3;
-			//d3_den[i] =  2.0f*( -1.0f*den_mid[i-2]+ 3.0f*den_mid[i-1]  -3.0f*den_mid[i+1] + den_mid[i+2] ) / dx3;
-		}
-		d3_den[0]= (-2.5f*den_mid[0]	+9.0f*den_mid[1]-12.0f*den_mid[2]	+7.0f*den_mid[3]-1.5f*den_mid[4] )/ dx3;
-		d3_den[0]= (-2.5f*den_mid[0]	+9.0f*den_mid[1]-12.0f*den_mid[2]	+7.0f*den_mid[3]-1.5f*den_mid[4] )/ dx3;
-		d3_den[Nx-1]=(2.5f*den_mid[Nx-1]	-9.0f*den_mid[Nx-2]	+12.0f*den_mid[Nx-3]	-7.0f*den_mid[Nx-4]	+1.5f*den_mid[Nx-5] )/ dx3;
-		d3_den[Nx-1]=(2.5f*den_mid[Nx-1]	-9.0f*den_mid[Nx-2]	+12.0f*den_mid[Nx-3]	-7.0f*den_mid[Nx-4]	+1.5f*den_mid[Nx-5] )/ dx3;
-		//d3_den[0]= 2.0f*(-5.0f*den_mid[0]	 +7.0f*den_mid[1]    +den_mid[2]	-3.0f*den_mid[3] )/ dx3;
-		//d3_den[1]= 2.0f*(-5.0f*den_mid[1]	 +7.0f*den_mid[2]    +den_mid[3]	-3.0f*den_mid[4] )/ dx3;
-		//d3_den[Nx-1]=2.0f*(5.0f*den_mid[Nx-1]-7.0f*den_mid[Nx-2] -den_mid[Nx-3]	+3.0f*den_mid[Nx-4] )/ dx3;
-		//d3_den[Nx-2]=2.0f*(5.0f*den_mid[Nx-2]-7.0f*den_mid[Nx-3] -den_mid[Nx-4]	+3.0f*den_mid[Nx-5] )/ dx3;
-	}
-}
-*/
