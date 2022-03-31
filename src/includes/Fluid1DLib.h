@@ -38,6 +38,7 @@ class Fluid1D : public TethysBase{
 
 
 
+		float * vel_snd_arr;        // array for saving the (potentially varying) S(x) function
 	    float * vel_snd_arr_mid;        // array for saving the (potentially varying) S(x) function
 		float * den_mid ;           // number density at midpoint
 		float * vel_mid ;           // velocity at midpoint
@@ -59,8 +60,6 @@ class Fluid1D : public TethysBase{
 	float *ptr_veldx;
 	//float *ptr_tmp;
 	float *ptr_lap_den;
-
-	float * vel_snd_arr;        // array for saving the (potentially varying) S(x) function
 
 
 //	virtual void BohmPotencial(string grid);
@@ -92,9 +91,6 @@ public :
 
 	void Richtmyer();
 
-
-
-
 	StateVec * Umain;
 	StateVec * Uaux;
 	StateVec * Umid;
@@ -118,11 +114,10 @@ public :
 	void Upwind();
 	void LaxFriedrichs();
 
-void CopyFields();
+
 
 void RungeKuttaTVD();
 
-	void SaveSound();
 
 	void BohmOperator(float bohm);
 		void SetSound();            ///< Applies the anisotropy to the sound velocity array
