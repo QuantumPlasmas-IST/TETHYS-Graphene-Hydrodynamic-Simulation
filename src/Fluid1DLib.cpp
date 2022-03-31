@@ -203,30 +203,7 @@ void Fluid1D::WriteFluidFile(float t){
 	}
 	data_preview << t << "\t" << Den[pos_end] << "\t" << Vel[pos_end] << "\t" << Den[pos_ini] << "\t" << Vel[pos_ini] << "\n";
 }
-/*
-void Fluid1D::BohmOperator(float bohm) {
 
-	//double beta = 0.001*dt/(dx*dx*dx);
-	//gsl_matrix_scale(FDmatrix3, beta); // beta*F3
-
-	gsl_vector *sol = gsl_vector_alloc (Nx);
-	gsl_vector *rhs = gsl_vector_alloc (Nx);
-
-	for (int i=0;i<Nx;i++){
-		gsl_vector_set(rhs,i,Den[i]); //copiar o array de floats para o vectordouble
-	}
-	gsl_blas_dgemv(CblasNoTrans, -1.0*bohm*dt/(dx*dx*dx), FDmatrix3, rhs, 0.0, sol);
-
-	for (int i=0;i<Nx;i++){
-		Vel[i]=Vel[i]+gsl_vector_get(sol,i);
-	}
-
-
-	//gsl_linalg_LU_solve (BTCSmatrix, permutation_matrix, rhs, sol);
-	gsl_vector_free (sol);
-
-
-}*/
 
 void Fluid1D::Richtmyer(){
 	//
@@ -247,45 +224,6 @@ void Fluid1D::Richtmyer(){
 }
 
 
-
-/*
-void Fluid1D::RichtmyerStep1() {
-	ChooseGridPointers("MidGrid");
-	//
-	//Half step calculate density and velocity at time k+0.5 at the spatial midpoints
-	//
-
-	for ( int i = 0; i <= Nx - 2; i++ ){
-		GridPoint1D midpoint(i, Nx, true);
-
-		den_mid[i] = 0.5f*(Den[i] + Den[i + 1] )
-		             - ( 0.5f*dt/dx ) * (DensityFlux(Den[i + 1], Vel[i + 1], vel_snd_arr[i]) - DensityFlux(Den[i], Vel[i], vel_snd_arr[i]) )
-		             + ( 0.5f*dt    ) * DensitySource(0.5f*(Den[i] + Den[i + 1]), 0.5f * (Vel[i] + Vel[i + 1]), vel_snd_arr[i]) ;
-		vel_mid[i] = 0.5f*(Vel[i] + Vel[i + 1] )
-		             - ( 0.5f*dt/dx ) * (VelocityFlux(Den[i + 1], Vel[i + 1], GradVel[i + 1], vel_snd_arr[i], lap_den[i+1]) - VelocityFlux(
-				Den[i], Vel[i], GradVel[i], vel_snd_arr[i], lap_den[i]))
-		             + ( 0.5f*dt    ) * VelocitySource(0.5f * (Den[i] + Den[i + 1]), 0.5f * (Vel[i] + Vel[i + 1]),
-		                                               vel_snd_arr[i], 	0.0 );
-	}
-}
-void Fluid1D::RichtmyerStep2() {
-	ChooseGridPointers("MainGrid");
-	//
-	// Remaining step
-	//
-	for ( int i = 1; i <= Nx - 2; i++ ){
-		GridPoint1D mainpoint(i, Nx, false);
-		float den_old = Den[i];
-		float vel_old = Vel[i];
-		Den[i] = Den[i] - (dt / dx) * (DensityFlux(den_mid[i], vel_mid[i], vel_snd_arr[i]) - DensityFlux(den_mid[i - 1], vel_mid[i - 1], vel_snd_arr[i] ) )
-		         +  dt * DensitySource(den_old,vel_old,vel_snd_arr[i]);
-		Vel[i] = Vel[i] - (dt / dx) * (VelocityFlux(den_mid[i], vel_mid[i], grad_vel_mid[i], vel_snd_arr[i], lap_den_mid[i]) -
-		                               VelocityFlux(
-				                               den_mid[i - 1], vel_mid[i - 1], grad_vel_mid[i - 1], vel_snd_arr[i], lap_den_mid[i-1]))
-		         +  dt * VelocitySource(den_old, vel_old, vel_snd_arr[i], 0.0f);
-	}
-}
-*/
 
 
 void Fluid1D::RichtmyerStep1() {
@@ -331,35 +269,6 @@ void Fluid1D::VelocityToCurrent() {
 }
 
 
-
-/*
-void Fluid1D::Vliegenthart() {
-//WARNING INTENSE NUMERICAL VISCOSITY !!! 
-	vector<float>density_new;
-	vector<float>velocity_new;
-
-	float den_new, vel_new;
-
-	density_new.push_back(Den[0]);
-	velocity_new.push_back(Vel[0]);
-	for ( int i = 1; i <= Nx - 2; i++ )
-	{
-		den_new = 0.5f*(Den[i-1]+Den[i+1])-.5f*(dt / dx) * ( DensityFlux(Den[i+1], Vel[i+1], vel_snd) - DensityFlux(Den[i - 1], Vel[i - 1], vel_snd ) );
-		vel_new = 0.5f*(Vel[i-1]+Vel[i+1])-.5f*(dt / dx) * (VelocityFlux(Den[i+1], Vel[i+1],0, vel_snd,0) - VelocityFlux(Den[i - 1], Vel[i - 1],0, vel_snd,0 ) );
-	density_new.push_back(den_new);
-	velocity_new.push_back(vel_new);
-	}
-	density_new.push_back(Den[Nx-1]);
-	velocity_new.push_back(Vel[Nx-1]);
-
-	for ( int i = 0; i <= Nx - 1; i++ )
-	{
-		Den[i]=density_new[i];
-		Vel[i]=velocity_new[i];
-		Cur[i] = Vel[i] * Den[i];
-	}
-}
-*/
 
 int Fluid1D::GetSnapshotStep() const { return snapshot_step;}
 int Fluid1D::GetSnapshotFreq() const {return snapshot_per_period;}
@@ -436,19 +345,6 @@ float Fluid1D::SideAverage(const float *input_array, GridPoint1D p, char side) {
 	return value;
 }
 
-/*
-void Fluid1D::SetBTCSmatrix(float beta) {
-	BTCSmatrix = gsl_matrix_calloc (Nx, Nx) ;
-	gsl_matrix_set_identity(BTCSmatrix);
-
-	gsl_matrix_scale(FDmatrix3, beta); // beta*F3
-	gsl_matrix_sub(BTCSmatrix, FDmatrix3); // Identity - (beta*F3)
-
-	permutation_matrix = gsl_permutation_alloc (Nx);
-	gsl_linalg_LU_decomp (BTCSmatrix, permutation_matrix, &permutation_index_s);
-
-}
-*/
 
 void Fluid1D::RungeKuttaTVD() {
 	float DenNumFluxW;

@@ -26,7 +26,6 @@ int main(int argc, char **argv){
 
 	SetUpParameters parameters(argc, argv);
 	GrapheneFluid1D graph(parameters);
-	//DyakonovShurBoundaryCondition boundary_condition;
 
 	GrapheneFluid1D::BannerDisplay();
 	/*......CFL routine to determine dt...............................*/
@@ -37,8 +36,6 @@ int main(int argc, char **argv){
 	/*.........Fixed or variable vel_snd value........................*/
 
 	float sound = graph.GetVelSnd();
-//	std::function<float(float)> variationS = [=](float x){ return sound+.5f* tanh(6.0f*cos(2.0f*MAT_PI*2.0f*x)); };
-//	graph.SetSound(variationS);
 	graph.SetSound();
 	graph.SetSimulationTime();
 
@@ -64,10 +61,6 @@ int main(int argc, char **argv){
 
 	cout << "\033[1;7;5;33m Program Running \033[0m"<<endl;
 
-//	graph.BohmOperator(0);
-
-	///graph.Hopscotch();
-
 
 	graph.SetTmax(10.0);
 	//Main cycle
@@ -76,7 +69,6 @@ int main(int argc, char **argv){
 		GrapheneFluid1D::TimeStepCounter++;
 		// Main algorithm		
 		graph.Richtmyer();
-		//graph.Vliegenthart();
 		// Impose boundary conditions
 		DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
 		//BoundaryCondition::XPeriodic(graph);
