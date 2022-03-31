@@ -29,20 +29,19 @@ Fluid1D::Fluid1D(const SetUpParameters &input_parameters) : TethysBase{input_par
 	Vel = new float[Nx]();
 	GradVel= new float[Nx]();
 	Cur = new float[Nx]();
-/*
 	DenCor = new float[Nx]();
 	VelCor = new float[Nx]();
 	CurCor = new float[Nx]();
 	den_mid = new float[Nx - 1]();
 	vel_mid = new float[Nx - 1]();
-*/
-//	grad_vel_mid = new float[Nx - 1]();
+
+	grad_vel_mid = new float[Nx - 1]();
 	vel_snd_arr = new float[Nx]();
-//	vel_snd_arr_mid = new float[Nx - 1]();
-//	lap_den_mid = new float[Nx - 1]();
-//	lap_den = new float[Nx]();
-///	d3_den_mid = new float[Nx - 1]();
-//	d3_den = new float[Nx]();
+	vel_snd_arr_mid = new float[Nx - 1]();
+	lap_den_mid = new float[Nx - 1]();
+	lap_den = new float[Nx]();
+	d3_den_mid = new float[Nx - 1]();
+	d3_den = new float[Nx]();
 
 Umain = new StateVec[Nx]();
 Uaux = new StateVec[Nx]();
@@ -100,27 +99,23 @@ float Fluid1D::VelocityFlux(float n, float v, float dv, float s, float d2n) {
 }
 */
 
-/*
 float Fluid1D::VelocityFlux(GridPoint1D p, char side) {
 	float v= SideAverage(ptr_vel,p,side);
 	float n= SideAverage(ptr_den,p,side);
 	float dv=SideAverage(ptr_veldx,p,side);
 	return 0.5f * v * v + n*vel_snd*vel_snd - kin_vis * dv;
 }
-*/
-
 
 float Fluid1D::VelocityFlux(StateVec U) {
 	return 0.5f*U.v()*U.v()+U.n()*vel_snd*vel_snd;
 }
 
-/*
+
 float Fluid1D::DensityFlux(GridPoint1D p, char side) {
 	float v= SideAverage(ptr_vel,p,side);
 	float n= SideAverage(ptr_den,p,side);
 	return n * v;
 }
-*/
 
 float Fluid1D::DensityFlux(StateVec U) {
 	return U.n()*U.v();
@@ -148,17 +143,17 @@ void Fluid1D::SetSound(){
 	for(int i = 0; i<Nx  ;i++){
 		vel_snd_arr[i]= vel_snd;//Sound_Velocity_Anisotropy( static_cast<float>(i)*dx, vel_snd);
 	}
-//	for(int i = 0; i<Nx-1  ;i++){
-//		vel_snd_arr_mid[i]= vel_snd;//Sound_Velocity_Anisotropy( static_cast<float>(i)*dx, vel_snd);
-//	}
+	for(int i = 0; i<Nx-1  ;i++){
+		vel_snd_arr_mid[i]= vel_snd;//Sound_Velocity_Anisotropy( static_cast<float>(i)*dx, vel_snd);
+	}
 }
 void Fluid1D::SetSound(std::function<float(float)> func) {
 	for(int i = 0; i<Nx  ;i++){
 		vel_snd_arr[i]= func(i*dx);
 	}
-//	for(int i = 0; i<Nx-1  ;i++){
-//		vel_snd_arr_mid[i]= func((i+0.5f)*dx);
-//	}
+	for(int i = 0; i<Nx-1  ;i++){
+		vel_snd_arr_mid[i]= func((i+0.5f)*dx);
+	}
 }
 
 
@@ -192,13 +187,12 @@ void Fluid1D::InitialCondTest(){   //TODO change initial conditions to U stateVe
 	}
 }
 
-/*
 void Fluid1D::Smooth(int width){
 	Average_Filter(Den, DenCor, Nx, width);
 	Average_Filter(Vel, VelCor, Nx, width);
 	Average_Filter(Cur, CurCor, Nx, width);
 }
-*/
+
 
 
 void Fluid1D::CreateFluidFile(){
@@ -324,7 +318,7 @@ void Fluid1D::RichtmyerStep2() {
 }
 */
 
-/*
+
 void Fluid1D::RichtmyerStep1Old() {
 	ChooseGridPointers("MidGrid");
 	//
@@ -357,7 +351,7 @@ void Fluid1D::RichtmyerStep2Old() {
 		Vel[i] = vel_old  - (dt/dx)*(VelocityFlux(mainpoint, 'E') - VelocityFlux(mainpoint, 'W'))
 		         +  dt * VelocitySource(den_old, vel_old, vel_snd_arr[i], 0.0f);
 	}
-}*/
+}
 
 
 
@@ -442,7 +436,7 @@ void Fluid1D::SaveSnapShot(){
 	dataset_vel_x.close();
 }
 
-/*
+
 void Fluid1D::ChooseGridPointers(const string &grid) {
 	if(grid == "MidGrid"){  // se ESTÁ na grelha média tem de APONTAR pra outra grelha
 		ptr_snd = vel_snd_arr;
@@ -463,7 +457,7 @@ void Fluid1D::ChooseGridPointers(const string &grid) {
 		//ptr_lap_den = lap_den_mid ;
 	}
 }
-*/
+
 float Fluid1D::SideAverage(const float *input_array, GridPoint1D p, char side) {
 	float value;
 	switch(side) {

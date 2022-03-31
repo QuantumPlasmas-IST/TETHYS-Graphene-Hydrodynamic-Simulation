@@ -106,14 +106,14 @@ void ElectroAnalysis::WriteElectroFile() {
 }
 
 float ElectroAnalysis::NetCharge(const GrapheneFluid1D& graphene){
-	return Integral_1_D(graphene.SizeX(), graphene.GetDx(), graphene.Den);
+	return Integral_1_D(graphene.SizeX(), graphene.GetDx(), graphene.DenCor);
 }
 float ElectroAnalysis::NetCharge(const GrapheneFluid2D& graphene){
 	return Integral_2_D(graphene.SizeX(),graphene.SizeY(), graphene.GetDx(),graphene.GetDy(), graphene.Den);
 }
 
 float ElectroAnalysis::AverageCurrent(const GrapheneFluid1D& graphene){
-	return Integral_1_D(graphene.SizeX(), graphene.GetDx(), graphene.Cur);
+	return Integral_1_D(graphene.SizeX(), graphene.GetDx(), graphene.CurCor);
 }
 
 float ElectroAnalysis::AverageDirectCurrent(const GrapheneFluid2D& graphene){
@@ -126,14 +126,14 @@ float ElectroAnalysis::AverageHallCurrent(const GrapheneFluid2D& graphene){
 
 
 float ElectroAnalysis::ElectricDipoleVariation(const GrapheneFluid1D& graphene){
-	return Integral_1_D(graphene.SizeX(), graphene.GetDx(), graphene.Cur);
+	return Integral_1_D(graphene.SizeX(), graphene.GetDx(), graphene.CurCor);
 }
 
 float ElectroAnalysis::ElectricDipole(const GrapheneFluid1D& graphene){
 	float p=0.0;
 	float dx=graphene.GetDx();
 	for(int j=1;j<graphene.SizeX()/2;j++){
-		p += dx*static_cast<float>(2*j-2)*graphene.Den[2 * j - 2] + 4 * dx * static_cast<float>(2 * j - 1) * graphene.Den[2 * j - 1] + dx * static_cast<float>(2 * j) * graphene.Den[2 * j];
+		p += dx*static_cast<float>(2*j-2)*graphene.DenCor[2 * j - 2] + 4 * dx * static_cast<float>(2 * j - 1) * graphene.DenCor[2 * j - 1] + dx * static_cast<float>(2 * j) * graphene.DenCor[2 * j];
 	}
 	p = p*graphene.GetDx()/3.0f;
 	return p;
@@ -142,7 +142,7 @@ float ElectroAnalysis::ElectricDipole(const GrapheneFluid1D& graphene){
 float ElectroAnalysis::OhmPower(const GrapheneFluid1D& graphene){
 	float itg=0.0f;
 	for(int j=1;j<graphene.SizeX()/2;j++){
-		itg += graphene.Cur[2 * j - 2] * graphene.Cur[2 * j - 2]/sqrt(graphene.Den[2 * j - 2]) + 4 * graphene.Cur[2 * j - 1] * graphene.Cur[2 * j - 1] /sqrt(graphene.Den[2 * j - 1]) + graphene.Cur[2 * j] * graphene.Cur[2 * j]/sqrt(graphene.Den[2 * j]);
+		itg += graphene.CurCor[2 * j - 2] * graphene.CurCor[2 * j - 2]/sqrt(graphene.DenCor[2 * j - 2]) + 4 * graphene.CurCor[2 * j - 1] * graphene.CurCor[2 * j - 1] /sqrt(graphene.DenCor[2 * j - 1]) + graphene.CurCor[2 * j] * graphene.CurCor[2 * j]/sqrt(graphene.DenCor[2 * j]);
 	}
 	itg = itg*graphene.GetDx()/3.0f;
 	return itg;

@@ -38,27 +38,27 @@ class Fluid1D : public TethysBase{
 
 
 
-//	    float * vel_snd_arr_mid;        // array for saving the (potentially varying) S(x) function
-//		float * den_mid ;           // number density at midpoint
-//		float * vel_mid ;           // velocity at midpoint
-//		float * grad_vel_mid;       // velocity gradient at mid point for the viscous case
+	    float * vel_snd_arr_mid;        // array for saving the (potentially varying) S(x) function
+		float * den_mid ;           // number density at midpoint
+		float * vel_mid ;           // velocity at midpoint
+		float * grad_vel_mid;       // velocity gradient at mid point for the viscous case
 		std::ofstream data_preview; // file stream for simplified .dat file output
 		int snapshot_per_period = 10;
 		int snapshot_step = 1;
 
-//	float * lap_den_mid;
-//	float * lap_den;
-//	float * d3_den_mid;
-//	float * d3_den;
+	float * lap_den_mid;
+	float * lap_den;
+	float * d3_den_mid;
+	float * d3_den;
 
 	//auxiliary pointers
-//	float *ptr_snd;
-//	float *ptr_den;
-//	float *ptr_vel;
-//	float *ptr_dendx;
-//	float *ptr_veldx;
+	float *ptr_snd;
+	float *ptr_den;
+	float *ptr_vel;
+	float *ptr_dendx;
+	float *ptr_veldx;
 	//float *ptr_tmp;
-//	float *ptr_lap_den;
+	float *ptr_lap_den;
 
 	float * vel_snd_arr;        // array for saving the (potentially varying) S(x) function
 
@@ -66,8 +66,11 @@ class Fluid1D : public TethysBase{
 //	virtual void BohmPotencial(string grid);
 //	virtual void BohmSource(string grid);
 
-//	void RichtmyerStep1Old();
-//	void RichtmyerStep2Old();
+//	int HopscotchFunction(const gsl_vector *x, gsl_vector *f);
+//	static int gslwrapperHopscotchFunction(const gsl_vector *x, void *p, gsl_vector *f);
+
+	void RichtmyerStep1Old();
+	void RichtmyerStep2Old();
 	void RichtmyerStep1();
 	void RichtmyerStep2();
 
@@ -100,13 +103,13 @@ public :
 		float * Vel ;       // fluid velocity
 		float * GradVel;    // fluid velocity gradient
 		float * Cur ;       // current density (density times velocity)
-//		float * DenCor;     // corrected i.e. smoothed quantities
-//		float * VelCor ;
-//		float * CurCor ;
+		float * DenCor;     // corrected i.e. smoothed quantities
+		float * VelCor ;
+		float * CurCor ;
 		explicit Fluid1D(const SetUpParameters &input_parameters);
 		~Fluid1D();
 		bool Snapshot() const;
-//		void Smooth(int width);     ///< smoothing moving average filter to obtain the "Cor" version of the quantities
+		void Smooth(int width);     ///< smoothing moving average filter to obtain the "Cor" version of the quantities
 		void SetSimulationTime();   ///< Finds and set the appropriate simulation time that is 1) Longer than the saturation time 2) Contains enough oscillation periods in the saturated region
 		void InitialCondRand();     ///< Initial condition, zero velocity and constant density with 0.5% white noise
 		void InitialCondTest();     ///< Initial condition for testing and debugging
@@ -128,9 +131,9 @@ void RungeKuttaTVD();
 	//	virtual float DensityFlux(float n,float v, __attribute__((unused)) float s);    ///< density equation (continuity equation) conserved flux
 	//	virtual float VelocityFlux(float n, float v, float dv, float s, float d2n); ///< velocity equation (momentum equation) conserved flux
 
-//	virtual float DensityFlux(GridPoint1D p, char side);    ///< density equation (continuity equation) conserved flux
+	virtual float DensityFlux(GridPoint1D p, char side);    ///< density equation (continuity equation) conserved flux
 	virtual float DensityFlux(StateVec U);
-//	virtual float VelocityFlux(GridPoint1D p, char side); ///< velocity equation (momentum equation) conserved flux
+	virtual float VelocityFlux(GridPoint1D p, char side); ///< velocity equation (momentum equation) conserved flux
 	virtual float VelocityFlux(StateVec U);
 	virtual StateVec ConservedFlux(StateVec U);
 
@@ -144,7 +147,7 @@ void RungeKuttaTVD();
 		int GetSnapshotStep() const;
 		int GetSnapshotFreq() const;
 
-//		void ChooseGridPointers(const string &grid);
+		void ChooseGridPointers(const string &grid);
 		float SideAverage(const float *input_array, GridPoint1D p, char side);
 };
 

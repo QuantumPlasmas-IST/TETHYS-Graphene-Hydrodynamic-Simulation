@@ -23,15 +23,14 @@ GrapheneFluid1D::~GrapheneFluid1D(){
 	delete Den;
 	delete Vel ;
 	delete Cur ;
-	/*
 	delete den_mid ;
 	delete vel_mid ;
 	delete DenCor ;
 	delete VelCor ;
-	delete CurCor ;*/
+	delete CurCor ;
 	delete vel_snd_arr ;
 	delete GradVel ;
-	//delete grad_vel_mid ;
+	delete grad_vel_mid ;
 }
 
 /*
@@ -47,15 +46,13 @@ float GrapheneFluid1D::VelocityFlux(float n, float v, float dv, float s, float d
 	return f_2;
 }
 */
-
-/*
 float GrapheneFluid1D::VelocityFlux(GridPoint1D p, char side) {
 	float v= SideAverage(ptr_vel,p,side);
 	float n=SideAverage(ptr_den,p,side);
 	float s= SideAverage(ptr_snd,p,side);
 	float dv=SideAverage(ptr_veldx,p,side);
 	return 0.25f * v * v + vel_fer * vel_fer * 0.5f * log(n) + 2.0f * s * s * sqrt(n) - kin_vis * dv;
-}*/
+}
 
 float GrapheneFluid1D::VelocityFlux(StateVec U) {
 	return 0.25f * U.v() * U.v()  + 2.0f * vel_snd * vel_snd * sqrt(U.n()) ; //TODO falta o termo dv para a voscosidade
@@ -63,13 +60,11 @@ float GrapheneFluid1D::VelocityFlux(StateVec U) {
 	// TODO falta fazer para velocidade do som variavel
 }
 
-/*
 float GrapheneFluid1D::DensityFlux(GridPoint1D p, char side) {
 	float v= SideAverage(ptr_vel,p,side);
 	float n=SideAverage(ptr_den,p,side);
 	return n * v;
 }
- */
 float GrapheneFluid1D::DensityFlux(StateVec U) {
 	return U.n()*U.v();
 }
