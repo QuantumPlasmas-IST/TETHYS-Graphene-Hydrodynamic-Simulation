@@ -67,7 +67,7 @@ int main(int argc, char **argv){
 
 	graph.SetTmax(10.0);
 	//Main cycle
-	while(t <= graph.GetTmax() ) { //graph.GetTmax() ) {
+	while(t <= graph.GetTmax() ) {
 		t += dt;
 		GrapheneFluid1D::TimeStepCounter++;
 		// Main algorithm		

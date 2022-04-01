@@ -41,7 +41,6 @@ Fluid1D::~Fluid1D() = default;
 
 
 float Fluid1D::VelocityFlux( StateVec U) {
-	//return 0.5f*U.v()*U.v()+U.n()*vel_snd*vel_snd;
 	return 0.5f*U.v()*U.v()+U.n()*U.S()*U.S();
 }
 
@@ -126,24 +125,9 @@ void Fluid1D::WriteFluidFile(float t){
 		exit(EXIT_FAILURE);
 	}
 //data_preview << t << "\t" << Umain[pos_end/2] << "\n";
-	data_preview << t << "\t" << Umain[pos_ini]<< "\t" << Umain[pos_end] << "\n";
+	data_preview << t << "\t" << Umain[pos_ini] << "\t" << Umain[pos_end] << "\n";
 }
 
-/*
-void Fluid1D::BohmOperator(float bohm) {
-	gsl_vector *sol = gsl_vector_alloc (Nx);
-	gsl_vector *rhs = gsl_vector_alloc (Nx);
-	for (int i=0;i<Nx;i++){
-		gsl_vector_set(rhs,i,Den[i]); //copiar o array de floats para o vectordouble
-	}
-	gsl_blas_dgemv(CblasNoTrans, -1.0*bohm*dt/(dx*dx*dx), FDmatrix3, rhs, 0.0, sol);
-	for (int i=0;i<Nx;i++){
-		Vel[i]=Vel[i]+gsl_vector_get(sol,i);
-	}
-	//gsl_linalg_LU_solve (BTCSmatrix, permutation_matrix, rhs, sol);
-	gsl_vector_free (sol);
-}
-*/
 
 void Fluid1D::Richtmyer(){
 	RichtmyerStep1();
@@ -257,7 +241,6 @@ void Fluid1D::RungeKuttaTVD() {
 	//	UWleft  = cell.TVD(Uaux,i,'W','L');
 	//	UWright = cell.TVD(Uaux,i,'W','R');
 
-
 		UEleft  = Uaux[i-1];
 		UEright = Uaux[i];
 		UWleft  = Uaux[i];
@@ -271,12 +254,9 @@ void Fluid1D::RungeKuttaTVD() {
 		Umain[i].n()=0.5f*(Umain[i].n()+Uaux[i].n())-(0.5f*dt/dx)*(DenNumFluxW-DenNumFluxE);
 		Umain[i].v()=0.5f*(Umain[i].v()+Uaux[i].v())-(0.5f*dt/dx)*(VelNumFluxW-VelNumFluxE);
 	}
-
-
 }
 
 void Fluid1D::McCormack() {
-
 	for (int i = 1; i < Nx-1; ++i) {
 		Uaux[i].n()=Umain[i].n()-(dt/dx)*(DensityFlux(Umain[i+1])-DensityFlux(Umain[i]));
 		Uaux[i].v()=Umain[i].v()-(dt/dx)*(VelocityFlux(Umain[i+1])-VelocityFlux(Umain[i]));

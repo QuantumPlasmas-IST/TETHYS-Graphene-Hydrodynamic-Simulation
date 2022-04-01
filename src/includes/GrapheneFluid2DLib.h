@@ -37,7 +37,6 @@ protected:
 public :
 	explicit GrapheneFluid2D(SetUpParameters &input_parameters);
 		~GrapheneFluid2D();
-
 		/*!
 		 * @brief Calculates @f$\Delta x@f$ and imposes Courant–Friedrichs–Lewy condition to @f$\Delta t@f$
 		 *
@@ -80,8 +79,6 @@ public :
 
 		float YMomentumFluxX(GridPoint2D p, char side ) override; ///< velocity Y component equation (momentum equation) conserved flux X component
 		float YMomentumFluxY(GridPoint2D p, char side ) override; ///< velocity Y component equation (momentum equation) conserved flux Y component
-
-
 };
 
 
