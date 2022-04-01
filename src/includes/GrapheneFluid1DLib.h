@@ -24,9 +24,8 @@
  * */
 class GrapheneFluid1D : public Fluid1D{
 	private:
-
-	float JacobianSpectralRadius( StateVec U) override;
-	friend class NumericalFlux;
+		float JacobianSpectralRadius( StateVec U) override;
+		friend class NumericalFlux;
 
 	public :
 		explicit GrapheneFluid1D(SetUpParameters &input_parameters);

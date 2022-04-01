@@ -250,7 +250,7 @@ void MathUtils::GradientField(const float *array_in, float *array_out, float dx,
 }
 
 
-
+/*
 void MathUtils::SetFDmatrix2(int size) {
 	FDmatrix2 = gsl_matrix_calloc (size, size) ; //TODO passsar a atributo
 
@@ -278,8 +278,9 @@ void MathUtils::SetFDmatrix2(int size) {
 	gsl_matrix_set(FDmatrix2, size-1, size-1-2, -4);
 	gsl_matrix_set(FDmatrix2, size-1, size-1-3, 1);
 }
+*/
 
-
+/*
 void MathUtils::SetFDmatrix3(int size) {
 	FDmatrix3 = gsl_matrix_calloc (size, size) ; //TODO passsar a atributo
 	for (int i=0;i<size;i++) {
@@ -329,6 +330,8 @@ void MathUtils::SetFDmatrix3(int size) {
 	gsl_matrix_set(FDmatrix3, size-1-1, size-1-5, 1.5);
 
 }
+*/
+
 
 float MathUtils::Signum(float x) {
 	return x/abs(x);

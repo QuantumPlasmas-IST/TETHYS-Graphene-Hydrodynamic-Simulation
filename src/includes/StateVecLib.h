@@ -18,7 +18,7 @@ private:
 public:
 	StateVec()=default; //default constructor
 	StateVec(const StateVec&); //copy constructor
-//	StateVec(float den,float vel,float snd);
+	StateVec(float den,float vel,float snd);
 	StateVec(float den,float vel);
 	~StateVec()=default;
 

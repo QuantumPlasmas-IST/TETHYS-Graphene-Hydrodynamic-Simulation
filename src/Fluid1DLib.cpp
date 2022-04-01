@@ -29,27 +29,12 @@ Fluid1D::Fluid1D(const SetUpParameters &input_parameters) : TethysBase{input_par
 	Vel = new float[Nx]();
 	GradVel= new float[Nx]();
 	Cur = new float[Nx]();
-/*
-	DenCor = new float[Nx]();
-	VelCor = new float[Nx]();
-	CurCor = new float[Nx]();
-	den_mid = new float[Nx - 1]();
-	vel_mid = new float[Nx - 1]();
-*/
-//	grad_vel_mid = new float[Nx - 1]();
 	vel_snd_arr = new float[Nx]();
-//	vel_snd_arr_mid = new float[Nx - 1]();
-//	lap_den_mid = new float[Nx - 1]();
-//	lap_den = new float[Nx]();
-///	d3_den_mid = new float[Nx - 1]();
-//	d3_den = new float[Nx]();
 
-Umain = new StateVec[Nx]();
-Uaux = new StateVec[Nx]();
-Umid = new StateVec[Nx-1]();
+	Umain = new StateVec[Nx]();
+	Uaux = new StateVec[Nx]();
+	Umid = new StateVec[Nx-1]();
 
-	SetFDmatrix2(Nx);
-	SetFDmatrix3(Nx);
 }	
 
 Fluid1D::~Fluid1D() = default;
@@ -84,9 +69,12 @@ void Fluid1D::SetSimulationTime(){
 		
 void Fluid1D::SetSound(){
 	for(int i = 0; i<Nx  ;i++){
-		vel_snd_arr[i]= vel_snd;//Sound_Velocity_Anisotropy( static_cast<float>(i)*dx, vel_snd);
+		vel_snd_arr[i]= vel_snd;
 		Umain[i].S()=vel_snd;
 		Uaux[i].S()=vel_snd;
+	}
+	for(int i = 0; i<Nx-1  ;i++){
+		Umid[i].S()=vel_snd;
 	}
 }
 void Fluid1D::SetSound(const std::function<float(float)>& func) {
@@ -94,6 +82,9 @@ void Fluid1D::SetSound(const std::function<float(float)>& func) {
 		vel_snd_arr[i]= func(i*dx);
 		Umain[i].S()=func(i*dx);
 		Uaux[i].S()=func(i*dx);
+	}
+	for(int i = 0; i<Nx-1  ;i++){
+		Umid[i].S()=func((i+0.5f)*dx);
 	}
 }
 
@@ -138,6 +129,7 @@ void Fluid1D::WriteFluidFile(float t){
 	data_preview << t << "\t" << Umain[pos_ini]<< "\t" << Umain[pos_end] << "\n";
 }
 
+/*
 void Fluid1D::BohmOperator(float bohm) {
 	gsl_vector *sol = gsl_vector_alloc (Nx);
 	gsl_vector *rhs = gsl_vector_alloc (Nx);
@@ -151,6 +143,7 @@ void Fluid1D::BohmOperator(float bohm) {
 	//gsl_linalg_LU_solve (BTCSmatrix, permutation_matrix, rhs, sol);
 	gsl_vector_free (sol);
 }
+*/
 
 void Fluid1D::Richtmyer(){
 	RichtmyerStep1();

@@ -16,8 +16,8 @@
 #include <cmath>
 #include <functional>
 
-#include <gsl/gsl_vector.h>
-#include <gsl/gsl_multiroots.h>
+//#include <gsl/gsl_vector.h>
+//include <gsl/gsl_multiroots.h>
 
 #include <H5Cpp.h>
 
@@ -33,13 +33,13 @@ using namespace std;
 #endif
 
 class MathUtils{
-
+/*
 protected:
 	gsl_matrix * FDmatrix2 ; //matrices to perform finite differenceing
 	gsl_matrix * FDmatrix3 ;
 	void SetFDmatrix2(int size);
 	void SetFDmatrix3(int size);
-
+*/
 public:
 	MathUtils()=default;
 	~MathUtils()=default;

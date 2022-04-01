@@ -64,14 +64,10 @@ int main(int argc, char **argv){
 
 	cout << "\033[1;7;5;33m Program Running \033[0m"<<endl;
 
-	graph.BohmOperator(0);
-
-	///graph.Hopscotch();
-
 
 	graph.SetTmax(10.0);
 	//Main cycle
-	while(t <= graph.GetTmax() ) {
+	while(t <= graph.GetTmax() ) { //graph.GetTmax() ) {
 		t += dt;
 		GrapheneFluid1D::TimeStepCounter++;
 		// Main algorithm		
