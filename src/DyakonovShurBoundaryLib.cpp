@@ -14,7 +14,7 @@ void DyakonovShurBoundaryCondition::DyakonovShurBc(Fluid1D& fluid_class) {
 	fluid_class.Umain[0].n()=1.0f;
 	fluid_class.Umain[0].v()=fluid_class.Umain[1].v();
 	fluid_class.Umain[nx-1].n()=fluid_class.Umain[nx-2].n();
-	fluid_class.Umain[nx-1].v()=0.1f/fluid_class.Umain[nx-1].n();
+	fluid_class.Umain[nx-1].v()=1.0f/fluid_class.Umain[nx-1].n();
 }
 
 

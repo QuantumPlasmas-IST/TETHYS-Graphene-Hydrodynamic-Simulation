@@ -22,8 +22,6 @@ public:
 	CellHandler1D(int, Fluid1D *, StateVec *);
 	CellHandler1D(int, StateVec *);
 	~CellHandler1D()=default;
-//	StateVec &E(StateVec * Uin);
-//	StateVec &W(StateVec * Uin);
 
 	StateVec TVD(char side,char edge);
 	StateVec TVD(StateVec *,int pos,char side,char edge);

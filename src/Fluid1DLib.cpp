@@ -134,7 +134,8 @@ void Fluid1D::WriteFluidFile(float t){
 		cerr << "ERROR: numerical method failed to converge" <<"\nExiting"<< endl;
 		exit(EXIT_FAILURE);
 	}
-	data_preview << t << "\t" << Umain[pos_end/2] << "\n";
+//data_preview << t << "\t" << Umain[pos_end/2] << "\n";
+	data_preview << t << "\t" << Umain[pos_ini]<< "\t" << Umain[pos_end] << "\n";
 }
 
 void Fluid1D::BohmOperator(float bohm) {
@@ -152,8 +153,8 @@ void Fluid1D::BohmOperator(float bohm) {
 }
 
 void Fluid1D::Richtmyer(){
-	this->RichtmyerStep1();
-	this->RichtmyerStep2();
+	RichtmyerStep1();
+	RichtmyerStep2();
 }
 void Fluid1D::RichtmyerStep1() {
 	for ( int i = 0; i <= Nx - 2; i++ ){

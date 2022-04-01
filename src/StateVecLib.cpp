@@ -45,7 +45,7 @@ StateVec &StateVec::operator=(const StateVec & obj) {
 	if(this != &obj) {
 		this->density=obj.density;
 		this->velocity=obj.velocity;
-		this->sound=obj.sound;
+		//this->sound=obj.sound;
 	}
 	return *this;
 }
@@ -100,8 +100,21 @@ StateVec operator/(const StateVec &obj, float value){
 }
 
 std::ostream &operator<<(std::ostream &outstream, const StateVec &obj) {
-	return outstream << obj.density <<"\t"<< obj.velocity <<"\t"<< obj.sound;
+	return outstream << obj.density <<"\t"<< obj.velocity ; //<<"\t"<< obj.sound;
 }
+
+void StateVec::SetDen(float x) {
+density=x;
+}
+
+void StateVec::SetVel(float x) {
+velocity=x;
+}
+
+void StateVec::SetSnd(float x) {
+sound=x;
+}
+
 
 
 

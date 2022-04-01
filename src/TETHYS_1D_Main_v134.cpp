@@ -69,7 +69,7 @@ int main(int argc, char **argv){
 	///graph.Hopscotch();
 
 
-	graph.SetTmax(1.0);
+	graph.SetTmax(10.0);
 	//Main cycle
 	while(t <= graph.GetTmax() ) {
 		t += dt;
