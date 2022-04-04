@@ -94,7 +94,6 @@ public :
 
 
 
-		void BohmOperator(float bohm);
 		void SetSound();            ///< Applies the anisotropy to the sound velocity array
 		void SaveSound();
 	    void SetSound(const std::function<float(float)>& func);            ///< Applies the anisotropy to the sound velocity array

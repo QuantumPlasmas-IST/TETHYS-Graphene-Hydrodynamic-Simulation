@@ -71,7 +71,7 @@
 		SW2 = C - stride - 1;
 	}
 
-
+/*
 GridPoint1D::GridPoint1D(int pos, int xpoints, bool mid) {
 	IsMidGrid = mid;
 	C = pos;
@@ -100,3 +100,4 @@ void GridPoint1D::ThirdNeighbours() { //TODO rever se isto esta bem em 1D
 	E3 = C + 3;
 	W3 = C - 3;
 }
+*/
