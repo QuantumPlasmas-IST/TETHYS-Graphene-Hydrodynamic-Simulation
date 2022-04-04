@@ -107,15 +107,24 @@ void Fluid1D::InitialCondRand(){
 		Umain[i].n()= 1.0f + 0.0001f * (noise - 0.5f);
 		Umain[i].v()= 0.0f;
 	}
+	this->SetSound();
 }
-
-//TODO implement generalist initial conditions
 
 void Fluid1D::InitialCondTest(){
  	for (int i = 0; i < Nx; i++ ){
 		Umain[i].n()=1.0;
 	    Umain[i].v()=(i>Nx/3 && i<2*Nx/3 ) ? 1.0f : 0.1f;
 	}
+	this->SetSound();
+}
+void Fluid1D::InitialCondGeneral(function<float(float)> fden, function<float(float)> fvx) {
+	float x;
+	for (int i = 0; i < Nx; ++i) {
+		x=i*dx;
+		Umain[i].n()=fden(x);
+		Umain[i].v()=fvx(x);
+	}
+	this->SetSound();
 }
 
 
@@ -345,11 +354,3 @@ void Fluid1D::SaveSound() {
 	dataset_vel_snd.close();
 }
 
-void Fluid1D::InitialCondGeneral(function<float(float)> fden, function<float(float)> fvx) {
-	float x;
-	for (int i = 0; i < Nx; ++i) {
-		x=i*dx;
-		Umain[i].n()=fden(x);
-		Umain[i].v()=fvx(x);
-	}
-}
