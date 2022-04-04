@@ -21,8 +21,6 @@ private:
 public:
 	CellHandler1D(int, Fluid1D *, StateVec *);
 	~CellHandler1D()=default;
-//	StateVec &E(StateVec * Uin);
-//	StateVec &W(StateVec * Uin);
 
 	StateVec TVD(char side,char edge);
 	StateVec UNO(char side,char edge); //TODO implementar a reconstrução com o UNO2

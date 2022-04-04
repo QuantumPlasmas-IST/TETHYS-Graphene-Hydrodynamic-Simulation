@@ -64,10 +64,6 @@ int main(int argc, char **argv){
 
 	cout << "\033[1;7;5;33m Program Running \033[0m"<<endl;
 
-//	graph.BohmOperator(0);
-
-	///graph.Hopscotch();
-
 
 	graph.SetTmax(10.0);
 	//Main cycle
@@ -76,11 +72,17 @@ int main(int argc, char **argv){
 		GrapheneFluid1D::TimeStepCounter++;
 		// Main algorithm		
 		graph.Richtmyer();
-		//graph.Vliegenthart();
+		//graph.RungeKuttaTVD();
+
 		// Impose boundary conditions
 		DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
 		//BoundaryCondition::XPeriodic(graph);
 
+		//graph.BohmOperator(0.015);
+		//BoundaryCondition::XPeriodic(graph);
+
+		// Applying average filters for smoothing 	
+		//graph.Smooth(2);
 		//Record full data
 		if (parameters.SaveMode  && graph.Snapshot()) {
 			graph.SaveSnapShot();
