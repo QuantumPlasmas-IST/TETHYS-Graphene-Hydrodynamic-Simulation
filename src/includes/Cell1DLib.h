@@ -20,12 +20,18 @@ private:
 	Fluid1D *fluid_ptr;
 public:
 	CellHandler1D(int, Fluid1D *, StateVec *);
+	CellHandler1D(int, StateVec *);
 	~CellHandler1D()=default;
 
 	StateVec TVD(char side,char edge);
+	StateVec TVD(StateVec *,int pos,char side,char edge);
+
 	StateVec UNO(char side,char edge); //TODO implementar a reconstrução com o UNO2
 
+
+	StateVec VanLeerU(int i);
 	float VanLeer(int i);
+	float VanLeer(StateVec*,int i);
 	float Roe(int i); //TODO adicionar mais flux limiters
 };
 

@@ -32,7 +32,7 @@ public:
 	 * Implementation of the Dyakonov-Shur boundary conditions (1D case) of constant current at the drain and constant voltage (number density) at the source
 	 * @f[ n(x=0)=n_0  @f] and @f[j(x=L)\equiv n(x=L)v(x=L)=n_0v_0 @f]
 	 * */
-	static void DyakonovShurBc(GrapheneFluid1D &fluid_class);
+	static void DyakonovShurBc(Fluid1D &fluid_class);
 
 	/*!
 	 * @brief Dyakonov-Shur boundary conditions 2D
