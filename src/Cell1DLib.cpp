@@ -18,7 +18,7 @@ CellHandler1D::CellHandler1D(int i, StateVec * ptr_state) {
 
 float CellHandler1D::VanLeer(StateVec*Uin,int i) {  //TODO cada variável tem o seu limitador ATENÇAO
 	float denom,numer,r,f;
-	float limit=2.0f;
+	//float limit=2.0f;
 	float tolerance=1E-6;
 	StateVec Numer = U_ptr[i]-U_ptr[i-1];
 	StateVec Denom = U_ptr[i+1]-U_ptr[i];
@@ -34,7 +34,7 @@ float CellHandler1D::VanLeer(StateVec*Uin,int i) {  //TODO cada variável tem o 
 
 float CellHandler1D::VanLeer(int i) {  //TODO cada variável tem o seu limitador ATENÇAO
 	float denom,numer,r,f;
-	float limit=2.0f;
+	//float limit=2.0f;
 	float tolerance=1E-6;
 	StateVec Numer = U_ptr[i]-U_ptr[i-1];
 	StateVec Denom = U_ptr[i+1]-U_ptr[i];
@@ -42,16 +42,8 @@ float CellHandler1D::VanLeer(int i) {  //TODO cada variável tem o seu limitador
 	numer=Numer.v();
 	denom=Denom.v();
 
-	if(denom!=0){
-		r=numer/denom;
-		f=(r+abs(r))/(1+abs(r));
-	} else{
-		if(numer<=tolerance){
-			f=0;
-		} else{
-			f=limit;
-		}
-	}
+	r=numer/(denom+tolerance);
+	f=(r+abs(r))/(1+abs(r));
 	return f;
 }
 
@@ -97,22 +89,15 @@ StateVec CellHandler1D::VanLeerU(int i) {
 float CellHandler1D::Roe(int i) { //TODO cut off
 	float denom,numer,r,f;
 	float limit=1.0f;
-	float tolerance=1E-5;
+	float tolerance=1E-6;
 	StateVec Numer = U_ptr[i]-U_ptr[i-1];
 	StateVec Denom = U_ptr[i+1]-U_ptr[i];
 	numer=Numer.v();
 	denom=Denom.v();
 
-	if(denom!=0){
-		r=numer/denom;
-		f=max(0.0f,min(1.0f,r));
-	} else{
-		if(numer<=tolerance){
-			f=0;
-		} else{
-			f=limit;
-		}
-	}
+
+	r=numer/(denom+tolerance);
+	f=max(0.0f,min(1.0f,r));
 	return f;
 }
 
