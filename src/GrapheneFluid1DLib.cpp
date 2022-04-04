@@ -23,7 +23,9 @@ GrapheneFluid1D::~GrapheneFluid1D(){
 	delete Den;
 	delete Vel ;
 	delete Cur ;
-
+	delete Umain;
+	delete Umid;
+	delete Uaux;
 	delete vel_snd_arr ;
 	delete GradVel ;
 }
@@ -39,7 +41,13 @@ float GrapheneFluid1D::DensityFlux(StateVec U) {
 	return U.n()*U.v();
 }
 
+float GrapheneFluid1D::DensitySource(StateVec U){
+	return 0.0f;
+}
 
+float GrapheneFluid1D::VelocitySource(StateVec U) {
+	return -1.0f * col_freq * U.v();
+}
 
 
 

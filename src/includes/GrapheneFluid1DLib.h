@@ -34,13 +34,16 @@ class GrapheneFluid1D : public Fluid1D{
 		void CflCondition() override;
 		/*Override fluxes and sources to specifics of graphene physics*/
 
-	float DensityFlux(StateVec U) override;
-	float VelocityFlux(StateVec U) override;
+		float DensityFlux(StateVec U) override;
+		float VelocityFlux(StateVec U) override;
 
+		float DensitySource(StateVec U) override;
+		float VelocitySource(StateVec U) override;
 
-
-	float DensitySource(__attribute__((unused)) float n,__attribute__((unused)) float v, __attribute__((unused)) float s) override;
+		float DensitySource(__attribute__((unused)) float n,__attribute__((unused)) float v, __attribute__((unused)) float s) override;
 		float VelocitySource(float n, float v, float s, float d3den) override;
+
+
 };
 
 #endif //GRAPHENEFLUID1DLIB_H

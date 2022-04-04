@@ -59,18 +59,16 @@ class Fluid1D : public TethysBase{
 
 public :
 
-
-
-
-
-
-	StateVec * Umain;
-	StateVec * Uaux;
-	StateVec * Umid;
+		StateVec * Umain;
+		StateVec * Uaux;
+		StateVec * Umid;
 
 		float * Den ;       // number density
 		float * Vel ;       // fluid velocity
+
+		//TODO implement velocity grandient at StateVec
 		float * GradVel;    // fluid velocity gradient
+
 		float * Cur ;       // current density (density times velocity)
 
 		explicit Fluid1D(const SetUpParameters &input_parameters);
@@ -104,6 +102,8 @@ public :
 
 		virtual StateVec ConservedFlux(StateVec U);
 
+		virtual float DensitySource(StateVec U); ///< density equation (continuity equation) source term
+		virtual float VelocitySource(StateVec U); ///< velocity equation (momentum equation) source term
 		virtual float DensitySource(__attribute__((unused)) float n,  __attribute__((unused)) float v, __attribute__((unused)) float s); ///< density equation (continuity equation) source term
 		virtual float VelocitySource(float n, float v, float s, float d3den); ///< velocity equation (momentum equation) source term
 		void CreateFluidFile();     ///< create and open the simplified .dat file output

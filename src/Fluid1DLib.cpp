@@ -57,6 +57,14 @@ float Fluid1D::VelocitySource(float n, float v, float s, float d3den) {
 	return 0;
 }
 
+float  Fluid1D::DensitySource(StateVec U){
+	return 0;
+}
+float Fluid1D::VelocitySource(StateVec U) {
+	return 0;
+}
+
+
 void Fluid1D::CflCondition(){
 		dx = lengX / ( float ) ( Nx - 1 );
 		dt = dx/10.0f;
@@ -139,16 +147,23 @@ void Fluid1D::RichtmyerStep1() {
 	for ( int i = 0; i <= Nx - 2; i++ ){
 		float den_avg   = 0.5f * (Umain[i+1] + Umain[i] ).n();
 		float vel_avg   = 0.5f * (Umain[i+1] + Umain[i] ).v();
-		Umid[i].n() = den_avg - 0.5f*(dt/dx)*(DensityFlux(Umain[i+1]) - DensityFlux(Umain[i]));
-		Umid[i].v() = vel_avg - 0.5f*(dt/dx)*(VelocityFlux(Umain[i+1]) - VelocityFlux(Umain[i]));
+		Umid[i].n() = den_avg - 0.5f*(dt/dx)*(DensityFlux(Umain[i+1]) - DensityFlux(Umain[i]))
+							+ (0.5f*dt) * DensitySource(0.5f * (Umain[i+1] + Umain[i] )) ;
+		Umid[i].v() = vel_avg - 0.5f*(dt/dx)*(VelocityFlux(Umain[i+1]) - VelocityFlux(Umain[i]))
+							+ (0.5f*dt) * VelocitySource(0.5f * (Umain[i+1] + Umain[i] )) ;
 	}
 }
 void Fluid1D::RichtmyerStep2() {
 	for ( int i = 1; i <= Nx - 2; i++ ){
-		float den_old = Umain[i].n();
-		float vel_old = Umain[i].v();
-		Umain[i].n() = den_old - (dt/dx)*(DensityFlux(Umid[i]) - DensityFlux(Umid[i-1]));
-		Umain[i].v() = vel_old - (dt/dx)*(VelocityFlux(Umid[i]) - VelocityFlux(Umid[i-1]));
+		StateVec Uold(Umain[i]);
+		float den_old = Uold.n();
+		float vel_old = Uold.v();
+//		float den_old = Umain[i].n();
+//		float vel_old = Umain[i].v();
+		Umain[i].n() = den_old - (dt/dx)*(DensityFlux(Umid[i]) - DensityFlux(Umid[i-1]))
+				                 + dt * DensitySource(Uold);
+		Umain[i].v() = vel_old - (dt/dx)*(VelocityFlux(Umid[i]) - VelocityFlux(Umid[i-1]))
+		                         + dt * VelocitySource(Uold);
 	}
 }
 
