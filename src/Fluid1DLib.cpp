@@ -101,7 +101,9 @@ void Fluid1D::InitialCondRand(){
 	}
 }
 
-void Fluid1D::InitialCondTest(){   //TODO change initial conditions to U stateVec
+//TODO implement generalist initial conditions
+
+void Fluid1D::InitialCondTest(){
  	for (int i = 0; i < Nx; i++ ){
 		Umain[i].n()=1.0;
 	    Umain[i].v()=(i>Nx/3 && i<2*Nx/3 ) ? 1.0f : 0.1f;
