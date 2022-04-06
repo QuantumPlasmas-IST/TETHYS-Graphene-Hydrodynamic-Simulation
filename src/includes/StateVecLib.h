@@ -15,6 +15,7 @@ private:
 	float density;
 	float velocity;
 	float sound=1.0f;
+	float d2density = 0.0f;
 public:
 	StateVec()=default; //default constructor
 	StateVec(const StateVec&); //copy constructor
@@ -27,6 +28,7 @@ public:
 	float& v();
 	float& n();
 	float& S();
+	float& d2den();
 
 	StateVec& operator=(const StateVec&);
 	StateVec operator + (StateVec const &obj) const ;

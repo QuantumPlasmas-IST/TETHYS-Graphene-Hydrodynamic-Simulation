@@ -41,11 +41,16 @@ float &StateVec::S() {
 	return sound;
 }
 
+float &StateVec::d2den() {
+	return d2density;
+}
+
 StateVec &StateVec::operator=(const StateVec & obj) {
 	if(this != &obj) {
 		this->density=obj.density;
 		this->velocity=obj.velocity;
 		this->sound=obj.sound;
+		this->d2density=obj.d2density;
 	}
 	return *this;
 }
@@ -54,6 +59,7 @@ StateVec StateVec::operator+(const StateVec &obj) const {
 	StateVec res{};
 	res.density =this->density + obj.density;
 	res.velocity = this->velocity + obj.velocity;
+	res.d2density = this->d2density + obj.d2density;
 	return res;
 }
 
@@ -61,6 +67,7 @@ StateVec StateVec::operator-(const StateVec &obj) const {
 	StateVec res{};
 	res.density = this->density - obj.density;
 	res.velocity = this->velocity - obj.velocity;
+	res.d2density = this->d2density - obj.d2density;
 	return res;
 }
 
@@ -83,12 +90,14 @@ StateVec operator*(const StateVec &obj, float value){
 	StateVec res{};
 	res.density = value*obj.density;
 	res.velocity = value*obj.velocity;
+	res.d2density = value*obj.d2density;
 	return res;
 }
 StateVec operator*(float value, const StateVec &obj) {
 	StateVec res{};
 	res.density = value*obj.density;
 	res.velocity = value*obj.velocity;
+	res.d2density = value*obj.d2density;
 	return res;
 }
 
@@ -96,6 +105,7 @@ StateVec operator/(const StateVec &obj, float value){
 	StateVec res{};
 	res.density = obj.density/value;
 	res.velocity =obj.velocity/value;
+	res.d2density = obj.d2density/value;
 	return res;
 }
 
