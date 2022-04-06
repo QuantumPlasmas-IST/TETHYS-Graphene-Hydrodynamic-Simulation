@@ -246,36 +246,52 @@ void Fluid1D::RungeKuttaTVD() {
 	//	UWleft  = cell.TVD(Umain,i,'W','L');
 	//	UWright = cell.TVD(Umain,i,'W','R');
 
-		UEleft  = Umain[i-1];
-		UEright = Umain[i];
-		UWleft  = Umain[i];
-		UWright = Umain[i+1];
+		// redefini os StateVec's, para estarem iguais à literatura para eu me orientar melhor :(
+		UEleft  = Umain[i];
+		UEright = Umain[i-1];
+		UWleft  = Umain[i+1];
+		UWright = Umain[i];
 
-		DenNumFluxW= NumericalFlux::Central(this,UWleft,UWright).n();
-		DenNumFluxE= NumericalFlux::Central(this,UEleft,UEright).n();
-		VelNumFluxW= NumericalFlux::Central(this,UWleft,UWright).v();
-		VelNumFluxE= NumericalFlux::Central(this,UEleft,UEright).v();
+		// calculei os laplacianos da densidade (como vai dar ao mesmo vale a pena calcular todos?)
+		UEleft.d2den() = 1./(dx*dx)*(Umain[i+1].n()-2*Umain[i].n()+Umain[i-1].n()); // método das diferenças centradas
+		UEright.d2den() = 1./(dx*dx)*(Umain[i+1].n()-2*Umain[i].n()+Umain[i-1].n()); // método das diferenças adiantadas
+		UEleft.d2den() = 1./(dx*dx)*(Umain[i+1].n()-2*Umain[i].n()+Umain[i-1].n()); // método das diferenças retardadas
+		UWright.d2den() = 1./(dx*dx)*(Umain[i+1].n()-2*Umain[i].n()+Umain[i-1].n()); // método das diferenças centradas
+
+		// alterei o método para a média para começar
+		DenNumFluxE= NumericalFlux::Average(this,UEleft,UEright).n();
+		DenNumFluxW= NumericalFlux::Average(this,UWleft,UWright).n();
+		VelNumFluxE= NumericalFlux::Average(this,UEleft,UEright).v();
+		VelNumFluxW= NumericalFlux::Average(this,UWleft,UWright).v();
 
 		Uaux[i].n()=Umain[i].n()-(dt/dx)*(DenNumFluxW-DenNumFluxE);
 		Uaux[i].v()=Umain[i].v()-(dt/dx)*(VelNumFluxW-VelNumFluxE);
 	}
 	for (int i = 1; i < Nx-1; ++i) {
-		CellHandler1D cell(i, this, Uaux);
+		CellHandler1D cell(i, this, Uaux); // vetor Uaux vazio?
 
 	//	UEleft  = cell.TVD(Uaux,i,'E','L');
 	//	UEright = cell.TVD(Uaux,i,'E','R');
 	//	UWleft  = cell.TVD(Uaux,i,'W','L');
 	//	UWright = cell.TVD(Uaux,i,'W','R');
 
-		UEleft  = Uaux[i-1];
-		UEright = Uaux[i];
-		UWleft  = Uaux[i];
-		UWright = Uaux[i+1];
+		// redefini os StateVec's, para estarem iguais à literatura para eu me orientar melhor :(
+		UEleft  = Uaux[i];
+		UEright = Uaux[i-1];
+		UWleft  = Uaux[i+1];
+		UWright = Uaux[i];
 
-		DenNumFluxW= NumericalFlux::Central(this,UWleft,UWright).n();
-		DenNumFluxE= NumericalFlux::Central(this,UEleft,UEright).n();
-		VelNumFluxW= NumericalFlux::Central(this,UWleft,UWright).v();
-		VelNumFluxE= NumericalFlux::Central(this,UEleft,UEright).v();
+		// calculei os laplacianos da densidade (como vai dar ao mesmo vale a pena calcular todos?)
+		UEleft.d2den() = 1./(dx*dx)*(Uaux[i+1].n()-2*Uaux[i].n()+Uaux[i-1].n()); // método das diferenças centradas
+		UEright.d2den() = 1./(dx*dx)*(Uaux[i+1].n()-2*Uaux[i].n()+Uaux[i-1].n()); // método das diferenças adiantadas
+		UEleft.d2den() = 1./(dx*dx)*(Uaux[i+1].n()-2*Uaux[i].n()+Uaux[i-1].n()); // método das diferenças retardadas
+		UWright.d2den() = 1./(dx*dx)*(Uaux[i+1].n()-2*Uaux[i].n()+Uaux[i-1].n()); // método das diferenças centradas
+
+		// alterei o método para a média para começar
+		DenNumFluxE= NumericalFlux::Average(this,UEleft,UEright).n();
+		DenNumFluxW= NumericalFlux::Average(this,UWleft,UWright).n();
+		VelNumFluxE= NumericalFlux::Average(this,UEleft,UEright).v();
+		VelNumFluxW= NumericalFlux::Average(this,UWleft,UWright).v();
 
 		Umain[i].n()=0.5f*(Umain[i].n()+Uaux[i].n())-(0.5f*dt/dx)*(DenNumFluxW-DenNumFluxE);
 		Umain[i].v()=0.5f*(Umain[i].v()+Uaux[i].v())-(0.5f*dt/dx)*(VelNumFluxW-VelNumFluxE);
