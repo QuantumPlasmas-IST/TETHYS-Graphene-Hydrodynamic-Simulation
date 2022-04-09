@@ -267,10 +267,10 @@ void Fluid1D::RungeKuttaTVD() {
 		VelNumFluxE = NumericalFlux::Central(this,UEleft,UEright).v();
 		VelNumFluxW = NumericalFlux::Central(this,UWleft,UWright).v();
 
-		DenNumSourceE = NumericalFlux::Central(this,UEleft,UEright).n();
-		DenNumSourceW = NumericalFlux::Central(this,UWleft,UWright).n();
-		VelNumSourceE = NumericalFlux::Central(this,UEleft,UEright).v();
-		VelNumSourceW = NumericalFlux::Central(this,UWleft,UWright).v();
+		DenNumSourceE = NumericalSource::Central(this,UEleft,UEright).n();
+		DenNumSourceW = NumericalSource::Central(this,UWleft,UWright).n();
+		VelNumSourceE = NumericalSource::Central(this,UEleft,UEright).v();
+		VelNumSourceW = NumericalSource::Central(this,UWleft,UWright).v();
 
 		// acrescentei o termo da fonte
 		Uaux[i].n()=Umain[i].n()-(dt/dx)*(DenNumFluxW-DenNumFluxE) + 0.5f*dt*(DenNumFluxW+DenNumFluxE);
@@ -301,10 +301,10 @@ void Fluid1D::RungeKuttaTVD() {
 		VelNumFluxE= NumericalFlux::Central(this,UEleft,UEright).v();
 		VelNumFluxW= NumericalFlux::Central(this,UWleft,UWright).v();
 
-		DenNumSourceE = NumericalFlux::Central(this,UEleft,UEright).n();
-		DenNumSourceW = NumericalFlux::Central(this,UWleft,UWright).n();
-		VelNumSourceE = NumericalFlux::Central(this,UEleft,UEright).v();
-		VelNumSourceW = NumericalFlux::Central(this,UWleft,UWright).v();
+		DenNumSourceE = NumericalSource::Central(this,UEleft,UEright).n();
+		DenNumSourceW = NumericalSource::Central(this,UWleft,UWright).n();
+		VelNumSourceE = NumericalSource::Central(this,UEleft,UEright).v();
+		VelNumSourceW = NumericalSource::Central(this,UWleft,UWright).v();
 
 		// acrescentei o termo da fonte
 		Umain[i].n()=0.5f*(Umain[i].n()+Uaux[i].n())-(0.5f*dt/dx)*(DenNumFluxW-DenNumFluxE) + 0.25f*dt*(DenNumFluxW+DenNumFluxE);
