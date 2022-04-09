@@ -233,6 +233,10 @@ void Fluid1D::RungeKuttaTVD() {
 	float DenNumFluxE;
 	float VelNumFluxW;
 	float VelNumFluxE;
+	float DenNumSourceW;
+	float DenNumSourceE;
+	float VelNumSourceW;
+	float VelNumSourceE;
 	StateVec UEleft{};
 	StateVec UEright{};
 	StateVec UWleft{};
@@ -246,44 +250,47 @@ void Fluid1D::RungeKuttaTVD() {
 	//	UWleft  = cell.TVD(Umain,i,'W','L');
 	//	UWright = cell.TVD(Umain,i,'W','R');
 
-		// redefini os StateVec's, para estarem iguais à literatura para eu me orientar melhor :(
 		UEleft  = Umain[i];
 		UEright = Umain[i-1];
 		UWleft  = Umain[i+1];
 		UWright = Umain[i];
 
 		// calculei os laplacianos da raiz quadrada da densidade usando o método das diferenças centradas
-		float lap_sqrtn = (Umain[i+1].n()-2*Umain[i].n()+Umain[i-1].n())/(dx*dx);
+		float lap_sqrtn = (sqrt(Umain[i+1].n()) - 2*sqrt(Umain[i].n()) + sqrt(Umain[i-1].n())) / (dx*dx);
 		UEleft.d2den()  = lap_sqrtn;
 		UEright.d2den() = lap_sqrtn;
 		UWleft.d2den()  = lap_sqrtn;
 		UWright.d2den() = lap_sqrtn;
 
-		// alterei o método para a média para começar
 		DenNumFluxE = NumericalFlux::Central(this,UEleft,UEright).n();
 		DenNumFluxW = NumericalFlux::Central(this,UWleft,UWright).n();
 		VelNumFluxE = NumericalFlux::Central(this,UEleft,UEright).v();
 		VelNumFluxW = NumericalFlux::Central(this,UWleft,UWright).v();
 
-		Uaux[i].n()=Umain[i].n()-(dt/dx)*(DenNumFluxW-DenNumFluxE);
-		Uaux[i].v()=Umain[i].v()-(dt/dx)*(VelNumFluxW-VelNumFluxE);
+		DenNumSourceE = NumericalFlux::Central(this,UEleft,UEright).n();
+		DenNumSourceW = NumericalFlux::Central(this,UWleft,UWright).n();
+		VelNumSourceE = NumericalFlux::Central(this,UEleft,UEright).v();
+		VelNumSourceW = NumericalFlux::Central(this,UWleft,UWright).v();
+
+		// acrescentei o termo da fonte
+		Uaux[i].n()=Umain[i].n()-(dt/dx)*(DenNumFluxW-DenNumFluxE) + 0.5f*dt*(DenNumFluxW+DenNumFluxE);
+		Uaux[i].v()=Umain[i].v()-(dt/dx)*(VelNumFluxW-VelNumFluxE) + 0.5f*dt*(VelNumFluxW+VelNumFluxE);
 	}
 	for (int i = 1; i < Nx-1; ++i) {
-		CellHandler1D cell(i, this, Uaux); // vetor Uaux vazio?
+		CellHandler1D cell(i, this, Uaux);
 
 	//	UEleft  = cell.TVD(Uaux,i,'E','L');
 	//	UEright = cell.TVD(Uaux,i,'E','R');
 	//	UWleft  = cell.TVD(Uaux,i,'W','L');
 	//	UWright = cell.TVD(Uaux,i,'W','R');
 
-		// redefini os StateVec's, para estarem iguais à literatura para eu me orientar melhor :(
 		UEleft  = Uaux[i];
 		UEright = Uaux[i-1];
 		UWleft  = Uaux[i+1];
 		UWright = Uaux[i];
 
 		// calculei os laplacianos da raiz quadrada da densidade usando o método das diferenças centradas
-		float lap_sqrtn = (Umain[i+1].n()-2*Umain[i].n()+Umain[i-1].n())/(dx*dx);
+		float lap_sqrtn = (sqrt(Umain[i+1].n()) - 2*sqrt(Umain[i].n()) + sqrt(Umain[i-1].n())) / (dx*dx);
 		UEleft.d2den()  = lap_sqrtn;
 		UEright.d2den() = lap_sqrtn;
 		UWleft.d2den()  = lap_sqrtn;
@@ -294,8 +301,14 @@ void Fluid1D::RungeKuttaTVD() {
 		VelNumFluxE= NumericalFlux::Central(this,UEleft,UEright).v();
 		VelNumFluxW= NumericalFlux::Central(this,UWleft,UWright).v();
 
-		Umain[i].n()=0.5f*(Umain[i].n()+Uaux[i].n())-(0.5f*dt/dx)*(DenNumFluxW-DenNumFluxE);
-		Umain[i].v()=0.5f*(Umain[i].v()+Uaux[i].v())-(0.5f*dt/dx)*(VelNumFluxW-VelNumFluxE);
+		DenNumSourceE = NumericalFlux::Central(this,UEleft,UEright).n();
+		DenNumSourceW = NumericalFlux::Central(this,UWleft,UWright).n();
+		VelNumSourceE = NumericalFlux::Central(this,UEleft,UEright).v();
+		VelNumSourceW = NumericalFlux::Central(this,UWleft,UWright).v();
+
+		// acrescentei o termo da fonte
+		Umain[i].n()=0.5f*(Umain[i].n()+Uaux[i].n())-(0.5f*dt/dx)*(DenNumFluxW-DenNumFluxE) + 0.25f*dt*(DenNumFluxW+DenNumFluxE);
+		Umain[i].v()=0.5f*(Umain[i].v()+Uaux[i].v())-(0.5f*dt/dx)*(VelNumFluxW-VelNumFluxE) + 0.25f*dt*(VelNumFluxW+VelNumFluxE);
 	}
 }
 
