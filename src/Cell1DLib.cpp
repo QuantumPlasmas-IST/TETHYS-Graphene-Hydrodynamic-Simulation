@@ -208,4 +208,5 @@ StateVec NumericalSource::Average(Fluid1D *fluido, StateVec L, StateVec R) {
 	Ureturn.n()=fluido->DensitySource(0.5f*(L+R));
 	Ureturn.v()=fluido->VelocitySource(0.5f*(L+R));
 	return Ureturn;
+
 }
