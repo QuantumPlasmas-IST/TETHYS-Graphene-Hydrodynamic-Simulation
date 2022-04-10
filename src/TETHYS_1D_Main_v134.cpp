@@ -56,27 +56,39 @@ int main(int argc, char **argv){
 
 
 	/*...............Initialization...................................*/
-	graph.InitialCondRand();
+
+	// falta ajustar parâmetros físicos!
+	float As = 1.0f;
+	float X0 = 0.5f*graph.GetLengthX();
+	float D0 = 1.0f;
+	float cs = 1.0f;
+	float lambda = 20.0f*graph.GetLengthX();
+
+	std::function<float(float)> fden = [=](float x){ return  D0 + As/(cosh(lambda*(x-X0))); };
+	std::function<float(float)> fvx  = [=](float x){ return cs; };
+
+	graph.InitialCondGeneral(fden, fvx);
+	//graph.InitialCondRand();
 	//DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
 	//graph.InitialCondTest();
 
 	/*................................................................*/
 
-	cout << "\033[1;7;5;33m Program Running \033[0m"<<endl;
+	std::cout << "\033[1;7;5;33m Program Running \033[0m"<<endl;
 
 
-	graph.SetTmax(10.0);
+	graph.SetTmax(10.0f);
 	//Main cycle
-	while(t <= graph.GetTmax() ) {
+	while(t <= graph.GetTmax()) {
 		t += dt;
 		GrapheneFluid1D::TimeStepCounter++;
-		// Main algorithm		
+		// Main algorithm
 		graph.Richtmyer();
 		//graph.RungeKuttaTVD();
 
 		// Impose boundary conditions
-		DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
-		//BoundaryCondition::XPeriodic(graph);
+		//DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
+		BoundaryCondition::XPeriodic(graph);
 
 		//graph.BohmOperator(0.015);
 		//BoundaryCondition::XPeriodic(graph);
@@ -95,8 +107,8 @@ int main(int argc, char **argv){
 	}
 	graph.CloseHdf5File();
 
-	cout << "\033[1A\033[2K\033[1;32mDONE!\033[0m\n";
-	cout<<"═══════════════════════════════════════════════════════════════════════════" <<endl;
+	std::cout << "\033[1A\033[2K\033[1;32mDONE!\033[0m\n";
+	std::cout<<"═══════════════════════════════════════════════════════════════════════════" <<endl;
 
 	return 0;
 }
