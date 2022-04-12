@@ -354,3 +354,12 @@ void Fluid1D::SaveSound() {
 	dataset_vel_snd.close();
 }
 
+void Fluid1D::CalcVelocityGradient(StateVec * u_vec,int size_x) {
+	for ( int i = 1; i <= size_x ; i++ )
+	{
+		u_vec[i].grad_v() = (-0.5f * u_vec[i - 1].v() + 0.5f * u_vec[i + 1].v()) / dx;
+	}
+	u_vec[0].grad_v() = (-1.5f * u_vec[0].v() + 2.0f * u_vec[1].v() - 0.5f * u_vec[2].v()) / dx;
+	u_vec[size_x - 1].grad_v() = (0.5f * u_vec[size_x - 1 - 2].v() - 2.0f * u_vec[size_x - 1 - 1].v() + 1.5f * u_vec[size_x - 1].v()) / dx;
+}
+
