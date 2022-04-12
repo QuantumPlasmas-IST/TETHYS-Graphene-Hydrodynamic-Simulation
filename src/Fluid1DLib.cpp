@@ -149,7 +149,13 @@ void Fluid1D::WriteFluidFile(float t){
 
 
 void Fluid1D::Richtmyer(){
+	if(kin_vis!=0){
+		CalcVelocityGradient(Umain,Nx);
+	}
 	RichtmyerStep1();
+	if(kin_vis!=0) {
+		CalcVelocityGradient(Umid, Nx - 1);
+	}
 	RichtmyerStep2();
 }
 void Fluid1D::RichtmyerStep1() {
@@ -355,7 +361,7 @@ void Fluid1D::SaveSound() {
 }
 
 void Fluid1D::CalcVelocityGradient(StateVec * u_vec,int size_x) {
-	for ( int i = 1; i <= size_x ; i++ )
+	for ( int i = 1; i < size_x-1 ; i++ )
 	{
 		u_vec[i].grad_v() = (-0.5f * u_vec[i - 1].v() + 0.5f * u_vec[i + 1].v()) / dx;
 	}
