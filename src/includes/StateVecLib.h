@@ -14,6 +14,7 @@ class StateVec{
 private:
 	float density;
 	float velocity;
+	float velocity_gradient;
 	float sound=1.0f;
 public:
 	StateVec()=default; //default constructor
@@ -24,6 +25,7 @@ public:
 
 
 
+	float& grad_v();
 	float& v();
 	float& n();
 	float& S();
