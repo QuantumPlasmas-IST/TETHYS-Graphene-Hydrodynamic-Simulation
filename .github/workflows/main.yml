@@ -5,19 +5,17 @@ jobs:
     runs-on: ubuntu-latest
     name: A job to check my code quality
     steps:
-    - name: Check code meets quality standards
-      id: code-inspector
-      uses: codeinspectorio/github-action@master
-      with:
-        repo_token: ${{ secrets.GITHUB_TOKEN }}
-        #code_inspector_access_key: ${{ secrets.CODE_INSPECTOR_ACCESS_KEY }}
-        #code_inspector_secret_key: ${{ secrets.CODE_INSPECTOR_SECRET_KEY }}
-        code_inspector_api_token: ${{ secrets.CODE_INSPECTOR_API_TOKEN }}
-        force_ref: 'none'
-        min_quality_grade: 'WARNING'
-        min_quality_score: '0'
-        max_defects_rate: '1'
-        max_complex_functions_rate: '0.5'
-        max_long_functions_rate: '0.5'
-        project_name: ''
-        max_timeout_sec: '1200'
+      - name: Check code meets quality standards
+        id: codiga
+        uses: codiga/github-action@master
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          codiga_api_token: ${{ secrets.CODIGA_API_TOKEN }}
+          force_ref: 'none'
+          min_quality_grade: 'WARNING'
+          min_quality_score: '50'
+          max_defects_rate: '1'
+          max_complex_functions_rate: '0.5'
+          max_long_functions_rate: '0.5'
+          project_name: ''
+          max_timeout_sec: '1200'
