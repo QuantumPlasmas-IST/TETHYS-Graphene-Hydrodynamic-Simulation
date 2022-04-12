@@ -27,13 +27,13 @@ GrapheneFluid1D::~GrapheneFluid1D(){
 	delete Umid;
 	delete Uaux;
 	delete vel_snd_arr ;
-	delete GradVel ;
+	//	delete GradVel ;
 }
 
 
 
 float GrapheneFluid1D::VelocityFlux(StateVec U) {
-	return 0.25f * U.v() * U.v() + vel_fer * vel_fer * 0.5f * log(U.n()) + 2.0f * U.S() * U.S() * sqrt(U.n()) ; //TODO falta o termo dv para a voscosidade
+	return 0.25f * U.v() * U.v() + vel_fer * vel_fer * 0.5f * log(U.n()) + 2.0f * U.S() * U.S() * sqrt(U.n()) - kin_vis*U.grad_v();
 }
 
 

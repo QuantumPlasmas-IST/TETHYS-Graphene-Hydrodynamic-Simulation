@@ -27,7 +27,7 @@ Fluid1D::Fluid1D(const SetUpParameters &input_parameters) : TethysBase{input_par
 	file_infix = buffer;
 	Den = new float[Nx]();
 	Vel = new float[Nx]();
-	GradVel= new float[Nx]();
+	//GradVel= new float[Nx]();
 	Cur = new float[Nx]();
 	vel_snd_arr = new float[Nx]();
 
@@ -41,7 +41,7 @@ Fluid1D::~Fluid1D() = default;
 
 
 float Fluid1D::VelocityFlux( StateVec U) {
-	return 0.5f*U.v()*U.v()+U.n()*U.S()*U.S();
+	return 0.5f*U.v()*U.v()+U.n()*U.S()*U.S() - kin_vis*U.grad_v();
 }
 
 
@@ -61,7 +61,7 @@ float  Fluid1D::DensitySource(StateVec U){
 	return 0;
 }
 float Fluid1D::VelocitySource(StateVec U) {
-	return 0;
+	return  -1.0f * col_freq * U.v() ;
 }
 
 

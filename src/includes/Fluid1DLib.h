@@ -66,8 +66,8 @@ public :
 		float * Den ;       // number density
 		float * Vel ;       // fluid velocity
 
-		//TODO implement velocity grandient at StateVec
-		float * GradVel;    // fluid velocity gradient
+
+//		float * GradVel;    // fluid velocity gradient
 
 		float * Cur ;       // current density (density times velocity)
 
