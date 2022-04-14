@@ -6,6 +6,7 @@
 #include <fstream>
 #include <vector>
 
+//Não se chama TETHYS_2D_RadiationPattern.cpp ainda porque ainda não vai buscar os ficheiros input automaticamente (e porque é mais rapido compilar com um nome pequeno)
 //Le de um ficheiro fixo, terá de um dia ler de um ficheiro criado numa sessão
 //Usa ROOT apenas para visualização gráfico, mais tarde terá tudo a ser guardado em ficheiros e uma versão em que não precisa de root para correr
 #include <TCanvas.h>
