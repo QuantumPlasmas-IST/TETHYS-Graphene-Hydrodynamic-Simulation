@@ -1,8 +1,18 @@
 #include <time.h>
 #include <math.h>
+#include <iostream>
+#include <string>
+#include <sstream>
+#include <fstream>
+#include <vector>
+
+//Le de um ficheiro fixo, terá de um dia ler de um ficheiro criado numa sessão
+//Usa ROOT apenas para visualização gráfico, mais tarde terá tudo a ser guardado em ficheiros e uma versão em que não precisa de root para correr
 #include <TCanvas.h>
 #include <TGraph.h>
 #include <TGraph2D.h>
+#include <TGraphPolar.h>
+#include <TGraphPolargram.h>
 #include "TF1.h"
 #include "TF2.h"
 #include "TH1F.h"
@@ -15,66 +25,128 @@
 #include "TApplication.h"
 #include "TImage.h"
 
-#include "constants.h"
+double c_light = 2.99792458e8;
+double mu_zero = 4*M_PI*1e-7;
+double epsilon_zero = 8.62607015e-34;
 
-
-using std::vector;
+using namespace std;
 
 int main(int argc, char *argv[]) {
 	clock_t tStart = clock();
 
-	double L = 1;
-	double A = 2;
-	double omega = 1e12;
-	double temp;
+	string namefile = "Files_Images_PIC/electro_2D_S=21.00vF=10.50vis=0.010odd=0.000l=0.001wc=0.00therm=0.00.dat";
 
-	//funcao densidade de carga
-	TF1* ro_Q = new TF1("ro_Q", [&](double*x, double *p){ //x[0]-> posicao ; p[0]-> tempo
-		return A*(cos(M_PI*(x[0]-cos(omega*p[0]))/(2*L)))*(cos(M_PI*(x[0]-cos(omega*p[0]))/(2*L)))/(M_PI+sin(M_PI*(cos(omega*p[0])+L/2)/(2*L))-sin(M_PI*(cos(omega*p[0])-L/2)/(2*L))); }
-		, -L/2, L/2, 1);
+	ifstream infile1(namefile, ios::in);
 
-	//funcao que é integrada p = integral(d*q)
-	TF1* ro_Q_d = new TF1("ro_Q_d", [&](double*x, double *p){
-		ro_Q->SetParameter(0,p[0]);
-		return x[0]*ro_Q->Eval(x[0]); }, -L/2, L/2, 1);
+    string line;
+    double temp_d;
+    int Nl = 112;
+    int Nc = 15;
 
-	//funcao de momento dipolar eletrico
-	TF1* elec_dip_mom = new TF1("elec_dip_mom", [&](double*x, double *p){
-		ro_Q_d->SetParameter(0,x[0]); //tempo passa a ser o x (já não é funçao da posicao)
-		return ro_Q_d->Integral(-L/2,L/2); }, 0, 100, 0);
+    vector<double> time;
+    vector<double> edpX;
+    vector<double> edpX_dd;
+    vector<double> edpY;
+    vector<double> edpY_dd;
 
-	//griffiths 11.58
-	TF1* E_theta = new TF1("E_theta", [&](double*x, double *p){ // x[0]-> theta ; p[0]-> t ; p[1]-> r
-		return mu_zero*elec_dip_mom->Derivative2(p[0]-p[1]/c_light)*(sin(x[0])/p[1])/(4*M_PI); }, 0, 4*M_PI, 2);
+    for(int i=0; i<Nl; i++){
+        getline(infile1, line);
+        stringstream ss;
+        ss << line;
+        string temp_s="";
+
+        for(int j=0; j<Nc; j++){
+            ss >> temp_s;
+            if(j==0){
+            	if (stringstream(temp_s) >> temp_d);
+            	time.push_back(temp_d);
+            }
+            if(j==9){
+            	if (stringstream(temp_s) >> temp_d);
+            	edpX.push_back(temp_d);
+            }
+            if(j==11){
+            	if (stringstream(temp_s) >> temp_d);
+            	edpX_dd.push_back(temp_d);
+            }
+            if(j==12){
+            	if (stringstream(temp_s) >> temp_d);
+            	edpY.push_back(temp_d);
+            }
+            if(j==14){
+            	if (stringstream(temp_s) >> temp_d);
+            	edpY_dd.push_back(temp_d);
+            }
+        }
+    }
+
+    infile1.close();
+    cout << "[FIM DA LEITURA DO FICHEIRO " << namefile << " ]" << endl;
 
 
-	TCanvas *c1 = new TCanvas("c1", "c1", 200, 10, 1280, 720);
-	auto gr = new TGraph();
+    auto c1 = new TCanvas("c1", "c1", 200, 10, 1280, 720);
+	auto gr_edpX = new TGraph();
+	auto gr_edpY = new TGraph();
 
-	E_theta->SetParameter(1,1); //raio 1 metro para os graficos
-	E_theta->SetParameter(0,0); // tempo a 0
+    for(int i=0; i<Nl; i++){
+		gr_edpX->SetPoint(i,time[i],edpX[i]);
+		gr_edpY->SetPoint(i,time[i],edpY[i]);
+	}
 
-	/*
-	for (int i=0; i<20; i++){
-        c1->cd();
-        E_theta->SetParameter(0,i*1e-14);
-        for (int j=0; j<100; j++) gr->SetPoint(j,2*M_PI*j/100, E_theta->Eval(2*M_PI*j/100));
-        gr->Draw();
+	c1->cd();
+	gr_edpX->Draw();
+	c1->SaveAs("Files_Images_PIC/edpX_t.pdf");
+	c1->Clear();
+	gr_edpY->Draw();
+	c1->SaveAs("Files_Images_PIC/edpY_t.pdf");
+
+
+	auto Poyting = [&](int i, double x, double y, double z){ //modulo do vetor Poyting // tempo está no i
+		double r2 = x*x+y*y+z*z;
+    	return (mu_zero/c_light)*(1/(16*M_PI*M_PI))*(1/(r2))*(edpX_dd[i]*edpX_dd[i]+edpY_dd[i]*edpY_dd[i]-(1/(r2*r2))*(x*edpX_dd[i]+y*edpY_dd[i])*(x*edpX_dd[i]+y*edpY_dd[i]));
+    };
+
+    auto gr_S = new TGraph();
+    int Np = 300;
+    double Raio = 10;
+    Double_t theta[Np];
+   	Double_t radius[Np];
+
+   	for(int j=0; j<Np; j++){
+	    theta[j] = 2*M_PI*j/Np;
+		radius[j] = Poyting(11,Raio*cos(0)*sin(theta[j]),Raio*sin(0)*sin(theta[j]),Raio*cos(theta[j]));
+		gr_S->SetPoint(j,theta[j],Poyting(11,cos(M_PI/4)*sin(theta[j]),sin(M_PI/4)*sin(theta[j]),cos(theta[j])));
+	}
+
+   	auto grPolar = new TGraphPolar(Np, theta, radius);
+   	grPolar->SetLineColor(2);
+    grPolar->SetLineWidth(3);
+
+    c1->Clear();
+    grPolar->Draw("AOL");
+    c1->SaveAs("Files_Images_PIC/S_theta_polar.pdf");
+
+    c1->Clear();
+    gr_S->Draw("AOL");
+    c1->SaveAs("Files_Images_PIC/S_theta.pdf");
+
+   	/*for (int i=0; i<30; i++){
+        for(int j=0; j<Np; j++){
+	    	theta[j] = 2*M_PI*j/Np;
+			radius[j] = Poyting(i,cos(1)*sin(theta[j]),sin(1)*sin(theta[j]),cos(theta[j]));
+	    }
+	    grPolar = new TGraphPolar(Np, theta, radius);
+	    grPolar->SetLineColor(2);
+    	grPolar->SetLineWidth(3);
+
+	    c1->Clear();
+		grPolar->Draw("AOL");
     	cout << i << endl;
         c1->Print("simulation.gif+5");
     }
-	c1->Print("simulation.gif++");
-	*/
+	c1->Print("simulation.gif++"); */
 
-	for(int i=0; i<200; i++){
-		E_theta->SetParameter(0,i*1e-14); // tempo a 0
-		gr->SetPoint(i,i*1e-14,E_theta->Eval(M_PI/2));
-	}
 
-	cout << tStart - clock() << endl;
-
-	gr->Draw();
-	c1->SaveAs("Files_Images_PIC/E_t.pdf");
-
+	printf("Time taken: %.7fs\n", (double)(clock() - tStart)/CLOCKS_PER_SEC); 
 	return 0;
 }
