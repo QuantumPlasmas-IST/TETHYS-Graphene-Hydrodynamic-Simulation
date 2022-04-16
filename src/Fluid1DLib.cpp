@@ -208,26 +208,28 @@ void Fluid1D::SaveSnapShot(){
 	str_time.insert(str_time.begin(), 5 - str_time.length(), '0');
 	string name_dataset = "snapshot_" + str_time;
 
+	float currenttime= static_cast<float>(TimeStepCounter) * dt;
+	CopyFields();
+
 	DataSet dataset_den = GrpDen->createDataSet(name_dataset, HDF5FLOAT, *DataspaceDen);
 	Attribute atr_step_den = dataset_den.createAttribute("time step", HDF5INT, atr_dataspace);
 	Attribute atr_time_den = dataset_den.createAttribute("time", HDF5FLOAT, atr_dataspace);
-	float currenttime= static_cast<float>(TimeStepCounter) * dt;
+	dataset_den.write(Den, HDF5FLOAT);
+	dataset_den.close();
 	atr_step_den.write(HDF5INT, &TimeStepCounter);
 	atr_time_den.write(HDF5FLOAT , &currenttime);
 	atr_step_den.close();
 	atr_time_den.close();
-	dataset_den.write(Den, HDF5FLOAT);
-	dataset_den.close();
 
 	DataSet dataset_vel_x = GrpVelX->createDataSet(name_dataset, HDF5FLOAT, *DataspaceVelX);
 	Attribute atr_step_vel_x = dataset_vel_x.createAttribute("time step", HDF5INT, atr_dataspace);
 	Attribute atr_time_vel_x = dataset_vel_x.createAttribute("time", HDF5FLOAT, atr_dataspace);
+	dataset_vel_x.write(Vel, HDF5FLOAT);
+	dataset_vel_x.close();
 	atr_step_vel_x.write(HDF5INT, &TimeStepCounter);
 	atr_time_vel_x.write(HDF5FLOAT , &currenttime);
 	atr_step_vel_x.close();
 	atr_time_vel_x.close();
-	dataset_vel_x.write(Vel, HDF5FLOAT);
-	dataset_vel_x.close();
 }
 
 void Fluid1D::RungeKuttaTVD() {
