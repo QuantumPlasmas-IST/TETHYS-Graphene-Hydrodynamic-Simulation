@@ -112,6 +112,8 @@ public :
 		int GetSnapshotStep() const;
 		int GetSnapshotFreq() const;
 
+		void CalcDensityLaplacian(StateVec * u_vec, int size_x);
+
 		//float SideAverage(const float *input_array, GridPoint1D p, char side);
 };
 

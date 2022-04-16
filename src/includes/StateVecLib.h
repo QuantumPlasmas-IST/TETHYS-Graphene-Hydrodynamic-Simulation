@@ -13,9 +13,9 @@
 class StateVec{
 private:
 	float density;
+	float density_laplacian;
 	float velocity;
 	float sound=1.0f;
-	float d2density = 0.0f;
 public:
 	StateVec()=default; //default constructor
 	StateVec(const StateVec&); //copy constructor
@@ -27,8 +27,8 @@ public:
 
 	float& v();
 	float& n();
+	float& lap_n();
 	float& S();
-	float& d2den();
 
 	StateVec& operator=(const StateVec&);
 	StateVec operator + (StateVec const &obj) const ;

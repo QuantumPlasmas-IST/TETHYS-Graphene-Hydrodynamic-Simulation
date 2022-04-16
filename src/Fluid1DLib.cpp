@@ -149,7 +149,9 @@ void Fluid1D::WriteFluidFile(float t){
 
 
 void Fluid1D::Richtmyer(){
+	//CalcDensityLaplacian(Umain,Nx);
 	RichtmyerStep1();
+	//CalcDensityLaplacian(Umid,Nx);
 	RichtmyerStep2();
 }
 void Fluid1D::RichtmyerStep1() {
@@ -257,10 +259,10 @@ void Fluid1D::RungeKuttaTVD() {
 
 		// calculei os laplacianos da raiz quadrada da densidade usando o método das diferenças centradas
 		float lap_den = (Umain[i+1].n() - 2*Umain[i].n() + Umain[i-1].n()) / (dx*dx);
-		UEleft.d2den()  = lap_den;
-		UEright.d2den() = lap_den;
-		UWleft.d2den()  = lap_den;
-		UWright.d2den() = lap_den;
+		UEleft.lap_n()  = lap_den;
+		UEright.lap_n() = lap_den;
+		UWleft.lap_n()  = lap_den;
+		UWright.lap_n() = lap_den;
 
 		// alterei o método de central para average
 		DenNumFluxE = NumericalFlux::Average(this,UEleft,UEright).n();
@@ -292,10 +294,10 @@ void Fluid1D::RungeKuttaTVD() {
 
 		// calculei os laplacianos da raiz quadrada da densidade usando o método das diferenças centradas
 		float lap_den = (Uaux[i+1].n() - 2*Uaux[i].n() + Uaux[i-1].n()) / (dx*dx);
-		UEleft.d2den()  = lap_den;
-		UEright.d2den() = lap_den;
-		UWleft.d2den()  = lap_den;
-		UWright.d2den() = lap_den;
+		UEleft.lap_n()  = lap_den;
+		UEright.lap_n() = lap_den;
+		UWleft.lap_n()  = lap_den;
+		UWright.lap_n() = lap_den;
 
 		// alterei o método de central para average
 		DenNumFluxE= NumericalFlux::Average(this,UEleft,UEright).n();
@@ -386,3 +388,10 @@ void Fluid1D::SaveSound() {
 	dataset_vel_snd.close();
 }
 
+
+void Fluid1D::CalcDensityLaplacian(StateVec * u_vec, int size_x){
+	for(int i = 1; i < size_x-1; ++i)
+	{
+		u_vec[i].lap_n() = (u_vec[i+1].n() - 2*u_vec[i].n() + u_vec[i-1].n()) / (dx*dx);
+	}
+}
