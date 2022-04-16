@@ -57,15 +57,8 @@ int main(int argc, char **argv){
 
 	/*...............Initialization...................................*/
 
-	// falta ajustar parâmetros físicos!
-	float As = 1.0f;
-	float X0 = 0.5f*graph.GetLengthX();
-	float D0 = 1.0f;
-	float cs = 1.0f;
-	float lambda = 20.0f*graph.GetLengthX();
-
-	std::function<float(float)> fden = [=](float x){ return  D0 + As/(cosh(lambda*(x-X0))); };
-	std::function<float(float)> fvx  = [=](float x){ return cs; };
+	std::function<float(float)> fden = [=](float x){ return 1.0f + 0.1f/(cosh(10.0f*(x-0.5f))); };
+	std::function<float(float)> fvx  = [=](float x){ return 0.5f/cosh(10.0f*(x-0.5f)); };
 
 	graph.InitialCondGeneral(fden, fvx);
 	//graph.InitialCondRand();
@@ -77,7 +70,7 @@ int main(int argc, char **argv){
 	std::cout << "\033[1;7;5;33m Program Running \033[0m"<<endl;
 
 
-	graph.SetTmax(10.0f);
+	graph.SetTmax(1.0f);
 	//Main cycle
 	while(t <= graph.GetTmax()) {
 		t += dt;
