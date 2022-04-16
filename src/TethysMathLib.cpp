@@ -253,3 +253,7 @@ void MathUtils::GradientField(const float *array_in, float *array_out, float dx,
 float MathUtils::Signum(float x) {
 	return x/abs(x);
 }
+
+float MathUtils::MinMod(float a, float b) {
+	return 0.5f*(Signum(a)+ Signum(b))* min(abs(a), abs(b));
+}

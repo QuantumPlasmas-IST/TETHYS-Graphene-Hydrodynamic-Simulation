@@ -185,6 +185,7 @@ static void Average_Filter(const float * array_in, float * array_out, int size ,
 
 
 static float Signum(float x);
+static float MinMod(float a, float b);
 
 static void LaplacianField(const float *array_in, float *array_out, float dx, int size_x, int size_y);
 
