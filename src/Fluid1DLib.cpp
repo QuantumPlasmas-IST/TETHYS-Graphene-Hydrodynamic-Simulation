@@ -41,7 +41,7 @@ Fluid1D::~Fluid1D() = default;
 
 
 float Fluid1D::VelocityFlux( StateVec U) {
-	return 0.5f*U.v()*U.v();// + vel_fer * vel_fer  * log(abs(U.n())+1E-6) - kin_vis*U.grad_v();
+	return 0.5f*U.v()*U.v() + vel_fer * vel_fer  * log(abs(U.n())+1E-6) ;//- kin_vis*U.grad_v();
 }
 
 
