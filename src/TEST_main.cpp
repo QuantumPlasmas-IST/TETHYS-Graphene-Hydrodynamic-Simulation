@@ -38,11 +38,12 @@ cout <<"\n\n";
 
 
 
-SetUpParameters parameters(25, 10, 0, 0, 0, 0,0, 1, 1);
+SetUpParameters parameters(12, 2, 0, 0, 0, 0,0, 1, 1);
 
-GrapheneFluid1D teste(parameters);
+Fluid1D teste(parameters);
 
 teste.CflCondition();
+teste.SetDt(teste.GetDt()*0.01);
 cout <<"S\t"<<teste.GetVelSnd()<<endl;
 cout <<"VF\t"<<teste.GetVelFer()<<endl;
 cout <<"dt\t"<<teste.GetDt()<<endl;
@@ -59,24 +60,24 @@ teste.SaveSound();
 
 
 
-//teste.InitialCondTest();
-teste.InitialCondRand();
+teste.InitialCondTest();
+//teste.InitialCondRand();
 
-	for (float h = 0.0f; h < 2.5f ; h+=teste.GetDt()) {
+	for (float h = 0.0f; h < 0.5f ; h+=teste.GetDt()) {
 		teste.WriteFluidFile(h);
-		if (GrapheneFluid1D::TimeStepCounter % 3 == 0) {
+		if (GrapheneFluid1D::TimeStepCounter % 20 == 0) {
 			teste.CopyFields();
 			teste.SaveSnapShot();
 		}
 		GrapheneFluid1D::TimeStepCounter++;
 
 
-		teste.Richtmyer();
-		//teste.RungeKuttaTVD();
+		//teste.Richtmyer();
+		teste.RungeKuttaTVD();
 		//teste.McCormack();
 
-		//BoundaryCondition::XPeriodic(teste);
-		DyakonovShurBoundaryCondition::DyakonovShurBc(teste);
+		BoundaryCondition::XPeriodic(teste);
+		//DyakonovShurBoundaryCondition::DyakonovShurBc(teste);
 		//DirichletBoundaryCondition::Density(teste,1.0f,1.0f);
 		//DirichletBoundaryCondition::VelocityX(teste,.1f,0.1f);
 
@@ -84,7 +85,7 @@ teste.InitialCondRand();
 	teste.WriteAttributes();
 	teste.CloseHdf5File();
 
-/*
+
 	int Nx=151;
 	StateVec *Utest;
 	Utest = new StateVec[Nx]();
@@ -95,14 +96,14 @@ teste.InitialCondRand();
 
 
 	ofstream outputfile;
-	outputfile.open ("TVDtest.dat");
+	outputfile.open ("TVD_limiter_test.dat");
 	for (int i = 0; i < Nx; ++i) {
 		CellHandler1D cell(i, nullptr, Utest);
 		outputfile <<i <<"\t"<<  Utest[i]  <<"\t"<< cell.VanLeer(Utest,i) <<endl;
 	}
 
 	outputfile.close();
-*/
+
 
 	return 0;
 }

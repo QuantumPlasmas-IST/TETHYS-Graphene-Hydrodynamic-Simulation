@@ -23,16 +23,18 @@ public:
 	CellHandler1D(int, StateVec *);
 	~CellHandler1D()=default;
 
-	StateVec TVD(char side,char edge);
+//	StateVec TVD(char side,char edge);
 	StateVec TVD(StateVec *,int pos,char side,char edge);
 
-	StateVec UNO(char side,char edge); //TODO implementar a reconstrução com o UNO2
+	StateVec UNO(StateVec *,int pos,char side,char edge); //TODO implementar a reconstrução com o UNO2
 
+	StateVec WENO3(StateVec *,int pos,char side,char edge);
 
-	StateVec VanLeerU(int i);
+	StateVec VanLeerU(StateVec*Uin,int i);
 	float VanLeer(int i);
 	float VanLeer(StateVec*,int i);
 	float Roe(int i); //TODO adicionar mais flux limiters
+	StateVec RoeU(int i);
 };
 
 

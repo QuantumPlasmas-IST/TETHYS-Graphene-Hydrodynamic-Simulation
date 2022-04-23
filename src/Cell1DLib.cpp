@@ -20,8 +20,8 @@ float CellHandler1D::VanLeer(StateVec*Uin,int i) {  //TODO cada variável tem o 
 	float denom,numer,r,f;
 	//float limit=2.0f;
 	float tolerance=1E-6;
-	StateVec Numer = U_ptr[i]-U_ptr[i-1];
-	StateVec Denom = U_ptr[i+1]-U_ptr[i];
+	StateVec Numer = Uin[i]-Uin[i-1];
+	StateVec Denom = Uin[i+1]-Uin[i];
 
 	numer=Numer.v();
 	denom=Denom.v();
@@ -47,40 +47,26 @@ float CellHandler1D::VanLeer(int i) {  //TODO cada variável tem o seu limitador
 	return f;
 }
 
-StateVec CellHandler1D::VanLeerU(int i) {
-	StateVec Ureturn{};
+StateVec CellHandler1D::VanLeerU(StateVec*Uin,int i) {
+	StateVec Ureturn(Uin[0]);
 	float denom,numer,r,f_vel=0,f_den=0;
-	float limit=2.0f;
 	float tolerance=1E-6;
-	StateVec Numer = U_ptr[i]-U_ptr[i-1];
-	StateVec Denom = U_ptr[i+1]-U_ptr[i];
+	StateVec Numer = Uin[i]-Uin[i-1];
+	StateVec Denom = Uin[i+1]-Uin[i];
 
 	/////////////////////////////VELOCITY
 	numer=Numer.v();
 	denom=Denom.v();
-	if(denom!=0){
-		r=numer/denom;
-		f_vel=(r+abs(r))/(1+abs(r));
-	} else{
-		if(numer<=tolerance){
-			f_vel=0;
-		} else{
-			f_vel=limit;
-		}
-	}
+	r=numer/(denom+tolerance);
+	f_vel=(r+abs(r))/(1+abs(r));
+
 	/////////////////////////////Density
 	numer=Numer.n();
 	denom=Denom.n();
-	if(denom!=0){
-		r=numer/denom;
-		f_den=(r+abs(r))/(1+abs(r));
-	} else{
-		if(numer<=tolerance){
-			f_den=0;
-		} else{
-			f_den=limit;
-		}
-	}
+	r=numer/(denom+tolerance);
+	f_den=(r+abs(r))/(1+abs(r));
+
+
 	Ureturn.v()=f_vel;
 	Ureturn.n()=f_den;
 	return Ureturn;
@@ -100,7 +86,23 @@ float CellHandler1D::Roe(int i) {
 	f=max(0.0f,min(1.0f,r));
 	return f;
 }
+StateVec CellHandler1D::RoeU(int i) {
+	float denom,numer,r,f;
+	float limit=1.0f;
+	float tolerance=1E-6;
+	StateVec Numer = U_ptr[i]-U_ptr[i-1];
+	StateVec Denom = U_ptr[i+1]-U_ptr[i];
+	numer=Numer.v();
+	denom=Denom.v();
 
+
+	r=numer/(denom+tolerance);
+	f=max(0.0f,min(1.0f,r));
+//	return f;
+}
+
+
+/*
 StateVec CellHandler1D::TVD(char side, char edge) {
 	StateVec Utvd{};//(U_ptr[0]);
 	switch(side) {
@@ -130,29 +132,29 @@ StateVec CellHandler1D::TVD(char side, char edge) {
 	}
 	return Utvd;
 }
-
+*/
 
 StateVec CellHandler1D::TVD(StateVec * Uin,int pos,char side, char edge) {
-	StateVec Utvd{};//(Uin[0]);
+	StateVec Utvd(Uin[pos]);//(Uin[0]);
 	switch(side) {
-		case 'W' :
+		case 'E' :
 			switch(edge) {
 				case 'L' :
-					Utvd=Uin[pos]   + 0.5f * VanLeer(Uin,pos) * (Uin[pos + 1] - Uin[pos]);
+					Utvd=Uin[pos]   + 0.5f * VanLeerU(Uin,pos) * (Uin[pos + 1] - Uin[pos]);
 					break;
 				case 'R' :
-					Utvd=Uin[pos+1]   - 0.5f * VanLeer(Uin,pos+1) * (Uin[pos + 2] - Uin[pos+1]);
+					Utvd=Uin[pos+1]   - 0.5f * VanLeerU(Uin,pos+1) * (Uin[pos + 2] - Uin[pos+1]);
 					break;
 				default: 0;
 			}
 			break;
-		case 'E' :
+		case 'W' :
 			switch(edge) {
 				case 'L' :
-					Utvd=Uin[pos-1]   + 0.5f * VanLeer(Uin,pos-1) * (Uin[pos] - Uin[pos-1]);
+					Utvd=Uin[pos-1]   + 0.5f * VanLeerU(Uin,pos-1) * (Uin[pos] - Uin[pos-1]);
 					break;
 				case 'R' :
-					Utvd=Uin[pos]   - 0.5f * VanLeer(Uin,pos) * (Uin[pos + 1] - Uin[pos]);
+					Utvd=Uin[pos]   - 0.5f * VanLeerU(Uin,pos) * (Uin[pos + 1] - Uin[pos]);
 					break;
 				default: 0;
 			}
@@ -162,10 +164,77 @@ StateVec CellHandler1D::TVD(StateVec * Uin,int pos,char side, char edge) {
 	return Utvd;
 }
 
-StateVec CellHandler1D::UNO(char side, char edge) {
-	StateVec Uuno(U_ptr[0]);
-	return Uuno;
+/*
+StateVec CellHandler1D::WENO3(StateVec *Uin, int pos, char side, char edge) {
+	StateVec Uweno3(Uin[pos]);
+	StateVec U0(Uin[pos]);
+	StateVec U1(Uin[pos]);
+	StateVec beta0(Uin[pos]);
+	StateVec beta1(Uin[pos]);
+	float omega0,omega1;
+	float tolerance=1E-6;
+
+	switch(side) {
+		case 'W' : // ou seja i+1/2
+			switch(edge) {
+				case 'L' :
+					U0=0.5f*(Uin[pos]+Uin[pos+1]);
+					U1=0.5f*(-1.0*Uin[pos-1]+3.0*Uin[pos]);;
+					beta0=(Uin[pos+1]-Uin[pos])*(Uin[pos+1]-Uin[pos]);
+					beta1=(Uin[pos]-Uin[pos-1])*(Uin[pos]-Uin[pos-1]);
+					break;
+				case 'R' :
+					U0=;
+					U1=;
+					beta0=;
+					beta1=;					break;
+				default: 0;
+			}
+			break;
+		case 'E' : // ou seja i-1/2
+			switch(edge) {
+				case 'L' :
+					U0=;
+					U1=;
+					beta0=;
+					beta1=;					break;
+				case 'R' :
+					U0=;
+					U1=;
+					beta0=;
+					beta1=;					break;
+				default: 0;
+			}
+			break;
+		default: 0;
+	}
+	Uweno3=omega0*U0+omega1*U1;
+	return Uweno3;
 }
+*/
+
+StateVec CellHandler1D::UNO(StateVec *Uin,int pos,char side, char edge) {
+	StateVec Uuno(Uin[pos]);
+	StateVec D(Uin[pos]);
+
+	StateVec d(Uin[pos]);
+
+	d = Uin[pos+1]-Uin[pos];
+
+	D.n()=MathUtils::MinMod(Uin[pos-1].n()-2*Uin[pos].n()+Uin[pos+1].n(),Uin[pos].n()-2*Uin[pos+1].n()+Uin[pos+2].n());
+	D.v()=MathUtils::MinMod(Uin[pos-1].v()-2*Uin[pos].v()+Uin[pos+1].v(),Uin[pos].v()-2*Uin[pos+1].v()+Uin[pos+2].v());
+
+
+
+
+
+
+	//Uuno;
+
+	return Uuno;
+
+}
+
 
 StateVec NumericalFlux::Average(Fluid1D *fluido, StateVec L, StateVec R) {
 	StateVec Ureturn{};

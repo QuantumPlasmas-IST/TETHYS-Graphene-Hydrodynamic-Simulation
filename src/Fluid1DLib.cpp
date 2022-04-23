@@ -41,7 +41,7 @@ Fluid1D::~Fluid1D() = default;
 
 
 float Fluid1D::VelocityFlux( StateVec U) {
-	return 0.5f*U.v()*U.v()+U.n()*U.S()*U.S() - kin_vis*U.grad_v();
+	return 0.5f*U.v()*U.v();// + vel_fer * vel_fer  * log(abs(U.n())+1E-6) - kin_vis*U.grad_v();
 }
 
 
@@ -112,8 +112,8 @@ void Fluid1D::InitialCondRand(){
 
 void Fluid1D::InitialCondTest(){
  	for (int i = 0; i < Nx; i++ ){
-		Umain[i].n()=1.0;
-	    Umain[i].v()=(i>Nx/3 && i<2*Nx/3 ) ? 1.0f : 0.1f;
+		Umain[i].v()=(i>Nx/3 && i<2*Nx/3 ) ? -1.5f : 0.0f;
+	    Umain[i].n()=(i>Nx/3 && i<2*Nx/3 ) ? 1.0f : 0.1f;
 	}
 	this->SetSound();
 }
@@ -239,52 +239,56 @@ void Fluid1D::RungeKuttaTVD() {
 	float DenNumFluxE;
 	float VelNumFluxW;
 	float VelNumFluxE;
-	StateVec UEleft{};
-	StateVec UEright{};
-	StateVec UWleft{};
-	StateVec UWright{};
+	StateVec UEleft(Umain[0]);
+	StateVec UEright(Umain[0]);
+	StateVec UWleft(Umain[0]);
+	StateVec UWright(Umain[0]);
 
-	for (int i = 1; i < Nx-1; ++i) {
+	for (int i = 1; i < Nx-1; ++i) { //apenas pontos interiores
 
 		CellHandler1D cell(i, this, Umain);
-	//	UEleft  = cell.TVD(Umain,i,'E','L');
-	//	UEright = cell.TVD(Umain,i,'E','R');
-	//	UWleft  = cell.TVD(Umain,i,'W','L');
-	//	UWright = cell.TVD(Umain,i,'W','R');
+		UEleft  = cell.TVD(Umain,i,'E','L');
+		UEright = cell.TVD(Umain,i,'E','R');
+		UWleft  = cell.TVD(Umain,i,'W','L');
+		UWright = cell.TVD(Umain,i,'W','R');
 
-		UEleft  = Umain[i-1];
-		UEright = Umain[i];
-		UWleft  = Umain[i];
-		UWright = Umain[i+1];
+		//UEleft  = Umain[i-1];
+		//UEright = Umain[i] ;
+
+		//UWleft  = Umain[i]  ;
+		//UWright = Umain[i+1];
 
 		DenNumFluxW= NumericalFlux::Central(this,UWleft,UWright).n();
 		DenNumFluxE= NumericalFlux::Central(this,UEleft,UEright).n();
 		VelNumFluxW= NumericalFlux::Central(this,UWleft,UWright).v();
 		VelNumFluxE= NumericalFlux::Central(this,UEleft,UEright).v();
 
-		Uaux[i].n()=Umain[i].n()-(dt/dx)*(DenNumFluxW-DenNumFluxE);
-		Uaux[i].v()=Umain[i].v()-(dt/dx)*(VelNumFluxW-VelNumFluxE);
+		Uaux[i].n()=Umain[i].n()-(dt/dx)*(DenNumFluxE-DenNumFluxW);
+		Uaux[i].v()=Umain[i].v()-(dt/dx)*(VelNumFluxE-VelNumFluxW);
 	}
-	for (int i = 1; i < Nx-1; ++i) {
+	for (int i = 1; i < Nx-1; ++i) { //apenas pontos interiores
+
 		CellHandler1D cell(i, this, Uaux);
 
-	//	UEleft  = cell.TVD(Uaux,i,'E','L');
-	//	UEright = cell.TVD(Uaux,i,'E','R');
-	//	UWleft  = cell.TVD(Uaux,i,'W','L');
-	//	UWright = cell.TVD(Uaux,i,'W','R');
+		UEleft  = cell.TVD(Uaux,i,'E','L');
+		UEright = cell.TVD(Uaux,i,'E','R');
+		UWleft  = cell.TVD(Uaux,i,'W','L');
+		UWright = cell.TVD(Uaux,i,'W','R');
 
-		UEleft  = Uaux[i-1];
-		UEright = Uaux[i];
-		UWleft  = Uaux[i];
-		UWright = Uaux[i+1];
+		//UEleft  = Uaux[i-1];
+		//UEright = Uaux[i];
+
+		//UWleft  = Uaux[i];
+		//UWright = Uaux[i+1];
+
 
 		DenNumFluxW= NumericalFlux::Central(this,UWleft,UWright).n();
 		DenNumFluxE= NumericalFlux::Central(this,UEleft,UEright).n();
 		VelNumFluxW= NumericalFlux::Central(this,UWleft,UWright).v();
 		VelNumFluxE= NumericalFlux::Central(this,UEleft,UEright).v();
 
-		Umain[i].n()=0.5f*(Umain[i].n()+Uaux[i].n())-(0.5f*dt/dx)*(DenNumFluxW-DenNumFluxE);
-		Umain[i].v()=0.5f*(Umain[i].v()+Uaux[i].v())-(0.5f*dt/dx)*(VelNumFluxW-VelNumFluxE);
+		Umain[i].n()=0.5f*(Umain[i].n()+Uaux[i].n())-(0.5f*dt/dx)*(DenNumFluxE-DenNumFluxW);
+		Umain[i].v()=0.5f*(Umain[i].v()+Uaux[i].v())-(0.5f*dt/dx)*(VelNumFluxE-VelNumFluxW);
 	}
 }
 
@@ -316,8 +320,8 @@ void Fluid1D::LaxFriedrichs(){
 }
 
 float Fluid1D::JacobianSpectralRadius(StateVec U) {
-	float l1=abs(U.v()+ vel_snd*sqrt(U.n()));
-	float l2=abs(U.v()- vel_snd*sqrt(U.n()));
+	float l1=abs( U.v() + vel_fer );
+	float l2=abs( U.v() - vel_fer );
 	return max(l1,l2);
 }
 
