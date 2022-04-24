@@ -41,7 +41,7 @@ Fluid1D::~Fluid1D() = default;
 
 
 float Fluid1D::VelocityFlux( StateVec U) {
-	return 0.5f*U.v()*U.v() + vel_fer * vel_fer  * log(abs(U.n())+1E-6) ;//- kin_vis*U.grad_v();
+	return 0.5f*U.v()*U.v() + vel_fer * vel_fer  *0.5f* log(U.n()+1E-6) - kin_vis*U.grad_v();
 }
 
 
@@ -112,8 +112,8 @@ void Fluid1D::InitialCondRand(){
 
 void Fluid1D::InitialCondTest(){
  	for (int i = 0; i < Nx; i++ ){
-		Umain[i].v()=(i>Nx/3 && i<2*Nx/3 ) ? -1.5f : 0.0f;
-	    Umain[i].n()=(i>Nx/3 && i<2*Nx/3 ) ? 1.0f : 0.1f;
+		Umain[i].v()= 1.5f; //(i>Nx/3 && i<2*Nx/3 ) ? 3.0f : 0.0f;
+	    Umain[i].n()= 0.2f+0.2f/ pow(cosh((i*dx-0.5f)*12.0f),2);//(i>Nx/3 && i<2*Nx/3 ) ? 1.0f : 0.1f;
 	}
 	this->SetSound();
 }
@@ -209,7 +209,8 @@ void Fluid1D::SaveSnapShot(){
 	snapshot_step = 1; //points_per_period / snapshot_per_period;
 
 	string str_time = to_string(TimeStepCounter );/// snapshot_step);
-	str_time.insert(str_time.begin(), 5 - str_time.length(), '0');
+	//TODO TRATAR AQUI DISTO ta a dar asneira porque o numero dos snapshotsé muito pequeno parece quando chega ao snapshot 100000
+	str_time.insert(str_time.begin(), 7 - str_time.length(), '0');
 	string name_dataset = "snapshot_" + str_time;
 
 	DataSet dataset_den = GrpDen->createDataSet(name_dataset, HDF5FLOAT, *DataspaceDen);
@@ -243,10 +244,12 @@ void Fluid1D::RungeKuttaTVD() {
 	StateVec UEright(Umain[0]);
 	StateVec UWleft(Umain[0]);
 	StateVec UWright(Umain[0]);
-
+	if(kin_vis!=0){
+		CalcVelocityGradient(Umain,Nx);
+	}
 	for (int i = 1; i < Nx-1; ++i) { //apenas pontos interiores
 
-		CellHandler1D cell(i, this, Umain);
+		CellHandler1D cell(i, this, Umain);  //TODO tem de se resolver a questao da reconstrução nos pontos de fronteira
 		UEleft  = cell.TVD(Umain,i,'E','L');
 		UEright = cell.TVD(Umain,i,'E','R');
 		UWleft  = cell.TVD(Umain,i,'W','L');
@@ -265,6 +268,9 @@ void Fluid1D::RungeKuttaTVD() {
 
 		Uaux[i].n()=Umain[i].n()-(dt/dx)*(DenNumFluxE-DenNumFluxW);
 		Uaux[i].v()=Umain[i].v()-(dt/dx)*(VelNumFluxE-VelNumFluxW);
+	}
+	if(kin_vis!=0){
+		CalcVelocityGradient(Uaux,Nx);
 	}
 	for (int i = 1; i < Nx-1; ++i) { //apenas pontos interiores
 
@@ -320,8 +326,8 @@ void Fluid1D::LaxFriedrichs(){
 }
 
 float Fluid1D::JacobianSpectralRadius(StateVec U) {
-	float l1=abs( U.v() + vel_fer );
-	float l2=abs( U.v() - vel_fer );
+	float l1=abs( U.v() + vel_fer*0.5f );
+	float l2=abs( U.v() - vel_fer*0.5f );
 	return max(l1,l2);
 }
 

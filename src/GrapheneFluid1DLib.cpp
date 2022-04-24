@@ -33,7 +33,7 @@ GrapheneFluid1D::~GrapheneFluid1D(){
 
 
 float GrapheneFluid1D::VelocityFlux(StateVec U) {
-	return 0.25f * U.v() * U.v() + vel_fer * vel_fer * 0.5f * log(U.n()) + 2.0f * U.S() * U.S() * sqrt(U.n()) - kin_vis*U.grad_v();
+	return 0.25f * U.v() * U.v() + vel_fer * vel_fer * 0.5f * log(U.n()+1E-6) + 2.0f * U.S() * U.S() * sqrt(U.n()) - kin_vis*U.grad_v();
 }
 
 

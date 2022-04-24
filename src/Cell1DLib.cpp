@@ -212,7 +212,7 @@ StateVec CellHandler1D::WENO3(StateVec *Uin, int pos, char side, char edge) {
 	return Uweno3;
 }
 */
-
+/*
 StateVec CellHandler1D::UNO(StateVec *Uin,int pos,char side, char edge) {
 	StateVec Uuno(Uin[pos]);
 	StateVec D(Uin[pos]);
@@ -233,7 +233,7 @@ StateVec CellHandler1D::UNO(StateVec *Uin,int pos,char side, char edge) {
 
 	return Uuno;
 
-}
+}*/
 
 
 StateVec NumericalFlux::Average(Fluid1D *fluido, StateVec L, StateVec R) {
@@ -245,7 +245,7 @@ StateVec NumericalFlux::Average(Fluid1D *fluido, StateVec L, StateVec R) {
 }
 
 StateVec NumericalFlux::Central(Fluid1D *fluido, StateVec L, StateVec R) {
-	StateVec Ureturn{};
+	StateVec Ureturn(L);
 	Ureturn.n()=fluido->DensityFlux(R)+fluido->DensityFlux(L);
 	Ureturn.v()=fluido->VelocityFlux(R)+fluido->VelocityFlux(L);
 	//Ureturn.S()=fluido->GetVelSnd();

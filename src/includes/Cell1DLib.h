@@ -26,9 +26,9 @@ public:
 //	StateVec TVD(char side,char edge);
 	StateVec TVD(StateVec *,int pos,char side,char edge);
 
-	StateVec UNO(StateVec *,int pos,char side,char edge); //TODO implementar a reconstrução com o UNO2
+	//StateVec UNO(StateVec *,int pos,char side,char edge); //TODO implementar a reconstrução com o UNO2
 
-	StateVec WENO3(StateVec *,int pos,char side,char edge);
+	//StateVec WENO3(StateVec *,int pos,char side,char edge);
 
 	StateVec VanLeerU(StateVec*Uin,int i);
 	float VanLeer(int i);
