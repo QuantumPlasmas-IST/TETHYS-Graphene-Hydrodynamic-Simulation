@@ -4,50 +4,21 @@
 
 #include "Cell1DLib.h"
 
-CellHandler1D::CellHandler1D(int i, Fluid1D * ptr_fluid, StateVec * ptr_state) {
+CellHandler1D::CellHandler1D(int i, int total, Fluid1D * ptr_fluid, StateVec * ptr_state) {
 	index=i;
+	size=total;
 	fluid_ptr=ptr_fluid;
 	U_ptr=ptr_state;
 }
 
-CellHandler1D::CellHandler1D(int i, StateVec * ptr_state) {
+CellHandler1D::CellHandler1D(int i, int total, StateVec * ptr_state) {
 	index=i;
+	size=total;
 	fluid_ptr= nullptr;
 	U_ptr=ptr_state;
 }
 
-float CellHandler1D::VanLeer(StateVec*Uin,int i) {  //TODO cada variável tem o seu limitador ATENÇAO
-	float denom,numer,r,f;
-	//float limit=2.0f;
-	float tolerance=1E-6;
-	StateVec Numer = Uin[i]-Uin[i-1];
-	StateVec Denom = Uin[i+1]-Uin[i];
-
-	numer=Numer.v();
-	denom=Denom.v();
-
-	r=numer/(denom+tolerance);
-	f=(r+abs(r))/(1+abs(r));
-	return f;
-}
-
-
-float CellHandler1D::VanLeer(int i) {  //TODO cada variável tem o seu limitador ATENÇAO
-	float denom,numer,r,f;
-	//float limit=2.0f;
-	float tolerance=1E-6;
-	StateVec Numer = U_ptr[i]-U_ptr[i-1];
-	StateVec Denom = U_ptr[i+1]-U_ptr[i];
-
-	numer=Numer.v();
-	denom=Denom.v();
-
-	r=numer/(denom+tolerance);
-	f=(r+abs(r))/(1+abs(r));
-	return f;
-}
-
-StateVec CellHandler1D::VanLeerU(StateVec*Uin,int i) {
+StateVec CellHandler1D::VanLeer(StateVec*Uin, int i) {
 	StateVec Ureturn(Uin[0]);
 	float denom,numer,r,f_vel=0,f_den=0;
 	float tolerance=1E-6;
@@ -64,6 +35,7 @@ StateVec CellHandler1D::VanLeerU(StateVec*Uin,int i) {
 	numer=Numer.n();
 	denom=Denom.n();
 	r=numer/(denom+tolerance);
+
 	f_den=(r+abs(r))/(1+abs(r));
 
 
@@ -72,67 +44,80 @@ StateVec CellHandler1D::VanLeerU(StateVec*Uin,int i) {
 	return Ureturn;
 }
 
-float CellHandler1D::Roe(int i) {
-	float denom,numer,r,f;
-	float limit=1.0f;
+
+StateVec CellHandler1D::Roe(StateVec*Uin, int i) {
+	StateVec Ureturn(Uin[0]);
+	float denom,numer,r,f_vel=0,f_den=0;
+	float tolerance=1E-6;
+	StateVec Numer = Uin[i]-Uin[i-1];
+	StateVec Denom = Uin[i+1]-Uin[i];
+
+	/////////////////////////////VELOCITY
+	numer=Numer.v();
+	denom=Denom.v();
+	r=numer/(denom+tolerance);
+	f_vel=max(0.0f,min(1.0f,r));
+	/////////////////////////////Density
+	numer=Numer.n();
+	denom=Denom.n();
+	r=numer/(denom+tolerance);
+	f_den=max(0.0f,min(1.0f,r));
+
+	Ureturn.v()=f_vel;
+	Ureturn.n()=f_den;
+	return Ureturn;
+}
+
+
+StateVec CellHandler1D::VanLeer(int i) {
+	StateVec Ureturn(U_ptr[0]);
+	float denom,numer,r,f_vel=0,f_den=0;
 	float tolerance=1E-6;
 	StateVec Numer = U_ptr[i]-U_ptr[i-1];
 	StateVec Denom = U_ptr[i+1]-U_ptr[i];
+
+	/////////////////////////////VELOCITY
 	numer=Numer.v();
 	denom=Denom.v();
-
-
 	r=numer/(denom+tolerance);
-	f=max(0.0f,min(1.0f,r));
-	return f;
+	f_vel=(r+abs(r))/(1+abs(r));
+
+	/////////////////////////////Density
+	numer=Numer.n();
+	denom=Denom.n();
+	r=numer/(denom+tolerance);
+
+	f_den=(r+abs(r))/(1+abs(r));
+
+
+	Ureturn.v()=f_vel;
+	Ureturn.n()=f_den;
+	return Ureturn;
 }
-StateVec CellHandler1D::RoeU(int i) {
-	float denom,numer,r,f;
-	float limit=1.0f;
+
+
+StateVec CellHandler1D::Roe(int i) {
+	StateVec Ureturn(U_ptr[0]);
+	float denom,numer,r,f_vel=0,f_den=0;
 	float tolerance=1E-6;
 	StateVec Numer = U_ptr[i]-U_ptr[i-1];
 	StateVec Denom = U_ptr[i+1]-U_ptr[i];
+
+	/////////////////////////////VELOCITY
 	numer=Numer.v();
 	denom=Denom.v();
-
-
 	r=numer/(denom+tolerance);
-	f=max(0.0f,min(1.0f,r));
-//	return f;
-}
+	f_vel=max(0.0f,min(1.0f,r));
+	/////////////////////////////Density
+	numer=Numer.n();
+	denom=Denom.n();
+	r=numer/(denom+tolerance);
+	f_den=max(0.0f,min(1.0f,r));
 
-
-/*
-StateVec CellHandler1D::TVD(char side, char edge) {
-	StateVec Utvd{};//(U_ptr[0]);
-	switch(side) {
-		case 'W' :
-			switch(edge) {
-				case 'L' :
-					Utvd=U_ptr[index]   + 0.5f * VanLeer(index) * (U_ptr[index + 1] - U_ptr[index]);
-					break;
-				case 'R' :
-					Utvd=U_ptr[index+1]   - 0.5f * VanLeer(index+1) * (U_ptr[index + 2] - U_ptr[index+1]);
-					break;
-				default: 0;
-			}
-			break;
-		case 'E' :
-			switch(edge) {
-				case 'L' :
-					Utvd=U_ptr[index-1]   + 0.5f * VanLeer(index-1) * (U_ptr[index] - U_ptr[index-1]);
-					break;
-				case 'R' :
-					Utvd=U_ptr[index]   - 0.5f * VanLeer(index) * (U_ptr[index + 1] - U_ptr[index]);
-					break;
-				default: 0;
-			}
-			break;
-		default: 0;
-	}
-	return Utvd;
+	Ureturn.v()=f_vel;
+	Ureturn.n()=f_den;
+	return Ureturn;
 }
-*/
 
 StateVec CellHandler1D::TVD(StateVec * Uin,int pos,char side, char edge) {
 	StateVec Utvd(Uin[pos]);
@@ -140,10 +125,10 @@ StateVec CellHandler1D::TVD(StateVec * Uin,int pos,char side, char edge) {
 		case 'E' :
 			switch(edge) {
 				case 'L' :
-					Utvd=Uin[pos]   + 0.5f * VanLeerU(Uin,pos) * (Uin[pos + 1] - Uin[pos]);
+					Utvd=Uin[pos]   + 0.5f * VanLeer(Uin, pos) * (Uin[pos + 1] - Uin[pos]); //TODO passar a usar o limitador que só depende da posicao
 					break;
 				case 'R' :
-					Utvd=Uin[pos+1]   - 0.5f * VanLeerU(Uin,pos+1) * (Uin[pos + 2] - Uin[pos+1]);
+					Utvd=Uin[pos+1]   - 0.5f * VanLeer(Uin, pos + 1) * (Uin[pos + 2] - Uin[pos + 1]);
 					break;
 				default: 0;
 			}
@@ -151,10 +136,10 @@ StateVec CellHandler1D::TVD(StateVec * Uin,int pos,char side, char edge) {
 		case 'W' :
 			switch(edge) {
 				case 'L' :
-					Utvd=Uin[pos-1]   + 0.5f * VanLeerU(Uin,pos-1) * (Uin[pos] - Uin[pos-1]);
+					Utvd=Uin[pos-1]   + 0.5f * VanLeer(Uin, pos - 1) * (Uin[pos] - Uin[pos - 1]);
 					break;
 				case 'R' :
-					Utvd=Uin[pos]   - 0.5f * VanLeerU(Uin,pos) * (Uin[pos + 1] - Uin[pos]);
+					Utvd=Uin[pos]   - 0.5f * VanLeer(Uin, pos) * (Uin[pos + 1] - Uin[pos]);
 					break;
 				default: 0;
 			}
@@ -168,25 +153,26 @@ StateVec CellHandler1D::TVD(StateVec * Uin,int pos,char side, char edge) {
 StateVec CellHandler1D::TVD(char side, char edge) {
 	StateVec Utvd(U_ptr[index]);
 	int pos=index;
+	//isto se index !=1 e index !=Nx-2
 	switch(side) {
-		case 'E' :
+		case 'E' :            //problematico em index==Nx-2
 			switch(edge) {
 				case 'L' :
-					Utvd=U_ptr[pos]   + 0.5f * VanLeerU(U_ptr,pos) * (U_ptr[pos + 1] - U_ptr[pos]);
+					Utvd=U_ptr[pos]   + 0.5f * VanLeer(U_ptr, pos) * (U_ptr[pos + 1] - U_ptr[pos]);
 					break;
 				case 'R' :
-					Utvd=U_ptr[pos+1]   - 0.5f * VanLeerU(U_ptr,pos+1) * (U_ptr[pos + 2] - U_ptr[pos+1]);
+					Utvd=U_ptr[pos+1]   - 0.5f * VanLeer(U_ptr, pos + 1) * (U_ptr[pos + 2] - U_ptr[pos + 1]);
 					break;
 				default: 0;
 			}
 			break;
-		case 'W' :
+		case 'W' :          //problematico em index==1 ???
 			switch(edge) {
 				case 'L' :
-					Utvd=U_ptr[pos-1]   + 0.5f * VanLeerU(U_ptr,pos-1) * (U_ptr[pos] - U_ptr[pos-1]);
+					Utvd=U_ptr[pos-1]   + 0.5f * VanLeer(U_ptr, pos - 1) * (U_ptr[pos] - U_ptr[pos - 1]);
 					break;
 				case 'R' :
-					Utvd=U_ptr[pos]   - 0.5f * VanLeerU(U_ptr,pos) * (U_ptr[pos + 1] - U_ptr[pos]);
+					Utvd=U_ptr[pos]   - 0.5f * VanLeer(U_ptr, pos) * (U_ptr[pos + 1] - U_ptr[pos]);
 					break;
 				default: 0;
 			}

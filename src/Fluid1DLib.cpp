@@ -249,15 +249,28 @@ void Fluid1D::RungeKuttaTVD() {
 	}
 	for (int i = 1; i < Nx-1; ++i) { //apenas pontos interiores
 
-		CellHandler1D cell(i, this, Umain);  //TODO tem de se resolver a questao da reconstrução nos pontos de fronteira
+		CellHandler1D cell(i, Nx,this, Umain);  //TODO tem de se resolver a questao da reconstrução nos pontos de fronteira
 //		UEleft  = cell.TVD(Umain,i,'E','L');
 //		UEright = cell.TVD(Umain,i,'E','R');
 //		UWleft  = cell.TVD(Umain,i,'W','L');
 //		UWright = cell.TVD(Umain,i,'W','R');
 
+		if(i==1){
+			UWleft=Umain[0];
+		} else{
+			UWleft  = cell.TVD('W','L');
+		}
+		if(i==Nx-2){
+			UEright=Umain[Nx-1];
+		} else{
+			UEright = cell.TVD('E','R');
+		}
+
+
+
 		UEleft  = cell.TVD('E','L');
-		UEright = cell.TVD('E','R');
-		UWleft  = cell.TVD('W','L');
+//		UEright = cell.TVD('E','R');
+//		UWleft  = cell.TVD('W','L');
 		UWright = cell.TVD('W','R');
 
 
@@ -276,16 +289,25 @@ void Fluid1D::RungeKuttaTVD() {
 	}
 	for (int i = 1; i < Nx-1; ++i) { //apenas pontos interiores
 
-		CellHandler1D cell(i, this, Uaux);
+		CellHandler1D cell(i, Nx, this, Uaux);
 
 		//UEleft  = cell.TVD(Uaux,i,'E','L');
 		//UEright = cell.TVD(Uaux,i,'E','R');
 		//UWleft  = cell.TVD(Uaux,i,'W','L');
 		//UWright = cell.TVD(Uaux,i,'W','R');
 
+		if(i==1){
+			UWleft=Uaux[0];
+		} else{
+			UWleft  = cell.TVD('W','L');
+		}
+		if(i==Nx-2){
+			UEright=Uaux[Nx-1];
+		} else{
+			UEright = cell.TVD('E','R');
+		}
+
 		UEleft  = cell.TVD('E','L');
-		UEright = cell.TVD('E','R');
-		UWleft  = cell.TVD('W','L');
 		UWright = cell.TVD('W','R');
 
 

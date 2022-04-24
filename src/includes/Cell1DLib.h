@@ -15,26 +15,26 @@
 class CellHandler1D {
 private:
 	int index;
+	int size;
 	StateVec U{};
 	StateVec *U_ptr;
 	Fluid1D *fluid_ptr;
 public:
-	CellHandler1D(int, Fluid1D *, StateVec *);
-	CellHandler1D(int, StateVec *);
+	CellHandler1D(int, int, Fluid1D *, StateVec *);
+	CellHandler1D(int, int, StateVec *);
 	~CellHandler1D()=default;
 
 	StateVec TVD(char side,char edge);
 	StateVec TVD(StateVec *,int pos,char side,char edge);
 
-	//StateVec UNO(StateVec *,int pos,char side,char edge); //TODO implementar a reconstrução com o UNO2
 
-	//StateVec WENO3(StateVec *,int pos,char side,char edge);
+//TODO adicionar mais flux limiters
+	StateVec VanLeer(StateVec*Uin, int i);
+	StateVec VanLeer(int i);
 
-	StateVec VanLeerU(StateVec*Uin,int i);
-	float VanLeer(int i);
-	float VanLeer(StateVec*,int i);
-	float Roe(int i); //TODO adicionar mais flux limiters
-	StateVec RoeU(int i);
+	StateVec Roe(StateVec*Uin, int i);
+	StateVec Roe(int i);
+
 };
 
 

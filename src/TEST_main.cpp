@@ -64,7 +64,7 @@ teste.InitialCondTest();
 //teste.InitialCondRand();
 
 	for (float h = 0.0f; h < 0.5f ; h+=teste.GetDt()) {
-	//for (float h = 0.0f; h < 5*teste.GetDt() ; h+=teste.GetDt()) {
+	//for (float h = 0.0f; h < 2*teste.GetDt() ; h+=teste.GetDt()) {
 		teste.WriteFluidFile(h);
 		if (GrapheneFluid1D::TimeStepCounter % 25 == 0) {
 			teste.CopyFields();
@@ -87,23 +87,7 @@ teste.InitialCondTest();
 	teste.CloseHdf5File();
 
 
-	int Nx=151;
-	StateVec *Utest;
-	Utest = new StateVec[Nx]();
-	for (int i = 0; i < Nx; i++ ){
-		Utest[i].n()=1.0;
-		Utest[i].v()=(i>Nx/3 && i<2*Nx/3 ) ? 1.0f : 0.1f;
-	}
 
-
-	ofstream outputfile;
-	outputfile.open ("TVD_limiter_test.dat");
-	for (int i = 0; i < Nx; ++i) {
-		CellHandler1D cell(i, nullptr, Utest);
-		outputfile <<i <<"\t"<<  Utest[i]  <<"\t"<< cell.VanLeer(Utest,i) <<endl;
-	}
-
-	outputfile.close();
 
 
 	return 0;
