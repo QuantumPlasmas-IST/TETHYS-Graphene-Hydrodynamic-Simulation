@@ -23,7 +23,7 @@ public:
 	CellHandler1D(int, StateVec *);
 	~CellHandler1D()=default;
 
-//	StateVec TVD(char side,char edge);
+	StateVec TVD(char side,char edge);
 	StateVec TVD(StateVec *,int pos,char side,char edge);
 
 	//StateVec UNO(StateVec *,int pos,char side,char edge); //TODO implementar a reconstrução com o UNO2

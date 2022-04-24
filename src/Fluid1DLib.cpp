@@ -112,8 +112,8 @@ void Fluid1D::InitialCondRand(){
 
 void Fluid1D::InitialCondTest(){
  	for (int i = 0; i < Nx; i++ ){
-		Umain[i].v()= 1.5f; //(i>Nx/3 && i<2*Nx/3 ) ? 3.0f : 0.0f;
-	    Umain[i].n()= 0.2f+0.2f/ pow(cosh((i*dx-0.5f)*12.0f),2);//(i>Nx/3 && i<2*Nx/3 ) ? 1.0f : 0.1f;
+		Umain[i].v()= (i>Nx/3 && i<2*Nx/3 ) ? 3.0f : 0.0f; //1.5f; //
+	    Umain[i].n()= (i>Nx/3 && i<2*Nx/3 ) ? 1.0f : 0.1f; //0.2f+0.2f/ pow(cosh((i*dx-0.5f)*12.0f),2);
 	}
 	this->SetSound();
 }
@@ -250,16 +250,18 @@ void Fluid1D::RungeKuttaTVD() {
 	for (int i = 1; i < Nx-1; ++i) { //apenas pontos interiores
 
 		CellHandler1D cell(i, this, Umain);  //TODO tem de se resolver a questao da reconstrução nos pontos de fronteira
-		UEleft  = cell.TVD(Umain,i,'E','L');
-		UEright = cell.TVD(Umain,i,'E','R');
-		UWleft  = cell.TVD(Umain,i,'W','L');
-		UWright = cell.TVD(Umain,i,'W','R');
+//		UEleft  = cell.TVD(Umain,i,'E','L');
+//		UEright = cell.TVD(Umain,i,'E','R');
+//		UWleft  = cell.TVD(Umain,i,'W','L');
+//		UWright = cell.TVD(Umain,i,'W','R');
 
-		//UEleft  = Umain[i-1];
-		//UEright = Umain[i] ;
+		UEleft  = cell.TVD('E','L');
+		UEright = cell.TVD('E','R');
+		UWleft  = cell.TVD('W','L');
+		UWright = cell.TVD('W','R');
 
-		//UWleft  = Umain[i]  ;
-		//UWright = Umain[i+1];
+
+
 
 		DenNumFluxW= NumericalFlux::Central(this,UWleft,UWright).n();
 		DenNumFluxE= NumericalFlux::Central(this,UEleft,UEright).n();
@@ -276,16 +278,16 @@ void Fluid1D::RungeKuttaTVD() {
 
 		CellHandler1D cell(i, this, Uaux);
 
-		UEleft  = cell.TVD(Uaux,i,'E','L');
-		UEright = cell.TVD(Uaux,i,'E','R');
-		UWleft  = cell.TVD(Uaux,i,'W','L');
-		UWright = cell.TVD(Uaux,i,'W','R');
+		//UEleft  = cell.TVD(Uaux,i,'E','L');
+		//UEright = cell.TVD(Uaux,i,'E','R');
+		//UWleft  = cell.TVD(Uaux,i,'W','L');
+		//UWright = cell.TVD(Uaux,i,'W','R');
 
-		//UEleft  = Uaux[i-1];
-		//UEright = Uaux[i];
+		UEleft  = cell.TVD('E','L');
+		UEright = cell.TVD('E','R');
+		UWleft  = cell.TVD('W','L');
+		UWright = cell.TVD('W','R');
 
-		//UWleft  = Uaux[i];
-		//UWright = Uaux[i+1];
 
 
 		DenNumFluxW= NumericalFlux::Central(this,UWleft,UWright).n();
