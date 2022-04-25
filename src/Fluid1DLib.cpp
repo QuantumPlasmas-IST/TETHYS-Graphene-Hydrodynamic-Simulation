@@ -112,8 +112,8 @@ void Fluid1D::InitialCondRand(){
 
 void Fluid1D::InitialCondTest(){
  	for (int i = 0; i < Nx; i++ ){
-		Umain[i].v()= (i>Nx/3 && i<2*Nx/3 ) ? 3.0f : 0.0f; //1.5f; //
-	    Umain[i].n()= (i>Nx/3 && i<2*Nx/3 ) ? 1.0f : 0.1f; //0.2f+0.2f/ pow(cosh((i*dx-0.5f)*12.0f),2);
+		Umain[i].v()= 1.5f;//(i>Nx/3 && i<2*Nx/3 ) ? 3.0f : 0.0f; //1.5f; //
+	    Umain[i].n()= 0.2f+0.2f/ pow(cosh((i*dx-0.5f)*12.0f),2);//(i>Nx/3 && i<2*Nx/3 ) ? 1.0f : 0.1f; //0.2f+0.2f/ pow(cosh((i*dx-0.5f)*12.0f),2);
 	}
 	this->SetSound();
 }
@@ -255,6 +255,7 @@ void Fluid1D::RungeKuttaTVD() {
 //		UWleft  = cell.TVD(Umain,i,'W','L');
 //		UWright = cell.TVD(Umain,i,'W','R');
 
+	/*
 		if(i==1){
 			UWleft=Umain[0];
 		} else{
@@ -265,12 +266,12 @@ void Fluid1D::RungeKuttaTVD() {
 		} else{
 			UEright = cell.TVD('E','R');
 		}
-
+	*/
 
 
 		UEleft  = cell.TVD('E','L');
-//		UEright = cell.TVD('E','R');
-//		UWleft  = cell.TVD('W','L');
+		UEright = cell.TVD('E','R');
+		UWleft  = cell.TVD('W','L');
 		UWright = cell.TVD('W','R');
 
 
@@ -295,9 +296,9 @@ void Fluid1D::RungeKuttaTVD() {
 		//UEright = cell.TVD(Uaux,i,'E','R');
 		//UWleft  = cell.TVD(Uaux,i,'W','L');
 		//UWright = cell.TVD(Uaux,i,'W','R');
-
+/*
 		if(i==1){
-			UWleft=Uaux[0];
+			UWleft=Uaux[0];   //TODO melhorar isto, está a introduzir oscilações feias
 		} else{
 			UWleft  = cell.TVD('W','L');
 		}
@@ -306,11 +307,12 @@ void Fluid1D::RungeKuttaTVD() {
 		} else{
 			UEright = cell.TVD('E','R');
 		}
+	*/
 
 		UEleft  = cell.TVD('E','L');
 		UWright = cell.TVD('W','R');
-
-
+		UWleft  = cell.TVD('W','L');
+		UEright = cell.TVD('E','R');
 
 		DenNumFluxW= NumericalFlux::Central(this,UWleft,UWright).n();
 		DenNumFluxE= NumericalFlux::Central(this,UEleft,UEright).n();

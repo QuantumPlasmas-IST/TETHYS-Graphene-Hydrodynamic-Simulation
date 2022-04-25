@@ -33,7 +33,7 @@ GrapheneFluid1D::~GrapheneFluid1D(){
 
 
 float GrapheneFluid1D::VelocityFlux(StateVec U) {
-	return 0.25f * U.v() * U.v() + vel_fer * vel_fer * 0.5f * log(U.n()+1E-6) + 2.0f * U.S() * U.S() * sqrt(U.n()) ;//- kin_vis*U.grad_v();
+	return 0.25f * U.v() * U.v() + vel_fer * vel_fer * 0.5f * log(U.n()+1E-6) + 2.0f * U.S() * U.S() * sqrt(U.n()) - kin_vis*U.grad_v();
 }
 
 
@@ -54,13 +54,13 @@ float GrapheneFluid1D::VelocitySource(StateVec U) {
 
 
 
-float GrapheneFluid1D::DensitySource(__attribute__((unused)) float n, __attribute__((unused)) float v, __attribute__((unused)) float s){
-	return 0.0f;
-}
+//float GrapheneFluid1D::DensitySource(__attribute__((unused)) float n, __attribute__((unused)) float v, __attribute__((unused)) float s){
+//	return 0.0f;
+//}
 
-float GrapheneFluid1D::VelocitySource(float n, float v, float s, float d3den) {
-	return -1.0f * col_freq * v;
-}
+//float GrapheneFluid1D::VelocitySource(float n, float v, float s, float d3den) {
+//	return -1.0f * col_freq * v;
+//}
 
 void GrapheneFluid1D::CflCondition(){
 	dx = lengX / ( float ) ( Nx - 1 );

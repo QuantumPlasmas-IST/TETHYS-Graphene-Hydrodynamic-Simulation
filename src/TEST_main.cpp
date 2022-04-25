@@ -38,12 +38,12 @@ cout <<"\n\n";
 
 
 
-SetUpParameters parameters(8, 3, 0, 0.02, 0, 0,0, 1, 1);
+SetUpParameters parameters(8, 3, 0, 0.0, 0, 0,0, 1, 1);
 
 GrapheneFluid1D teste(parameters);
 
 teste.CflCondition();
-teste.SetDt(teste.GetDt()*0.05);
+teste.SetDt(teste.GetDt()*0.01);
 cout <<"S\t"<<teste.GetVelSnd()<<endl;
 cout <<"VF\t"<<teste.GetVelFer()<<endl;
 cout <<"dt\t"<<teste.GetDt()<<endl;
@@ -64,7 +64,7 @@ teste.InitialCondTest();
 //teste.InitialCondRand();
 
 	for (float h = 0.0f; h < 0.5f ; h+=teste.GetDt()) {
-	//for (float h = 0.0f; h < 2*teste.GetDt() ; h+=teste.GetDt()) {
+	//for (float h = 0.0f; h < 1*teste.GetDt() ; h+=teste.GetDt()) {
 		teste.WriteFluidFile(h);
 		if (GrapheneFluid1D::TimeStepCounter % 25 == 0) {
 			teste.CopyFields();

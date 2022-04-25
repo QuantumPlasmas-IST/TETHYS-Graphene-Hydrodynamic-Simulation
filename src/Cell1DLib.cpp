@@ -22,8 +22,20 @@ StateVec CellHandler1D::VanLeer(StateVec*Uin, int i) {
 	StateVec Ureturn(Uin[0]);
 	float denom,numer,r,f_vel=0,f_den=0;
 	float tolerance=1E-6;
-	StateVec Numer = Uin[i]-Uin[i-1];
-	StateVec Denom = Uin[i+1]-Uin[i];
+
+	StateVec Numer(Uin[i]);
+	StateVec Denom(Uin[i]);
+	if(i==0){
+		Numer = Uin[0];
+	} else{
+		Numer = Uin[i]-Uin[i-1];
+	}
+	if(i==size-1){
+		Denom = -1.0f*Uin[i];
+	}else{
+		Denom = Uin[i+1]-Uin[i];
+	}
+
 
 	/////////////////////////////VELOCITY
 	numer=Numer.v();
@@ -153,20 +165,23 @@ StateVec CellHandler1D::TVD(StateVec * Uin,int pos,char side, char edge) {
 StateVec CellHandler1D::TVD(char side, char edge) {
 	StateVec Utvd(U_ptr[index]);
 	int pos=index;
-	//isto se index !=1 e index !=Nx-2
 	switch(side) {
-		case 'E' :            //problematico em index==Nx-2
+		case 'E' :
 			switch(edge) {
 				case 'L' :
 					Utvd=U_ptr[pos]   + 0.5f * VanLeer(U_ptr, pos) * (U_ptr[pos + 1] - U_ptr[pos]);
 					break;
-				case 'R' :
-					Utvd=U_ptr[pos+1]   - 0.5f * VanLeer(U_ptr, pos + 1) * (U_ptr[pos + 2] - U_ptr[pos + 1]);
+				case 'R' :   //problematico em index==Nx-2
+					if(pos==size-2){
+						Utvd = U_ptr[pos + 1] - 0.5f * VanLeer(U_ptr, pos + 1) * ( -1.0f* U_ptr[pos + 1]);
+					}else {
+						Utvd = U_ptr[pos + 1] - 0.5f * VanLeer(U_ptr, pos + 1) * (U_ptr[pos + 2] - U_ptr[pos + 1]);
+					}
 					break;
 				default: 0;
 			}
 			break;
-		case 'W' :          //problematico em index==1 ???
+		case 'W' :
 			switch(edge) {
 				case 'L' :
 					Utvd=U_ptr[pos-1]   + 0.5f * VanLeer(U_ptr, pos - 1) * (U_ptr[pos] - U_ptr[pos - 1]);
