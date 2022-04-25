@@ -41,7 +41,7 @@ Fluid1D::~Fluid1D() = default;
 
 
 float Fluid1D::VelocityFlux( StateVec U) {
-	return 0.5f*U.v()*U.v() + vel_fer * vel_fer  *0.5f* log(U.n()+1E-6) - kin_vis*U.grad_v();
+	return 0.5f*U.v()*U.v() + vel_fer * vel_fer  *0.5f* log(U.n()+1E-6) ;//- kin_vis*U.grad_v();
 }
 
 
@@ -244,9 +244,9 @@ void Fluid1D::RungeKuttaTVD() {
 	StateVec UEright(Umain[0]);
 	StateVec UWleft(Umain[0]);
 	StateVec UWright(Umain[0]);
-	if(kin_vis!=0){
-		CalcVelocityGradient(Umain,Nx);
-	}
+	//if(kin_vis!=0){
+	//	CalcVelocityGradient(Umain,Nx);
+	//}
 	for (int i = 1; i < Nx-1; ++i) { //apenas pontos interiores
 
 		CellHandler1D cell(i, Nx,this, Umain);  //TODO tem de se resolver a questao da reconstrução nos pontos de fronteira
@@ -285,9 +285,10 @@ void Fluid1D::RungeKuttaTVD() {
 		Uaux[i].n()=Umain[i].n()-(dt/dx)*(DenNumFluxE-DenNumFluxW);
 		Uaux[i].v()=Umain[i].v()-(dt/dx)*(VelNumFluxE-VelNumFluxW);
 	}
-	if(kin_vis!=0){
-		CalcVelocityGradient(Uaux,Nx);
-	}
+
+	//if(kin_vis!=0){
+	//	CalcVelocityGradient(Uaux,Nx);
+	//}
 	for (int i = 1; i < Nx-1; ++i) { //apenas pontos interiores
 
 		CellHandler1D cell(i, Nx, this, Uaux);
@@ -405,3 +406,18 @@ void Fluid1D::CalcVelocityGradient(StateVec * u_vec,int size_x) {
 	u_vec[size_x - 1].grad_v() = (0.5f * u_vec[size_x - 1 - 2].v() - 2.0f * u_vec[size_x - 1 - 1].v() + 1.5f * u_vec[size_x - 1].v()) / dx;
 }
 
+void Fluid1D::CalcVelocityLaplacian(StateVec * u_vec,int size_x) {
+	for ( int i = 1; i < size_x-1 ; i++ )
+	{
+		u_vec[i].grad_v() = (u_vec[i - 1].v() -2.0f*u_vec[i].v() + u_vec[i + 1].v()) / (dx*dx);
+	}
+	u_vec[0].grad_v() = (2.0f * u_vec[0].v() - 5.0f * u_vec[1].v() + 4.0f * u_vec[2].v()-u_vec[3].v()) / (dx*dx);
+	u_vec[size_x - 1].grad_v() = ( 2.0f * u_vec[size_x - 1].v() - 5.0f * u_vec[size_x - 1-1].v() + 4.0f * u_vec[size_x - 1-2].v()-u_vec[size_x - 1-3].v()) / (dx*dx);
+}
+
+void Fluid1D::ParabolicFTCS() {
+	CalcVelocityGradient(Umain,Nx);
+	for (int i = 0; i < Nx ; ++i) {
+		Umain[i].v() = Umain[i].v() + kin_vis * dt *Umain[i].grad_v() ; //TODO mudar o nome para lap_v se isto funcionar
+	}
+}

@@ -187,6 +187,7 @@ static void Average_Filter(const float * array_in, float * array_out, int size ,
 static float Signum(float x);
 static float MinMod(float a, float b);
 
+
 static void LaplacianField(const float *array_in, float *array_out, float dx, int size_x, int size_y);
 
 static void GradientField(const float *array_in, float *array_out_x, float *array_out_y, float dx, float dy, int size_x, int size_y);
