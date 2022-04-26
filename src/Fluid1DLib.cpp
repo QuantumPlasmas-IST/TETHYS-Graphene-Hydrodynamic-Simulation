@@ -112,8 +112,8 @@ void Fluid1D::InitialCondRand(){
 
 void Fluid1D::InitialCondTest(){
  	for (int i = 0; i < Nx; i++ ){
-		Umain[i].v()= 1.5f;//(i>Nx/3 && i<2*Nx/3 ) ? 3.0f : 0.0f; //1.5f; //
-	    Umain[i].n()= 0.2f+0.2f/ pow(cosh((i*dx-0.5f)*12.0f),2);//(i>Nx/3 && i<2*Nx/3 ) ? 1.0f : 0.1f; //0.2f+0.2f/ pow(cosh((i*dx-0.5f)*12.0f),2);
+		Umain[i].v()= (i>3*Nx/8 && i<5*Nx/8 ) ? 3.0f : 0.0f; //1.5f; //1.5f;//
+	    Umain[i].n()= (i>3*Nx/8 && i<5*Nx/8 ) ? 1.0f : 0.1f; //0.2f+0.2f/ pow(cosh((i*dx-0.5f)*12.0f),2); //0.2f+0.2f/ pow(cosh((i*dx-0.5f)*12.0f),2);//
 	}
 	this->SetSound();
 }
@@ -267,7 +267,7 @@ void Fluid1D::RungeKuttaTVD() {
 
 		Uaux[i].n()=Umain[i].n()-(dt/dx)*(DenNumFluxE-DenNumFluxW);
 		if(kin_vis!=0){
-			VelNumFluxParabolic = kin_vis*(-1.0f*Umain[i-1].v()+ 2.0f*Umain[i].v()-1.0f*Umain[i+1].v());
+			VelNumFluxParabolic = -1.0f*kin_vis*(-1.0f*Umain[i-1].v()+ 2.0f*Umain[i].v()-1.0f*Umain[i+1].v());
 			Uaux[i].v()=Umain[i].v()-(dt/dx)*(VelNumFluxE-VelNumFluxW - VelNumFluxParabolic);
 		} else{
 			Uaux[i].v()=Umain[i].v()-(dt/dx)*(VelNumFluxE-VelNumFluxW);
@@ -293,7 +293,7 @@ void Fluid1D::RungeKuttaTVD() {
 		Umain[i].n()=0.5f*(Umain[i].n()+Uaux[i].n())-(0.5f*dt/dx)*(DenNumFluxE-DenNumFluxW);
 
 		if(kin_vis!=0){
-			VelNumFluxParabolic = kin_vis*(-1.0f*Uaux[i-1].v()+ 2.0f*Uaux[i].v()-1.0f*Uaux[i+1].v());
+			VelNumFluxParabolic =  -1.0f*kin_vis*(-1.0f*Uaux[i-1].v()+ 2.0f*Uaux[i].v()-1.0f*Uaux[i+1].v());
 			Umain[i].v()=0.5f*(Umain[i].v()+Uaux[i].v())-(0.5f*dt/dx)*(VelNumFluxE-VelNumFluxW - VelNumFluxParabolic);
 		} else{
 			Umain[i].v()=0.5f*(Umain[i].v()+Uaux[i].v())-(0.5f*dt/dx)*(VelNumFluxE-VelNumFluxW);
