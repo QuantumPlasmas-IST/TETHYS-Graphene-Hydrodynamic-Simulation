@@ -10,7 +10,7 @@
 #include "includes/SetUpParametersLib.h"
 #include "includes/DirichletBoundaryLib.h"
 #include "includes/DyakonovShurBoundaryLib.h"
-#include "includes/GrapheneFluid2DLib.h"
+#include "includes/DiracGraphene2DLib.h"
 #include "TethysBaseLib.h"
 
 #ifndef MAT_PI
@@ -29,7 +29,7 @@ int main(int argc, char **argv){
 	float t=0.0;
 	float dt;		// time step
 
-	GrapheneFluid2D graph(parameters);
+	DiracGraphene2D graph(parameters);
 
 	/*......CFL routine to determine dt...............................*/
 	graph.CflCondition();
@@ -54,7 +54,7 @@ int main(int argc, char **argv){
 
 
 
-	GrapheneFluid2D::BannerDisplay();
+	DiracGraphene2D::BannerDisplay();
 	graph.WelcomeScreen();
 
 	/*...............Initialization...................................*/
@@ -74,11 +74,11 @@ int main(int argc, char **argv){
 
 	cout << "\033[1;7;5;33m Program Running \033[0m"<<endl;
 	while (t <= graph.GetTmax() ){
-		int percentage=100*GrapheneFluid2D::TimeStepCounter/(graph.GetTmax()/dt);
+		int percentage=100*DiracGraphene2D::TimeStepCounter/(graph.GetTmax()/dt);
 		cout << percentage<<"%\033[?25l"; //prints the percentage of simulation completed
 
 		t += dt;
-		GrapheneFluid2D::TimeStepCounter++;
+		DiracGraphene2D::TimeStepCounter++;
 
 		graph.Richtmyer();
 
@@ -97,7 +97,7 @@ int main(int argc, char **argv){
 		if (parameters.SaveMode  && graph.Snapshot()) {
 			graph.SaveSnapShot();
 		}
-		if( !( GrapheneFluid2D::TimeStepCounter % 2) ){
+		if( !( DiracGraphene2D::TimeStepCounter % 2) ){
 			graph.WriteFluidFile(t);
 		}
 		cout <<"\033[1G\033[2K"; //clears percentage of completion
