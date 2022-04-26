@@ -77,7 +77,7 @@ float DiracGraphene2D::DensityFluxX(GridPoint2D p, char side) {
 	px = SideAverage(ptr_px, p, side);
 	den = SideAverage(ptr_den, p, side);
 
-	return px / sqrt(den);
+	return px / sqrt(den);  // DUVIDA: porque é que aqui nao se poe sobre a massa - DensityToMass?
 }
 
 float DiracGraphene2D::DensityFluxY(GridPoint2D p, char side) {
@@ -85,23 +85,25 @@ float DiracGraphene2D::DensityFluxY(GridPoint2D p, char side) {
 	float py;
 	py = SideAverage(ptr_py, p, side);
 	den = SideAverage(ptr_den, p, side);
-	return py / sqrt(den);
+	return py / sqrt(den);  // DUVIDA: porque é que aqui nao se poe sobre a massa - DensityToMass?
 }
 
 float DiracGraphene2D::XMomentumFluxX(GridPoint2D p, char side) {
 
 	float sound;
 	float den;
+	float hden;
 	float px;
 	float mass;
 
 	sound = SideAverage(ptr_snd, p, side);
 	den = SideAverage(ptr_den, p, side);
+	hden = SideAverage(hptr_den, p, side);
 	px = SideAverage(ptr_px, p, side);
 
 	mass=DensityToMass(den);
 
-	return px * px / mass + vel_fer * vel_fer * mass / 3.0f + 0.5f * sound * sound * den * den ;
+	return px * px / mass + vel_fer * vel_fer * mass / 3.0f + 0.5f * sound * sound * (den - hden) ;
 }
 
 float DiracGraphene2D::XMomentumFluxY(GridPoint2D p, char side) {
@@ -126,15 +128,17 @@ float DiracGraphene2D::YMomentumFluxY(GridPoint2D p, char side) {
 
 	float sound ;
 	float den;
+	float hden;
 	float py;
 	float mass;
 
 	sound = SideAverage(ptr_snd, p, side);
 	den = SideAverage(ptr_den, p, side);
+	hden = SideAverage(hptr_den, p, side);
 	py = SideAverage(ptr_py, p, side);
 	mass=DensityToMass(den);
 
-	return py * py / mass + vel_fer * vel_fer * mass / 3.0f + 0.5f * sound * sound * den * den;
+	return py * py / mass + vel_fer * vel_fer * mass / 3.0f + 0.5f * sound * sound * (den - hden);
 }
 
 float DiracGraphene2D::YMomentumFluxX(GridPoint2D p, char side) {
@@ -190,16 +194,18 @@ float DiracGraphene2D::HXMomentumFluxX(GridPoint2D p, char side) {
 
 	float sound;
 	float den;
+	float hden;
 	float px;
 	float mass;
 
 	sound = SideAverage(ptr_snd, p, side);
-	den = SideAverage(hptr_den, p, side);
+	hden = SideAverage(hptr_den, p, side);
+	den = SideAverage(ptr_den, p, side);
 	px = SideAverage(hptr_px, p, side);
 
 	mass=DensityToMass(den);
 
-	return px * px / mass + vel_fer * vel_fer * mass / 3.0f - 0.5f * sound * sound * den * den ;
+	return px * px / mass + vel_fer * vel_fer * mass / 3.0f - 0.5f * sound * sound * (den - hden) ;
 }
 
 float DiracGraphene2D::HXMomentumFluxY(GridPoint2D p, char side) {
@@ -224,15 +230,17 @@ float DiracGraphene2D::HYMomentumFluxY(GridPoint2D p, char side) {
 
 	float sound ;
 	float den;
+	float hden;
 	float py;
 	float mass;
 
 	sound = SideAverage(ptr_snd, p, side);
-	den = SideAverage(hptr_den, p, side);
+	hden = SideAverage(hptr_den, p, side);
+	den = SideAverage(ptr_den, p, side);
 	py = SideAverage(hptr_py, p, side);
 	mass=DensityToMass(den);
 
-	return py * py / mass + vel_fer * vel_fer * mass / 3.0f + 0.5f * sound * sound * den * den;
+	return py * py / mass + vel_fer * vel_fer * mass / 3.0f - 0.5f * sound * sound * (den - hden);
 }
 
 float DiracGraphene2D::HYMomentumFluxX(GridPoint2D p, char side) {
@@ -259,32 +267,28 @@ delete[] FlxX;
 delete[] FlxY;
 delete[] CurX;
 delete[] CurY;
+delete[] HDen;
+delete[] HVelX;
+delete[] HVelY;
+delete[] HFlxX;
+delete[] HFlxY;
+delete[] HCurX;
+delete[] HCurY;
 delete[] den_mid;
 delete[] velX_mid;
 delete[] velY_mid;
 delete[] flxX_mid;
 delete[] flxY_mid;
-delete[] lap_flxX;
-delete[] lap_flxY;
 delete[] vel_snd_arr;
 delete[] vel_snd_arr_mid;
-delete[] den_dx;
-delete[] den_dy;
-delete[] den_dx_mid;
-delete[] den_dy_mid;
-delete[] velX_dx;
-delete[] velX_dx_mid;
-delete[] velX_dy;
-delete[] velX_dy_mid;
-delete[] velY_dx;
-delete[] velY_dx_mid;
-delete[] velY_dy;
-delete[] velY_dy_mid;
-delete[] lap_den;
-delete[] lap_tmp;
-delete[] lap_den_mid;
-delete[] tmp_mid;
-delete[] Tmp;
+delete[] hden_mid;
+//delete[] hvelX_mid;                    <= ??
+//delete[] hvelY_mid;
+delete[] hflxX_mid;
+delete[] hflxY_mid;
+delete[] hvel_snd_arr;
+delete[] hvel_snd_arr_mid;
+
 }
 
 float DiracGraphene2D::DensityToMass(float density) {
