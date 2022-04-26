@@ -72,7 +72,7 @@ using namespace H5;
 
 		virtual float DensityToMass(float density);
 
-		void ChooseGridPointers(const string &grid);
+		virtual void ChooseGridPointers(const string &grid);
 
 		float SideAverage(const float *input_array, GridPoint2D p, char side);
 
@@ -141,7 +141,7 @@ using namespace H5;
 		 * @see YMomentumSource
 		 *
 		 */
-		void Richtmyer();                   // Central Algorithm for solving the hyperbolic conservation law
+		virtual void Richtmyer();                   // Central Algorithm for solving the hyperbolic conservation law
 
 		virtual float DensitySource(float n, float flx_x, float flx_y, float mass,
 		                            float s); ///< density equation (continuity equation) source term

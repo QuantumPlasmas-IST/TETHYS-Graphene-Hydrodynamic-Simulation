@@ -38,12 +38,22 @@ protected:
 	float *hflxX_mid;
 	float *hflxY_mid;
 
-	float *hptr_snd;
+	void ChooseGridPointers(const string &grid) override;
+
 	float *hptr_den;
 	float *hptr_px;
 	float *hptr_py;
 
 public :
+
+	float *HDen;       // number density
+	float *HVelX;      // fluid velocity x component
+	float *HVelY;      // fluid velocity y component
+	float *HFlxX;      // mass density flux x component
+	float *HFlxY;      // mass density flux y component
+	float *HCurX;      // current density x component
+	float *HCurY;      // current density y component
+
 	explicit DiracGraphene2D(SetUpParameters &input_parameters);
 		~DiracGraphene2D();
 
@@ -77,7 +87,6 @@ public :
 //		//void MassFluxToVelocity(string grid) override; // Converts the mass density flux back to velocity, in graphene  v = p n^{-3/2}
 		/*Override fluxes and sources to specifics of graphene physics*/
 		float DensitySource(float n, float flx_x, float flx_y, float mass, float s)override;   ///< density equation (continuity equation) source term
-		float TemperatureSource(float n, float flx_x, float flx_y, float den_grad_x, float den_grad_y, float mass, float s) override;   ///< density equation (continuity equation) source term
 		float XMomentumSource(float n, float flx_x, float flx_y, float mass, float s)override; ///< velocity X component equation (momentum equation) source term
 		float YMomentumSource(float n, float flx_x, float flx_y, float mass, float s)override; ///< velocity y component equation (momentum equation) source term
 
@@ -91,6 +100,16 @@ public :
 		float YMomentumFluxY(GridPoint2D p, char side ) override; ///< velocity Y component equation (momentum equation) conserved flux Y component
 
 
+		float HDensityFluxX(GridPoint2D p, char side ); ///< density equation (continuity equation) conserved flux X component
+		float HDensityFluxY(GridPoint2D p, char side ); ///< density equation (continuity equation) conserved1 flux Y component
+
+		float HXMomentumFluxX(GridPoint2D p, char side ); ///< velocity X component equation (momentum equation) conserved flux X component
+		float HXMomentumFluxY(GridPoint2D p, char side ); ///< velocity X component equation (momentum equation) conserved flux Y component
+
+		float HYMomentumFluxX(GridPoint2D p, char side ); ///< velocity Y component equation (momentum equation) conserved flux X component
+		float HYMomentumFluxY(GridPoint2D p, char side ); ///< velocity Y component equation (momentum equation) conserved flux Y component
+
+		void Richtmyer() override;
 };
 
 
