@@ -107,7 +107,7 @@ using namespace H5;
 		void SetSound();     ///< Applies the anisotropy (in the cases there is one) to the sound velocity array
 		void SetSound(std::function<float(float,float)>);     ///< Applies the anisotropy (in the cases there is one) to the sound velocity array
 		virtual void SetSimulationTime();   ///< Finds and set the appropriate simulation time
-		void InitialCondRand();             ///< Initial condition, zero velocity and constant density with 0.5% white noise
+		virtual void InitialCondRand();             ///< Initial condition, zero velocity and constant density with 0.5% white noise
 		void InitialCondWave();
 
 		void InitialCondTest();             ///< Initial condition for testing and debugging

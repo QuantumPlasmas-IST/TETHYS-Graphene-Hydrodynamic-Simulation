@@ -199,7 +199,7 @@ float DiracGraphene2D::HXMomentumFluxX(GridPoint2D p, char side) {
 
 	mass=DensityToMass(den);
 
-	return px * px / mass + vel_fer * vel_fer * mass / 3.0f + 0.5f * sound * sound * den * den ;
+	return px * px / mass + vel_fer * vel_fer * mass / 3.0f - 0.5f * sound * sound * den * den ;
 }
 
 float DiracGraphene2D::HXMomentumFluxY(GridPoint2D p, char side) {
@@ -313,13 +313,22 @@ void DiracGraphene2D::ChooseGridPointers(const string &grid) {
 	}
 }
 
-float
-DiracGraphene2D::TemperatureSource(float n, float flx_x, float flx_y, float den_grad_x, float den_grad_y, float mass, float s) {
-	return vel_snd * vel_snd * (den_grad_x * flx_x / sqrt(n) + den_grad_y * flx_y / sqrt(n)  ) / (vel_fer * vel_fer);
+
+void DiracGraphene2D::InitialCondRand(){
+	random_device rd;
+	float maxrand;
+	maxrand = (float) random_device::max();
+	for (int c = 0; c < Nx*Ny; c++ ){
+		float noise;
+		noise =  (float) rd()/maxrand ; //(float) rand()/ (float) RAND_MAX ;
+		Den[c] = 1.0f + 0.005f * (noise - 0.5f);
+
+		noise =  (float) rd()/maxrand ; //(float) rand()/ (float) RAND_MAX ;
+        HDen[c] = 1.0f + 0.005f * (noise - 0.5f);
+	}
 }
 
-
-void Fluid2D::Richtmyer(){
+void DiracGraphene2D::Richtmyer(){
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	ChooseGridPointers("MidGrid");
@@ -393,7 +402,7 @@ void Fluid2D::Richtmyer(){
 						          - (dt/dy)*(HDensityFluxY(mainpoint, 'N') - HDensityFluxY(mainpoint, 'S'));
 						         // + dt*DensitySource(den_old, flx_x_old, flx_y_old, 0.0f, 0.0f);
 				HFlxX[kp] = hflx_x_old - (dt/dx)*(HXMomentumFluxX(mainpoint, 'E') - HXMomentumFluxX(mainpoint, 'W'))
-						             - (dt/dy)*H(XMomentumFluxY(mainpoint, 'N') - HXMomentumFluxY(mainpoint, 'S'));
+						             - (dt/dy)*(HXMomentumFluxY(mainpoint, 'N') - HXMomentumFluxY(mainpoint, 'S'));
 						            // + dt*XMomentumSource(den_old, flx_x_old, flx_y_old, 0.0f, 0.0f);
 				HFlxY[kp] = hflx_y_old - (dt/dx)*(HYMomentumFluxX(mainpoint, 'E') - HYMomentumFluxX(mainpoint, 'W'))
 						             - (dt/dy)*(HYMomentumFluxY(mainpoint, 'N') - HYMomentumFluxY(mainpoint, 'S'));

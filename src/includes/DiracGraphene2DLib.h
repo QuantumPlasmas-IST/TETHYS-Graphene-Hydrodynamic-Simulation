@@ -67,6 +67,9 @@ public :
 		   \lambda =1.97S + 0.5 v_F \quad&\mathrm{otherwise} @f}
 		 */
 		void CflCondition() override;
+
+		void InitialCondRand() override;             ///< Initial condition, zero velocity and constant density with 0.5% white noise
+
 		/*!
 		 * @brief Sets the total simulation time in units of @f$v_0/L@f$
 		 *
