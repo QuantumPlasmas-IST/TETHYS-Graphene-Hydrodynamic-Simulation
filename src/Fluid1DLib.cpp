@@ -41,7 +41,7 @@ Fluid1D::~Fluid1D() = default;
 
 
 float Fluid1D::VelocityFlux( StateVec U) {
-	return 0.5f*U.v()*U.v() + vel_fer * vel_fer  *0.5f* log(U.n()+1E-6) ;//- kin_vis*U.grad_v();
+	return 0.5f*U.v()*U.v() + vel_fer * vel_fer  *0.5f* log(U.n()+1.0E-6) ;//- kin_vis*U.grad_v();
 }
 
 
@@ -240,33 +240,15 @@ void Fluid1D::RungeKuttaTVD() {
 	float DenNumFluxE;
 	float VelNumFluxW;
 	float VelNumFluxE;
+	float VelNumFluxParabolic;
 	StateVec UEleft(Umain[0]);
 	StateVec UEright(Umain[0]);
 	StateVec UWleft(Umain[0]);
 	StateVec UWright(Umain[0]);
-	//if(kin_vis!=0){
-	//	CalcVelocityGradient(Umain,Nx);
-	//}
+
 	for (int i = 1; i < Nx-1; ++i) { //apenas pontos interiores
 
-		CellHandler1D cell(i, Nx,this, Umain);  //TODO tem de se resolver a questao da reconstrução nos pontos de fronteira
-//		UEleft  = cell.TVD(Umain,i,'E','L');
-//		UEright = cell.TVD(Umain,i,'E','R');
-//		UWleft  = cell.TVD(Umain,i,'W','L');
-//		UWright = cell.TVD(Umain,i,'W','R');
-
-	/*
-		if(i==1){
-			UWleft=Umain[0];
-		} else{
-			UWleft  = cell.TVD('W','L');
-		}
-		if(i==Nx-2){
-			UEright=Umain[Nx-1];
-		} else{
-			UEright = cell.TVD('E','R');
-		}
-	*/
+		CellHandler1D cell(i, Nx,this, Umain);
 
 
 		UEleft  = cell.TVD('E','L');
@@ -282,33 +264,21 @@ void Fluid1D::RungeKuttaTVD() {
 		VelNumFluxW= NumericalFlux::Central(this,UWleft,UWright).v();
 		VelNumFluxE= NumericalFlux::Central(this,UEleft,UEright).v();
 
+
 		Uaux[i].n()=Umain[i].n()-(dt/dx)*(DenNumFluxE-DenNumFluxW);
-		Uaux[i].v()=Umain[i].v()-(dt/dx)*(VelNumFluxE-VelNumFluxW);
+		if(kin_vis!=0){
+			VelNumFluxParabolic = kin_vis*(-1.0f*Umain[i-1].v()+ 2.0f*Umain[i].v()-1.0f*Umain[i+1].v());
+			Uaux[i].v()=Umain[i].v()-(dt/dx)*(VelNumFluxE-VelNumFluxW - VelNumFluxParabolic);
+		} else{
+			Uaux[i].v()=Umain[i].v()-(dt/dx)*(VelNumFluxE-VelNumFluxW);
+		}
+
 	}
 
-	//if(kin_vis!=0){
-	//	CalcVelocityGradient(Uaux,Nx);
-	//}
 	for (int i = 1; i < Nx-1; ++i) { //apenas pontos interiores
 
 		CellHandler1D cell(i, Nx, this, Uaux);
 
-		//UEleft  = cell.TVD(Uaux,i,'E','L');
-		//UEright = cell.TVD(Uaux,i,'E','R');
-		//UWleft  = cell.TVD(Uaux,i,'W','L');
-		//UWright = cell.TVD(Uaux,i,'W','R');
-/*
-		if(i==1){
-			UWleft=Uaux[0];   //TODO melhorar isto, está a introduzir oscilações feias
-		} else{
-			UWleft  = cell.TVD('W','L');
-		}
-		if(i==Nx-2){
-			UEright=Uaux[Nx-1];
-		} else{
-			UEright = cell.TVD('E','R');
-		}
-	*/
 
 		UEleft  = cell.TVD('E','L');
 		UWright = cell.TVD('W','R');
@@ -321,7 +291,15 @@ void Fluid1D::RungeKuttaTVD() {
 		VelNumFluxE= NumericalFlux::Central(this,UEleft,UEright).v();
 
 		Umain[i].n()=0.5f*(Umain[i].n()+Uaux[i].n())-(0.5f*dt/dx)*(DenNumFluxE-DenNumFluxW);
-		Umain[i].v()=0.5f*(Umain[i].v()+Uaux[i].v())-(0.5f*dt/dx)*(VelNumFluxE-VelNumFluxW);
+
+		if(kin_vis!=0){
+			VelNumFluxParabolic = kin_vis*(-1.0f*Uaux[i-1].v()+ 2.0f*Uaux[i].v()-1.0f*Uaux[i+1].v());
+			Umain[i].v()=0.5f*(Umain[i].v()+Uaux[i].v())-(0.5f*dt/dx)*(VelNumFluxE-VelNumFluxW - VelNumFluxParabolic);
+		} else{
+			Umain[i].v()=0.5f*(Umain[i].v()+Uaux[i].v())-(0.5f*dt/dx)*(VelNumFluxE-VelNumFluxW);
+		}
+
+
 	}
 }
 

@@ -77,11 +77,11 @@ teste.InitialCondTest();
 		teste.RungeKuttaTVD();
 		//teste.McCormack();
 		BoundaryCondition::XPeriodic(teste);
-		if(teste.GetKinVis() != 0){
-			teste.ParabolicFTCS();
-		}
+	//	if(teste.GetKinVis() != 0){
+	//		teste.ParabolicFTCS();
+	//	}
 
-		BoundaryCondition::XPeriodic(teste);
+	//	BoundaryCondition::XPeriodic(teste);
 		//DyakonovShurBoundaryCondition::DyakonovShurBc(teste);
 		//DirichletBoundaryCondition::Density(teste,1.0f,1.0f);
 		//DirichletBoundaryCondition::VelocityX(teste,.1f,0.1f);
