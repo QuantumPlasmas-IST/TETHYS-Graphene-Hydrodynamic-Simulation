@@ -16,7 +16,6 @@ class CellHandler1D {
 private:
 	int index;
 	int size;
-	StateVec U{};
 	StateVec *U_ptr;
 	Fluid1D *fluid_ptr;
 public:
@@ -25,14 +24,11 @@ public:
 	~CellHandler1D()=default;
 
 	StateVec TVD(char side,char edge);
-	StateVec TVD(StateVec *,int pos,char side,char edge);
 
 
 //TODO adicionar mais flux limiters
-	StateVec VanLeer(StateVec*Uin, int i);
-	StateVec VanLeer(int i);
 
-	StateVec Roe(StateVec*Uin, int i);
+	StateVec VanLeer(int i);
 	StateVec Roe(int i);
 
 };
