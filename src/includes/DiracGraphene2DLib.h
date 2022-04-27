@@ -37,6 +37,8 @@ protected:
 	float *hden_mid;       // mid or auxiliary grids defined with (Nx-1)*(Ny-1) size
 	float *hflxX_mid;
 	float *hflxY_mid;
+	float *hvelX_mid;
+	float *hvelY_mid;
 
 	void ChooseGridPointers(const string &grid) override;
 

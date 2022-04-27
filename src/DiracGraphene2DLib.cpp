@@ -17,6 +17,25 @@ DiracGraphene2D::DiracGraphene2D(SetUpParameters &input_parameters) : Fluid2D(in
 	char buffer [100];
 	sprintf (buffer, "S=%.2fvF=%.2fvis=%.3fodd=%.3fl=%.3fwc=%.2ftherm=%.2f", vel_snd, vel_fer, kin_vis,odd_vis, col_freq,cyc_freq,therm_diff);
 	file_infix = buffer;
+
+	// main grid variables Nx*Ny
+	HDen 		= new float[Nx * Ny]();
+	HVelX 		= new float[Nx * Ny]();
+	HVelY 		= new float[Nx * Ny]();
+	HFlxX 		= new float[Nx * Ny]();
+	HFlxY 		= new float[Nx * Ny]();
+	HCurX 		= new float[Nx * Ny]();
+	HCurY 		= new float[Nx * Ny]();
+	hvel_snd_arr	= new float[Nx * Ny]();
+
+	// 1st Aux. Grid variables (Nx-1)*(Ny-1)
+	hden_mid		= new float[(Nx-1)*(Ny-1)]();
+	hvelX_mid	= new float[(Nx-1)*(Ny-1)]();
+	hvelY_mid	= new float[(Nx-1)*(Ny-1)]();
+
+	hflxX_mid	= new float[(Nx-1)*(Ny-1)]();
+	hflxY_mid	= new float[(Nx-1)*(Ny-1)]();
+	hvel_snd_arr_mid	= new float[(Nx-1)*(Ny-1)]();
 }
 
 void DiracGraphene2D::SetSimulationTime(){
