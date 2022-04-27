@@ -115,6 +115,22 @@ public :
 		float HYMomentumFluxY(GridPoint2D p, char side ); ///< velocity Y component equation (momentum equation) conserved flux Y component
 
 		void Richtmyer() override;
+
+		/*!
+		 * @brief Writes the line of time t on the simplified .dat file output
+		 *
+		 * As a way to easily access the main results of the simulation the simplified .dat file stores the following quantities by columns:
+		 * -# Time @f$t@f$
+		 * -# Density at drain contact for electrons @f$n(x=L)@f$
+		 * -# Mass flux along x at drain contact for electrons @f$p_x(x=L)@f$
+		 * -# Density at source contact for electrons @f$n_x(x=0) @f$
+		 * -# Mass flux along x at source contact for electrons @f$p_x(x=0) @f$
+		 * -# Density at drain contact for holes @f$n(x=L)@f$
+		 * -# Mass flux along x at drain contact for holes  @f$p_x(x=L)@f$
+		 * -# Density at source contact for holes @f$n_x(x=0) @f$
+		 * -# Mass flux along x at source contact for holes @f$p_x(x=0) @f$
+		 * */
+		void WriteFluidFile(float t); // writes the line of time t on the simplified .dat file output
 };
 
 

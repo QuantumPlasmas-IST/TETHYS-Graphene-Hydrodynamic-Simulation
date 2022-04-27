@@ -205,7 +205,7 @@ using namespace H5;
 		 * -# Density at source contact @f$n_x(x=0) @f$
 		 * -# Mass flux along x at source contact @f$p_x(x=0) @f$
 		 * */
-		void WriteFluidFile(float t); // writes the line of time t on the simplified .dat file output
+		virtual void WriteFluidFile(float t); // writes the line of time t on the simplified .dat file output
 
 		/*!
 		 * @brief Saves the current snapshot on HDF5 file

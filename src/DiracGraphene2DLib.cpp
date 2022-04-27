@@ -358,6 +358,27 @@ void DiracGraphene2D::InitialCondRand(){
 	}
 }
 
+void DiracGraphene2D::WriteFluidFile(float t){
+	int j=Ny/2;
+	int pos_end = Nx - 1 + j*Nx ;
+	int pos_ini = j*Nx ;
+		if(!isfinite(Den[pos_end]) || !isfinite(Den[pos_ini]) || !isfinite(FlxX[pos_end]) || !isfinite(FlxX[pos_ini]) 
+			|| !isfinite(HDen[pos_end]) || !isfinite(HDen[pos_ini]) || !isfinite(HFlxX[pos_end]) || !isfinite(HFlxX[pos_ini])){
+			cerr << "ERROR: numerical method failed to converge" <<"\nExiting"<< endl;
+			CloseHdf5File();
+			exit(EXIT_FAILURE);
+		}
+	data_preview << t << "\t"
+	<< Den[pos_end]  << "\t"
+	<< FlxX[pos_end] << "\t"
+	<< Den[pos_ini]  << "\t"
+	<< FlxX[pos_ini] << "\t"
+	<< HDen[pos_end]  << "\t"
+	<< HFlxX[pos_end] << "\t"
+	<< HDen[pos_ini]  << "\t"
+	<< HFlxX[pos_ini] << "\n";
+}
+
 void DiracGraphene2D::Richtmyer(){
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
