@@ -148,10 +148,12 @@ void Fluid1D::WriteFluidFile(float t){
 }
 
 
-void Fluid1D::Richtmyer(){
-	//CalcDensityLaplacian(Umain,Nx);
+void Fluid1D::Richtmyer() {
+
+	CalcDensityLaplacian(Umain, Nx);
 	RichtmyerStep1();
-	//CalcDensityLaplacian(Umid,Nx);
+	
+	CalcDensityLaplacian(Umid, Nx);
 	RichtmyerStep2();
 }
 void Fluid1D::RichtmyerStep1() {
@@ -233,88 +235,73 @@ void Fluid1D::SaveSnapShot(){
 }
 
 void Fluid1D::RungeKuttaTVD() {
+
 	float DenNumFluxW;
 	float DenNumFluxE;
 	float VelNumFluxW;
 	float VelNumFluxE;
+
 	float DenNumSourceW;
 	float DenNumSourceE;
 	float VelNumSourceW;
 	float VelNumSourceE;
+
 	StateVec UEleft{};
 	StateVec UEright{};
 	StateVec UWleft{};
 	StateVec UWright{};
 
+	//CalcDensityLaplacian(Umain,Nx);
 	for (int i = 1; i < Nx-1; ++i) {
 
-	//	CellHandler1D cell(i, this, Umain);
-	//	UEleft  = cell.TVD(Umain,i,'E','L');
-	//	UEright = cell.TVD(Umain,i,'E','R');
-	//	UWleft  = cell.TVD(Umain,i,'W','L');
-	//	UWright = cell.TVD(Umain,i,'W','R');
+		// reconstruction process
+		CellHandler1D cell(i, this, Umain);
+		UEleft  = cell.WENO3(Nx,'E','L');
+		UEright = cell.WENO3(Nx,'E','R');
+		UWleft  = cell.WENO3(Nx,'W','L');
+		UWright = cell.WENO3(Nx,'W','R');
 
-		UEleft  = Umain[i];
-		UEright = Umain[i-1];
-		UWleft  = Umain[i+1];
-		UWright = Umain[i];
+		// calculates flux terms
+		DenNumFluxE = NumericalFlux::Central(this,UEleft,UEright).n();
+		DenNumFluxW = NumericalFlux::Central(this,UWleft,UWright).n();
+		VelNumFluxE = NumericalFlux::Central(this,UEleft,UEright).v();
+		VelNumFluxW = NumericalFlux::Central(this,UWleft,UWright).v();
 
-		// calculei os laplacianos da raiz quadrada da densidade usando o método das diferenças centradas
-		float lap_den = (Umain[i+1].n() - 2*Umain[i].n() + Umain[i-1].n()) / (dx*dx);
-		UEleft.lap_n()  = lap_den;
-		UEright.lap_n() = lap_den;
-		UWleft.lap_n()  = lap_den;
-		UWright.lap_n() = lap_den;
-
-		// alterei o método de central para average
-		DenNumFluxE = NumericalFlux::Average(this,UEleft,UEright).n();
-		DenNumFluxW = NumericalFlux::Average(this,UWleft,UWright).n();
-		VelNumFluxE = NumericalFlux::Average(this,UEleft,UEright).v();
-		VelNumFluxW = NumericalFlux::Average(this,UWleft,UWright).v();
-
+		// calculates source terms
 		DenNumSourceE = NumericalSource::Average(this,UEleft,UEright).n();
 		DenNumSourceW = NumericalSource::Average(this,UWleft,UWright).n();
 		VelNumSourceE = NumericalSource::Average(this,UEleft,UEright).v();
 		VelNumSourceW = NumericalSource::Average(this,UWleft,UWright).v();
 
-		// acrescentei o termo da fonte
-		Uaux[i].n()=Umain[i].n()-(dt/dx)*(DenNumFluxW-DenNumFluxE)+0.5f*dt*(DenNumSourceW+DenNumSourceE);
-		Uaux[i].v()=Umain[i].v()-(dt/dx)*(VelNumFluxW-VelNumFluxE)+0.5f*dt*(VelNumSourceW+VelNumSourceE);
+		// RK
+		Uaux[i].n()=Umain[i].n()-(dt/dx)*(DenNumFluxE-DenNumFluxW);//+0.5f*dt*(DenNumSourceE+DenNumSourceW);
+		Uaux[i].v()=Umain[i].v()-(dt/dx)*(VelNumFluxE-VelNumFluxW);//+0.5f*dt*(VelNumSourceE+VelNumSourceW);
 	}
+	//CalcDensityLaplacian(Uaux,Nx);
 	for (int i = 1; i < Nx-1; ++i) {
 
-	//	CellHandler1D cell(i, this, Uaux);
-	//	UEleft  = cell.TVD(Uaux,i,'E','L');
-	//	UEright = cell.TVD(Uaux,i,'E','R');
-	//	UWleft  = cell.TVD(Uaux,i,'W','L');
-	//	UWright = cell.TVD(Uaux,i,'W','R');
+		// reconstruction process
+		CellHandler1D cell(i, this, Uaux);
+		UEleft  = cell.WENO3(Nx,'E','L');
+		UEright = cell.WENO3(Nx,'E','R');
+		UWleft  = cell.WENO3(Nx,'W','L');
+		UWright = cell.WENO3(Nx,'W','R');
 
-		UEleft  = Uaux[i];
-		UEright = Uaux[i-1];
-		UWleft  = Uaux[i+1];
-		UWright = Uaux[i];
+		// calculates flux terms
+		DenNumFluxE= NumericalFlux::Central(this,UEleft,UEright).n();
+		DenNumFluxW= NumericalFlux::Central(this,UWleft,UWright).n();
+		VelNumFluxE= NumericalFlux::Central(this,UEleft,UEright).v();
+		VelNumFluxW= NumericalFlux::Central(this,UWleft,UWright).v();
 
-		// calculei os laplacianos da raiz quadrada da densidade usando o método das diferenças centradas
-		float lap_den = (Uaux[i+1].n() - 2*Uaux[i].n() + Uaux[i-1].n()) / (dx*dx);
-		UEleft.lap_n()  = lap_den;
-		UEright.lap_n() = lap_den;
-		UWleft.lap_n()  = lap_den;
-		UWright.lap_n() = lap_den;
-
-		// alterei o método de central para average
-		DenNumFluxE= NumericalFlux::Average(this,UEleft,UEright).n();
-		DenNumFluxW= NumericalFlux::Average(this,UWleft,UWright).n();
-		VelNumFluxE= NumericalFlux::Average(this,UEleft,UEright).v();
-		VelNumFluxW= NumericalFlux::Average(this,UWleft,UWright).v();
-
+		// calculates source terms
 		DenNumSourceE = NumericalSource::Average(this,UEleft,UEright).n();
 		DenNumSourceW = NumericalSource::Average(this,UWleft,UWright).n();
 		VelNumSourceE = NumericalSource::Average(this,UEleft,UEright).v();
 		VelNumSourceW = NumericalSource::Average(this,UWleft,UWright).v();
 
-		// acrescentei o termo da fonte
-		Umain[i].n()=0.5f*(Umain[i].n()+Uaux[i].n())-(0.5f*dt/dx)*(DenNumFluxW-DenNumFluxE)+0.25f*dt*(DenNumSourceW+DenNumSourceE);
-		Umain[i].v()=0.5f*(Umain[i].v()+Uaux[i].v())-(0.5f*dt/dx)*(VelNumFluxW-VelNumFluxE)+0.25f*dt*(VelNumSourceW+VelNumSourceE);
+		// RK
+		Umain[i].n()=0.5f*(Umain[i].n()+Uaux[i].n())-(0.5f*dt/dx)*(DenNumFluxE-DenNumFluxW);//+0.25f*dt*(DenNumSourceW+DenNumSourceE);
+		Umain[i].v()=0.5f*(Umain[i].v()+Uaux[i].v())-(0.5f*dt/dx)*(VelNumFluxE-VelNumFluxW);//+0.25f*dt*(VelNumSourceW+VelNumSourceE);
 	}
 }
 
@@ -391,9 +378,14 @@ void Fluid1D::SaveSound() {
 }
 
 
-void Fluid1D::CalcDensityLaplacian(StateVec * u_vec, int size_x){
-	for(int i = 1; i < size_x-1; ++i)
-	{
+void Fluid1D::CalcDensityLaplacian(StateVec* u_vec, int size_x) {
+
+	// calculates the laplacian at the extreme cells
+	u_vec[0].lap_n() = (u_vec[0].n() - 2*u_vec[1].n() + u_vec[2].n()) / (dx*dx);
+	u_vec[size_x-1].lap_n() = (u_vec[size_x-3].n() - 2*u_vec[size_x-2].n() + u_vec[size_x-1].n()) / (dx*dx);
+
+	// calculates the laplacian for all the other cells
+	for(int i = 1; i < size_x-1; ++i) {
 		u_vec[i].lap_n() = (u_vec[i+1].n() - 2*u_vec[i].n() + u_vec[i-1].n()) / (dx*dx);
 	}
 }

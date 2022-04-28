@@ -32,6 +32,9 @@ int main(int argc, char **argv){
 	/*......CFL routine to determine dt...............................*/
 	graph.CflCondition();
 	dt=graph.GetDt();
+	// desperate attempt to make Richtmyer converge
+	//dt*=0.5f;
+	//graph.SetDt(dt);
 	/*................................................................*/
 	
 	/*.........Fixed or variable vel_snd value........................*/
@@ -70,14 +73,14 @@ int main(int argc, char **argv){
 	std::cout << "\033[1;7;5;33m Program Running \033[0m"<<endl;
 
 
-	graph.SetTmax(1.0f);
 	//Main cycle
+	graph.SetTmax(1.0f);
 	while(t <= graph.GetTmax()) {
 		t += dt;
 		GrapheneFluid1D::TimeStepCounter++;
 		// Main algorithm
-		graph.Richtmyer();
-		//graph.RungeKuttaTVD();
+		//graph.Richtmyer();
+		graph.RungeKuttaTVD();
 
 		// Impose boundary conditions
 		//DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
