@@ -33,9 +33,11 @@ GrapheneFluid1D::~GrapheneFluid1D(){
 
 
 float GrapheneFluid1D::VelocityFlux(StateVec U) {
-	// adicionei o termo do potencial de Bohm
-	float B = 0.005f;
-	return 0.25f * U.v() * U.v() + vel_fer * vel_fer * 0.5f * log(U.n()) + 2.0f * U.S() * U.S() * sqrt(U.n()) + B*U.lap_n(); //TODO falta o termo dv para a voscosidade
+
+	// calculates Bohm potential term
+	//float Bohm_Potential = 0.001f * U.lap_n();
+
+	return 0.25f * U.v() * U.v() + vel_fer * vel_fer * 0.5f * log(U.n()+1.0E-6) + 2.0f * U.S() * U.S() * sqrt(U.n());// + Bohm_Potential; //TODO falta o termo dv para a voscosidade
 }
 
 
@@ -76,7 +78,7 @@ void GrapheneFluid1D::CflCondition(){
 }
 
 float GrapheneFluid1D::JacobianSpectralRadius(StateVec U) {
-	float SQRT = sqrt(16.0f*sqrt(U.n())*vel_snd*vel_snd+U.v()*U.v() );
+	float SQRT = sqrt(16.0f*sqrt(U.n())*vel_snd*vel_snd + U.v()*U.v() + 8.0f*vel_fer*vel_fer);
 	float l1 = abs(3.0f*U.v() + SQRT);
 	float l2 = abs(3.0f*U.v() - SQRT);
 	return 0.25f*max(l1,l2);
