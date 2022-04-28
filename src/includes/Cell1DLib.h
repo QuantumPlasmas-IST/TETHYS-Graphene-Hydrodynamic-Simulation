@@ -28,6 +28,7 @@ public:
 
 	StateVec UNO(char side,char edge); //TODO implementar a reconstrução com o UNO2
 
+	StateVec WENO3(int Nx, char side, char edge); // 3rd order accurate WENO method
 
 	StateVec VanLeerU(int i);
 	float VanLeer(int i);

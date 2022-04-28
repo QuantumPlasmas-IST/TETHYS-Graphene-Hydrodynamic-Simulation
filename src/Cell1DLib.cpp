@@ -167,6 +167,106 @@ StateVec CellHandler1D::UNO(char side, char edge) {
 	return Uuno;
 }
 
+
+StateVec CellHandler1D::WENO3(int Nx, char side, char edge) { // I think it works ( o﹏o)
+
+	// reconstructed value
+	StateVec Uweno{};
+
+	// auxiliar vectors
+	StateVec Uaux0{};
+	StateVec Uaux1{};
+
+	// smoothness parameters
+	StateVec Ubeta0{};
+	StateVec Ubeta1{};
+
+	// weights
+	StateVec Uomega0{};
+	StateVec Uomega1{};
+
+	StateVec Ualpha0{};
+	StateVec Ualpha1{};
+
+	// small positive number
+	float eps = 1.0E-6;
+
+	float d0;
+	float d1;
+	
+	// ternary conditions to solve out of scope problems
+	Ubeta0 = (index!=Nx-1) ? (U_ptr[index+1] - U_ptr[index]) * (U_ptr[index+1] - U_ptr[index]) : U_ptr[index]*U_ptr[index];
+	Ubeta1 = (index!=0)    ? (U_ptr[index] - U_ptr[index-1]) * (U_ptr[index] - U_ptr[index-1]) : U_ptr[index]*U_ptr[index];
+
+	switch(side) {
+		case 'W' : // i - 1/2
+			// ternary condition to solve out of scope problem
+			Uaux0 = 0.5f * (3.0f*U_ptr[index] - U_ptr[index+1]);
+			Uaux1 = (index!=0) ? 0.5f * (U_ptr[index] + U_ptr[index-1]) : 0.5f*U_ptr[index];
+
+			d0 = 1.0f / 3.0f;
+			d1 = 2.0f / 3.0f;
+
+			Ualpha0.n() = d0 / (eps + Ubeta0.n());
+			Ualpha0.v() = d0 / (eps + Ubeta0.v());
+			Ualpha1.n() = d1 / (eps + Ubeta1.n());
+			Ualpha1.v() = d1 / (eps + Ubeta1.v());
+
+			Uomega0 = Ualpha0 / (Ualpha0 + Ualpha1);
+			Uomega1 = Ualpha1 / (Ualpha0 + Ualpha1);
+
+			switch(edge) {
+				case 'L' : { // i - 1
+					CellHandler1D cellAux(index-1, fluid_ptr, U_ptr);
+					Uweno = cellAux.WENO3(Nx,'E','L');
+				}
+				break;
+
+				case 'R' : // i
+					Uweno = Uomega0*Uaux0 + Uomega1*Uaux1;
+				break;
+
+				default: 0;
+			}
+		break;
+
+		case 'E' : // i + 1/2
+			Uaux0 = (index!=Nx-1) ? 0.5f * (U_ptr[index+1] + U_ptr[index]) : 0.5f*U_ptr[index];
+			Uaux1 = 0.5f * (3.0f*U_ptr[index] - U_ptr[index-1]);
+
+			d0 = 2.0f / 3.0f;
+			d1 = 1.0f / 3.0f;
+
+			Ualpha0.n() = d0 / (eps + Ubeta0.n());
+			Ualpha0.v() = d0 / (eps + Ubeta0.v());
+			Ualpha1.n() = d1 / (eps + Ubeta1.n());
+			Ualpha1.v() = d1 / (eps + Ubeta1.v());
+
+			Uomega0 = Ualpha0 / (Ualpha0 + Ualpha1);
+			Uomega1 = Ualpha1 / (Ualpha0 + Ualpha1);
+
+			switch(edge) {
+				case 'L' : // i
+					Uweno = Uomega0*Uaux0 + Uomega1*Uaux1;
+				break;
+
+				case 'R' : { // i + 1
+					CellHandler1D cellAux(index+1, fluid_ptr, U_ptr);
+					Uweno = cellAux.WENO3(Nx,'W','R');
+				}
+				break;
+
+				default: 0;
+			}
+		break;
+
+		default: 0;
+	}
+
+	return Uweno;
+}
+
+
 StateVec NumericalFlux::Average(Fluid1D *fluido, StateVec L, StateVec R) {
 	StateVec Ureturn{};
 	Ureturn.n()=fluido->DensityFlux(0.5f*(L+R));
@@ -177,12 +277,13 @@ StateVec NumericalFlux::Average(Fluid1D *fluido, StateVec L, StateVec R) {
 
 StateVec NumericalFlux::Central(Fluid1D *fluido, StateVec L, StateVec R) {
 	StateVec Ureturn{};
-	Ureturn.n()=fluido->DensityFlux(R)+fluido->DensityFlux(L);
-	Ureturn.v()=fluido->VelocityFlux(R)+fluido->VelocityFlux(L);
-	//Ureturn.S()=fluido->GetVelSnd();
-	float A =max(fluido->JacobianSpectralRadius(R),fluido->JacobianSpectralRadius(L));
-	Ureturn.n() = Ureturn.n() - A*(R-L).n();
-	Ureturn.v() = Ureturn.v() - A*(R-L).v();
+
+	Ureturn.n() = fluido->DensityFlux(R)  + fluido->DensityFlux(L);
+	Ureturn.v() = fluido->VelocityFlux(R) + fluido->VelocityFlux(L);
+
+	float A = max(fluido->JacobianSpectralRadius(L),fluido->JacobianSpectralRadius(R));
+	Ureturn = Ureturn - A*(R-L);
+
 	return 0.5f*Ureturn;
 }
 
