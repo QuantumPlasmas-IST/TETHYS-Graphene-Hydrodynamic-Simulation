@@ -49,6 +49,9 @@ void ElectroAnalysis::ComputeElectroBase(float t, const GrapheneFluid2D& graphen
 	NetQ.push_back(ElectroAnalysis::NetCharge(graphene));
 	DipX.push_back(ElectroAnalysis::ElectricDipoleX(graphene));
 	DipY.push_back(ElectroAnalysis::ElectricDipoleY(graphene));
+	QuadXX.push_back(ElectroAnalysis::ElectricQuadrupoleXX(graphene));
+	QuadXY.push_back(ElectroAnalysis::ElectricQuadrupoleXY(graphene));
+	QuadYY.push_back(ElectroAnalysis::ElectricQuadrupoleYY(graphene));
 	CurD.push_back(ElectroAnalysis::DrainCurrent(graphene));
 	CurS.push_back(ElectroAnalysis::SourceCurrent(graphene));
 	AvgCurDS.push_back(ElectroAnalysis::AverageDirectCurrent(graphene));
@@ -70,14 +73,32 @@ void ElectroAnalysis::ComputeElectroDerived() {
 	DipVarVarX.resize(DipX.size());
 	DipVarY.resize(DipY.size());
 	DipVarVarY.resize(DipY.size());
+	QuadVarXX.resize(QuadXX.size());
+	QuadVarVarXX.resize(QuadXX.size());
+	QuadVarXY.resize(QuadXY.size());
+	QuadVarVarXY.resize(QuadXY.size());
+	QuadVarYY.resize(QuadYY.size());
+	QuadVarVarYY.resize(QuadYY.size());
 	Convolve_Gauss(1,5,1.0,DipX.data(),DipVarX.data(),DipX.size());
 	Convolve_Gauss(1,5,1.0,DipVarX.data(),DipVarVarX.data(),DipX.size());
 	Convolve_Gauss(1,5,1.0,DipY.data(),DipVarY.data(),DipY.size());
 	Convolve_Gauss(1,5,1.0,DipVarY.data(),DipVarVarY.data(),DipY.size());
+	Convolve_Gauss(1,5,1.0,QuadXX.data(),QuadVarXX.data(),QuadXX.size());
+	Convolve_Gauss(1,5,1.0,QuadVarXX.data(),QuadVarVarXX.data(),QuadXX.size());
+	Convolve_Gauss(1,5,1.0,QuadXY.data(),QuadVarXY.data(),QuadXY.size());
+	Convolve_Gauss(1,5,1.0,QuadVarXY.data(),QuadVarVarXY.data(),QuadXY.size());
+	Convolve_Gauss(1,5,1.0,QuadYY.data(),QuadVarYY.data(),QuadYY.size());
+	Convolve_Gauss(1,5,1.0,QuadVarYY.data(),QuadVarVarYY.data(),QuadYY.size());
 	transform(DipVarX.begin(), DipVarX.end(), DipVarX.begin(), [dt](const float &c){ return c/dt; });
 	transform(DipVarVarX.begin(), DipVarVarX.end(), DipVarVarX.begin(), [dt](const float &c){ return c/(dt*dt); });
 	transform(DipVarY.begin(), DipVarY.end(), DipVarY.begin(), [dt](const float &c){ return c/dt; });
 	transform(DipVarVarY.begin(), DipVarVarY.end(), DipVarVarY.begin(), [dt](const float &c){ return c/(dt*dt); });
+	transform(QuadVarXX.begin(), QuadVarXX.end(), QuadVarXX.begin(), [dt](const float &c){ return c/dt; });
+	transform(QuadVarVarXX.begin(), QuadVarVarXX.end(), QuadVarVarXX.begin(), [dt](const float &c){ return c/(dt*dt); });
+	transform(QuadVarXY.begin(), QuadVarXY.end(), QuadVarXY.begin(), [dt](const float &c){ return c/dt; });
+	transform(QuadVarVarXY.begin(), QuadVarVarXY.end(), QuadVarVarXY.begin(), [dt](const float &c){ return c/(dt*dt); });
+	transform(QuadVarYY.begin(), QuadVarYY.end(), QuadVarYY.begin(), [dt](const float &c){ return c/dt; });
+	transform(QuadVarVarYY.begin(), QuadVarVarYY.end(), QuadVarVarYY.begin(), [dt](const float &c){ return c/(dt*dt); });
 }
 
 
@@ -101,7 +122,16 @@ void ElectroAnalysis::WriteElectroFile() {
 			             << DipVarVarX[i] << "\t"
 			             << DipY[i] << "\t"
 			             << DipVarY[i] << "\t"
-			             << DipVarVarY[i] << "\n";
+			             << DipVarVarY[i] << "\t"
+			             << QuadXX[i] << "\t"
+			             << QuadVarXX[i] << "\t"
+			             << QuadVarVarXX[i] << "\t"
+			             << QuadXY[i] << "\t"
+			             << QuadVarXY[i] << "\t"
+			             << QuadVarVarXY[i] << "\t"
+			             << QuadYY[i] << "\t"
+			             << QuadVarYY[i] << "\t"
+			             << QuadVarVarYY[i] << "\n";
 		}
 }
 
@@ -192,6 +222,58 @@ float ElectroAnalysis::ElectricDipoleVariationX(const GrapheneFluid2D &graphene)
 float ElectroAnalysis::ElectricDipoleVariationY(const GrapheneFluid2D &graphene) {
 	return Integral_2_D(graphene.SizeX(), graphene.SizeY(), graphene.GetDx(), graphene.GetDy(), graphene.CurY );
 }
+
+float ElectroAnalysis::ElectricQuadrupoleXX(const GrapheneFluid2D &graphene){
+	int size = graphene.SizeX()*graphene.SizeY();
+	float vector[size];
+	for(int c=0;c<size;c++){
+		div_t divresult;
+		divresult = div (c,graphene.SizeX());
+		auto i=static_cast<float>(divresult.rem);
+		auto j=static_cast<float>(divresult.quot);
+		float rx;
+		rx = i*graphene.GetDx()-0.5f*graphene.GetLengthX();
+		float ry;
+		ry = j*graphene.GetDy()-0.5f*graphene.GetLengthY();
+		vector[c] = (2*rx*rx-ry*ry)*graphene.Den[c];
+	}
+	return Integral_2_D(graphene.SizeX(), graphene.SizeY(), graphene.GetDx(), graphene.GetDy(), vector);
+}
+
+float ElectroAnalysis::ElectricQuadrupoleXY(const GrapheneFluid2D &graphene){
+	int size = graphene.SizeX()*graphene.SizeY();
+	float vector[size];
+	for(int c=0;c<size;c++){
+		div_t divresult;
+		divresult = div (c,graphene.SizeX());
+		auto i=static_cast<float>(divresult.rem);
+		auto j=static_cast<float>(divresult.quot);
+		float rx;
+		rx = i*graphene.GetDx()-0.5f*graphene.GetLengthX();
+		float ry;
+		ry = j*graphene.GetDy()-0.5f*graphene.GetLengthY();
+		vector[c] = (2*ry*ry-rx*rx)*graphene.Den[c];
+	}
+	return Integral_2_D(graphene.SizeX(), graphene.SizeY(), graphene.GetDx(), graphene.GetDy(), vector);
+}
+
+float ElectroAnalysis::ElectricQuadrupoleYY(const GrapheneFluid2D &graphene){
+	int size = graphene.SizeX()*graphene.SizeY();
+	float vector[size];
+	for(int c=0;c<size;c++){
+		div_t divresult;
+		divresult = div (c,graphene.SizeX());
+		auto i=static_cast<float>(divresult.rem);
+		auto j=static_cast<float>(divresult.quot);
+		float rx;
+		rx = i*graphene.GetDx()-0.5f*graphene.GetLengthX();
+		float ry;
+		ry = j*graphene.GetDy()-0.5f*graphene.GetLengthY();
+		vector[c] = 3*rx*ry*graphene.Den[c];
+	}
+	return Integral_2_D(graphene.SizeX(), graphene.SizeY(), graphene.GetDx(), graphene.GetDy(), vector);
+}
+
 
 void ElectroAnalysis::CloseElectroFile() {
 	data_electro.close();
