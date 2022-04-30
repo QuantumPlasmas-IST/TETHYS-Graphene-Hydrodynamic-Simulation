@@ -274,9 +274,13 @@ void Fluid1D::RungeKuttaTVD() {
 		VelNumSourceW = NumericalSource::Average(this,UWleft,UWright).v();
 
 		// RK
-		Uaux[i].n()=Umain[i].n()-(dt/dx)*(DenNumFluxE-DenNumFluxW);//+0.5f*dt*(DenNumSourceE+DenNumSourceW);
-		Uaux[i].v()=Umain[i].v()-(dt/dx)*(VelNumFluxE-VelNumFluxW);//+0.5f*dt*(VelNumSourceE+VelNumSourceW);
+		Uaux[i].n()=Umain[i].n()-(dt/dx)*(DenNumFluxE-DenNumFluxW)+0.5f*dt*(DenNumSourceE+DenNumSourceW);
+		Uaux[i].v()=Umain[i].v()-(dt/dx)*(VelNumFluxE-VelNumFluxW)+0.5f*dt*(VelNumSourceE+VelNumSourceW);
 	}
+	// fixes boundary cells for the first iteration (this solution only works with periodic boundary condition)
+	Uaux[0] = Uaux[Nx-2];
+	Uaux[Nx-1] = Uaux[1];
+
 	//CalcDensityLaplacian(Uaux,Nx);
 	for (int i = 1; i < Nx-1; ++i) {
 
@@ -300,8 +304,8 @@ void Fluid1D::RungeKuttaTVD() {
 		VelNumSourceW = NumericalSource::Average(this,UWleft,UWright).v();
 
 		// RK
-		Umain[i].n()=0.5f*(Umain[i].n()+Uaux[i].n())-(0.5f*dt/dx)*(DenNumFluxE-DenNumFluxW);//+0.25f*dt*(DenNumSourceW+DenNumSourceE);
-		Umain[i].v()=0.5f*(Umain[i].v()+Uaux[i].v())-(0.5f*dt/dx)*(VelNumFluxE-VelNumFluxW);//+0.25f*dt*(VelNumSourceW+VelNumSourceE);
+		Umain[i].n()=0.5f*(Umain[i].n()+Uaux[i].n())-(0.5f*dt/dx)*(DenNumFluxE-DenNumFluxW)+0.25f*dt*(DenNumSourceE+DenNumSourceW);
+		Umain[i].v()=0.5f*(Umain[i].v()+Uaux[i].v())-(0.5f*dt/dx)*(VelNumFluxE-VelNumFluxW)+0.25f*dt*(VelNumSourceE+VelNumSourceW);
 	}
 }
 

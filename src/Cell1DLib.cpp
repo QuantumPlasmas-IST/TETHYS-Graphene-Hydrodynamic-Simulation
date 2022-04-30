@@ -173,7 +173,7 @@ StateVec CellHandler1D::WENO3(int Nx, char side, char edge) { // I think it work
 	// reconstructed value
 	StateVec Uweno{};
 
-	// auxiliar vectors
+	// interpolation vectors
 	StateVec Uaux0{};
 	StateVec Uaux1{};
 
@@ -191,32 +191,29 @@ StateVec CellHandler1D::WENO3(int Nx, char side, char edge) { // I think it work
 	// small positive number
 	float eps = 1.0E-6;
 
-	float d0;
-	float d1;
+	float d0 = 1.0f / 3.0f;
+	float d1 = 2.0f / 3.0f;
 	
-	// ternary conditions to solve out of scope problems
-	Ubeta0 = (index!=Nx-1) ? (U_ptr[index+1] - U_ptr[index]) * (U_ptr[index+1] - U_ptr[index]) : U_ptr[index]*U_ptr[index];
-	Ubeta1 = (index!=0)    ? (U_ptr[index] - U_ptr[index-1]) * (U_ptr[index] - U_ptr[index-1]) : U_ptr[index]*U_ptr[index];
+	// ternary conditions will be used from now on to solve out of scope problems (this solution only works with periodic boundary condition)
+	Ubeta0 = (index!=Nx-1) ? (U_ptr[index+1] - U_ptr[index]) * (U_ptr[index+1] - U_ptr[index]) : (U_ptr[0] - U_ptr[Nx-1]) * (U_ptr[0] - U_ptr[Nx-1]);
+	Ubeta1 = (index!=0)    ? (U_ptr[index] - U_ptr[index-1]) * (U_ptr[index] - U_ptr[index-1]) : (U_ptr[0] - U_ptr[Nx-1]) * (U_ptr[0] - U_ptr[Nx-1]);
 
 	switch(side) {
 		case 'W' : // i - 1/2
-			// ternary condition to solve out of scope problem
-			Uaux0 = 0.5f * (3.0f*U_ptr[index] - U_ptr[index+1]);
-			Uaux1 = (index!=0) ? 0.5f * (U_ptr[index] + U_ptr[index-1]) : 0.5f*U_ptr[index];
+			Uaux0 = (index!=Nx-1) ? 0.5f * (3.0f*U_ptr[index] - U_ptr[index+1]) : 0.5f * (3.0f*U_ptr[Nx-1] - U_ptr[0]);
+			Uaux1 = 0.5f * (U_ptr[index] + U_ptr[index-1]);
 
-			d0 = 1.0f / 3.0f;
-			d1 = 2.0f / 3.0f;
-
-			Ualpha0.n() = d0 / (eps + Ubeta0.n());
-			Ualpha0.v() = d0 / (eps + Ubeta0.v());
-			Ualpha1.n() = d1 / (eps + Ubeta1.n());
-			Ualpha1.v() = d1 / (eps + Ubeta1.v());
+			Ualpha0.n() = d0 / ((eps + Ubeta0.n()) * (eps + Ubeta0.n()));
+			Ualpha0.v() = d0 / ((eps + Ubeta0.v()) * (eps + Ubeta0.v()));
+			Ualpha1.n() = d1 / ((eps + Ubeta1.n()) * (eps + Ubeta1.n()));
+			Ualpha1.v() = d1 / ((eps + Ubeta1.v()) * (eps + Ubeta1.v()));
 
 			Uomega0 = Ualpha0 / (Ualpha0 + Ualpha1);
 			Uomega1 = Ualpha1 / (Ualpha0 + Ualpha1);
 
 			switch(edge) {
 				case 'L' : { // i - 1
+					// not the best solution performance-wise but it'll do for now
 					CellHandler1D cellAux(index-1, fluid_ptr, U_ptr);
 					Uweno = cellAux.WENO3(Nx,'E','L');
 				}
@@ -231,16 +228,13 @@ StateVec CellHandler1D::WENO3(int Nx, char side, char edge) { // I think it work
 		break;
 
 		case 'E' : // i + 1/2
-			Uaux0 = (index!=Nx-1) ? 0.5f * (U_ptr[index+1] + U_ptr[index]) : 0.5f*U_ptr[index];
-			Uaux1 = 0.5f * (3.0f*U_ptr[index] - U_ptr[index-1]);
+			Uaux0 = 0.5f * (U_ptr[index+1] + U_ptr[index]);
+			Uaux1 = (index!=0) ? 0.5f * (3.0f*U_ptr[index] - U_ptr[index-1]) : 0.5f * (3.0f*U_ptr[0] - U_ptr[Nx-1]);
 
-			d0 = 2.0f / 3.0f;
-			d1 = 1.0f / 3.0f;
-
-			Ualpha0.n() = d0 / (eps + Ubeta0.n());
-			Ualpha0.v() = d0 / (eps + Ubeta0.v());
-			Ualpha1.n() = d1 / (eps + Ubeta1.n());
-			Ualpha1.v() = d1 / (eps + Ubeta1.v());
+			Ualpha0.n() = d1 / ((eps + Ubeta0.n()) * (eps + Ubeta0.n()));
+			Ualpha0.v() = d1 / ((eps + Ubeta0.v()) * (eps + Ubeta0.v()));
+			Ualpha1.n() = d0 / ((eps + Ubeta1.n()) * (eps + Ubeta1.n()));
+			Ualpha1.v() = d0 / ((eps + Ubeta1.v()) * (eps + Ubeta1.v()));
 
 			Uomega0 = Ualpha0 / (Ualpha0 + Ualpha1);
 			Uomega1 = Ualpha1 / (Ualpha0 + Ualpha1);
@@ -251,6 +245,7 @@ StateVec CellHandler1D::WENO3(int Nx, char side, char edge) { // I think it work
 				break;
 
 				case 'R' : { // i + 1
+					// not the best solution performance-wise but it'll do for now
 					CellHandler1D cellAux(index+1, fluid_ptr, U_ptr);
 					Uweno = cellAux.WENO3(Nx,'W','R');
 				}
