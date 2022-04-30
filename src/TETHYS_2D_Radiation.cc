@@ -28,7 +28,29 @@ double c_light = 2.99792458e8;
 double mu_zero = 4*M_PI*1e-7;
 double epsilon_zero = 8.62607015e-34;
 
+double D_Conductor = 0.3;
+double Radius_Conductor = 0.3;
+
 using namespace std;
+
+
+double Cross_Product_X(double a1, double a2, double a3, double b1, double b2, double b3){
+    return a2*b3 - a3*b2;
+}
+double Cross_Product_Y(double a1, double a2, double a3, double b1, double b2, double b3){
+    return a3*b1 - a1*b3;
+}
+double Cross_Product_Z(double a1, double a2, double a3, double b1, double b2, double b3){
+    return a1*b2 - a2*b1;
+}
+
+bool InConductor(double x, double y){
+    if(x*x + y*y < (Radius_Conductor*Radius_Conductor))
+        return 1;
+    else
+        return 0;
+}
+
 
 int main(int argc, char **argv){
     string input_file_name;
@@ -124,7 +146,7 @@ int main(int argc, char **argv){
     }
 
     infile1.close();
-    cout << "[Reading Complete " << namefile << " ]" << endl;
+    cout << "[Completed reading of " << namefile << " ]" << endl;
 
 
     auto c1 = new TCanvas("c1", "c1", 200, 10, 1280, 720);
@@ -166,35 +188,216 @@ int main(int argc, char **argv){
     c1->Clear();gr_QuadXY_dd->Draw();c1->SaveAs("./Files_Images_PIC/QuadXY_dd_t.pdf");
     c1->Clear();gr_QuadYY_dd->Draw();c1->SaveAs("./Files_Images_PIC/QuadYY_dd_t.pdf");
 
-
-	auto Poyting = [&](int i, double x, double y, double z){ //modulo do vetor Poyting // tempo está no i
-		double r2 = x*x+y*y+z*z;
-    	return (mu_zero/c_light)*(1/(16*M_PI*M_PI))*(1/(r2))*(DipX_dd[i]*DipX_dd[i]+DipY_dd[i]*DipY_dd[i]-(1/(r2*r2))*(x*DipX_dd[i]+y*DipY_dd[i])*(x*DipX_dd[i]+y*DipY_dd[i]));
+    //Dipole Functions//
+    auto E_x_Dip = [&](int i, double x, double y, double z){ //X component of electric field of Dipole // time is in i
+        double r2 = x*x+y*y+z*z;
+        double r = sqrt(r2);
+        return (mu_zero/(4*M_PI*r))*((x*DipX_dd[i]+y*DipY_dd[i])*x/r2-DipX_dd[i]);
+    };
+    auto E_y_Dip = [&](int i, double x, double y, double z){ //Y component of electric field of Dipole // time is in i
+        double r2 = x*x+y*y+z*z;
+        double r = sqrt(r2);
+        return (mu_zero/(4*M_PI*r))*((x*DipX_dd[i]+y*DipY_dd[i])*y/r2-DipY_dd[i]);
+    };
+    auto E_z_Dip = [&](int i, double x, double y, double z){ //Z component of electric field of Dipole // time is in i
+        double r2 = x*x+y*y+z*z;
+        double r = sqrt(r2);
+        return (mu_zero/(4*M_PI*r))*((x*DipX_dd[i]+y*DipY_dd[i])*z/r2);
     };
 
-    auto gr_S = new TGraph();
-    double Raio = 10;
-    Double_t theta[Nl];
-   	Double_t radius[Nl];
+    auto H_x_Dip = [&](int i, double x, double y, double z){ //X component of H field of Dipole // time is in i
+        double r2 = x*x+y*y+z*z;
+        return -Cross_Product_X(x,y,z,DipX_dd[i],DipY_dd[i],0)/(4*M_PI*c_light*r2);
+    };
+    auto H_y_Dip = [&](int i, double x, double y, double z){ //Y component of H field of Dipole // time is in i
+        double r2 = x*x+y*y+z*z;
+        return -Cross_Product_Y(x,y,z,DipX_dd[i],DipY_dd[i],0)/(4*M_PI*c_light*r2);
+    };
+    auto H_z_Dip = [&](int i, double x, double y, double z){ //Z component of H field of Dipole // time is in i
+        double r2 = x*x+y*y+z*z;
+        return -Cross_Product_Z(x,y,z,DipX_dd[i],DipY_dd[i],0)/(4*M_PI*c_light*r2);
+    };
+    /////
 
-   	for(int j=0; j<Nl; j++){
-	    theta[j] = 2*M_PI*j/Nl;
-		radius[j] = Poyting(11,Raio*cos(0)*sin(theta[j]),Raio*sin(0)*sin(theta[j]),Raio*cos(theta[j]));
-		gr_S->SetPoint(j,theta[j],Poyting(11,cos(M_PI/4)*sin(theta[j]),sin(M_PI/4)*sin(theta[j]),cos(theta[j])));
+    // Q_ij = [Qxx Qxy Qxz] => simetric => [Qxx Qxy Qxz] => no trace=>  [Qxx Qxy    Qxz    ] => 2D (z=0)  => [Qxx  Qxy     0     ] (3 ind. comp.)
+    //        [Qyx Qyy Qyz] (9 ind. comp.) [Qxy Qyy Qyz] (6 ind. comp.) [Qxy Qyy    Qyz    ] (5 ind. comp.)  [Qxy  Qyy     0     ]
+    //        [Qzx Qzy Qzz]                [Qxy Qyz Qzz]                [Qxz Qyz -(Qxx+Qyy)]                 [ 0    0  -(Qxx+Qyy)]
+
+    //Quadrupole Functions//
+    auto E_x_Quad = [&](int i, double x, double y, double z){ //X component of electric field of Quadrupole // time is in i
+        double r2 = x*x+y*y+z*z;
+        double r = sqrt(r2);
+        double Q_vec_X = QuadXX_dd[i]*x + QuadXY_dd[i]*y;
+        double Q_vec_Y = QuadXY_dd[i]*x + QuadYY_dd[i]*y;
+        double Q_vec_Z = -(QuadXX_dd[i]+QuadYY_dd[i])*z;
+        return (mu_zero/(24*M_PI*c_light*r))*((x*Q_vec_X+y*Q_vec_Y+z*Q_vec_Z)*x/r2-Q_vec_X);
+    };
+    auto E_y_Quad = [&](int i, double x, double y, double z){ //Y component of electric field of Quadrupole // time is in i
+        double r2 = x*x+y*y+z*z;
+        double r = sqrt(r2);
+        double Q_vec_X = QuadXX_dd[i]*x + QuadXY_dd[i]*y;
+        double Q_vec_Y = QuadXY_dd[i]*x + QuadYY_dd[i]*y;
+        double Q_vec_Z = -(QuadXX_dd[i]+QuadYY_dd[i])*z;
+        return (mu_zero/(24*M_PI*c_light*r))*((x*Q_vec_X+y*Q_vec_Y+z*Q_vec_Z)*y/r2-Q_vec_Y);
+    };
+    auto E_z_Quad = [&](int i, double x, double y, double z){ //Z component of electric field of Quadrupole // time is in i
+        double r2 = x*x+y*y+z*z;
+        double r = sqrt(r2);
+        double Q_vec_X = QuadXX_dd[i]*x + QuadXY_dd[i]*y;
+        double Q_vec_Y = QuadXY_dd[i]*x + QuadYY_dd[i]*y;
+        double Q_vec_Z = -(QuadXX_dd[i]+QuadYY_dd[i])*z;
+        return (mu_zero/(24*M_PI*c_light*r))*((x*Q_vec_X+y*Q_vec_Y+z*Q_vec_Z)*z/r2-Q_vec_Z);
+    };
+
+    auto H_x_Quad = [&](int i, double x, double y, double z){ //X component of H field of Dipole // time is in i
+        double r2 = x*x+y*y+z*z;
+        double r = sqrt(r2);
+        double Q_vec_X = QuadXX_dd[i]*x + QuadXY_dd[i]*y;
+        double Q_vec_Y = QuadXY_dd[i]*x + QuadYY_dd[i]*y;
+        double Q_vec_Z = -(QuadXX_dd[i]+QuadYY_dd[i])*z;
+        return Cross_Product_X(x,y,z,Q_vec_X,Q_vec_Y,Q_vec_Z)/(24*M_PI*c_light*c_light*r2);
+    };
+    auto H_y_Quad = [&](int i, double x, double y, double z){ //Y component of H field of Dipole // time is in i
+        double r2 = x*x+y*y+z*z;
+        double r = sqrt(r2);
+        double Q_vec_X = QuadXX_dd[i]*x + QuadXY_dd[i]*y;
+        double Q_vec_Y = QuadXY_dd[i]*x + QuadYY_dd[i]*y;
+        double Q_vec_Z = -(QuadXX_dd[i]+QuadYY_dd[i])*z;
+        return Cross_Product_Y(x,y,z,Q_vec_X,Q_vec_Y,Q_vec_Z)/(24*M_PI*c_light*c_light*r2);
+    };
+    auto H_z_Quad = [&](int i, double x, double y, double z){ //Z component of H field of Dipole // time is in i
+        double r2 = x*x+y*y+z*z;
+        double r = sqrt(r2);
+        double Q_vec_X = QuadXX_dd[i]*x + QuadXY_dd[i]*y;
+        double Q_vec_Y = QuadXY_dd[i]*x + QuadYY_dd[i]*y;
+        double Q_vec_Z = -(QuadXX_dd[i]+QuadYY_dd[i])*z;
+        return Cross_Product_Z(x,y,z,Q_vec_X,Q_vec_Y,Q_vec_Z)/(24*M_PI*c_light*c_light*r2);
+    };
+    /////
+
+    //Poynting//
+    auto Poynting_X = [&](int i, double x, double y, double z){ //X component of total Poynting vector // time is in i
+        if(InConductor(x*D_Conductor/(z+2*D_Conductor),y*D_Conductor/(z+2*D_Conductor)) == 0){
+            return Cross_Product_X(E_x_Dip(i,x,y,z)+E_x_Quad(i,x,y,z),E_y_Dip(i,x,y,z)+E_y_Quad(i,x,y,z),E_z_Dip(i,x,y,z)+E_z_Quad(i,x,y,z)
+                                  ,H_x_Dip(i,x,y,z)+H_x_Quad(i,x,y,z),H_y_Dip(i,x,y,z)+H_y_Quad(i,x,y,z),H_z_Dip(i,x,y,z)+H_z_Quad(i,x,y,z));
+        }else{
+            return Cross_Product_X(E_x_Dip(i,x,y,z)+E_x_Quad(i,x,y,z)-E_x_Dip(i,x,y,z)-E_x_Quad(i,x,y,z)
+                                  ,E_y_Dip(i,x,y,z)+E_y_Quad(i,x,y,z)-E_y_Dip(i,x,y,z)-E_y_Quad(i,x,y,z)
+                                  ,E_z_Dip(i,x,y,z)+E_z_Quad(i,x,y,z)-E_z_Dip(i,x,y,z)-E_z_Quad(i,x,y,z)
+                                  ,H_x_Dip(i,x,y,z)+H_x_Quad(i,x,y,z)-H_x_Dip(i,x,y,z)-H_x_Quad(i,x,y,z)
+                                  ,H_y_Dip(i,x,y,z)+H_y_Quad(i,x,y,z)-H_y_Dip(i,x,y,z)-H_y_Quad(i,x,y,z)
+                                  ,H_z_Dip(i,x,y,z)+H_z_Quad(i,x,y,z)-H_z_Dip(i,x,y,z)-H_z_Quad(i,x,y,z));
+        }
+    };
+    auto Poynting_Y = [&](int i, double x, double y, double z){ //X component of total Poynting vector // time is in i
+        if(InConductor(x*D_Conductor/(z+2*D_Conductor),y*D_Conductor/(z+2*D_Conductor)) == 0){
+            return Cross_Product_Y(E_x_Dip(i,x,y,z)+E_x_Quad(i,x,y,z),E_y_Dip(i,x,y,z)+E_y_Quad(i,x,y,z),E_z_Dip(i,x,y,z)+E_z_Quad(i,x,y,z)
+                                  ,H_x_Dip(i,x,y,z)+H_x_Quad(i,x,y,z),H_y_Dip(i,x,y,z)+H_y_Quad(i,x,y,z),H_z_Dip(i,x,y,z)+H_z_Quad(i,x,y,z));
+        }else{
+            return Cross_Product_Y(E_x_Dip(i,x,y,z)+E_x_Quad(i,x,y,z)-E_x_Dip(i,x,y,z)-E_x_Quad(i,x,y,z)
+                                  ,E_y_Dip(i,x,y,z)+E_y_Quad(i,x,y,z)-E_y_Dip(i,x,y,z)-E_y_Quad(i,x,y,z)
+                                  ,E_z_Dip(i,x,y,z)+E_z_Quad(i,x,y,z)-E_z_Dip(i,x,y,z)-E_z_Quad(i,x,y,z)
+                                  ,H_x_Dip(i,x,y,z)+H_x_Quad(i,x,y,z)-H_x_Dip(i,x,y,z)-H_x_Quad(i,x,y,z)
+                                  ,H_y_Dip(i,x,y,z)+H_y_Quad(i,x,y,z)-H_y_Dip(i,x,y,z)-H_y_Quad(i,x,y,z)
+                                  ,H_z_Dip(i,x,y,z)+H_z_Quad(i,x,y,z)-H_z_Dip(i,x,y,z)-H_z_Quad(i,x,y,z));
+        }
+    };
+    auto Poynting_Z = [&](int i, double x, double y, double z){ //X component of total Poynting vector // time is in i
+        if(InConductor(x*D_Conductor/(z+2*D_Conductor),y*D_Conductor/(z+2*D_Conductor)) == 0){
+            return Cross_Product_Z(E_x_Dip(i,x,y,z)+E_x_Quad(i,x,y,z),E_y_Dip(i,x,y,z)+E_y_Quad(i,x,y,z),E_z_Dip(i,x,y,z)+E_z_Quad(i,x,y,z)
+                                  ,H_x_Dip(i,x,y,z)+H_x_Quad(i,x,y,z),H_y_Dip(i,x,y,z)+H_y_Quad(i,x,y,z),H_z_Dip(i,x,y,z)+H_z_Quad(i,x,y,z));
+        }else{
+            return Cross_Product_Z(E_x_Dip(i,x,y,z)+E_x_Quad(i,x,y,z)-E_x_Dip(i,x,y,z+2*D_Conductor)-E_x_Quad(i,x,y,z+2*D_Conductor)
+                                  ,E_y_Dip(i,x,y,z)+E_y_Quad(i,x,y,z)-E_y_Dip(i,x,y,z+2*D_Conductor)-E_y_Quad(i,x,y,z+2*D_Conductor)
+                                  ,E_z_Dip(i,x,y,z)+E_z_Quad(i,x,y,z)-E_z_Dip(i,x,y,z+2*D_Conductor)-E_z_Quad(i,x,y,z+2*D_Conductor)
+                                  ,H_x_Dip(i,x,y,z)+H_x_Quad(i,x,y,z)-H_x_Dip(i,x,y,z+2*D_Conductor)-H_x_Quad(i,x,y,z+2*D_Conductor)
+                                  ,H_y_Dip(i,x,y,z)+H_y_Quad(i,x,y,z)-H_y_Dip(i,x,y,z+2*D_Conductor)-H_y_Quad(i,x,y,z+2*D_Conductor)
+                                  ,H_z_Dip(i,x,y,z)+H_z_Quad(i,x,y,z)-H_z_Dip(i,x,y,z+2*D_Conductor)-H_z_Quad(i,x,y,z+2*D_Conductor));
+        }
+    };
+    auto Poynting_Module = [&](int i, double x, double y, double z){ //X component of total Poynting vector // time is in i
+        return sqrt(Poynting_X(i,x,y,z)*Poynting_X(i,x,y,z)+Poynting_Y(i,x,y,z)*Poynting_Y(i,x,y,z)+Poynting_Z(i,x,y,z)*Poynting_Z(i,x,y,z));
+    };
+    ////
+
+
+    int Np = 1000;
+    double R = 0.1;
+    Double_t theta[Np];
+   	Double_t radius[Np];
+
+   	for(int j=0; j<Np; j++){
+	    theta[j] = 2*M_PI*j/Np;
+		radius[j] = Poynting_Module(11,R*sin(theta[j]),0,R*cos(theta[j]));
 	}
-
-   	auto grPolar = new TGraphPolar(Nl, theta, radius);
-   	grPolar->SetLineColor(2);
+    auto grPolar = new TGraphPolar(Np, theta, radius);
+    grPolar->SetLineColor(2);
     grPolar->SetLineWidth(3);
 
     c1->Clear();
     grPolar->Draw("AOL");
     c1->SaveAs("Files_Images_PIC/S_theta_polar.pdf");
 
-    c1->Clear();
-    gr_S->Draw("AOL");
-    c1->SaveAs("Files_Images_PIC/S_theta.pdf");
+    /*/gif - Raio do Condutor a aumentar//
+    for (int i=0; i<30; i++){
+        D_Conductor = 0.1;
+        Radius_Conductor = 0.001*pow(10,(double)i/8);
+        for(int j=0; j<Np; j++){
+            theta[j] = 2*M_PI*j/Np;
+            radius[j] = Poynting_Module(11,R*sin(theta[j]),0,R*cos(theta[j]));
+        }
+        auto grPolar = new TGraphPolar(Np, theta, radius);
+        grPolar->SetLineColor(2);
+        grPolar->SetLineWidth(3);
+        c1->Clear();
+        grPolar->Draw("AOL");
+        cout << i << endl;
+        c1->Print("Files_Images_PIC/S_Conductor_Radius.gif+15");
+    }
+    c1->Print("Files_Images_PIC/S_Conductor_Radius.gif++");
+    ///*/
 
+    /*/gif - Distancia ao Condutor a diminuir//
+    for (int i=0; i<30; i++){
+        D_Conductor = pow(0.1,((double)i-10)/3);
+        Radius_Conductor = 0.1;
+        for(int j=0; j<Np; j++){
+            theta[j] = 2*M_PI*j/Np;
+            radius[j] = Poynting_Module(11,R*sin(theta[j]),0,R*cos(theta[j]));
+        }
+        auto grPolar = new TGraphPolar(Np, theta, radius);
+        grPolar->SetLineColor(2);
+        grPolar->SetLineWidth(3);
+        c1->Clear();
+        grPolar->Draw("AOL");
+        cout << i << endl;
+        c1->Print("Files_Images_PIC/S_Conductor_Distance.gif+15");
+    }
+    c1->Print("Files_Images_PIC/S_Conductor_Distance.gif++");
+    ///*/
+
+
+    auto gr3d = new TGraph2D(6400);
+    gr3d->SetName("gr1_name");
+
+    double theta_3d;
+    double phi_3d;
+    double intensity;
+    for (int i=0; i<80; i++){
+        for(int j=0; j<80; j++){
+            theta_3d = 2*M_PI*i/80;
+            phi_3d = M_PI*j/80;
+            intensity = 1e14*Poynting_Module(11,cos(theta_3d)*sin(phi_3d),sin(theta_3d)*sin(phi_3d),cos(phi_3d));
+            if(cos(phi_3d) > -2*D_Conductor) intensity=0;
+            gr3d->SetPoint(i*80+j, intensity*cos(theta_3d)*sin(phi_3d), intensity*sin(theta_3d)*sin(phi_3d), intensity*cos(phi_3d));
+        }
+    }
+
+    c1->Clear();
+    gr3d->SetTitle("Radiation_Mirrored_Dipole+Quadrupole");
+    gr3d->SetMarkerColor(kBlue);
+    gr3d->Draw("PCOL Fi");
+    c1->SaveAs("Files_Images_PIC/S_3D.pdf");
 
 	cout << "Time taken: " << (double)(clock() - tStart)/CLOCKS_PER_SEC << endl;
     cout << "[1A\033[2K\033[1;32mDONE!\033[0m\n";
