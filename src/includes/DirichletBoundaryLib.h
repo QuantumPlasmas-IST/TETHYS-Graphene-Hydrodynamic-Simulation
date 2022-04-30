@@ -30,10 +30,14 @@
 class  DirichletBoundaryCondition : public BoundaryCondition
 {
 	public:
-	static void Density(Fluid1D& fluid_class, float left, float right);                                    ///< Fixed density at boundary n(x=0)=left and n(x=L)=right
+	static void Density(Fluid1D& fluid_class, float left, float right);
+    static void DensityLeft(Fluid1D& fluid_class, float left);   
+    static void DensityRight(Fluid1D& fluid_class, float right);                                     ///< Fixed density at boundary n(x=0)=left and n(x=L)=right
 	static void Density(Fluid2D& fluid_class, float left, float right, float top, float bottom);           ///< Fixed density at boundary n(x=0)=left, n(x=L)=right, n(y=0)=bottom, n(y=W)=top
 	static void VelocityX(Fluid1D& fluid_class, float left, float right);                                  ///< Fixed Velocity at boundary V(x=0)=left and V(x=L)=right
-	static void MassFluxX(Fluid2D& fluid_class, float left, float right, float top, float bottom);         ///< Fixed mass density flux x component at boundary px(x=0)=left, px(x=L)=right, px(y=0)=bottom, px(y=W)=top
+	static void VelocityXLeft(Fluid1D& fluid_class, float left);
+    static void VelocityXRight(Fluid1D& fluid_class, float right);
+    static void MassFluxX(Fluid2D& fluid_class, float left, float right, float top, float bottom);         ///< Fixed mass density flux x component at boundary px(x=0)=left, px(x=L)=right, px(y=0)=bottom, px(y=W)=top
 	static void MassFluxY(Fluid2D& fluid_class, float left, float right, float top, float bottom);         ///< Fixed mass density flux y component at boundary py(x=0)=left, py(x=L)=right, py(y=0)=bottom, py(y=W)=top
 	static void Jet(Fluid2D& fluid_class, float left, float left_width, float right, float right_width);   ///< Jet configuration i.e. fixed flux x component at a portion of given with around the center of the edges x=0 and x=L. Useful to study turbulence onset
 	static void DensityRight(Fluid2D& fluid_class, float right);       ///< Fixed density at boundary n(x=L)=right

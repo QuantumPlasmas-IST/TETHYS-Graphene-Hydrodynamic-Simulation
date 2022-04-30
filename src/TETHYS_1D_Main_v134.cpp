@@ -3,6 +3,7 @@
 #include "includes/SetUpParametersLib.h"
 #include "includes/DyakonovShurBoundaryLib.h"
 #include "includes/GrapheneFluid1DLib.h"
+#include "includes/FeedbackBoundaryLib.h"
 
 #include <functional>
 
@@ -37,7 +38,7 @@ int main(int argc, char **argv){
 
 	float sound = graph.GetVelSnd();
 	graph.SetSound();
-	graph.SetSimulationTime();
+	//graph.SetSimulationTime();
 
 	/*................................................................*/
 
@@ -61,17 +62,31 @@ int main(int argc, char **argv){
 
 	cout << "\033[1;7;5;33m Program Running \033[0m"<<endl;
 
+    float* Hfeed = new float[4];
+    Hfeed[0]=0.28;
+    Hfeed[1]=0.0;
+    Hfeed[2]=0.0;
+    Hfeed[3]=0.0;
 
-	graph.SetTmax(10.0);
-	//Main cycle
+    FeedbackBoundaryCondition feed(0.4,dt);
+
+	//graph.SetTmax(10.0);
+	
+    //Main cycle
 	while(t <= graph.GetTmax() ) {
 		t += dt;
 		GrapheneFluid1D::TimeStepCounter++;
-		// Main algorithm		
+		
+        // Main algorithm		
 		graph.Richtmyer();
+
 		// Impose boundary conditions
-		DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
-		//BoundaryCondition::XPeriodic(graph);
+        DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
+		//DirichletBoundaryCondition::DensityLeft(graph,1);
+        //DirichletBoundaryCondition::VelocityXLeft(graph,1);
+        //BoundaryCondition::XFreeRight(graph);
+        //FeedbackBoundaryCondition::VoltageFeedbackBc(graph,Hfeed,0,170,t);
+        feed.VoltageDelayFeedbackBc(graph,Hfeed,0.1,170,t);
 
 		//Record full data
 		if (parameters.SaveMode  && graph.Snapshot()) {

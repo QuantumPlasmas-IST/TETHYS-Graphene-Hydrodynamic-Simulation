@@ -37,8 +37,26 @@ void BoundaryCondition::XFree(Fluid1D& fluid_class){
 	fluid_class.Uaux[0] =fluid_class.Uaux[1];
 	fluid_class.Umain[nx-1] =fluid_class.Umain[nx-2];
 	fluid_class.Uaux[nx-1] =fluid_class.Uaux[nx-2];
-
 }
+
+void BoundaryCondition::XFreeLeft(Fluid1D &fluid_class) {
+	int nx=fluid_class.SizeX();
+	fluid_class.Den[0] = fluid_class.Den[1];
+	fluid_class.Vel[0] = fluid_class.Vel[1];
+
+	fluid_class.Umain[0] =fluid_class.Umain[1];
+	fluid_class.Uaux[0] =fluid_class.Uaux[1];
+}
+
+void BoundaryCondition::XFreeRight(Fluid1D &fluid_class) {
+	int nx=fluid_class.SizeX();
+	fluid_class.Den[nx - 1] =  fluid_class.Den[nx - 2];
+	fluid_class.Vel[nx - 1] = fluid_class.Vel[nx - 2];
+
+	fluid_class.Umain[nx-1] =fluid_class.Umain[nx-2];
+	fluid_class.Uaux[nx-1] =fluid_class.Uaux[nx-2];
+}
+
 void BoundaryCondition::XPeriodic(Fluid1D& fluid_class){
 	int nx=fluid_class.SizeX();
 	fluid_class.Den[0] = fluid_class.Den[nx - 2];

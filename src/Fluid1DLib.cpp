@@ -19,6 +19,7 @@ Fluid1D::Fluid1D(const SetUpParameters &input_parameters) : TethysBase{input_par
 	vel_snd = input_parameters.SoundVelocity;
 	kin_vis = input_parameters.ShearViscosity;
 	col_freq=input_parameters.CollisionFrequency;
+    Tmax=input_parameters.SimulationTime;
 
 	param = {vel_snd,0.0f,0.0f,kin_vis,0.0f,0.0f,col_freq,0.0f};
 
