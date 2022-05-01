@@ -139,3 +139,10 @@ StateVec NumericalFlux::Characteristic(Fluid1D *fluido,  StateVec L, StateVec R)
 	return 0.5f*Ureturn;
 }
 
+StateVec NumericalSource::Average(Fluid1D *fluido, StateVec L, StateVec R) {
+	StateVec Ureturn{};
+	Ureturn.n()=fluido->DensitySource(0.5f*(L+R));
+	Ureturn.v()=fluido->VelocitySource(0.5f*(L+R));
+	return Ureturn;
+
+}

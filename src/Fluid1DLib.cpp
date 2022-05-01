@@ -240,6 +240,13 @@ void Fluid1D::RungeKuttaTVD() {
 	float DenNumFluxE;
 	float VelNumFluxW;
 	float VelNumFluxE;
+
+	float DenNumSourceW;
+	float DenNumSourceE;
+	float VelNumSourceW;
+	float VelNumSourceE;
+
+
 	float VelNumFluxParabolic;
 	StateVec UEleft(Umain[0]);
 	StateVec UEright(Umain[0]);
@@ -264,13 +271,18 @@ void Fluid1D::RungeKuttaTVD() {
 		VelNumFluxW= NumericalFlux::Central(this,UWleft,UWright).v();
 		VelNumFluxE= NumericalFlux::Central(this,UEleft,UEright).v();
 
+		DenNumSourceW= NumericalSource::Average(this, UWleft,UWright).n();
+		DenNumSourceE= NumericalSource::Average(this, UEleft,UEright).n();
+		VelNumSourceW= NumericalSource::Average(this, UWleft,UWright).v();
+		VelNumSourceE= NumericalSource::Average(this, UEleft,UEright).v();
 
-		Uaux[i].n()=Umain[i].n()-(dt/dx)*(DenNumFluxE-DenNumFluxW);
+
+		Uaux[i].n()=Umain[i].n()-(dt/dx)*(DenNumFluxE-DenNumFluxW) +0.5f*dt*(DenNumSourceW+DenNumSourceE);
 		if(kin_vis!=0){
 			VelNumFluxParabolic = -1.0f*kin_vis*(-1.0f*Umain[i-1].v()+ 2.0f*Umain[i].v()-1.0f*Umain[i+1].v());
-			Uaux[i].v()=Umain[i].v()-(dt/dx)*(VelNumFluxE-VelNumFluxW - VelNumFluxParabolic);
+			Uaux[i].v()=Umain[i].v()-(dt/dx)*(VelNumFluxE-VelNumFluxW - VelNumFluxParabolic) +0.5f*dt*(VelNumSourceW+VelNumSourceE);
 		} else{
-			Uaux[i].v()=Umain[i].v()-(dt/dx)*(VelNumFluxE-VelNumFluxW);
+			Uaux[i].v()=Umain[i].v()-(dt/dx)*(VelNumFluxE-VelNumFluxW) +0.5f*dt*(VelNumSourceW+VelNumSourceE); ;
 		}
 
 	}
@@ -290,13 +302,18 @@ void Fluid1D::RungeKuttaTVD() {
 		VelNumFluxW= NumericalFlux::Central(this,UWleft,UWright).v();
 		VelNumFluxE= NumericalFlux::Central(this,UEleft,UEright).v();
 
-		Umain[i].n()=0.5f*(Umain[i].n()+Uaux[i].n())-(0.5f*dt/dx)*(DenNumFluxE-DenNumFluxW);
+		DenNumSourceW= NumericalSource::Average(this, UWleft,UWright).n();
+		DenNumSourceE= NumericalSource::Average(this, UEleft,UEright).n();
+		VelNumSourceW= NumericalSource::Average(this, UWleft,UWright).v();
+		VelNumSourceE= NumericalSource::Average(this, UEleft,UEright).v();
+
+		Umain[i].n()=0.5f*(Umain[i].n()+Uaux[i].n())-(0.5f*dt/dx)*(DenNumFluxE-DenNumFluxW) + 0.25f*dt*(DenNumSourceW+DenNumSourceE);
 
 		if(kin_vis!=0){
 			VelNumFluxParabolic =  -1.0f*kin_vis*(-1.0f*Uaux[i-1].v()+ 2.0f*Uaux[i].v()-1.0f*Uaux[i+1].v());
-			Umain[i].v()=0.5f*(Umain[i].v()+Uaux[i].v())-(0.5f*dt/dx)*(VelNumFluxE-VelNumFluxW - VelNumFluxParabolic);
+			Umain[i].v()=0.5f*(Umain[i].v()+Uaux[i].v())-(0.5f*dt/dx)*(VelNumFluxE-VelNumFluxW - VelNumFluxParabolic) +0.25f*dt*(VelNumSourceW+VelNumSourceE);
 		} else{
-			Umain[i].v()=0.5f*(Umain[i].v()+Uaux[i].v())-(0.5f*dt/dx)*(VelNumFluxE-VelNumFluxW);
+			Umain[i].v()=0.5f*(Umain[i].v()+Uaux[i].v())-(0.5f*dt/dx)*(VelNumFluxE-VelNumFluxW)  +0.25f*dt*(VelNumSourceW+VelNumSourceE) ;
 		}
 
 

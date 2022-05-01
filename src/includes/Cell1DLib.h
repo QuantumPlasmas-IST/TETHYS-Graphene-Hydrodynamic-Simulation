@@ -43,4 +43,9 @@ public:
 
 };
 
+class NumericalSource{
+public:
+	static StateVec Average(Fluid1D* fluido, StateVec L, StateVec R);
+};
+
 #endif //CELL1D_H
