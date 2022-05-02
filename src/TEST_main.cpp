@@ -38,7 +38,7 @@ cout <<"\n\n";
 
 
 
-SetUpParameters parameters(12, 8.1, 0, 1.4, 0, 0,0, 1, 1);
+SetUpParameters parameters(12, 9.1, 1.6, 0, 0, 0,0, 1, 1);
 
 GrapheneFluid1D teste(parameters);
 
