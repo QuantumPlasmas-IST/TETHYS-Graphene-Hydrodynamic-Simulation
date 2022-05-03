@@ -258,6 +258,8 @@ StateVec CellHandler1D::WENO3(int Nx, char side, char edge) { // I think it work
 		default: 0;
 	}
 
+	// does not account for sound anisotropy
+	Uweno.S() = fluid_ptr->GetVelSnd();
 	return Uweno;
 }
 
