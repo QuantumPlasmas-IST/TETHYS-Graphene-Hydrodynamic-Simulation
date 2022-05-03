@@ -104,6 +104,7 @@ float DiracGraphene2D::DensityFluxY(GridPoint2D p, char side) {
 	float py;
 	py = SideAverage(ptr_py, p, side);
 	den = SideAverage(ptr_den, p, side);
+	
 	return py / sqrt(den);  // DUVIDA: porque é que aqui nao se poe sobre a massa - DensityToMass?
 }
 
@@ -122,8 +123,8 @@ float DiracGraphene2D::XMomentumFluxX(GridPoint2D p, char side) {
 
 	mass=DensityToMass(den);
 
-	//return px * px / mass + vel_fer * vel_fer * mass / 3.0f + 0.5f * sound * sound * (den - hden) ;
-	return px * px / mass + vel_fer * vel_fer * mass / 3.0f + 0.5f * sound * sound * den * den ;
+	return px * px / mass + vel_fer * vel_fer * mass / 3.0f + 0.5f * sound * sound * (den - hden) ;
+	//return px * px / mass + vel_fer * vel_fer * mass / 3.0f + 0.5f * sound * sound * den * den ;
 }
 
 float DiracGraphene2D::XMomentumFluxY(GridPoint2D p, char side) {
@@ -158,8 +159,8 @@ float DiracGraphene2D::YMomentumFluxY(GridPoint2D p, char side) {
 	py = SideAverage(ptr_py, p, side);
 	mass=DensityToMass(den);
 
-	//return py * py / mass + vel_fer * vel_fer * mass / 3.0f + 0.5f * sound * sound * (den - hden);
-	return py * py / mass + vel_fer * vel_fer * mass / 3.0f + 0.5f * sound * sound * den * den ;
+	return py * py / mass + vel_fer * vel_fer * mass / 3.0f + 0.5f * sound * sound * (den - hden);
+	//return py * py / mass + vel_fer * vel_fer * mass / 3.0f + 0.5f * sound * sound * den * den ;
 
 }
 
@@ -209,8 +210,10 @@ float DiracGraphene2D::HDensityFluxX(GridPoint2D p, char side) {
 float DiracGraphene2D::HDensityFluxY(GridPoint2D p, char side) {
 	float den;
 	float py;
+
 	py = SideAverage(hptr_py, p, side);
 	den = SideAverage(hptr_den, p, side);
+
 	return py / sqrt(den);
 }
 
@@ -227,10 +230,11 @@ float DiracGraphene2D::HXMomentumFluxX(GridPoint2D p, char side) {
 	den = SideAverage(ptr_den, p, side);
 	px = SideAverage(hptr_px, p, side);
 
-	mass=DensityToMass(den);
+	mass=DensityToMass(hden);
 
-	//return px * px / mass + vel_fer * vel_fer * mass / 3.0f - 0.5f * sound * sound * (den - hden) ;
-	return px * px / mass + vel_fer * vel_fer * mass / 3.0f - 0.5f * sound * sound * hden * hden ;
+	return px * px / mass + vel_fer * vel_fer * mass / 3.0f - 0.5f * sound * sound * (den - hden) ;
+	//return px * px / mass + vel_fer * vel_fer * mass / 3.0f - 0.5f * sound * sound * hden * hden ;
+	//return px * px / mass + vel_fer * vel_fer * mass / 3.0f + 0.5f * sound * sound * hden * hden ;
 }
 
 float DiracGraphene2D::HXMomentumFluxY(GridPoint2D p, char side) {
@@ -263,10 +267,11 @@ float DiracGraphene2D::HYMomentumFluxY(GridPoint2D p, char side) {
 	hden = SideAverage(hptr_den, p, side);
 	den = SideAverage(ptr_den, p, side);
 	py = SideAverage(hptr_py, p, side);
-	mass=DensityToMass(den);
+	mass=DensityToMass(hden);
 
-	//return py * py / mass + vel_fer * vel_fer * mass / 3.0f - 0.5f * sound * sound * (den - hden);
-	return py * py / mass + vel_fer * vel_fer * mass / 3.0f - 0.5f * sound * sound * hden * hden;
+	return py * py / mass + vel_fer * vel_fer * mass / 3.0f - 0.5f * sound * sound * (den - hden);
+	//return py * py / mass + vel_fer * vel_fer * mass / 3.0f - 0.5f * sound * sound * hden * hden;
+	//return py * py / mass + vel_fer * vel_fer * mass / 3.0f + 0.5f * sound * sound * hden * hden;
 }
 
 float DiracGraphene2D::HYMomentumFluxX(GridPoint2D p, char side) {
@@ -362,8 +367,7 @@ void DiracGraphene2D::WriteFluidFile(float t){
 	int j=Ny/2;
 	int pos_end = Nx - 1 + j*Nx ;
 	int pos_ini = j*Nx ;
-		if(!isfinite(Den[pos_end]) || !isfinite(Den[pos_ini]) || !isfinite(FlxX[pos_end]) || !isfinite(FlxX[pos_ini]) 
-			|| !isfinite(HDen[pos_end]) || !isfinite(HDen[pos_ini]) || !isfinite(HFlxX[pos_end]) || !isfinite(HFlxX[pos_ini])){
+		if(!isfinite(Den[pos_end]) || !isfinite(Den[pos_ini]) || !isfinite(FlxX[pos_end]) || !isfinite(FlxX[pos_ini]) || !isfinite(HDen[pos_end]) || !isfinite(HDen[pos_ini]) || !isfinite(HFlxX[pos_end]) || !isfinite(HFlxX[pos_ini])){
 			cerr << "ERROR: numerical method failed to converge" <<"\nExiting"<< endl;
 			CloseHdf5File();
 			exit(EXIT_FAILURE);
