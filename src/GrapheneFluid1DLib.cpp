@@ -34,10 +34,7 @@ GrapheneFluid1D::~GrapheneFluid1D(){
 
 float GrapheneFluid1D::VelocityFlux(StateVec U) {
 
-	// calculates Bohm potential term
-	//float Bohm_Potential = 0.001f * U.lap_n();
-
-	return 0.25f * U.v() * U.v() + vel_fer * vel_fer * 0.5f * log(U.n()+1.0E-6) + 2.0f * U.S() * U.S() * sqrt(U.n());// + Bohm_Potential; //TODO falta o termo dv para a voscosidade
+	return 0.25f * U.v() * U.v() + vel_fer * vel_fer * 0.5f * log(U.n()+1.0E-6) + 2.0f * U.S() * U.S() * sqrt(U.n()); //TODO falta o termo dv para a voscosidade
 }
 
 

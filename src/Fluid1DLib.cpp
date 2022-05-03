@@ -241,6 +241,10 @@ void Fluid1D::RungeKuttaTVD() {
 	float VelNumFluxW;
 	float VelNumFluxE;
 
+	float BP = 0.01f;
+	float VelNumFluxBohmW;
+	float VelNumFluxBohmE;
+
 	float DenNumSourceW;
 	float DenNumSourceE;
 	float VelNumSourceW;
@@ -254,7 +258,7 @@ void Fluid1D::RungeKuttaTVD() {
 	StateVec U_1[Nx];
 	StateVec U_2[Nx];
 
-	//CalcDensityLaplacian(Umain,Nx);
+	CalcDensityLaplacian(Umain);
 	for (int i = 1; i < Nx-1; ++i) {
 
 		// reconstruction process
@@ -270,6 +274,9 @@ void Fluid1D::RungeKuttaTVD() {
 		VelNumFluxE = NumericalFlux::Central(this,UEleft,UEright).v();
 		VelNumFluxW = NumericalFlux::Central(this,UWleft,UWright).v();
 
+		VelNumFluxBohmE = BP * 0.5f * (UEleft.lap_n()+UEright.lap_n());
+		VelNumFluxBohmW = BP * 0.5f * (UWleft.lap_n()+UWright.lap_n());
+
 		// calculates source terms
 		DenNumSourceE = NumericalSource::Average(this,UEleft,UEright).n();
 		DenNumSourceW = NumericalSource::Average(this,UWleft,UWright).n();
@@ -277,7 +284,7 @@ void Fluid1D::RungeKuttaTVD() {
 		VelNumSourceW = NumericalSource::Average(this,UWleft,UWright).v();
 
 		float Ln = -(DenNumFluxE-DenNumFluxW)/dx + 0.5f*(DenNumSourceE+DenNumSourceW);
-		float Lv = -(VelNumFluxE-VelNumFluxW)/dx + 0.5f*(VelNumSourceE+VelNumSourceW);
+		float Lv = -(VelNumFluxE-VelNumFluxW)/dx - (VelNumFluxBohmE-VelNumFluxBohmW)/dx + 0.5f*(VelNumSourceE+VelNumSourceW);
 
 		// RK
 		U_1[i].n() = Umain[i].n() + dt*Ln;
@@ -287,7 +294,7 @@ void Fluid1D::RungeKuttaTVD() {
 	U_1[0] = U_1[Nx-2];
 	U_1[Nx-1] = U_1[1];
 
-	//CalcDensityLaplacian(U_1,Nx);
+	CalcDensityLaplacian(U_1);
 	for (int i = 1; i < Nx-1; ++i) {
 
 		// reconstruction process
@@ -309,8 +316,11 @@ void Fluid1D::RungeKuttaTVD() {
 		VelNumSourceE = NumericalSource::Average(this,UEleft,UEright).v();
 		VelNumSourceW = NumericalSource::Average(this,UWleft,UWright).v();
 
+		VelNumFluxBohmE = BP * 0.5f * (UEleft.lap_n()+UEright.lap_n());
+		VelNumFluxBohmW = BP * 0.5f * (UWleft.lap_n()+UWright.lap_n());
+
 		float Ln = -(DenNumFluxE-DenNumFluxW)/dx + 0.5f*(DenNumSourceE+DenNumSourceW);
-		float Lv = -(VelNumFluxE-VelNumFluxW)/dx + 0.5f*(VelNumSourceE+VelNumSourceW);
+		float Lv = -(VelNumFluxE-VelNumFluxW)/dx - (VelNumFluxBohmE-VelNumFluxBohmW)/dx + 0.5f*(VelNumSourceE+VelNumSourceW);
 
 		// RK
 		U_2[i].n() = 0.75f*Umain[i].n() + 0.25f*U_1[i].n() + 0.25f*dt*Ln;
@@ -320,7 +330,7 @@ void Fluid1D::RungeKuttaTVD() {
 	U_2[0] = U_2[Nx-2];
 	U_2[Nx-1] = U_2[1];
 
-	//CalcDensityLaplacian(U_2,Nx);
+	CalcDensityLaplacian(U_2);
 	for (int i = 1; i < Nx-1; ++i) {
 
 		// reconstruction process
@@ -342,8 +352,11 @@ void Fluid1D::RungeKuttaTVD() {
 		VelNumSourceE = NumericalSource::Average(this,UEleft,UEright).v();
 		VelNumSourceW = NumericalSource::Average(this,UWleft,UWright).v();
 
+		VelNumFluxBohmE = BP * 0.5f * (UEleft.lap_n()+UEright.lap_n());
+		VelNumFluxBohmW = BP * 0.5f * (UWleft.lap_n()+UWright.lap_n());
+
 		float Ln = -(DenNumFluxE-DenNumFluxW)/dx + 0.5f*(DenNumSourceE+DenNumSourceW);
-		float Lv = -(VelNumFluxE-VelNumFluxW)/dx + 0.5f*(VelNumSourceE+VelNumSourceW);
+		float Lv = -(VelNumFluxE-VelNumFluxW)/dx - (VelNumFluxBohmE-VelNumFluxBohmW)/dx + 0.5f*(VelNumSourceE+VelNumSourceW);
 
 		// RK
 		Umain[i].n() = (1.0f/3.0f)*Umain[i].n() + (2.0f/3.0f)*U_2[i].n() + (2.0f/3.0f)*dt*Ln;

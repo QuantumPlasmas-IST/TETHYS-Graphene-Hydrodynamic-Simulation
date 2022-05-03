@@ -208,6 +208,9 @@ StateVec CellHandler1D::WENO3(int Nx, char side, char edge) { // I think it work
 			Ualpha1.n() = d1 / ((eps + Ubeta1.n()) * (eps + Ubeta1.n()));
 			Ualpha1.v() = d1 / ((eps + Ubeta1.v()) * (eps + Ubeta1.v()));
 
+			Ualpha0.lap_n() = d0 / ((eps + Ubeta0.lap_n()) * (eps + Ubeta0.lap_n()));
+			Ualpha1.lap_n() = d1 / ((eps + Ubeta1.lap_n()) * (eps + Ubeta1.lap_n()));
+
 			Uomega0 = Ualpha0 / (Ualpha0 + Ualpha1);
 			Uomega1 = Ualpha1 / (Ualpha0 + Ualpha1);
 
@@ -235,6 +238,9 @@ StateVec CellHandler1D::WENO3(int Nx, char side, char edge) { // I think it work
 			Ualpha0.v() = d1 / ((eps + Ubeta0.v()) * (eps + Ubeta0.v()));
 			Ualpha1.n() = d0 / ((eps + Ubeta1.n()) * (eps + Ubeta1.n()));
 			Ualpha1.v() = d0 / ((eps + Ubeta1.v()) * (eps + Ubeta1.v()));
+
+			Ualpha0.lap_n() = d1 / ((eps + Ubeta0.lap_n()) * (eps + Ubeta0.lap_n()));
+			Ualpha1.lap_n() = d0 / ((eps + Ubeta1.lap_n()) * (eps + Ubeta1.lap_n()));
 
 			Uomega0 = Ualpha0 / (Ualpha0 + Ualpha1);
 			Uomega1 = Ualpha1 / (Ualpha0 + Ualpha1);
