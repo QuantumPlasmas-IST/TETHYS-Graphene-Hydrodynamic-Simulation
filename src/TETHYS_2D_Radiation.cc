@@ -28,8 +28,8 @@ double c_light = 2.99792458e8;
 double mu_zero = 4*M_PI*1e-7;
 double epsilon_zero = 8.62607015e-34;
 
-double D_Conductor = 0.3;
-double Radius_Conductor = 0.3;
+double D_Conductor = 0.4;
+double Radius_Conductor = 0.2;
 
 using namespace std;
 
@@ -184,7 +184,7 @@ int main(int argc, char **argv){
     c1->Clear();gr_QuadXX->Draw();c1->SaveAs("./Files_Images_PIC/QuadXX_t.pdf");
     c1->Clear();gr_QuadXY->Draw();c1->SaveAs("./Files_Images_PIC/QuadXY_t.pdf");
     c1->Clear();gr_QuadYY->Draw();c1->SaveAs("./Files_Images_PIC/QuadYY_t.pdf");
-    c1->Clear();gr_QuadXX_dd->Draw();c1->SaveAs("./Files_Images_PIC/QuadXY_dd_t.pdf");
+    c1->Clear();gr_QuadXX_dd->Draw();c1->SaveAs("./Files_Images_PIC/QuadXX_dd_t.pdf");
     c1->Clear();gr_QuadXY_dd->Draw();c1->SaveAs("./Files_Images_PIC/QuadXY_dd_t.pdf");
     c1->Clear();gr_QuadYY_dd->Draw();c1->SaveAs("./Files_Images_PIC/QuadYY_dd_t.pdf");
 
@@ -377,19 +377,19 @@ int main(int argc, char **argv){
     ///*/
 
 
-    auto gr3d = new TGraph2D(6400);
+    auto gr3d = new TGraph2D(150*150);
     gr3d->SetName("gr1_name");
 
     double theta_3d;
     double phi_3d;
     double intensity;
-    for (int i=0; i<80; i++){
-        for(int j=0; j<80; j++){
-            theta_3d = 2*M_PI*i/80;
-            phi_3d = M_PI*j/80;
+    for (int i=0; i<150; i++){
+        for(int j=0; j<150; j++){
+            theta_3d = 2*M_PI*i/150;
+            phi_3d = M_PI*j/150;
             intensity = 1e14*Poynting_Module(11,cos(theta_3d)*sin(phi_3d),sin(theta_3d)*sin(phi_3d),cos(phi_3d));
-            if(cos(phi_3d) > -2*D_Conductor) intensity=0;
-            gr3d->SetPoint(i*80+j, intensity*cos(theta_3d)*sin(phi_3d), intensity*sin(theta_3d)*sin(phi_3d), intensity*cos(phi_3d));
+            if(cos(phi_3d) < -D_Conductor) continue;
+            gr3d->SetPoint(i*150+j, intensity*cos(theta_3d)*sin(phi_3d), intensity*sin(theta_3d)*sin(phi_3d), intensity*cos(phi_3d));
         }
     }
 
