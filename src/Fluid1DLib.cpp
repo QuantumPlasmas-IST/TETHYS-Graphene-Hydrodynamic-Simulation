@@ -112,8 +112,8 @@ void Fluid1D::InitialCondRand(){
 
 void Fluid1D::InitialCondTest(){
  	for (int i = 0; i < Nx; i++ ){
-		Umain[i].v()= (i>3*Nx/8 && i<5*Nx/8 ) ? 3.0f : 0.0f; //1.5f; //1.5f;//
-	    Umain[i].n()= (i>3*Nx/8 && i<5*Nx/8 ) ? 1.0f : 0.1f; //0.2f+0.2f/ pow(cosh((i*dx-0.5f)*12.0f),2); //0.2f+0.2f/ pow(cosh((i*dx-0.5f)*12.0f),2);//
+		Umain[i].v()= 1.5f; // (i>3*Nx/8 && i<5*Nx/8 ) ? 3.0f : 0.0f; //1.5f;//
+	    Umain[i].n()= 0.2f+0.2f/ pow(cosh((i*dx-0.5f)*12.0f),2); //(i>3*Nx/8 && i<5*Nx/8 ) ? 1.0f : 0.1f; //0.2f+0.2f/ pow(cosh((i*dx-0.5f)*12.0f),2);//
 	}
 	this->SetSound();
 }
@@ -247,7 +247,10 @@ void Fluid1D::RungeKuttaTVD() {
 	float VelNumSourceE;
 
 
-	float VelNumFluxParabolic;
+	//float VelNumFluxParabolic;
+	float VelNumFluxBohm;
+
+
 	StateVec UEleft(Umain[0]);
 	StateVec UEright(Umain[0]);
 	StateVec UWleft(Umain[0]);
@@ -276,14 +279,21 @@ void Fluid1D::RungeKuttaTVD() {
 		VelNumSourceW= NumericalSource::Average(this, UWleft,UWright).v();
 		VelNumSourceE= NumericalSource::Average(this, UEleft,UEright).v();
 
+if(i>1&&i<Nx-2) {
+	VelNumFluxBohm =
+			0.01f * (-0.5f * Umain[i - 2].n() + Umain[i - 1].n() - Umain[i + 1].n() + 0.5f * Umain[i + 2].n()) /
+			(dx * dx);
+}else{
+	VelNumFluxBohm =0.0f;
+}
 
 		Uaux[i].n()=Umain[i].n()-(dt/dx)*(DenNumFluxE-DenNumFluxW) +0.5f*dt*(DenNumSourceW+DenNumSourceE);
-		if(kin_vis!=0){
-			VelNumFluxParabolic = -1.0f*kin_vis*(-1.0f*Umain[i-1].v()+ 2.0f*Umain[i].v()-1.0f*Umain[i+1].v());
-			Uaux[i].v()=Umain[i].v()-(dt/dx)*(VelNumFluxE-VelNumFluxW - VelNumFluxParabolic) +0.5f*dt*(VelNumSourceW+VelNumSourceE);
-		} else{
-			Uaux[i].v()=Umain[i].v()-(dt/dx)*(VelNumFluxE-VelNumFluxW) +0.5f*dt*(VelNumSourceW+VelNumSourceE); ;
-		}
+	//	if(kin_vis!=0){
+	//		VelNumFluxParabolic = -1.0f*kin_vis*(-1.0f*Umain[i-1].v()+ 2.0f*Umain[i].v()-1.0f*Umain[i+1].v())/dx;
+	//		Uaux[i].v()=Umain[i].v()-(dt/dx)*(VelNumFluxE-VelNumFluxW - VelNumFluxParabolic) +0.5f*dt*(VelNumSourceW+VelNumSourceE);
+	//	} else{
+			Uaux[i].v()=Umain[i].v()-(dt/dx)*(VelNumFluxE-VelNumFluxW + VelNumFluxBohm) +0.5f*dt*(VelNumSourceW+VelNumSourceE); ;
+	//	}
 
 	}
 
@@ -307,14 +317,22 @@ void Fluid1D::RungeKuttaTVD() {
 		VelNumSourceW= NumericalSource::Average(this, UWleft,UWright).v();
 		VelNumSourceE= NumericalSource::Average(this, UEleft,UEright).v();
 
+		if(i>1&&i<Nx-2) {
+			VelNumFluxBohm =
+					0.01f * (-0.5f * Uaux[i - 2].n() + Uaux[i - 1].n() - Uaux[i + 1].n() + 0.5f * Uaux[i + 2].n()) /
+					(dx * dx);
+		}else{
+			VelNumFluxBohm =0.0f;
+		}
+
 		Umain[i].n()=0.5f*(Umain[i].n()+Uaux[i].n())-(0.5f*dt/dx)*(DenNumFluxE-DenNumFluxW) + 0.25f*dt*(DenNumSourceW+DenNumSourceE);
 
-		if(kin_vis!=0){
-			VelNumFluxParabolic =  -1.0f*kin_vis*(-1.0f*Uaux[i-1].v()+ 2.0f*Uaux[i].v()-1.0f*Uaux[i+1].v());
-			Umain[i].v()=0.5f*(Umain[i].v()+Uaux[i].v())-(0.5f*dt/dx)*(VelNumFluxE-VelNumFluxW - VelNumFluxParabolic) +0.25f*dt*(VelNumSourceW+VelNumSourceE);
-		} else{
-			Umain[i].v()=0.5f*(Umain[i].v()+Uaux[i].v())-(0.5f*dt/dx)*(VelNumFluxE-VelNumFluxW)  +0.25f*dt*(VelNumSourceW+VelNumSourceE) ;
-		}
+	//	if(kin_vis!=0){
+	//		VelNumFluxParabolic =  -1.0f*kin_vis*(-1.0f*Uaux[i-1].v()+ 2.0f*Uaux[i].v()-1.0f*Uaux[i+1].v())/dx;
+	//		Umain[i].v()=0.5f*(Umain[i].v()+Uaux[i].v())-(0.5f*dt/dx)*(VelNumFluxE-VelNumFluxW - VelNumFluxParabolic) +0.25f*dt*(VelNumSourceW+VelNumSourceE);
+	//	} else{
+			Umain[i].v()=0.5f*(Umain[i].v()+Uaux[i].v())-(0.5f*dt/dx)*(VelNumFluxE-VelNumFluxW  + VelNumFluxBohm)  +0.25f*dt*(VelNumSourceW+VelNumSourceE) ;
+	//	}
 
 
 	}
@@ -411,7 +429,8 @@ void Fluid1D::CalcVelocityLaplacian(StateVec * u_vec,int size_x) {
 }
 
 void Fluid1D::ParabolicFTCS() {
-	CalcVelocityGradient(Umain,Nx);
+	CalcVelocityLaplacian(Umain,Nx);
+
 	for (int i = 0; i < Nx ; ++i) {
 		Umain[i].v() = Umain[i].v() + kin_vis * dt *Umain[i].grad_v() ; //TODO mudar o nome para lap_v se isto funcionar
 	}

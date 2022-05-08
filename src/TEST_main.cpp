@@ -38,12 +38,12 @@ cout <<"\n\n";
 
 
 
-SetUpParameters parameters(12, 9.1, 1.6, 0, 0, 0,0, 1, 1);
+SetUpParameters parameters(12.2, 9.1, 0, 0.0, 0, 0,0, 1, 1);
 
 GrapheneFluid1D teste(parameters);
 
 teste.CflCondition();
-teste.SetDt(teste.GetDt()*1.0f);
+teste.SetDt(teste.GetDt()*0.01f);
 cout <<"S\t"<<teste.GetVelSnd()<<endl;
 cout <<"VF\t"<<teste.GetVelFer()<<endl;
 cout <<"dt\t"<<teste.GetDt()<<endl;
@@ -77,11 +77,13 @@ teste.InitialCondTest();
 		teste.RungeKuttaTVD();
 		//teste.McCormack();
 		BoundaryCondition::XPeriodic(teste);
-	//	if(teste.GetKinVis() != 0){
-	//		teste.ParabolicFTCS();
-	//	}
 
-	//	BoundaryCondition::XPeriodic(teste);
+		if(teste.GetKinVis() != 0){
+			teste.ParabolicFTCS();
+			BoundaryCondition::XPeriodic(teste);
+		}
+
+
 		//DyakonovShurBoundaryCondition::DyakonovShurBc(teste);
 		//DirichletBoundaryCondition::Density(teste,1.0f,1.0f);
 		//DirichletBoundaryCondition::VelocityX(teste,.1f,0.1f);
