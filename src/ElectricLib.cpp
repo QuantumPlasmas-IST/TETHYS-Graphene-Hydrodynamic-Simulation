@@ -75,30 +75,39 @@ void ElectroAnalysis::ComputeElectroDerived() {
 	DipVarVarY.resize(DipY.size());
 	QuadVarXX.resize(QuadXX.size());
 	QuadVarVarXX.resize(QuadXX.size());
+	QuadVarVarVarXX.resize(QuadXX.size());
 	QuadVarXY.resize(QuadXY.size());
 	QuadVarVarXY.resize(QuadXY.size());
+	QuadVarVarVarXY.resize(QuadXY.size());
 	QuadVarYY.resize(QuadYY.size());
 	QuadVarVarYY.resize(QuadYY.size());
+	QuadVarVarVarYY.resize(QuadYY.size());
 	Convolve_Gauss(1,5,1.0,DipX.data(),DipVarX.data(),DipX.size());
 	Convolve_Gauss(1,5,1.0,DipVarX.data(),DipVarVarX.data(),DipX.size());
 	Convolve_Gauss(1,5,1.0,DipY.data(),DipVarY.data(),DipY.size());
 	Convolve_Gauss(1,5,1.0,DipVarY.data(),DipVarVarY.data(),DipY.size());
 	Convolve_Gauss(1,5,1.0,QuadXX.data(),QuadVarXX.data(),QuadXX.size());
 	Convolve_Gauss(1,5,1.0,QuadVarXX.data(),QuadVarVarXX.data(),QuadXX.size());
+	Convolve_Gauss(1,5,1.0,QuadVarVarXX.data(),QuadVarVarVarXX.data(),QuadXX.size());
 	Convolve_Gauss(1,5,1.0,QuadXY.data(),QuadVarXY.data(),QuadXY.size());
 	Convolve_Gauss(1,5,1.0,QuadVarXY.data(),QuadVarVarXY.data(),QuadXY.size());
+	Convolve_Gauss(1,5,1.0,QuadVarVarXY.data(),QuadVarVarVarXY.data(),QuadXY.size());
 	Convolve_Gauss(1,5,1.0,QuadYY.data(),QuadVarYY.data(),QuadYY.size());
 	Convolve_Gauss(1,5,1.0,QuadVarYY.data(),QuadVarVarYY.data(),QuadYY.size());
+	Convolve_Gauss(1,5,1.0,QuadVarVarYY.data(),QuadVarVarVarYY.data(),QuadYY.size());
 	transform(DipVarX.begin(), DipVarX.end(), DipVarX.begin(), [dt](const float &c){ return c/dt; });
 	transform(DipVarVarX.begin(), DipVarVarX.end(), DipVarVarX.begin(), [dt](const float &c){ return c/(dt*dt); });
 	transform(DipVarY.begin(), DipVarY.end(), DipVarY.begin(), [dt](const float &c){ return c/dt; });
 	transform(DipVarVarY.begin(), DipVarVarY.end(), DipVarVarY.begin(), [dt](const float &c){ return c/(dt*dt); });
 	transform(QuadVarXX.begin(), QuadVarXX.end(), QuadVarXX.begin(), [dt](const float &c){ return c/dt; });
 	transform(QuadVarVarXX.begin(), QuadVarVarXX.end(), QuadVarVarXX.begin(), [dt](const float &c){ return c/(dt*dt); });
+	transform(QuadVarVarVarXX.begin(), QuadVarVarVarXX.end(), QuadVarVarVarXX.begin(), [dt](const float &c){ return c/(dt*dt*dt); });
 	transform(QuadVarXY.begin(), QuadVarXY.end(), QuadVarXY.begin(), [dt](const float &c){ return c/dt; });
 	transform(QuadVarVarXY.begin(), QuadVarVarXY.end(), QuadVarVarXY.begin(), [dt](const float &c){ return c/(dt*dt); });
+	transform(QuadVarVarVarXY.begin(), QuadVarVarVarXY.end(), QuadVarVarVarXY.begin(), [dt](const float &c){ return c/(dt*dt*dt); });
 	transform(QuadVarYY.begin(), QuadVarYY.end(), QuadVarYY.begin(), [dt](const float &c){ return c/dt; });
 	transform(QuadVarVarYY.begin(), QuadVarVarYY.end(), QuadVarVarYY.begin(), [dt](const float &c){ return c/(dt*dt); });
+	transform(QuadVarVarVarYY.begin(), QuadVarVarVarYY.end(), QuadVarVarVarYY.begin(), [dt](const float &c){ return c/(dt*dt*dt); });
 }
 
 
@@ -126,12 +135,15 @@ void ElectroAnalysis::WriteElectroFile() {
 			             << QuadXX[i] << "\t"
 			             << QuadVarXX[i] << "\t"
 			             << QuadVarVarXX[i] << "\t"
+			             << QuadVarVarVarXX[i] << "\t"
 			             << QuadXY[i] << "\t"
 			             << QuadVarXY[i] << "\t"
 			             << QuadVarVarXY[i] << "\t"
+			             << QuadVarVarVarXY[i] << "\t"
 			             << QuadYY[i] << "\t"
 			             << QuadVarYY[i] << "\t"
-			             << QuadVarVarYY[i] << "\n";
+			             << QuadVarVarYY[i] << "\t"
+			             << QuadVarVarVarYY[i] << "\n";
 		}
 }
 

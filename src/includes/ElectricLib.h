@@ -48,6 +48,9 @@ private:
 	vector<float> QuadVarVarXX;
 	vector<float> QuadVarVarXY;
 	vector<float> QuadVarVarYY;
+	vector<float> QuadVarVarVarXX;
+	vector<float> QuadVarVarVarXY;
+	vector<float> QuadVarVarVarYY;
 	vector<float> AvgCurDS;
 	vector<float> VoltDS;
 	vector<float> CurS;

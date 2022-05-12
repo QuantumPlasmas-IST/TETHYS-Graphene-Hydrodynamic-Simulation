@@ -68,19 +68,20 @@ int main(int argc, char **argv){
     string line;
     double temp_d;
     int Nl = 474; //number of lines in file
-    int Nc = 24;
+    int Nc = 27;
 
     vector<double> time;
+    vector<double> CurS;
     vector<double> DipX;
     vector<double> DipX_dd;
     vector<double> DipY;
     vector<double> DipY_dd;
     vector<double> QuadXX;
-    vector<double> QuadXX_dd;
+    vector<double> QuadXX_ddd;
     vector<double> QuadXY;
-    vector<double> QuadXY_dd;
+    vector<double> QuadXY_ddd;
     vector<double> QuadYY;
-    vector<double> QuadYY_dd;
+    vector<double> QuadYY_ddd;
 
     for(int i=0; i<Nl; i++){
         getline(infile1, line);
@@ -93,6 +94,10 @@ int main(int argc, char **argv){
             if(j==0){
             	if (stringstream(temp_s) >> temp_d);
             	time.push_back(temp_d);
+            }
+            if(j==6){
+                if (stringstream(temp_s) >> temp_d);
+                CurS.push_back(temp_d);
             }
             if(j==9){
             	if (stringstream(temp_s) >> temp_d);
@@ -114,33 +119,25 @@ int main(int argc, char **argv){
                 if (stringstream(temp_s) >> temp_d);
                 QuadXX.push_back(temp_d);
             }
-            if(j==17){
-                if (stringstream(temp_s) >> temp_d);
-                QuadXX_dd.push_back(temp_d);
-            }
-            if(j==15){
-                if (stringstream(temp_s) >> temp_d);
-                QuadXX.push_back(temp_d);
-            }
-            if(j==17){
-                if (stringstream(temp_s) >> temp_d);
-                QuadXX_dd.push_back(temp_d);
-            }
             if(j==18){
+                if (stringstream(temp_s) >> temp_d);
+                QuadXX_ddd.push_back(temp_d);
+            }
+            if(j==19){
                 if (stringstream(temp_s) >> temp_d);
                 QuadXY.push_back(temp_d);
             }
-            if(j==20){
+            if(j==22){
                 if (stringstream(temp_s) >> temp_d);
-                QuadXY_dd.push_back(temp_d);
-            }
-            if(j==21){
-                if (stringstream(temp_s) >> temp_d);
-                QuadYY.push_back(temp_d);
+                QuadXY_ddd.push_back(temp_d);
             }
             if(j==23){
                 if (stringstream(temp_s) >> temp_d);
-                QuadYY_dd.push_back(temp_d);
+                QuadYY.push_back(temp_d);
+            }
+            if(j==26){
+                if (stringstream(temp_s) >> temp_d);
+                QuadYY_ddd.push_back(temp_d);
             }
         }
     }
@@ -150,6 +147,8 @@ int main(int argc, char **argv){
 
 
     auto c1 = new TCanvas("c1", "c1", 200, 10, 1280, 720);
+    auto gr_CurS = new TGraph();
+
 	auto gr_DipX = new TGraph();
 	auto gr_DipY = new TGraph();
     auto gr_DipX_dd = new TGraph();
@@ -158,11 +157,13 @@ int main(int argc, char **argv){
     auto gr_QuadXX = new TGraph();
     auto gr_QuadXY = new TGraph();
     auto gr_QuadYY = new TGraph();
-    auto gr_QuadXX_dd = new TGraph();
-    auto gr_QuadXY_dd = new TGraph();
-    auto gr_QuadYY_dd = new TGraph();
+    auto gr_QuadXX_ddd = new TGraph();
+    auto gr_QuadXY_ddd = new TGraph();
+    auto gr_QuadYY_ddd = new TGraph();
 
     for(int i=0; i<Nl; i++){
+        gr_CurS->SetPoint(i,time[i],CurS[i]);
+
 		gr_DipX->SetPoint(i,time[i],DipX[i]);
 		gr_DipY->SetPoint(i,time[i],DipY[i]);
         gr_DipX_dd->SetPoint(i,time[i],DipX_dd[i]);
@@ -171,12 +172,13 @@ int main(int argc, char **argv){
         gr_QuadXX->SetPoint(i,time[i],QuadXX[i]);
         gr_QuadXY->SetPoint(i,time[i],QuadXY[i]);
         gr_QuadYY->SetPoint(i,time[i],QuadYY[i]);
-        gr_QuadXX_dd->SetPoint(i,time[i],QuadXX_dd[i]);
-        gr_QuadXY_dd->SetPoint(i,time[i],QuadXY_dd[i]);
-        gr_QuadYY_dd->SetPoint(i,time[i],QuadYY_dd[i]);
+        gr_QuadXX_ddd->SetPoint(i,time[i],QuadXX_ddd[i]);
+        gr_QuadXY_ddd->SetPoint(i,time[i],QuadXY_ddd[i]);
+        gr_QuadYY_ddd->SetPoint(i,time[i],QuadYY_ddd[i]);
     }
 
-	c1->cd();   gr_DipX->Draw();c1->SaveAs("./Files_Images_PIC/DipX_t.pdf");
+	c1->cd();   gr_CurS->Draw();c1->SaveAs("./Files_Images_PIC/CurS_t.pdf");
+    c1->Clear();gr_DipX->Draw();c1->SaveAs("./Files_Images_PIC/DipX_t.pdf");
 	c1->Clear();gr_DipY->Draw();c1->SaveAs("./Files_Images_PIC/DipY_t.pdf");
     c1->Clear();gr_DipX_dd->Draw();c1->SaveAs("./Files_Images_PIC/DipX_dd_t.pdf");
     c1->Clear();gr_DipY_dd->Draw();c1->SaveAs("./Files_Images_PIC/DipY_dd_t.pdf");
@@ -184,9 +186,9 @@ int main(int argc, char **argv){
     c1->Clear();gr_QuadXX->Draw();c1->SaveAs("./Files_Images_PIC/QuadXX_t.pdf");
     c1->Clear();gr_QuadXY->Draw();c1->SaveAs("./Files_Images_PIC/QuadXY_t.pdf");
     c1->Clear();gr_QuadYY->Draw();c1->SaveAs("./Files_Images_PIC/QuadYY_t.pdf");
-    c1->Clear();gr_QuadXX_dd->Draw();c1->SaveAs("./Files_Images_PIC/QuadXX_dd_t.pdf");
-    c1->Clear();gr_QuadXY_dd->Draw();c1->SaveAs("./Files_Images_PIC/QuadXY_dd_t.pdf");
-    c1->Clear();gr_QuadYY_dd->Draw();c1->SaveAs("./Files_Images_PIC/QuadYY_dd_t.pdf");
+    c1->Clear();gr_QuadXX_ddd->Draw();c1->SaveAs("./Files_Images_PIC/QuadXX_ddd_t.pdf");
+    c1->Clear();gr_QuadXY_ddd->Draw();c1->SaveAs("./Files_Images_PIC/QuadXY_ddd_t.pdf");
+    c1->Clear();gr_QuadYY_ddd->Draw();c1->SaveAs("./Files_Images_PIC/QuadYY_ddd_t.pdf");
 
     //Dipole Functions//
     auto E_x_Dip = [&](int i, double x, double y, double z){ //X component of electric field of Dipole // time is in i
@@ -227,51 +229,51 @@ int main(int argc, char **argv){
     auto E_x_Quad = [&](int i, double x, double y, double z){ //X component of electric field of Quadrupole // time is in i
         double r2 = x*x+y*y+z*z;
         double r = sqrt(r2);
-        double Q_vec_X = QuadXX_dd[i]*x + QuadXY_dd[i]*y;
-        double Q_vec_Y = QuadXY_dd[i]*x + QuadYY_dd[i]*y;
-        double Q_vec_Z = -(QuadXX_dd[i]+QuadYY_dd[i])*z;
+        double Q_vec_X = QuadXX_ddd[i]*x + QuadXY_ddd[i]*y;
+        double Q_vec_Y = QuadXY_ddd[i]*x + QuadYY_ddd[i]*y;
+        double Q_vec_Z = -(QuadXX_ddd[i]+QuadYY_ddd[i])*z;
         return (mu_zero/(24*M_PI*c_light*r))*((x*Q_vec_X+y*Q_vec_Y+z*Q_vec_Z)*x/r2-Q_vec_X);
     };
     auto E_y_Quad = [&](int i, double x, double y, double z){ //Y component of electric field of Quadrupole // time is in i
         double r2 = x*x+y*y+z*z;
         double r = sqrt(r2);
-        double Q_vec_X = QuadXX_dd[i]*x + QuadXY_dd[i]*y;
-        double Q_vec_Y = QuadXY_dd[i]*x + QuadYY_dd[i]*y;
-        double Q_vec_Z = -(QuadXX_dd[i]+QuadYY_dd[i])*z;
+        double Q_vec_X = QuadXX_ddd[i]*x + QuadXY_ddd[i]*y;
+        double Q_vec_Y = QuadXY_ddd[i]*x + QuadYY_ddd[i]*y;
+        double Q_vec_Z = -(QuadXX_ddd[i]+QuadYY_ddd[i])*z;
         return (mu_zero/(24*M_PI*c_light*r))*((x*Q_vec_X+y*Q_vec_Y+z*Q_vec_Z)*y/r2-Q_vec_Y);
     };
     auto E_z_Quad = [&](int i, double x, double y, double z){ //Z component of electric field of Quadrupole // time is in i
         double r2 = x*x+y*y+z*z;
         double r = sqrt(r2);
-        double Q_vec_X = QuadXX_dd[i]*x + QuadXY_dd[i]*y;
-        double Q_vec_Y = QuadXY_dd[i]*x + QuadYY_dd[i]*y;
-        double Q_vec_Z = -(QuadXX_dd[i]+QuadYY_dd[i])*z;
+        double Q_vec_X = QuadXX_ddd[i]*x + QuadXY_ddd[i]*y;
+        double Q_vec_Y = QuadXY_ddd[i]*x + QuadYY_ddd[i]*y;
+        double Q_vec_Z = -(QuadXX_ddd[i]+QuadYY_ddd[i])*z;
         return (mu_zero/(24*M_PI*c_light*r))*((x*Q_vec_X+y*Q_vec_Y+z*Q_vec_Z)*z/r2-Q_vec_Z);
     };
 
     auto H_x_Quad = [&](int i, double x, double y, double z){ //X component of H field of Dipole // time is in i
         double r2 = x*x+y*y+z*z;
         double r = sqrt(r2);
-        double Q_vec_X = QuadXX_dd[i]*x + QuadXY_dd[i]*y;
-        double Q_vec_Y = QuadXY_dd[i]*x + QuadYY_dd[i]*y;
-        double Q_vec_Z = -(QuadXX_dd[i]+QuadYY_dd[i])*z;
-        return Cross_Product_X(x,y,z,Q_vec_X,Q_vec_Y,Q_vec_Z)/(24*M_PI*c_light*c_light*r2);
+        double Q_vec_X = QuadXX_ddd[i]*x + QuadXY_ddd[i]*y;
+        double Q_vec_Y = QuadXY_ddd[i]*x + QuadYY_ddd[i]*y;
+        double Q_vec_Z = -(QuadXX_ddd[i]+QuadYY_ddd[i])*z;
+        return -Cross_Product_X(x,y,z,Q_vec_X,Q_vec_Y,Q_vec_Z)/(24*M_PI*c_light*c_light*r2);
     };
     auto H_y_Quad = [&](int i, double x, double y, double z){ //Y component of H field of Dipole // time is in i
         double r2 = x*x+y*y+z*z;
         double r = sqrt(r2);
-        double Q_vec_X = QuadXX_dd[i]*x + QuadXY_dd[i]*y;
-        double Q_vec_Y = QuadXY_dd[i]*x + QuadYY_dd[i]*y;
-        double Q_vec_Z = -(QuadXX_dd[i]+QuadYY_dd[i])*z;
-        return Cross_Product_Y(x,y,z,Q_vec_X,Q_vec_Y,Q_vec_Z)/(24*M_PI*c_light*c_light*r2);
+        double Q_vec_X = QuadXX_ddd[i]*x + QuadXY_ddd[i]*y;
+        double Q_vec_Y = QuadXY_ddd[i]*x + QuadYY_ddd[i]*y;
+        double Q_vec_Z = -(QuadXX_ddd[i]+QuadYY_ddd[i])*z;
+        return -Cross_Product_Y(x,y,z,Q_vec_X,Q_vec_Y,Q_vec_Z)/(24*M_PI*c_light*c_light*r2);
     };
     auto H_z_Quad = [&](int i, double x, double y, double z){ //Z component of H field of Dipole // time is in i
         double r2 = x*x+y*y+z*z;
         double r = sqrt(r2);
-        double Q_vec_X = QuadXX_dd[i]*x + QuadXY_dd[i]*y;
-        double Q_vec_Y = QuadXY_dd[i]*x + QuadYY_dd[i]*y;
-        double Q_vec_Z = -(QuadXX_dd[i]+QuadYY_dd[i])*z;
-        return Cross_Product_Z(x,y,z,Q_vec_X,Q_vec_Y,Q_vec_Z)/(24*M_PI*c_light*c_light*r2);
+        double Q_vec_X = QuadXX_ddd[i]*x + QuadXY_ddd[i]*y;
+        double Q_vec_Y = QuadXY_ddd[i]*x + QuadYY_ddd[i]*y;
+        double Q_vec_Z = -(QuadXX_ddd[i]+QuadYY_ddd[i])*z;
+        return -Cross_Product_Z(x,y,z,Q_vec_X,Q_vec_Y,Q_vec_Z)/(24*M_PI*c_light*c_light*r2);
     };
     /////
 
