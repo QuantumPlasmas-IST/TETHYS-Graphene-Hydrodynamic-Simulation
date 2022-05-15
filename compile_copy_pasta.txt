@@ -5,5 +5,6 @@ make all
 
 cd ..
 
+g++ src/TETHYS_2D_Radiation.cc src/Library_Rui/*.cpp -o build/TETHYS_2D_Radiation.exe `root-config --cflags --glibs`
 g++ src/TETHYS_2D_Radiation.cc -o build/TETHYS_2D_Radiation.exe `root-config --cflags --glibs`
 ./build/TETHYS_2D_Radiation.exe  electro_2D_S=22.28vF=10.50vis=0.010odd=0.000l=0.001wc=0.00therm=0.00.dat
