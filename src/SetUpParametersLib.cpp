@@ -242,6 +242,12 @@ void SetUpParameters::PromptParameters() {
 	cin >> SoundVelocity;
 	cout << "Define vF value: ";
 	cin >> FermiVelocity;
+	cout << "Define vT value (Dirac): ";
+	cin >> ThermalVelocity;
+	cout << "Define A source term value (Dirac): ";
+	cin >> Diffusive_sourceterm;
+	cout << "Define B source term value (Dirac): ";
+	cin >> Creation_sourceterm;
 	cout << "Define kinetic shear viscosity: ";
 	cin >> ShearViscosity;
 	cout << "Define kinetic odd viscosity: ";

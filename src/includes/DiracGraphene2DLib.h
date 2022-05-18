@@ -46,6 +46,10 @@ protected:
 	float *hptr_px;
 	float *hptr_py;
 
+	float vel_term = 10.0f; //new constant - pressure term
+	float A = 0.1f; //new constant - source function, equilibrium relaxation
+	float B = 1.0f; //new constant - source function, electron-hole creation
+
 public :
 
 	float *HDen;       // number density

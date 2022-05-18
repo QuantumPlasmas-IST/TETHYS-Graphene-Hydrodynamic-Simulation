@@ -53,6 +53,10 @@ class SetUpParameters {
 		float CyclotronFrequency;
 		float ThermalDiffusivity;
 
+		float ThermalVelocity;  //new Dirac terms
+		float Diffusive_sourceterm; //new Dirac terms
+		float Creation_sourceterm; //new Dirac terms
+
 	    float SimulationTime=0.0f;
 		void ParametersChecking() const; ///< Runs a checking on the physical feasibility of the parameters
 		/*!

@@ -11,11 +11,16 @@
 
 DiracGraphene2D::DiracGraphene2D(SetUpParameters &input_parameters) : Fluid2D(input_parameters) {
 	vel_fer = input_parameters.FermiVelocity ;//fermi_velocity;
-	col_freq = input_parameters.CollisionFrequency ; // collision_frequency;
-	cyc_freq = input_parameters.CyclotronFrequency ; //cyclotron_frequency;
+	col_freq = input_parameters.CollisionFrequency ; // collision_frequency
+	cyc_freq = input_parameters.CyclotronFrequency ; //cyclotron_frequency
 	therm_diff = input_parameters.ThermalDiffusivity; //thermal diffusivity
+
+	vel_term = input_parameters.ThermalVelocity ;
+	A = input_parameters.Diffusive_sourceterm ;
+	B = input_parameters.Creation_sourceterm ;
+
 	char buffer [100];
-	sprintf (buffer, "S=%.2fvF=%.2fvis=%.3fodd=%.3fl=%.3fwc=%.2ftherm=%.2f", vel_snd, vel_fer, kin_vis,odd_vis, col_freq,cyc_freq,therm_diff);
+	sprintf (buffer, "S=%.2fvF=%.2fvT=%.2fA=%.3fB=%.3fvis=%.3fodd=%.3fl=%.3fwc=%.2ftherm=%.2f", vel_snd, vel_fer, vel_term, A, B, kin_vis,odd_vis, col_freq,cyc_freq,therm_diff);
 	file_infix = buffer;
 
 	// main grid variables Nx*Ny
@@ -43,26 +48,6 @@ void DiracGraphene2D::SetSimulationTime(){
 	s=this->GetVelSnd();
 	this->SetTmax(5.0f+0.02f*s+20.0f/s);
 }
-
-/*
-void DiracGraphene2D::MassFluxToVelocity(const string grid) {
-float den;
-	if(grid=="MainGrid"){
-		for(int c=0; c <= Nx * Ny - 1; c++){
-			den = Den[c];
-			VelX[c] = FlxX[c] / sqrt(den*den*den);
-			VelY[c] = FlxY[c] / sqrt(den*den*den);
-		}
-	}
-	if(grid=="MidGrid"){
-		for(int c=0; c <= (Nx-1) * (Ny-1) - 1; c++){
-			den = den_mid[c];
-			velX_mid[c] = flxX_mid[c] / sqrt(den*den*den);
-			velY_mid[c] = flxY_mid[c] / sqrt(den*den*den);
-		}
-	}
-}
-*/
 
 void DiracGraphene2D::CflCondition(){ // Eventual redefinition
 	dx = lengX / ( float ) ( Nx - 1 );
@@ -96,7 +81,7 @@ float DiracGraphene2D::DensityFluxX(GridPoint2D p, char side) {
 	px = SideAverage(ptr_px, p, side);
 	den = SideAverage(ptr_den, p, side);
 
-	return px / sqrt(den);  // DUVIDA: porque é que aqui nao se poe sobre a massa - DensityToMass?
+	return px / sqrt(den);
 }
 
 float DiracGraphene2D::DensityFluxY(GridPoint2D p, char side) {
@@ -105,7 +90,7 @@ float DiracGraphene2D::DensityFluxY(GridPoint2D p, char side) {
 	py = SideAverage(ptr_py, p, side);
 	den = SideAverage(ptr_den, p, side);
 	
-	return py / sqrt(den);  // DUVIDA: porque é que aqui nao se poe sobre a massa - DensityToMass?
+	return py / sqrt(den);
 }
 
 float DiracGraphene2D::XMomentumFluxX(GridPoint2D p, char side) {
