@@ -216,7 +216,7 @@ float DiracGraphene2D::HXMomentumFluxX(GridPoint2D p, char side) {
 	mass=DensityToMass(hden);
 
 //!!!!!!!!!!!!!!!!!!!!    VOLTAR A VERIFICAR O SINAL DO TERMO S^2
-	return px * px / mass + sound * sound * (den - hden) + vel_therm * vel_therm * (den + hden);
+	return px * px / mass - sound * sound * (den - hden) + vel_therm * vel_therm * (den + hden);
 	//return px * px / mass + vel_fer * vel_fer * mass / 3.0f - 0.5f * sound * sound * hden * hden ;
 	//return px * px / mass + vel_fer * vel_fer * mass / 3.0f + 0.5f * sound * sound * hden * hden ;
 }
@@ -254,7 +254,7 @@ float DiracGraphene2D::HYMomentumFluxY(GridPoint2D p, char side) {
 	mass=DensityToMass(hden);
 
 //!!!!!!!!!!!!!!!!!!!!    VOLTAR A VERIFICAR O SINAL DO TERMO S^2
-	return py * py / mass + sound * sound * (den - hden) + vel_therm * vel_therm * (den + hden);
+	return py * py / mass - sound * sound * (den - hden) + vel_therm * vel_therm * (den + hden);
 	//return py * py / mass + vel_fer * vel_fer * mass / 3.0f - 0.5f * sound * sound * hden * hden;
 	//return py * py / mass + vel_fer * vel_fer * mass / 3.0f + 0.5f * sound * sound * hden * hden;
 }
