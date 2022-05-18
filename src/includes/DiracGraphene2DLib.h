@@ -46,7 +46,7 @@ protected:
 	float *hptr_px;
 	float *hptr_py;
 
-	float vel_term = 10.0f; //new constant - pressure term
+	float vel_therm = 10.0f; //new constant - pressure term
 	float A = 0.1f; //new constant - source function, equilibrium relaxation
 	float B = 1.0f; //new constant - source function, electron-hole creation
 
@@ -95,9 +95,9 @@ public :
 		 * */
 //		//void MassFluxToVelocity(string grid) override; // Converts the mass density flux back to velocity, in graphene  v = p n^{-3/2}
 		/*Override fluxes and sources to specifics of graphene physics*/
-		float DensitySource(float n, float flx_x, float flx_y, float mass, float s)override;   ///< density equation (continuity equation) source term
-		float XMomentumSource(float n, float flx_x, float flx_y, float mass, float s)override; ///< velocity X component equation (momentum equation) source term
-		float YMomentumSource(float n, float flx_x, float flx_y, float mass, float s)override; ///< velocity y component equation (momentum equation) source term
+		float DensitySource(float n, float flx_x, float flx_y, float hn, float hflx_x, float hflx_y, float mass, float s);   ///< density equation (continuity equation) source term
+		float XMomentumSource(float n, float flx_x, float flx_y, float hn, float hflx_x, float hflx_y, float mass, float s); ///< velocity X component equation (momentum equation) source term
+		float YMomentumSource(float n, float flx_x, float flx_y, float hn, float hflx_x, float hflx_y, float mass, float s); ///< velocity y component equation (momentum equation) source term
 
 		float DensityFluxX(GridPoint2D p, char side ) override; ///< density equation (continuity equation) conserved flux X component
 		float DensityFluxY(GridPoint2D p, char side ) override; ///< density equation (continuity equation) conserved1 flux Y component
@@ -108,6 +108,9 @@ public :
 		float YMomentumFluxX(GridPoint2D p, char side ) override; ///< velocity Y component equation (momentum equation) conserved flux X component
 		float YMomentumFluxY(GridPoint2D p, char side ) override; ///< velocity Y component equation (momentum equation) conserved flux Y component
 
+		float HDensitySource(float n, float flx_x, float flx_y, float hn, float hflx_x, float hflx_y, float mass, float s);   ///< density equation (continuity equation) source term
+		float HXMomentumSource(float n, float flx_x, float flx_y, float hn, float hflx_x, float hflx_y, float mass, float s); ///< velocity X component equation (momentum equation) source term
+		float HYMomentumSource(float n, float flx_x, float flx_y, float hn, float hflx_x, float hflx_y, float mass, float s); ///< velocity y component equation (momentum equation) source term
 
 		float HDensityFluxX(GridPoint2D p, char side ); ///< density equation (continuity equation) conserved flux X component
 		float HDensityFluxY(GridPoint2D p, char side ); ///< density equation (continuity equation) conserved1 flux Y component

@@ -15,12 +15,12 @@ DiracGraphene2D::DiracGraphene2D(SetUpParameters &input_parameters) : Fluid2D(in
 	cyc_freq = input_parameters.CyclotronFrequency ; //cyclotron_frequency
 	therm_diff = input_parameters.ThermalDiffusivity; //thermal diffusivity
 
-	vel_term = input_parameters.ThermalVelocity ;
+	vel_therm = input_parameters.ThermalVelocity ;
 	A = input_parameters.Diffusive_sourceterm ;
 	B = input_parameters.Creation_sourceterm ;
 
 	char buffer [100];
-	sprintf (buffer, "S=%.2fvF=%.2fvT=%.2fA=%.3fB=%.3fvis=%.3fodd=%.3fl=%.3fwc=%.2ftherm=%.2f", vel_snd, vel_fer, vel_term, A, B, kin_vis,odd_vis, col_freq,cyc_freq,therm_diff);
+	sprintf (buffer, "S=%.2fvF=%.2fvT=%.2fA=%.3fB=%.3fvis=%.3fodd=%.3fl=%.3fwc=%.2ftherm=%.2f", vel_snd, vel_fer, vel_therm, A, B, kin_vis,odd_vis, col_freq,cyc_freq,therm_diff);
 	file_infix = buffer;
 
 	// main grid variables Nx*Ny
@@ -34,7 +34,7 @@ DiracGraphene2D::DiracGraphene2D(SetUpParameters &input_parameters) : Fluid2D(in
 	hvel_snd_arr	= new float[Nx * Ny]();
 
 	// 1st Aux. Grid variables (Nx-1)*(Ny-1)
-	hden_mid		= new float[(Nx-1)*(Ny-1)]();
+	hden_mid	= new float[(Nx-1)*(Ny-1)]();
 	hvelX_mid	= new float[(Nx-1)*(Ny-1)]();
 	hvelY_mid	= new float[(Nx-1)*(Ny-1)]();
 
@@ -108,7 +108,7 @@ float DiracGraphene2D::XMomentumFluxX(GridPoint2D p, char side) {
 
 	mass=DensityToMass(den);
 
-	return px * px / mass + vel_fer * vel_fer * mass / 3.0f + 0.5f * sound * sound * (den - hden) ;
+	return px * px / mass + sound * sound * (den - hden) + vel_therm * vel_therm * (den + hden);
 	//return px * px / mass + vel_fer * vel_fer * mass / 3.0f + 0.5f * sound * sound * den * den ;
 }
 
@@ -144,7 +144,7 @@ float DiracGraphene2D::YMomentumFluxY(GridPoint2D p, char side) {
 	py = SideAverage(ptr_py, p, side);
 	mass=DensityToMass(den);
 
-	return py * py / mass + vel_fer * vel_fer * mass / 3.0f + 0.5f * sound * sound * (den - hden);
+	return py * py / mass + sound * sound * (den - hden) + vel_therm * vel_therm * (den + hden);
 	//return py * py / mass + vel_fer * vel_fer * mass / 3.0f + 0.5f * sound * sound * den * den ;
 
 }
@@ -165,17 +165,15 @@ float DiracGraphene2D::YMomentumFluxX(GridPoint2D p, char side) {
 }
 
 
-float DiracGraphene2D::DensitySource(__attribute__((unused)) float n,__attribute__((unused)) float flx_x,__attribute__((unused)) float flx_y,__attribute__((unused)) float mass,__attribute__((unused)) float s) {
+float DiracGraphene2D::DensitySource(__attribute__((unused)) float n,__attribute__((unused)) float flx_x,__attribute__((unused)) float flx_y,__attribute__((unused)) float hn,__attribute__((unused)) float hflx_x,__attribute__((unused)) float hflx_y,__attribute__((unused)) float mass,__attribute__((unused)) float s) {
+	return A*(1.0f - n) + B*(n*hn - 1.0f);
+}
+
+float DiracGraphene2D::XMomentumSource(__attribute__((unused)) float n,__attribute__((unused)) float flx_x,__attribute__((unused)) float flx_y,__attribute__((unused)) float hn,__attribute__((unused)) float hflx_x,__attribute__((unused)) float hflx_y,__attribute__((unused)) float mass,__attribute__((unused)) float s) {
 	return 0.0f;
 }
 
-float DiracGraphene2D::XMomentumSource(float n, float flx_x, float flx_y, __attribute__((unused)) float mass, __attribute__((unused)) float s) {
-	//return -1.0f*col_freq*flx_x  - cyc_freq*flx_y/sqrt(n);
-	return 0.0f;
-}
-
-float DiracGraphene2D::YMomentumSource(float n, float flx_x, float flx_y, __attribute__((unused)) float mass, __attribute__((unused)) float s) {
-	//return -1.0f*col_freq*flx_y  + cyc_freq*flx_x/sqrt(n);
+float DiracGraphene2D::YMomentumSource(__attribute__((unused)) float n,__attribute__((unused)) float flx_x,__attribute__((unused)) float flx_y,__attribute__((unused)) float hn,__attribute__((unused)) float hflx_x,__attribute__((unused)) float hflx_y,__attribute__((unused)) float mass,__attribute__((unused)) float s) {
 	return 0.0f;
 }
 
@@ -217,7 +215,8 @@ float DiracGraphene2D::HXMomentumFluxX(GridPoint2D p, char side) {
 
 	mass=DensityToMass(hden);
 
-	return px * px / mass + vel_fer * vel_fer * mass / 3.0f - 0.5f * sound * sound * (den - hden) ;
+//!!!!!!!!!!!!!!!!!!!!    VOLTAR A VERIFICAR O SINAL DO TERMO S^2
+	return px * px / mass + sound * sound * (den - hden) + vel_therm * vel_therm * (den + hden);
 	//return px * px / mass + vel_fer * vel_fer * mass / 3.0f - 0.5f * sound * sound * hden * hden ;
 	//return px * px / mass + vel_fer * vel_fer * mass / 3.0f + 0.5f * sound * sound * hden * hden ;
 }
@@ -254,7 +253,8 @@ float DiracGraphene2D::HYMomentumFluxY(GridPoint2D p, char side) {
 	py = SideAverage(hptr_py, p, side);
 	mass=DensityToMass(hden);
 
-	return py * py / mass + vel_fer * vel_fer * mass / 3.0f - 0.5f * sound * sound * (den - hden);
+//!!!!!!!!!!!!!!!!!!!!    VOLTAR A VERIFICAR O SINAL DO TERMO S^2
+	return py * py / mass + sound * sound * (den - hden) + vel_therm * vel_therm * (den + hden);
 	//return py * py / mass + vel_fer * vel_fer * mass / 3.0f - 0.5f * sound * sound * hden * hden;
 	//return py * py / mass + vel_fer * vel_fer * mass / 3.0f + 0.5f * sound * sound * hden * hden;
 }
@@ -272,6 +272,18 @@ float DiracGraphene2D::HYMomentumFluxX(GridPoint2D p, char side) {
 	mass=DensityToMass(den);
 
 	return px * py / mass;
+}
+
+float DiracGraphene2D::HDensitySource(__attribute__((unused)) float n,__attribute__((unused)) float flx_x,__attribute__((unused)) float flx_y,__attribute__((unused)) float hn,__attribute__((unused)) float hflx_x,__attribute__((unused)) float hflx_y,__attribute__((unused)) float mass,__attribute__((unused)) float s) {
+	return A*(1.0f - hn) + B*(n*hn - 1.0f);
+}
+
+float DiracGraphene2D::HXMomentumSource(__attribute__((unused)) float n,__attribute__((unused)) float flx_x,__attribute__((unused)) float flx_y,__attribute__((unused)) float hn,__attribute__((unused)) float hflx_x,__attribute__((unused)) float hflx_y,__attribute__((unused)) float mass,__attribute__((unused)) float s) {
+	return 0.0f;
+}
+
+float DiracGraphene2D::HYMomentumSource(__attribute__((unused)) float n,__attribute__((unused)) float flx_x,__attribute__((unused)) float flx_y,__attribute__((unused)) float hn,__attribute__((unused)) float hflx_x,__attribute__((unused)) float hflx_y,__attribute__((unused)) float mass,__attribute__((unused)) float s) {
+	return 0.0f;
 }
 
 
@@ -376,41 +388,46 @@ void DiracGraphene2D::Richtmyer(){
 #pragma omp parallel for default(none) shared(Nx,Ny,dt,dx,dy,Den,FlxX,FlxY,ptr_den,ptr_px,ptr_py,HDen,HFlxX,HFlxY,hptr_den,hptr_px,hptr_py,ptr_snd)
 		for(int ks=0; ks<=Nx*Ny-Nx-Ny; ks++){ //correr todos os pontos da grelha secundaria de den_mid
 			GridPoint2D midpoint(ks, Nx, Ny, true);
+
+			//________ Electrons
 			float den_avg   = 0.25f * (Den[midpoint.SW] + Den[midpoint.SE] + Den[midpoint.NW] + Den[midpoint.NE]);
 			float flx_x_avg = 0.25f * (FlxX[midpoint.SW] + FlxX[midpoint.SE] + FlxX[midpoint.NW] + FlxX[midpoint.NE]);
 			float flx_y_avg = 0.25f * (FlxY[midpoint.SW] + FlxY[midpoint.SE] + FlxY[midpoint.NW] + FlxY[midpoint.NE]);
 			
-            den_mid[ks] = den_avg
-			              -0.5f*(dt/dx)*(DensityFluxX(midpoint, 'E') - DensityFluxX(midpoint, 'W'))
-			              -0.5f*(dt/dy)*(DensityFluxY(midpoint, 'N') - DensityFluxY(midpoint, 'S'));
-						  //+0.5f*dt* DensitySource(den_avg, flx_x_avg, flx_y_avg, 0.0f, 0.0f);
-			flxX_mid[ks] = flx_x_avg
-					-0.5f*(dt/dx)*(XMomentumFluxX(midpoint, 'E') - XMomentumFluxX(midpoint, 'W'))
-					-0.5f*(dt/dy)*(XMomentumFluxY(midpoint, 'N') - XMomentumFluxY(midpoint, 'S'));
-					//+0.5f*dt*XMomentumSource(den_avg, flx_x_avg, flx_y_avg, 0.0f, 0.0f);
-			flxY_mid[ks] = flx_y_avg
-					-0.5f*(dt/dx)*(YMomentumFluxX(midpoint, 'E') - YMomentumFluxX(midpoint, 'W'))
-					-0.5f*(dt/dy)*(YMomentumFluxY(midpoint, 'N') - YMomentumFluxY(midpoint, 'S'));
-					//+0.5f*dt*YMomentumSource(den_avg, flx_x_avg, flx_y_avg, 0.0f, 0.0f);
-
-			//____________________ HOLES _________________________
-			
+			//________ Holes
 			float hden_avg   = 0.25f * (HDen[midpoint.SW] + HDen[midpoint.SE] + HDen[midpoint.NW] + HDen[midpoint.NE]);
 			float hflx_x_avg = 0.25f * (HFlxX[midpoint.SW] + HFlxX[midpoint.SE] + HFlxX[midpoint.NW] + HFlxX[midpoint.NE]);
 			float hflx_y_avg = 0.25f * (HFlxY[midpoint.SW] + HFlxY[midpoint.SE] + HFlxY[midpoint.NW] + HFlxY[midpoint.NE]);
+
+			//____________________ Electrons _________________________
+
+            den_mid[ks] = den_avg
+			              -0.5f*(dt/dx)*(DensityFluxX(midpoint, 'E') - DensityFluxX(midpoint, 'W'))
+			              -0.5f*(dt/dy)*(DensityFluxY(midpoint, 'N') - DensityFluxY(midpoint, 'S'));
+						  +0.5f*dt* DensitySource(den_avg, flx_x_avg, flx_y_avg, hden_avg, hflx_x_avg, hflx_y_avg, 0.0f, 0.0f);
+			flxX_mid[ks] = flx_x_avg
+					-0.5f*(dt/dx)*(XMomentumFluxX(midpoint, 'E') - XMomentumFluxX(midpoint, 'W'))
+					-0.5f*(dt/dy)*(XMomentumFluxY(midpoint, 'N') - XMomentumFluxY(midpoint, 'S'));
+					+0.5f*dt*XMomentumSource(den_avg, flx_x_avg, flx_y_avg, hden_avg, hflx_x_avg, hflx_y_avg, 0.0f, 0.0f);
+			flxY_mid[ks] = flx_y_avg
+					-0.5f*(dt/dx)*(YMomentumFluxX(midpoint, 'E') - YMomentumFluxX(midpoint, 'W'))
+					-0.5f*(dt/dy)*(YMomentumFluxY(midpoint, 'N') - YMomentumFluxY(midpoint, 'S'));
+					+0.5f*dt*YMomentumSource(den_avg, flx_x_avg, flx_y_avg, hden_avg, hflx_x_avg, hflx_y_avg, 0.0f, 0.0f);
+
+			//____________________ HOLES _________________________
 			
             hden_mid[ks] = hden_avg
 			              -0.5f*(dt/dx)*(HDensityFluxX(midpoint, 'E') - HDensityFluxX(midpoint, 'W'))
 			              -0.5f*(dt/dy)*(HDensityFluxY(midpoint, 'N') - HDensityFluxY(midpoint, 'S'));
-						  //+0.5f*dt* DensitySource(den_avg, flx_x_avg, flx_y_avg, 0.0f, 0.0f);
+						  +0.5f*dt* DensitySource(den_avg, flx_x_avg, flx_y_avg, hden_avg, hflx_x_avg, hflx_y_avg, 0.0f, 0.0f);
 			hflxX_mid[ks] = hflx_x_avg
 					-0.5f*(dt/dx)*(HXMomentumFluxX(midpoint, 'E') - HXMomentumFluxX(midpoint, 'W'))
 					-0.5f*(dt/dy)*(HXMomentumFluxY(midpoint, 'N') - HXMomentumFluxY(midpoint, 'S'));
-					//+0.5f*dt*XMomentumSource(den_avg, flx_x_avg, flx_y_avg, 0.0f, 0.0f);
+					+0.5f*dt*XMomentumSource(den_avg, flx_x_avg, flx_y_avg, hden_avg, hflx_x_avg, hflx_y_avg, 0.0f, 0.0f);
 			hflxY_mid[ks] = hflx_y_avg
 					-0.5f*(dt/dx)*(HYMomentumFluxX(midpoint, 'E') - HYMomentumFluxX(midpoint, 'W'))
 					-0.5f*(dt/dy)*(HYMomentumFluxY(midpoint, 'N') - HYMomentumFluxY(midpoint, 'S'));
-					//+0.5f*dt*YMomentumSource(den_avg, flx_x_avg, flx_y_avg, 0.0f, 0.0f);
+					+0.5f*dt*YMomentumSource(den_avg, flx_x_avg, flx_y_avg, hden_avg, hflx_x_avg, hflx_y_avg, 0.0f, 0.0f);
 		}
 	
 	ChooseGridPointers("MainGrid");
@@ -419,35 +436,40 @@ void DiracGraphene2D::Richtmyer(){
 		for(int kp=1+Nx; kp<=Nx*Ny-Nx-2; kp++){ //correr a grelha principal evitando as fronteiras
 			GridPoint2D mainpoint(kp, Nx, Ny, false);
 			if( kp%Nx!=Nx-1 && kp%Nx!=0){
+				
+				//________ Electrons
 				float den_old = Den[kp];
 				float flx_x_old = FlxX[kp];
 				float flx_y_old = FlxY[kp];
 
-                Den[kp] = den_old - (dt/dx)*(DensityFluxX(mainpoint, 'E') - DensityFluxX(mainpoint, 'W'))
-						          - (dt/dy)*(DensityFluxY(mainpoint, 'N') - DensityFluxY(mainpoint, 'S'));
-						          //+ dt*DensitySource(den_old, flx_x_old, flx_y_old, 0.0f, 0.0f);
-				FlxX[kp] = flx_x_old - (dt/dx)*(XMomentumFluxX(mainpoint, 'E') - XMomentumFluxX(mainpoint, 'W'))
-						             - (dt/dy)*(XMomentumFluxY(mainpoint, 'N') - XMomentumFluxY(mainpoint, 'S'));
-						            // + dt*XMomentumSource(den_old, flx_x_old, flx_y_old, 0.0f, 0.0f);
-				FlxY[kp] = flx_y_old - (dt/dx)*(YMomentumFluxX(mainpoint, 'E') - YMomentumFluxX(mainpoint, 'W'))
-						             - (dt/dy)*(YMomentumFluxY(mainpoint, 'N') - YMomentumFluxY(mainpoint, 'S'));
-				                    // + dt*YMomentumSource(den_old, flx_x_old, flx_y_old, 0.0f, 0.0f);
-
-				//____________________ HOLES _________________________
-
+				//________ Holes
 				float hden_old = HDen[kp];
 				float hflx_x_old = HFlxX[kp];
 				float hflx_y_old = HFlxY[kp];
 
+				//____________________ Electrons _________________________
+
+                Den[kp] = den_old - (dt/dx)*(DensityFluxX(mainpoint, 'E') - DensityFluxX(mainpoint, 'W'))
+						          - (dt/dy)*(DensityFluxY(mainpoint, 'N') - DensityFluxY(mainpoint, 'S'));
+						          + dt*DensitySource(den_old, flx_x_old, flx_y_old, hden_old, hflx_x_old, hflx_y_old, 0.0f, 0.0f);
+				FlxX[kp] = flx_x_old - (dt/dx)*(XMomentumFluxX(mainpoint, 'E') - XMomentumFluxX(mainpoint, 'W'))
+						             - (dt/dy)*(XMomentumFluxY(mainpoint, 'N') - XMomentumFluxY(mainpoint, 'S'));
+						             + dt*XMomentumSource(den_old, flx_x_old, flx_y_old, hden_old, hflx_x_old, hflx_y_old, 0.0f, 0.0f);
+				FlxY[kp] = flx_y_old - (dt/dx)*(YMomentumFluxX(mainpoint, 'E') - YMomentumFluxX(mainpoint, 'W'))
+						             - (dt/dy)*(YMomentumFluxY(mainpoint, 'N') - YMomentumFluxY(mainpoint, 'S'));
+				                     + dt*YMomentumSource(den_old, flx_x_old, flx_y_old, hden_old, hflx_x_old, hflx_y_old, 0.0f, 0.0f);
+
+				//____________________ HOLES _________________________
+
                 HDen[kp] = hden_old - (dt/dx)*(HDensityFluxX(mainpoint, 'E') - HDensityFluxX(mainpoint, 'W'))
 						          - (dt/dy)*(HDensityFluxY(mainpoint, 'N') - HDensityFluxY(mainpoint, 'S'));
-						         // + dt*DensitySource(den_old, flx_x_old, flx_y_old, 0.0f, 0.0f);
+						          + dt*DensitySource(den_old, flx_x_old, flx_y_old, hden_old, hflx_x_old, hflx_y_old, 0.0f, 0.0f);
 				HFlxX[kp] = hflx_x_old - (dt/dx)*(HXMomentumFluxX(mainpoint, 'E') - HXMomentumFluxX(mainpoint, 'W'))
 						             - (dt/dy)*(HXMomentumFluxY(mainpoint, 'N') - HXMomentumFluxY(mainpoint, 'S'));
-						            // + dt*XMomentumSource(den_old, flx_x_old, flx_y_old, 0.0f, 0.0f);
+						             + dt*XMomentumSource(den_old, flx_x_old, flx_y_old, hden_old, hflx_x_old, hflx_y_old, 0.0f, 0.0f);
 				HFlxY[kp] = hflx_y_old - (dt/dx)*(HYMomentumFluxX(mainpoint, 'E') - HYMomentumFluxX(mainpoint, 'W'))
-						             - (dt/dy)*(HYMomentumFluxY(mainpoint, 'N') - HYMomentumFluxY(mainpoint, 'S'));
-				                    // + dt*YMomentumSource(den_old, flx_x_old, flx_y_old, 0.0f, 0.0f);
+						        	 - (dt/dy)*(HYMomentumFluxY(mainpoint, 'N') - HYMomentumFluxY(mainpoint, 'S'));
+				                     + dt*YMomentumSource(den_old, flx_x_old, flx_y_old, hden_old, hflx_x_old, hflx_y_old, 0.0f, 0.0f);
 
 
 			}
