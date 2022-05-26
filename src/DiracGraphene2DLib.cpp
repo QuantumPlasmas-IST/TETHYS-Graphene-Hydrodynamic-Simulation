@@ -44,13 +44,13 @@ DiracGraphene2D::DiracGraphene2D(SetUpParameters &input_parameters) : Fluid2D(in
 }
 
 void DiracGraphene2D::SetSimulationTime(){
-	float s;
-	s=this->GetVelSnd();
-	this->SetTmax(5.0f+0.02f*s+20.0f/s);
+	/*float s;
+	s=this->GetVelSnd();*/
+	this->SetTmax(5.0f+0.02f*vel_therm+20.0f/vel_therm);
 }
 
 void DiracGraphene2D::CflCondition(){ // Eventual redefinition
-	dx = lengX / ( float ) ( Nx - 1 );
+	/*dx = lengX / ( float ) ( Nx - 1 );
 	dy = lengY / ( float ) ( Ny - 1 );
 	float lambda;
 	if(vel_snd<0.36f*vel_fer){
@@ -58,7 +58,19 @@ void DiracGraphene2D::CflCondition(){ // Eventual redefinition
 	}else{
 		lambda=1.97f*vel_snd + 0.5f*vel_fer;
 	}
-	dt = dx/lambda;
+	dt = dx/lambda; */
+
+	dx = lengX / ( float ) ( Nx - 1 );
+	dy = lengY / ( float ) ( Ny - 1 );
+	float lambda;
+	if(vel_therm<vel_snd){
+		lambda=0.75f-sqrt(49.0f+32.0f*vel_snd)/4.0f;
+	}else{
+		lambda=0.75f-sqrt(49.0f+32.0f*vel_therm)/4.0f;
+	}
+	dt = dx/abs(lambda);
+
+
 	/*  CFL condition for FTCS method
 	if(kin_vis>0.0f&& kin_vis*dt > dx*dx*0.25f){
 		dt = 0.8f*0.25f*dx*dx/kin_vis;
@@ -215,7 +227,6 @@ float DiracGraphene2D::HXMomentumFluxX(GridPoint2D p, char side) {
 
 	mass=DensityToMass(hden);
 
-//!!!!!!!!!!!!!!!!!!!!    VOLTAR A VERIFICAR O SINAL DO TERMO S^2
 	return px * px / mass - sound * sound * (den - hden) + vel_therm * vel_therm * (den + hden);
 	//return px * px / mass + vel_fer * vel_fer * mass / 3.0f - 0.5f * sound * sound * hden * hden ;
 	//return px * px / mass + vel_fer * vel_fer * mass / 3.0f + 0.5f * sound * sound * hden * hden ;
@@ -253,7 +264,6 @@ float DiracGraphene2D::HYMomentumFluxY(GridPoint2D p, char side) {
 	py = SideAverage(hptr_py, p, side);
 	mass=DensityToMass(hden);
 
-//!!!!!!!!!!!!!!!!!!!!    VOLTAR A VERIFICAR O SINAL DO TERMO S^2
 	return py * py / mass - sound * sound * (den - hden) + vel_therm * vel_therm * (den + hden);
 	//return py * py / mass + vel_fer * vel_fer * mass / 3.0f - 0.5f * sound * sound * hden * hden;
 	//return py * py / mass + vel_fer * vel_fer * mass / 3.0f + 0.5f * sound * sound * hden * hden;
