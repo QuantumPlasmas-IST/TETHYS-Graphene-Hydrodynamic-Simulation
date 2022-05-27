@@ -60,8 +60,8 @@ int main(int argc, char **argv){
 
 	/*...............Initialization...................................*/
 
-	std::function<float(float)> fden = [=](float x){ return 1.0f + 0.1f/(cosh(10.0f*(x-0.5f))); };
-	std::function<float(float)> fvx  = [=](float x){ return 0.5f/cosh(10.0f*(x-0.5f)); };
+	std::function<float(float)> fden = [=](float x){ return 1.0f + 0.01f*cos(2*MAT_PI*x); };
+	std::function<float(float)> fvx  = [=](float x){ return 15.0f*(fden(x) - 1); };
 
 	graph.InitialCondGeneral(fden, fvx);
 	//graph.InitialCondRand();
@@ -74,7 +74,7 @@ int main(int argc, char **argv){
 
 
 	//Main cycle
-	graph.SetTmax(1.0f);
+	graph.SetTmax(10.0f);
 	while(t <= graph.GetTmax()) {
 		t += dt;
 		GrapheneFluid1D::TimeStepCounter++;
@@ -84,7 +84,7 @@ int main(int argc, char **argv){
 
 		// Impose boundary conditions
 		//DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
-		BoundaryCondition::XPeriodic(graph);
+		//BoundaryCondition::XPeriodic(graph);
 
 		//graph.BohmOperator(0.015);
 		//BoundaryCondition::XPeriodic(graph);
