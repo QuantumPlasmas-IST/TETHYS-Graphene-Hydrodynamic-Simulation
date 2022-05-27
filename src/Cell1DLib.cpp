@@ -181,12 +181,12 @@ StateVec CellHandler1D::WENO3(int Nx, char side, char edge) { // I think it work
 	StateVec Ubeta0{};
 	StateVec Ubeta1{};
 
+	StateVec Ualpha0{};
+	StateVec Ualpha1{};
+
 	// weights
 	StateVec Uomega0{};
 	StateVec Uomega1{};
-
-	StateVec Ualpha0{};
-	StateVec Ualpha1{};
 
 	// small positive number
 	float eps = 1.0E-6;
@@ -201,14 +201,14 @@ StateVec CellHandler1D::WENO3(int Nx, char side, char edge) { // I think it work
 	switch(side) {
 		case 'W' : // i - 1/2
 			Uaux0 = (index!=Nx-1) ? 0.5f * (3.0f*U_ptr[index] - U_ptr[index+1]) : 0.5f * (3.0f*U_ptr[Nx-1] - U_ptr[0]);
-			Uaux1 = 0.5f * (U_ptr[index] + U_ptr[index-1]);
+			Uaux1 = (index!=0)    ? 0.5f * (U_ptr[index] + U_ptr[index-1])      : 0.5f * (U_ptr[0] + U_ptr[Nx-1]);
 
-			Ualpha0.n() = d0 / ((eps + Ubeta0.n()) * (eps + Ubeta0.n()));
-			Ualpha0.v() = d0 / ((eps + Ubeta0.v()) * (eps + Ubeta0.v()));
-			Ualpha1.n() = d1 / ((eps + Ubeta1.n()) * (eps + Ubeta1.n()));
-			Ualpha1.v() = d1 / ((eps + Ubeta1.v()) * (eps + Ubeta1.v()));
-
+			Ualpha0.n()     = d0 / ((eps + Ubeta0.n()) * (eps + Ubeta0.n()));
+			Ualpha0.v()     = d0 / ((eps + Ubeta0.v()) * (eps + Ubeta0.v()));
 			Ualpha0.lap_n() = d0 / ((eps + Ubeta0.lap_n()) * (eps + Ubeta0.lap_n()));
+
+			Ualpha1.n()     = d1 / ((eps + Ubeta1.n()) * (eps + Ubeta1.n()));
+			Ualpha1.v()     = d1 / ((eps + Ubeta1.v()) * (eps + Ubeta1.v()));
 			Ualpha1.lap_n() = d1 / ((eps + Ubeta1.lap_n()) * (eps + Ubeta1.lap_n()));
 
 			Uomega0 = Ualpha0 / (Ualpha0 + Ualpha1);
@@ -217,7 +217,8 @@ StateVec CellHandler1D::WENO3(int Nx, char side, char edge) { // I think it work
 			switch(edge) {
 				case 'L' : { // i - 1
 					// not the best solution performance-wise but it'll do for now
-					CellHandler1D cellAux(index-1, fluid_ptr, U_ptr);
+					int pos = (index!=0) ? index-1 : Nx-1;
+					CellHandler1D cellAux(pos, fluid_ptr, U_ptr);
 					Uweno = cellAux.WENO3(Nx,'E','L');
 				}
 				break;
@@ -231,15 +232,15 @@ StateVec CellHandler1D::WENO3(int Nx, char side, char edge) { // I think it work
 		break;
 
 		case 'E' : // i + 1/2
-			Uaux0 = 0.5f * (U_ptr[index+1] + U_ptr[index]);
-			Uaux1 = (index!=0) ? 0.5f * (3.0f*U_ptr[index] - U_ptr[index-1]) : 0.5f * (3.0f*U_ptr[0] - U_ptr[Nx-1]);
+			Uaux0 = (index!=Nx-1) ? 0.5f * (U_ptr[index+1] + U_ptr[index])      : 0.5f * (U_ptr[0] + U_ptr[Nx-1]);
+			Uaux1 = (index!=0)    ? 0.5f * (3.0f*U_ptr[index] - U_ptr[index-1]) : 0.5f * (3.0f*U_ptr[0] - U_ptr[Nx-1]);
 
-			Ualpha0.n() = d1 / ((eps + Ubeta0.n()) * (eps + Ubeta0.n()));
-			Ualpha0.v() = d1 / ((eps + Ubeta0.v()) * (eps + Ubeta0.v()));
-			Ualpha1.n() = d0 / ((eps + Ubeta1.n()) * (eps + Ubeta1.n()));
-			Ualpha1.v() = d0 / ((eps + Ubeta1.v()) * (eps + Ubeta1.v()));
-
+			Ualpha0.n()     = d1 / ((eps + Ubeta0.n()) * (eps + Ubeta0.n()));
+			Ualpha0.v()     = d1 / ((eps + Ubeta0.v()) * (eps + Ubeta0.v()));
 			Ualpha0.lap_n() = d1 / ((eps + Ubeta0.lap_n()) * (eps + Ubeta0.lap_n()));
+
+			Ualpha1.n()     = d0 / ((eps + Ubeta1.n()) * (eps + Ubeta1.n()));
+			Ualpha1.v()     = d0 / ((eps + Ubeta1.v()) * (eps + Ubeta1.v()));
 			Ualpha1.lap_n() = d0 / ((eps + Ubeta1.lap_n()) * (eps + Ubeta1.lap_n()));
 
 			Uomega0 = Ualpha0 / (Ualpha0 + Ualpha1);
@@ -252,7 +253,8 @@ StateVec CellHandler1D::WENO3(int Nx, char side, char edge) { // I think it work
 
 				case 'R' : { // i + 1
 					// not the best solution performance-wise but it'll do for now
-					CellHandler1D cellAux(index+1, fluid_ptr, U_ptr);
+					int pos = (index!=Nx-1) ? index+1 : 0;
+					CellHandler1D cellAux(pos, fluid_ptr, U_ptr);
 					Uweno = cellAux.WENO3(Nx,'W','R');
 				}
 				break;

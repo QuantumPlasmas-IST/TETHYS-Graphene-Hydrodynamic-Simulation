@@ -47,7 +47,8 @@ float GrapheneFluid1D::DensitySource(StateVec U){
 }
 
 float GrapheneFluid1D::VelocitySource(StateVec U) {
-	return -1.0f * col_freq * U.v();
+
+	return -1.0f * col_freq * U.v(); // - 0.01f / pow(U.n()+1.0E-6,1.5f) * U.lap_n();
 }
 
 

@@ -250,6 +250,9 @@ void Fluid1D::RungeKuttaTVD() {
 	float VelNumSourceW;
 	float VelNumSourceE;
 
+	float Ln;
+	float Lv;
+
 	StateVec UEleft{};
 	StateVec UEright{};
 	StateVec UWleft{};
@@ -259,7 +262,7 @@ void Fluid1D::RungeKuttaTVD() {
 	StateVec U_2[Nx];
 
 	CalcDensityLaplacian(Umain);
-	for (int i = 1; i < Nx-1; ++i) {
+	for (int i = 0; i < Nx; ++i) {
 
 		// reconstruction process
 		CellHandler1D cell(i, this, Umain);
@@ -283,19 +286,19 @@ void Fluid1D::RungeKuttaTVD() {
 		VelNumSourceE = NumericalSource::Average(this,UEleft,UEright).v();
 		VelNumSourceW = NumericalSource::Average(this,UWleft,UWright).v();
 
-		float Ln = -(DenNumFluxE-DenNumFluxW)/dx + 0.5f*(DenNumSourceE+DenNumSourceW);
-		float Lv = -(VelNumFluxE-VelNumFluxW)/dx - (VelNumFluxBohmE-VelNumFluxBohmW)/dx + 0.5f*(VelNumSourceE+VelNumSourceW);
+		Ln = -(DenNumFluxE-DenNumFluxW)/dx + 0.5f*(DenNumSourceE+DenNumSourceW);
+		Lv = -(VelNumFluxE-VelNumFluxW)/dx - (VelNumFluxBohmE-VelNumFluxBohmW)/dx + 0.5f*(VelNumSourceE+VelNumSourceW);
 
 		// RK
 		U_1[i].n() = Umain[i].n() + dt*Ln;
 		U_1[i].v() = Umain[i].v() + dt*Lv;
 	}
 	// fixes boundary cells for the first iteration (this solution only works with periodic boundary condition)
-	U_1[0] = U_1[Nx-2];
-	U_1[Nx-1] = U_1[1];
+	//U_1[0] = U_1[Nx-2];
+	//U_1[Nx-1] = U_1[1];
 
 	CalcDensityLaplacian(U_1);
-	for (int i = 1; i < Nx-1; ++i) {
+	for (int i = 0; i < Nx; ++i) {
 
 		// reconstruction process
 		CellHandler1D cell(i, this, U_1);
@@ -310,28 +313,28 @@ void Fluid1D::RungeKuttaTVD() {
 		VelNumFluxE = NumericalFlux::Central(this,UEleft,UEright).v();
 		VelNumFluxW = NumericalFlux::Central(this,UWleft,UWright).v();
 
+		VelNumFluxBohmE = BP * 0.5f * (UEleft.lap_n()+UEright.lap_n());
+		VelNumFluxBohmW = BP * 0.5f * (UWleft.lap_n()+UWright.lap_n());
+
 		// calculates source terms
 		DenNumSourceE = NumericalSource::Average(this,UEleft,UEright).n();
 		DenNumSourceW = NumericalSource::Average(this,UWleft,UWright).n();
 		VelNumSourceE = NumericalSource::Average(this,UEleft,UEright).v();
 		VelNumSourceW = NumericalSource::Average(this,UWleft,UWright).v();
 
-		VelNumFluxBohmE = BP * 0.5f * (UEleft.lap_n()+UEright.lap_n());
-		VelNumFluxBohmW = BP * 0.5f * (UWleft.lap_n()+UWright.lap_n());
-
-		float Ln = -(DenNumFluxE-DenNumFluxW)/dx + 0.5f*(DenNumSourceE+DenNumSourceW);
-		float Lv = -(VelNumFluxE-VelNumFluxW)/dx - (VelNumFluxBohmE-VelNumFluxBohmW)/dx + 0.5f*(VelNumSourceE+VelNumSourceW);
+		Ln = -(DenNumFluxE-DenNumFluxW)/dx + 0.5f*(DenNumSourceE+DenNumSourceW);
+		Lv = -(VelNumFluxE-VelNumFluxW)/dx - (VelNumFluxBohmE-VelNumFluxBohmW)/dx + 0.5f*(VelNumSourceE+VelNumSourceW);
 
 		// RK
 		U_2[i].n() = 0.75f*Umain[i].n() + 0.25f*U_1[i].n() + 0.25f*dt*Ln;
 		U_2[i].v() = 0.75f*Umain[i].v() + 0.25f*U_1[i].v() + 0.25f*dt*Lv;
 	}
 	// fixes boundary cells for the first iteration (this solution only works with periodic boundary condition)
-	U_2[0] = U_2[Nx-2];
-	U_2[Nx-1] = U_2[1];
+	//U_2[0] = U_2[Nx-2];
+	//U_2[Nx-1] = U_2[1];
 
 	CalcDensityLaplacian(U_2);
-	for (int i = 1; i < Nx-1; ++i) {
+	for (int i = 0; i < Nx; ++i) {
 
 		// reconstruction process
 		CellHandler1D cell(i, this, U_2);
@@ -346,17 +349,17 @@ void Fluid1D::RungeKuttaTVD() {
 		VelNumFluxE = NumericalFlux::Central(this,UEleft,UEright).v();
 		VelNumFluxW = NumericalFlux::Central(this,UWleft,UWright).v();
 
+		VelNumFluxBohmE = BP * 0.5f * (UEleft.lap_n()+UEright.lap_n());
+		VelNumFluxBohmW = BP * 0.5f * (UWleft.lap_n()+UWright.lap_n());
+
 		// calculates source terms
 		DenNumSourceE = NumericalSource::Average(this,UEleft,UEright).n();
 		DenNumSourceW = NumericalSource::Average(this,UWleft,UWright).n();
 		VelNumSourceE = NumericalSource::Average(this,UEleft,UEright).v();
 		VelNumSourceW = NumericalSource::Average(this,UWleft,UWright).v();
 
-		VelNumFluxBohmE = BP * 0.5f * (UEleft.lap_n()+UEright.lap_n());
-		VelNumFluxBohmW = BP * 0.5f * (UWleft.lap_n()+UWright.lap_n());
-
-		float Ln = -(DenNumFluxE-DenNumFluxW)/dx + 0.5f*(DenNumSourceE+DenNumSourceW);
-		float Lv = -(VelNumFluxE-VelNumFluxW)/dx - (VelNumFluxBohmE-VelNumFluxBohmW)/dx + 0.5f*(VelNumSourceE+VelNumSourceW);
+		Ln = -(DenNumFluxE-DenNumFluxW)/dx + 0.5f*(DenNumSourceE+DenNumSourceW);
+		Lv = -(VelNumFluxE-VelNumFluxW)/dx - (VelNumFluxBohmE-VelNumFluxBohmW)/dx + 0.5f*(VelNumSourceE+VelNumSourceW);
 
 		// RK
 		Umain[i].n() = (1.0f/3.0f)*Umain[i].n() + (2.0f/3.0f)*U_2[i].n() + (2.0f/3.0f)*dt*Ln;
@@ -439,12 +442,38 @@ void Fluid1D::SaveSound() {
 
 void Fluid1D::CalcDensityLaplacian(StateVec* u_vec) {
 
+/*
 	// calculates the laplacian at the extreme cells
 	u_vec[0].lap_n()    = (2.0f*u_vec[0].n() - 5.0f*u_vec[1].n() + 4.0f*u_vec[2].n() - u_vec[2].n()) / (dx*dx);
 	u_vec[Nx-1].lap_n() = (2.0f*u_vec[Nx-1].n() - 5.0f*u_vec[Nx-2].n() + 4.0f*u_vec[Nx-3].n() - u_vec[Nx-4].n()) / (dx*dx);
+*/
+
+	// calculates the laplacian at the extreme cells (periodic boundary condition)
+	u_vec[0].lap_n()    = (u_vec[Nx-1].n() - 2.0f*u_vec[0].n() + u_vec[1].n()) / (dx*dx);
+	u_vec[Nx-1].lap_n() = (u_vec[Nx-2].n() - 2.0f*u_vec[Nx-1].n() + u_vec[0].n()) / (dx*dx);
 
 	// calculates the laplacian for all the other cells
 	for(int i = 1; i < Nx-1; ++i) {
 		u_vec[i].lap_n() = (u_vec[i-1].n() - 2.0f*u_vec[i].n() + u_vec[i+1].n()) / (dx*dx);
 	}
+
+/*
+	// density square root
+	float sqrt_n[Nx];
+
+	for (int i = 0; i < Nx; ++i) {
+		sqrt_n[i] = sqrt(u_vec[i].n());
+	}
+	
+	// calculates the third derivative at the extreme cells (periodic boundary condition)
+	u_vec[0].lap_n()    = (0.5f*sqrt_n[2] - sqrt_n[1] + sqrt_n[Nx-1] - 0.5f*sqrt_n[Nx-2]) / (dx*dx*dx);
+	u_vec[1].lap_n()    = (0.5f*sqrt_n[3] - sqrt_n[2] + sqrt_n[0] - 0.5f*sqrt_n[Nx-1]) / (dx*dx*dx);
+	u_vec[Nx-2].lap_n() = (0.5f*sqrt_n[0] - sqrt_n[Nx-1] + sqrt_n[Nx-3] - 0.5f*sqrt_n[Nx-4]) / (dx*dx*dx);
+	u_vec[Nx-1].lap_n() = (0.5f*sqrt_n[1] - sqrt_n[0] + sqrt_n[Nx-2] - 0.5f*sqrt_n[Nx-3]) / (dx*dx*dx);
+
+	// calculates the third derivative for all the other cells
+	for(int i = 2; i < Nx-2; ++i) {
+		u_vec[i].lap_n() = (0.5f*sqrt_n[i+2] - sqrt_n[i+1] + sqrt_n[i-1] - 0.5f*sqrt_n[i-2]) / (dx*dx*dx);
+	}
+*/
 }
