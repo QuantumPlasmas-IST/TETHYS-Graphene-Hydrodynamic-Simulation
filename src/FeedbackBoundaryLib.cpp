@@ -45,8 +45,12 @@ void FeedbackBoundaryCondition::VoltageDelayFeedbackBc(GrapheneFluid1D& fluid_cl
     Dens[count%Nsteps] = fluid_class.Den[nx-1];
     Curr[count%Nsteps] = fluid_class.Vel[nx-1]*fluid_class.Den[nx-1];
     count=(count+1)%Nsteps;
-    float Vf = Trans[0]*Dens[count]+Trans[1]*Curr[count];
-    float If = Trans[2]*Dens[count]+Trans[3]*Curr[count];
+    
+    //float Vf = Trans[0]*(Dens[count])+Trans[1]*(Curr[count]);
+    //float If = Trans[2]*(Dens[count])+Trans[3]*(Curr[count]);
+    float Vf = Trans[0]*(Dens[count]-1)+Trans[1]*(Curr[count]-1);
+    float If = Trans[2]*(Dens[count]-1)+Trans[3]*(Curr[count]-1);
+    
     fluid_class.Den[0]+=Vf+intens*cos(omega*t);
     fluid_class.Vel[0]+=If/fluid_class.Den[0];
 }

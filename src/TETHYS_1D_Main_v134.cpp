@@ -63,12 +63,12 @@ int main(int argc, char **argv){
 	cout << "\033[1;7;5;33m Program Running \033[0m"<<endl;
 
     float* Hfeed = new float[4];
-    Hfeed[0]=0.28;
+    Hfeed[0]=0.2;
     Hfeed[1]=0.0;
     Hfeed[2]=0.0;
     Hfeed[3]=0.0;
 
-    FeedbackBoundaryCondition feed(0.4,dt);
+    FeedbackBoundaryCondition feed(0.26,dt);
 
 	//graph.SetTmax(10.0);
 	
@@ -81,12 +81,11 @@ int main(int argc, char **argv){
 		graph.Richtmyer();
 
 		// Impose boundary conditions
-        DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
-		//DirichletBoundaryCondition::DensityLeft(graph,1);
-        //DirichletBoundaryCondition::VelocityXLeft(graph,1);
-        //BoundaryCondition::XFreeRight(graph);
-        //FeedbackBoundaryCondition::VoltageFeedbackBc(graph,Hfeed,0,170,t);
-        feed.VoltageDelayFeedbackBc(graph,Hfeed,0.1,170,t);
+        //DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
+		DirichletBoundaryCondition::DensityLeft(graph,1);
+        DirichletBoundaryCondition::VelocityXLeft(graph,1);
+        BoundaryCondition::XFreeRight(graph);
+        feed.VoltageDelayFeedbackBc(graph,Hfeed,0.1,5*2*M_PI,t);
 
 		//Record full data
 		if (parameters.SaveMode  && graph.Snapshot()) {
