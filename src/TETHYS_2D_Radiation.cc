@@ -30,14 +30,14 @@ double c_light = 2.99792458e8;
 double mu_zero = 4*M_PI*1e-7;
 double epsilon_zero = 8.62607015e-34;
 
-double epsilon_r = 3;
-double mu_r = 1.5;
+double epsilon_r = 5;
+double mu_r = 1;
 
 double vF = 10.5;
 
 double n_index = sqrt(epsilon_r*mu_r);
-double D_Conductor = 3;
-double Radius_Conductor = 3;
+double D_Conductor = 5;
+double Radius_Conductor = 20;
 double D_dieletric = 0.1;
 double distance_measure = 3000;
 double d_xy, global_z;
@@ -305,6 +305,8 @@ int main(int argc, char **argv){
 
         Vec E_field = (1/(4*M_PI*r))*E_Dip + 0*(1/(24*M_PI*300*vF*r))*E_Quad;
 
+        if(z<0) return E_field;
+
         double theta_r = asin(sin(theta_i)/n_index);
 
         double r_T, r_ll;
@@ -360,7 +362,7 @@ int main(int argc, char **argv){
         }
 
         double array_T[] = {E_field[0]*sin(theta), E_field[1]*cos(theta), 0};
-        Vec E_field_T(3,array_T); 
+        Vec E_field_T(3,array_T);
 
         return -(E_field_T*t_T + (E_field-E_field_T)*t_ll);
     };
@@ -382,6 +384,8 @@ int main(int argc, char **argv){
         Vec Q_ddd(3,array_Q);
 
         Vec H_field = (-1/(4*M_PI*r2))*r_vec.ex(p_dd) + 0*(-1/(24*M_PI*300*vF*r2))*r_vec.ex(Q_ddd);
+
+        if(z<0) return H_field;
 
         double theta_r = asin(sin(theta_i)/n_index);
 
@@ -435,7 +439,7 @@ int main(int argc, char **argv){
         }
 
         double array_T[] = {H_field[0]*sin(theta), H_field[1]*cos(theta), 0};
-        Vec H_field_T(3,array_T); 
+        Vec H_field_T(3,array_T);
 
         return -(H_field_T*t_T + (H_field-H_field_T)*t_ll);
     };
@@ -443,32 +447,54 @@ int main(int argc, char **argv){
     auto Emitter = [&](double t, double O_x, double O_y, double x, double y, double z){
         d_xy = sqrt((x-O_x)*(x-O_x)+(y-O_y)*(y-O_y));
         global_z = z;
+
+        double theta_r, d_star, theta;
+        double theta_i_original = atan(sqrt(d_xy/z));
+
         if(n_index < 1+1e-5) n_index = 1+1e-5;
 
-        double theta_r;
-        double d_star;
-        if(fabs(z) < 1e-3){
+        if (z<0) return make_pair(E_field(t,x-O_x,y-O_y,z,theta,theta_i_original),H_field(t,x-O_x,y-O_y,z,theta,theta_i_original));
+
+        if(fabs(z) < -1e-3){
             theta_r = M_PI/2;
             d_star = D_Conductor*sin(asin(1/n_index));
-        }
-        else{
+        }else{
             theta_r = NewtonsMethod(&Theta_refraction_equation);
             d_star = d_xy - (z + D_dieletric)*tan(theta_r) - (D_Conductor - D_dieletric)*tan(asin(sin(theta_r)/n_index));
         }
 
-        double theta;
         if(fabs(x) < 1e-3)
             theta = M_PI/2;
         else 
             theta = fabs(atan((y - O_y)/(x - O_x)));
 
-        double theta_i_original = atan(sqrt(d_xy/z));
-
-        if(InConductor(O_x + d_star*(x-O_x)/d_xy, O_y + d_star*(y-O_y)/d_xy) == 0 && d_xy > 1e-3){
+        if((InConductor(O_x + d_star*(x-O_x)/d_xy, O_y + d_star*(y-O_y)/d_xy) == 0 && d_xy > 1e-3) || z < 0){
             return make_pair(E_field(t,x-O_x,y-O_y,z,theta,theta_i_original),H_field(t,x-O_x,y-O_y,z,theta,theta_i_original));
         }else{
             return make_pair(E_field(t,x-O_x,y-O_y,z,theta,theta_i_original)+E_field_Image(t,x-O_x,y-O_y,z,theta,theta_r),H_field(t,x-O_x,y-O_y,z,theta,theta_i_original)+H_field_Image(t,x-O_x,y-O_y,z,theta,theta_r));
         }
+    };
+
+    auto EmittingGrid = [&](double t, vector<double> O_x, vector<double> O_y, double x, double y, double z){
+        int number_of_emitters = O_x.size();
+        if(number_of_emitters != O_y.size()){
+            cout << "Position for emitters is nor valid [insert 2 vectors where the first is x and the second y]" << endl;
+            Vec temp;
+            return make_pair(temp, temp);
+        }
+        pair<Vec,Vec> fields;
+        pair<Vec,Vec> fields_temp;
+        Vec Vec_temp = Vec(3,0.);
+
+        fields.first = Vec_temp;
+        fields.second = Vec_temp;
+        for(int i=0; i<number_of_emitters; i++){
+            fields_temp = Emitter(t,O_x[i],O_y[i],x,y,z);
+            fields.first += fields_temp.first;
+            fields.second += fields_temp.second;
+        }
+
+        return make_pair(fields.first,fields.second);
     };
 
     auto Poyting = [&](Vec E, Vec H){
@@ -476,43 +502,92 @@ int main(int argc, char **argv){
     }; 
     /////
 
-    // 3Dgraph
-        auto gr3d = new TGraph2D(500*500);
+    pair<Vec,Vec> fieldsEH;
 
-        double theta_3d;
-        double phi_3d;
-        double intensity;
-        for (int i=0; i<500; i++){
-            for(int j=0; j<500; j++){
-                theta_3d = 2*M_PI*i/500;
-                phi_3d = M_PI*j/500;
-                if(cos(phi_3d) < 0) continue;
-                auto fields = Emitter(9, 0, 0, distance_measure*cos(theta_3d)*sin(phi_3d),distance_measure*sin(theta_3d)*sin(phi_3d),distance_measure*cos(phi_3d));
-                intensity = distance_measure*distance_measure*Poyting(fields.first, fields.second).mod();
-                gr3d->SetPoint(i*500+j, intensity*cos(theta_3d)*sin(phi_3d), intensity*sin(theta_3d)*sin(phi_3d), intensity*cos(phi_3d));
+    int N, Ncount;
+
+    int M_phi, M_mu;
+    double a ,d_sphere, d_mu, d_phi, mu, phi, x, y, z;
+
+    int N_t_points;
+    double delta_t, integral, phase, S_integral;
+
+    vector<double> O_x1{0};
+    vector<double> O_y1{0};
+
+    vector<double> O_x2{0,1};
+    vector<double> O_y2{0,0};
+
+    vector<double> O_x5{0, 1, 0, -1, 0};
+    vector<double> O_y5{0, 0, 1, 0, -1};
+
+    vector<double> O_xN;
+    vector<double> O_yN;
+    for(int i=-8; i<=8; i++){
+        for(int j=-8; j<=8; j++){
+            O_xN.push_back((double)i);
+            O_yN.push_back((double)j);
+        }
+    }
+
+    /*/ 3Dgraph sphere
+        N = 50000;
+        auto gr3d_sphere = new TGraph2D(N);
+
+        a = 4*M_PI/N;
+        d_sphere = sqrt(a);
+        M_mu = round(M_PI/d_sphere);
+        d_mu = M_PI/M_mu;
+        d_phi = a/d_mu;
+        
+        N_t_points = 1;
+        delta_t = 0.356;
+
+        Ncount = 0;
+        for(int m=0; m<M_mu-1; m++){
+            mu = M_PI*(m + 0.5)/M_mu;
+            M_phi = round(2*M_PI*sin(mu)/d_phi);
+            if(cos(mu)<1e-5) continue;
+
+            for(int n=0; n<M_phi-1; n++){
+                phi = 2*M_PI*n/M_phi;
+                x = sin(mu)*cos(phi);
+                y = sin(mu)*sin(phi);
+                z = cos(mu);
+
+                integral = 0;
+                for(int j=0; j<N_t_points; j++){
+                    phase = 8.5+(double)j*delta_t/N_t_points;
+
+                    fieldsEH = EmittingGrid(phase, O_x5,O_y5,distance_measure*x,distance_measure*y,distance_measure*z);
+
+                    if(j == 0 || j == N_t_points-1) integral += 0.5*distance_measure*distance_measure*Poyting(fieldsEH.first, fieldsEH.second).mod();
+                    else integral += distance_measure*distance_measure*Poyting(fieldsEH.first, fieldsEH.second).mod();
+                }
+
+                gr3d_sphere->SetPoint(Ncount, x*integral/N_t_points, y*integral/N_t_points, z*integral/N_t_points);
+                if(Ncount%100 == 0) cout << Ncount << endl;
+                Ncount++;
             }
         }
+        cout << Ncount << endl;
 
         c1->Clear();
-        gr3d->Draw("PCOL Fi");
-        c1->SaveAs("Files_Images_PIC/S_3D.pdf");
-        delete gr3d;
+        gr3d_sphere->Draw("PCOL Fi");
+        c1->SaveAs("Files_Images_PIC/S_3D_sphere.pdf");
+        delete gr3d_sphere;
         //*/
 
     /*/S Integrated over time = f(D_Conductor)
-        double delta_t = 2;
-        int N_points = 200;
         auto grS_D_integrated = new TGraph(N_points);
 
-        double phase;
-        double integral;
         for (int i=0; i<1000; i++){
             D_Conductor = 400.*i/1000;
             Radius_Conductor = D_Conductor + 0.2;
 
             integral = 0;
             for(int j=0; j<200; j++){
-                phase = 9+(double)j*delta_t/N_points;
+                phase = 8.5+(double)j*delta_t/N_points;
                 auto fields = Emitter(phase,0,0,0,0,distance_measure);
                 if(j == 0 || j == N_points-1) integral += 0.5*distance_measure*distance_measure*Poyting(fields.first, fields.second).mod();
                 else integral += distance_measure*distance_measure*Poyting(fields.first, fields.second).mod();
@@ -525,6 +600,128 @@ int main(int argc, char **argv){
         c1->SaveAs("Files_Images_PIC/S_D_integrated.pdf");
         //*/
 
+    //1 emitter alone in space
+        ofstream single_emiter_file;
+        single_emiter_file.open ("Files_Images_PIC/single_emiter.txt");
+        single_emiter_file << "Last line as integral over surface(sphere radius 3000)\n";
+        single_emiter_file << "x    y    z    |S|\n";
+
+        n_index = 1;
+        Radius_Conductor = 0;
+
+        N = 50000;
+        auto gr3d_4pi = new TGraph2D(N);
+
+        a = 4*M_PI/N;
+        d_sphere = sqrt(a);
+        M_mu = round(M_PI/d_sphere);
+        d_mu = M_PI/M_mu;
+        d_phi = a/d_mu;
+
+        N_t_points = 100;
+        delta_t = 0.356;
+
+        Ncount = 0;
+        S_integral = 0;
+        for(int m=0; m<M_mu-1; m++){
+            mu = M_PI*(m + 0.5)/M_mu;
+            M_phi = round(2*M_PI*sin(mu)/d_phi);
+
+            for(int n=0; n<M_phi-1; n++){
+                phi = 2*M_PI*n/M_phi;
+                x = sin(mu)*cos(phi);
+                y = sin(mu)*sin(phi);
+                z = cos(mu);
+
+                integral = 0;
+                for(int j=0; j<N_t_points; j++){
+                    phase = 8.5+(double)j*delta_t/N_t_points;
+
+                    fieldsEH = Emitter(phase,0.,0.,distance_measure*x,distance_measure*y,distance_measure*z);
+
+                    if(j == 0 || j == N_t_points-1) integral += 0.5*distance_measure*distance_measure*Poyting(fieldsEH.first, fieldsEH.second).mod();
+                    else integral += distance_measure*distance_measure*Poyting(fieldsEH.first, fieldsEH.second).mod();
+                }
+
+                S_integral += integral/N_t_points;
+
+                single_emiter_file << x*distance_measure << "   " << y*distance_measure << "   " << z*distance_measure << "   " << integral/N_t_points << "\n";
+                gr3d_4pi->SetPoint(Ncount, x*integral/N_t_points, y*integral/N_t_points, z*integral/N_t_points);
+
+                if(Ncount%1000 == 0) cout << Ncount << endl;
+                Ncount++;
+            }
+        }
+        c1->Clear();
+        gr3d_4pi->Draw("PCOL Fi");
+        c1->SaveAs("Files_Images_PIC/S_3D_4pi.pdf");
+
+        cout << "1 Emitter radiates, in the total 4pi solid angle, and a time average of: " << S_integral*4*M_PI/Ncount << endl;
+        single_emiter_file << S_integral*4*M_PI/Ncount;
+
+        single_emiter_file.close();
+        delete gr3d_4pi;
+        //*/
+
+    //integration over the small angles (<pi/18) function of d
+        double small_angle = M_PI/18;
+        ofstream second_emiter_d_file;
+        second_emiter_d_file.open ("Files_Images_PIC/second_emiter_d_emiter.txt");
+        second_emiter_d_file << "2nd emitter distance    integral of |S| over small_angle\n";
+
+        n_index = 5;
+        D_Conductor = 20;
+        Radius_Conductor = 0;
+
+        N = 500000;
+
+        a = 4*M_PI/N;
+        d_sphere = sqrt(a);
+        M_mu = round(M_PI/d_sphere);
+        d_mu = M_PI/M_mu;
+        d_phi = a/d_mu;
+
+        N_t_points = 10;
+        delta_t = 0.356;
+
+        int N_distance_points = 30;
+        for(int k=0; k<N_distance_points; k++){
+            O_x2[1] = (double)k*30/N_distance_points;
+
+            Ncount = 0;
+            S_integral = 0;
+            for(int m=0; m<M_mu-1; m++){
+                mu = M_PI*(m + 0.5)/M_mu;
+                M_phi = round(2*M_PI*sin(mu)/d_phi);
+
+                if(mu > small_angle) continue;
+
+                for(int n=0; n<M_phi-1; n++){
+                    phi = 2*M_PI*n/M_phi;
+                    x = sin(mu)*cos(phi);
+                    y = sin(mu)*sin(phi);
+                    z = cos(mu);
+
+                    integral = 0;
+                    for(int j=0; j<N_t_points; j++){
+                        phase = 8.5+(double)j*delta_t/N_t_points;
+
+                        fieldsEH = EmittingGrid(phase,O_x2,O_y2,distance_measure*x,distance_measure*y,distance_measure*z);
+
+                        if(j == 0 || j == N_t_points-1) integral += 0.5*distance_measure*distance_measure*Poyting(fieldsEH.first, fieldsEH.second).mod();
+                        else integral += distance_measure*distance_measure*Poyting(fieldsEH.first, fieldsEH.second).mod();
+                    }
+                    S_integral += integral/N_t_points;
+
+                    Ncount++;
+                }
+            }
+            cout << O_x2[1] << " , " << 2*M_PI*(1-cos(small_angle))*S_integral/Ncount << endl;
+            second_emiter_d_file << O_x2[1] << " , " << 2*M_PI*(1-cos(small_angle))*S_integral/Ncount << endl;
+        }
+
+        second_emiter_d_file.close();
+        //*/
 
     cout << "[1A\033[2K\033[1;32mDONE!\033[0m\n";
     cout << "Time taken: " << (double)(clock() - tStart)/CLOCKS_PER_SEC << endl;
