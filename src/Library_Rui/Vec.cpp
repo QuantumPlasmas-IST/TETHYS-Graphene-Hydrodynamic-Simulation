@@ -130,7 +130,10 @@ Vec Vec::operator+(const Vec& other){
   for(int i=0; i<N; i++)
   	resultado[i] = entries[indices[i]] + other[i];
 
-  return Vec(N, resultado);
+  Vec Res(N, resultado);
+  delete resultado;
+
+  return Res;
 }
 
 //Adding 2 Vec's, using +=
@@ -157,7 +160,10 @@ Vec Vec::operator-(const Vec& other){
   for(int i=0; i<N; i++)
   	resultado[i] = entries[indices[i]] - other[i];
 
-  return Vec(N, resultado);
+  Vec Res(N, resultado);
+  delete resultado;
+
+  return Res;
 }
 
 Vec Vec::operator-(){
@@ -165,7 +171,10 @@ Vec Vec::operator-(){
   for(int i=0; i<N; i++)
     resultado[i] = -entries[indices[i]];
 
-  return Vec(N, resultado);
+  Vec Res(N, resultado);
+  delete resultado;
+
+  return Res;
 }
 
 //Subtracting two Vec's, using -=
@@ -207,7 +216,10 @@ Vec Vec::operator*(const Vec& other) const{
   for(int i=0; i<N; i++) 
     resultado[i] = entries[indices[i]] * other[i];
 
-  return Vec(N, resultado);
+  Vec Res(N, resultado);
+  delete resultado;
+
+  return Res;
 }
 
 //Mult. but using *=

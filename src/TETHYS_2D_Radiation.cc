@@ -1,3 +1,9 @@
+/************************************************************************************************\
+* 2022 Rui Martins, Pedro Cosme                                                                 *
+*                                                                                               *
+*                                                                                               *
+\************************************************************************************************/
+
 #include <time.h>
 #include <math.h>
 #include <iostream>
@@ -53,7 +59,8 @@ double NewtonsMethod(double(*func)(double), double x1=1.56, double x2=1.57, doub
         if(fx2-fx1 != 0) x3 = x2 - (fx2*(x2-x1)/(fx2-fx1));
         else{
             cout << "We have found a stationary point at x = " << x2 << ". Ending Newton's method here." << endl;
-            return x2;
+            cout << "returning pi/2" << endl;
+            return M_PI/2;
         }
         if(x3>1.6) x3=M_PI-1e-3;
         if(x3<0) x3=M_PI-2e-3;
@@ -105,57 +112,21 @@ int main(int argc, char **argv){
         getline(infile1, line);
         stringstream ss;
         ss << line;
-        string temp_s="";
 
         for(int j=0; j<Nc; j++){
-            ss >> temp_s;
-            if(j==0){
-            	if (stringstream(temp_s) >> temp_d);
-            	time.push_back(temp_d);
-            }
-            if(j==6){
-                if (stringstream(temp_s) >> temp_d);
-                CurS.push_back(temp_d);
-            }
-            if(j==9){
-            	if (stringstream(temp_s) >> temp_d);
-            	DipX.push_back(temp_d);
-            }
-            if(j==11){
-            	if (stringstream(temp_s) >> temp_d);
-            	DipX_dd.push_back(temp_d);
-            }
-            if(j==12){
-            	if (stringstream(temp_s) >> temp_d);
-            	DipY.push_back(temp_d);
-            }
-            if(j==14){
-            	if (stringstream(temp_s) >> temp_d);
-            	DipY_dd.push_back(temp_d);
-            }
-            if(j==15){
-                if (stringstream(temp_s) >> temp_d);
-                QuadXX.push_back(temp_d);
-            }
-            if(j==18){
-                if (stringstream(temp_s) >> temp_d);
-                QuadXX_ddd.push_back(temp_d);
-            }
-            if(j==19){
-                if (stringstream(temp_s) >> temp_d);
-                QuadXY.push_back(temp_d);
-            }
-            if(j==22){
-                if (stringstream(temp_s) >> temp_d);
-                QuadXY_ddd.push_back(temp_d);
-            }
-            if(j==23){
-                if (stringstream(temp_s) >> temp_d);
-                QuadYY.push_back(temp_d);
-            }
-            if(j==26){
-                if (stringstream(temp_s) >> temp_d);
-                QuadYY_ddd.push_back(temp_d);
+            if (ss >> temp_d){
+                if(j==0) time.push_back(temp_d);
+                if(j==6) CurS.push_back(temp_d);
+                if(j==9) DipX.push_back(temp_d);
+                if(j==11)DipX_dd.push_back(temp_d);
+                if(j==12)DipY.push_back(temp_d);
+                if(j==14)DipY_dd.push_back(temp_d);
+                if(j==15)QuadXX.push_back(temp_d);
+                if(j==18)QuadXX_ddd.push_back(temp_d);
+                if(j==19)QuadXY.push_back(temp_d);
+                if(j==22)QuadXY_ddd.push_back(temp_d);
+                if(j==23)QuadYY.push_back(temp_d);
+                if(j==26)QuadYY_ddd.push_back(temp_d);
             }
         }
     }
@@ -250,6 +221,9 @@ int main(int argc, char **argv){
         c1->Clear(); gr_QuadXX_ddd->Draw();c1->SaveAs("./Files_Images_PIC/QuadXX_ddd_t.pdf");
         c1->Clear(); gr_QuadXY_ddd->Draw();c1->SaveAs("./Files_Images_PIC/QuadXY_ddd_t.pdf");
         c1->Clear(); gr_QuadYY_ddd->Draw();c1->SaveAs("./Files_Images_PIC/QuadYY_ddd_t.pdf");
+
+        delete gr_CurS; delete gr_DipX; delete gr_DipY; delete gr_DipX_dd; delete gr_DipY_dd; 
+        delete gr_QuadXX; delete gr_QuadXY; delete gr_QuadYY; delete gr_QuadXX_ddd; delete; gr_QuadXY_ddd; delete gr_QuadYY_ddd;
         //*/
 
     /*/ Interpolated points graphs
@@ -280,32 +254,47 @@ int main(int argc, char **argv){
         c1->Clear(); grI_QuadXX_ddd->Draw("AP");c1->SaveAs("./Files_Images_PIC/IQuadXX_ddd_t.pdf");
         c1->Clear(); grI_QuadXY_ddd->Draw("AP");c1->SaveAs("./Files_Images_PIC/IQuadXY_ddd_t.pdf");
         c1->Clear(); grI_QuadYY_ddd->Draw("AP");c1->SaveAs("./Files_Images_PIC/IQuadYY_ddd_t.pdf");
+
+        delete grI_CurS; delete grI_DipX_dd; delete grI_DipY_dd; delete grI_QuadXX_ddd; delete grI_QuadXY_ddd; delete grI_QuadYY_ddd;
         //*/
 
 
     // Field Functions //
+    Vec E_Dip(3,0.);
+    Vec E_Quad(3,0.);
+    Vec E_field_v(3,0.);
+    Vec E_field_T(3,0.);
+    Vec r_vec(3,0.);
+    Vec p_dd(3,0.);
+    Vec Q_ddd(3,0.);
+    Vec H_field_v(3,0.);
+    Vec H_field_T(3,0.);
+    Vec Vec_temp(3,0.);
+    
     auto E_field = [&](double t, double x, double y, double z, double theta, double theta_i){
         double r2 = x*x+y*y+z*z;
         double r = sqrt(r2);
         double t_r = t-r/(300*vF);
 
-        double array[] = {(x*SDipX_dd_t.Interpolate(t_r)+y*SDipY_dd_t.Interpolate(t_r))*x/r2-SDipX_dd_t.Interpolate(t_r),
+        double* array = new double[3]{(x*SDipX_dd_t.Interpolate(t_r)+y*SDipY_dd_t.Interpolate(t_r))*x/r2-SDipX_dd_t.Interpolate(t_r),
                           (x*SDipX_dd_t.Interpolate(t_r)+y*SDipY_dd_t.Interpolate(t_r))*y/r2-SDipY_dd_t.Interpolate(t_r),
                           (x*SDipX_dd_t.Interpolate(t_r)+y*SDipY_dd_t.Interpolate(t_r))*z/r2};
-        Vec E_Dip(3,array);
+        E_Dip.SetEntries(3,array);
+        delete array;
 
         double Q_vec_X = (SQuadXX_ddd_t.Interpolate(t_r)*x + SQuadXY_ddd_t.Interpolate(t_r)*y)/r;
         double Q_vec_Y = (SQuadXY_ddd_t.Interpolate(t_r)*x + SQuadYY_ddd_t.Interpolate(t_r)*y)/r;
         double Q_vec_Z = -(SQuadXX_ddd_t.Interpolate(t_r) + SQuadYY_ddd_t.Interpolate(t_r))*z/r;
 
-        double array2[] = {(x*Q_vec_X+y*Q_vec_Y+z*Q_vec_Z)*x/r2-Q_vec_X,
+        double* array2 = new double[3]{(x*Q_vec_X+y*Q_vec_Y+z*Q_vec_Z)*x/r2-Q_vec_X,
                           (x*Q_vec_X+y*Q_vec_Y+z*Q_vec_Z)*y/r2-Q_vec_Y,
                           (x*Q_vec_X+y*Q_vec_Y+z*Q_vec_Z)*z/r2-Q_vec_Z};
-        Vec E_Quad(3,array2);
+        E_Quad.SetEntries(3,array2);
+        delete array2;
 
-        Vec E_field = (1/(4*M_PI*r))*E_Dip + 0*(1/(24*M_PI*300*vF*r))*E_Quad;
+        E_field_v = (1/(4*M_PI*r))*E_Dip + 0*(1/(24*M_PI*300*vF*r))*E_Quad;
 
-        if(z<0) return E_field;
+        if(z<0) return E_field_v;
 
         double theta_r = asin(sin(theta_i)/n_index);
 
@@ -318,10 +307,11 @@ int main(int argc, char **argv){
             r_ll = tan(theta_i-theta_r)/tan(theta_i+theta_r);  //parallel refrected coeficient
         }
 
-        double array_T[] = {E_field[0]*sin(theta), E_field[1]*cos(theta), 0};
-        Vec E_field_T(3,array_T);
+        double* array_T = new double[3]{E_field_v[0]*sin(theta), E_field_v[1]*cos(theta), 0};
+        E_field_T.SetEntries(3,array_T);
+        delete array_T;
 
-        return E_field+(E_field_T*r_T + (E_field-E_field_T)*r_ll);
+        return E_field_v+(E_field_T*r_T + (E_field_v-E_field_T)*r_ll);
     };
 
     auto E_field_Image = [&](double t, double x, double y, double z, double theta, double theta_r){
@@ -336,21 +326,23 @@ int main(int argc, char **argv){
         else r_vacuum = (z + 2*D_dieletric)/cos(theta_r);
         double t_r = t - (n_index*r_dieletric+r_vacuum)/(300*vF);
 
-        double array[] = {(x*SDipX_dd_t.Interpolate(t_r)+y*SDipY_dd_t.Interpolate(t_r))*x/r2-SDipX_dd_t.Interpolate(t_r),
+        double* array = new double[3]{(x*SDipX_dd_t.Interpolate(t_r)+y*SDipY_dd_t.Interpolate(t_r))*x/r2-SDipX_dd_t.Interpolate(t_r),
                           (x*SDipX_dd_t.Interpolate(t_r)+y*SDipY_dd_t.Interpolate(t_r))*y/r2-SDipY_dd_t.Interpolate(t_r),
                           (x*SDipX_dd_t.Interpolate(t_r)+y*SDipY_dd_t.Interpolate(t_r))*z/r2};
-        Vec E_Dip(3,array);
+        E_Dip.SetEntries(3,array);
+        delete array;
 
         double Q_vec_X = (SQuadXX_ddd_t.Interpolate(t_r)*x + SQuadXY_ddd_t.Interpolate(t_r)*y)/r;
         double Q_vec_Y = (SQuadXY_ddd_t.Interpolate(t_r)*x + SQuadYY_ddd_t.Interpolate(t_r)*y)/r;
         double Q_vec_Z = -(SQuadXX_ddd_t.Interpolate(t_r) + SQuadYY_ddd_t.Interpolate(t_r))*z/r;
 
-        double array2[] = {(x*Q_vec_X+y*Q_vec_Y+z*Q_vec_Z)*x/r2-Q_vec_X,
+        double* array2 = new double[3]{(x*Q_vec_X+y*Q_vec_Y+z*Q_vec_Z)*x/r2-Q_vec_X,
                           (x*Q_vec_X+y*Q_vec_Y+z*Q_vec_Z)*y/r2-Q_vec_Y,
                           (x*Q_vec_X+y*Q_vec_Y+z*Q_vec_Z)*z/r2-Q_vec_Z};
-        Vec E_Quad(3,array2);
+        E_Quad.SetEntries(3,array2);
+        delete array2;
 
-        Vec E_field = (1/(4*M_PI*r))*E_Dip + (1/(24*M_PI*300*vF*r))*E_Quad;
+        E_field_v = (1/(4*M_PI*r))*E_Dip + (1/(24*M_PI*300*vF*r))*E_Quad;
 
         double t_T, t_ll;
         if(theta_i<1e-3){
@@ -361,10 +353,11 @@ int main(int argc, char **argv){
             t_ll = t_T/(cos(theta_i - theta_r)*cos(theta_i - theta_r));                       //parallel transmited coeficient
         }
 
-        double array_T[] = {E_field[0]*sin(theta), E_field[1]*cos(theta), 0};
-        Vec E_field_T(3,array_T);
+        double* array_T = new double[3]{E_field_v[0]*sin(theta), E_field_v[1]*cos(theta), 0};
+        E_field_T.SetEntries(3,array_T);
+        delete array_T;
 
-        return -(E_field_T*t_T + (E_field-E_field_T)*t_ll);
+        return -(E_field_T*t_T + (E_field_v-E_field_T)*t_ll);
     };
 
     auto H_field = [&](double t, double x, double y, double z, double theta, double theta_i){
@@ -372,20 +365,23 @@ int main(int argc, char **argv){
         double r = sqrt(r2);
         double t_r = t-r/(300*vF);
 
-        double array_r[] = {x,y,z};
-        Vec r_vec(3,array_r);
+        double* array_r = new double[3]{x,y,z};
+        r_vec.SetEntries(3,array_r);
+        delete array_r;
 
-        double array_p[] = {SDipX_dd_t.Interpolate(t_r),SDipY_dd_t.Interpolate(t_r),0};
-        Vec p_dd(3,array_p);
+        double* array_p = new double[3]{SDipX_dd_t.Interpolate(t_r),SDipY_dd_t.Interpolate(t_r),0};
+        p_dd.SetEntries(3,array_p);
+        delete array_p;
 
-        double array_Q[] = {(SQuadXX_ddd_t.Interpolate(t_r)*x + SQuadXY_ddd_t.Interpolate(t_r)*y)/r
+        double* array_Q = new double[3]{(SQuadXX_ddd_t.Interpolate(t_r)*x + SQuadXY_ddd_t.Interpolate(t_r)*y)/r
                             ,(SQuadXY_ddd_t.Interpolate(t_r)*x + SQuadYY_ddd_t.Interpolate(t_r)*y)/r
                             ,-(SQuadXX_ddd_t.Interpolate(t_r) + SQuadYY_ddd_t.Interpolate(t_r))*z/r};
-        Vec Q_ddd(3,array_Q);
+        Q_ddd.SetEntries(3,array_Q);
+        delete array_Q;
 
-        Vec H_field = (-1/(4*M_PI*r2))*r_vec.ex(p_dd) + 0*(-1/(24*M_PI*300*vF*r2))*r_vec.ex(Q_ddd);
+        H_field_v = (-1/(4*M_PI*r2))*r_vec.ex(p_dd) + 0*(-1/(24*M_PI*300*vF*r2))*r_vec.ex(Q_ddd);
 
-        if(z<0) return H_field;
+        if(z<0) return H_field_v;
 
         double theta_r = asin(sin(theta_i)/n_index);
 
@@ -398,10 +394,11 @@ int main(int argc, char **argv){
             r_ll = tan(theta_i-theta_r)/tan(theta_i+theta_r);  //parallel refrected coeficient
         }
 
-        double array_T[] = {H_field[0]*sin(theta), H_field[1]*cos(theta), 0};
-        Vec H_field_T(3,array_T);
+        double* array_T = new double[3]{H_field_v[0]*sin(theta), H_field_v[1]*cos(theta), 0};
+        H_field_T.SetEntries(3,array_T);
+        delete array_T;
 
-        return H_field+(H_field_T*r_T + (H_field-H_field_T)*r_ll);
+        return H_field_v+(H_field_T*r_T + (H_field_v-H_field_T)*r_ll);
     };
 
     auto H_field_Image = [&](double t, double x, double y, double z, double theta, double theta_r){
@@ -416,18 +413,21 @@ int main(int argc, char **argv){
         else r_vacuum = (z + 2*D_dieletric)/cos(theta_r);
         double t_r = t - (n_index*r_dieletric+r_vacuum)/(300*vF);
 
-        double array_r[] = {x,y,z};
-        Vec r_vec(3,array_r);
+        double* array_r = new double[3]{x,y,z};
+        r_vec.SetEntries(3,array_r);
+        delete array_r;
 
-        double array_p[] = {SDipX_dd_t.Interpolate(t_r),SDipY_dd_t.Interpolate(t_r),0};
-        Vec p_dd(3,array_p);
+        double* array_p = new double[3]{SDipX_dd_t.Interpolate(t_r),SDipY_dd_t.Interpolate(t_r),0};
+        p_dd.SetEntries(3,array_p);
+        delete array_p;
 
-        double array_Q[] = {(SQuadXX_ddd_t.Interpolate(t_r)*x + SQuadXY_ddd_t.Interpolate(t_r)*y)/r
+        double* array_Q = new double[3]{(SQuadXX_ddd_t.Interpolate(t_r)*x + SQuadXY_ddd_t.Interpolate(t_r)*y)/r
                             ,(SQuadXY_ddd_t.Interpolate(t_r)*x + SQuadYY_ddd_t.Interpolate(t_r)*y)/r
                             ,-(SQuadXX_ddd_t.Interpolate(t_r) + SQuadYY_ddd_t.Interpolate(t_r))*z/r};
-        Vec Q_ddd(3,array_Q);
+        Q_ddd.SetEntries(3,array_Q);
+        delete array_Q;
 
-        Vec H_field = (-1/(4*M_PI*r2))*r_vec.ex(p_dd) + (-1/(24*M_PI*300*vF*r2))*r_vec.ex(Q_ddd);
+        H_field_v = (-1/(4*M_PI*r2))*r_vec.ex(p_dd) + (-1/(24*M_PI*300*vF*r2))*r_vec.ex(Q_ddd);
 
         double t_T, t_ll;
         if(theta_i<1e-3){
@@ -438,10 +438,11 @@ int main(int argc, char **argv){
             t_ll = t_T/(cos(theta_i - theta_r)*cos(theta_i - theta_r));                       //parallel transmited coeficient
         }
 
-        double array_T[] = {H_field[0]*sin(theta), H_field[1]*cos(theta), 0};
-        Vec H_field_T(3,array_T);
+        double* array_T = new double[3]{H_field_v[0]*sin(theta), H_field_v[1]*cos(theta), 0};
+        H_field_T.SetEntries(3,array_T);
+        delete array_T;
 
-        return -(H_field_T*t_T + (H_field-H_field_T)*t_ll);
+        return -(H_field_T*t_T + (H_field_v-H_field_T)*t_ll);
     };
 
     auto Emitter = [&](double t, double O_x, double O_y, double x, double y, double z){
@@ -484,7 +485,6 @@ int main(int argc, char **argv){
         }
         pair<Vec,Vec> fields;
         pair<Vec,Vec> fields_temp;
-        Vec Vec_temp = Vec(3,0.);
 
         fields.first = Vec_temp;
         fields.second = Vec_temp;
@@ -502,35 +502,36 @@ int main(int argc, char **argv){
     }; 
     /////
 
-    pair<Vec,Vec> fieldsEH;
+    //Declaration of variables
+        pair<Vec,Vec> fieldsEH;
 
-    int N, Ncount;
+        int N, Ncount;
 
-    int M_phi, M_mu;
-    double a ,d_sphere, d_mu, d_phi, mu, phi, x, y, z;
+        int M_phi, M_mu;
+        double a ,d_sphere, d_mu, d_phi, mu, phi, x, y, z;
 
-    int N_t_points;
-    double delta_t, integral, phase, S_integral;
+        int N_t_points;
+        double delta_t, integral, phase, S_integral;
 
-    vector<double> O_x1{0};
-    vector<double> O_y1{0};
+        vector<double> O_x1{0};
+        vector<double> O_y1{0};
 
-    vector<double> O_x2{0,1};
-    vector<double> O_y2{0,0};
+        vector<double> O_x2{0,1};
+        vector<double> O_y2{0,0};
 
-    vector<double> O_x5{0, 1, 0, -1, 0};
-    vector<double> O_y5{0, 0, 1, 0, -1};
+        vector<double> O_x5{0, 1, 0, -1, 0};
+        vector<double> O_y5{0, 0, 1, 0, -1};
 
-    vector<double> O_xN;
-    vector<double> O_yN;
-    for(int i=-8; i<=8; i++){
-        for(int j=-8; j<=8; j++){
-            O_xN.push_back((double)i);
-            O_yN.push_back((double)j);
+        vector<double> O_xN;
+        vector<double> O_yN;
+        for(int i=-8; i<=8; i++){
+            for(int j=-8; j<=8; j++){
+                O_xN.push_back((double)i);
+                O_yN.push_back((double)j);
+            }
         }
-    }
 
-    /*/ 3Dgraph sphere
+    // 3Dgraph sphere
         N = 50000;
         auto gr3d_sphere = new TGraph2D(N);
 
@@ -540,7 +541,7 @@ int main(int argc, char **argv){
         d_mu = M_PI/M_mu;
         d_phi = a/d_mu;
         
-        N_t_points = 1;
+        N_t_points = 100;
         delta_t = 0.356;
 
         Ncount = 0;
@@ -559,7 +560,7 @@ int main(int argc, char **argv){
                 for(int j=0; j<N_t_points; j++){
                     phase = 8.5+(double)j*delta_t/N_t_points;
 
-                    fieldsEH = EmittingGrid(phase, O_x5,O_y5,distance_measure*x,distance_measure*y,distance_measure*z);
+                    fieldsEH = EmittingGrid(phase, O_x1,O_y1,distance_measure*x,distance_measure*y,distance_measure*z);
 
                     if(j == 0 || j == N_t_points-1) integral += 0.5*distance_measure*distance_measure*Poyting(fieldsEH.first, fieldsEH.second).mod();
                     else integral += distance_measure*distance_measure*Poyting(fieldsEH.first, fieldsEH.second).mod();
@@ -598,9 +599,10 @@ int main(int argc, char **argv){
         grS_D_integrated->SetTitle("; Conductor distance_measure; Integrated |S|");
         grS_D_integrated->Draw("AP");
         c1->SaveAs("Files_Images_PIC/S_D_integrated.pdf");
+        delete grS_D_integrated;
         //*/
 
-    //1 emitter alone in space
+    /*/1 emitter alone in space
         ofstream single_emiter_file;
         single_emiter_file.open ("Files_Images_PIC/single_emiter.txt");
         single_emiter_file << "Last line as integral over surface(sphere radius 3000)\n";
@@ -663,17 +665,17 @@ int main(int argc, char **argv){
         delete gr3d_4pi;
         //*/
 
-    //integration over the small angles (<pi/18) function of d
+    /*/integration over the small angles (<pi/18) function of d
         double small_angle = M_PI/18;
         ofstream second_emiter_d_file;
         second_emiter_d_file.open ("Files_Images_PIC/second_emiter_d_emiter.txt");
         second_emiter_d_file << "2nd emitter distance    integral of |S| over small_angle\n";
 
         n_index = 5;
-        D_Conductor = 20;
-        Radius_Conductor = 0;
+        D_Conductor = 2;
+        Radius_Conductor = 50000;
 
-        N = 500000;
+        N = 100000;
 
         a = 4*M_PI/N;
         d_sphere = sqrt(a);
@@ -684,9 +686,10 @@ int main(int argc, char **argv){
         N_t_points = 10;
         delta_t = 0.356;
 
-        int N_distance_points = 30;
+        int N_distance_points = 200;
         for(int k=0; k<N_distance_points; k++){
-            O_x2[1] = (double)k*30/N_distance_points;
+            O_x2[1] = (double)k*50/N_distance_points;
+            if(k == 0)  O_x2[1] = 1e8;
 
             Ncount = 0;
             S_integral = 0;
@@ -723,11 +726,45 @@ int main(int argc, char **argv){
         second_emiter_d_file.close();
         //*/
 
+    delete c1;
     cout << "[1A\033[2K\033[1;32mDONE!\033[0m\n";
     cout << "Time taken: " << (double)(clock() - tStart)/CLOCKS_PER_SEC << endl;
     cout << "═══════════════════════════════════════════════════════════════════════════" <<endl;
 	return 0;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
