@@ -60,8 +60,14 @@ int main(int argc, char **argv){
 
 	/*...............Initialization...................................*/
 
-	std::function<float(float)> fden = [=](float x){ return 1.0f + 0.01f*cos(2*MAT_PI*x); };
-	std::function<float(float)> fvx  = [=](float x){ return 15.0f*(fden(x) - 1); };
+	float offset = 1.000f;
+	float A      = 0.010f;
+	float f      = 4.000f;
+	float phi    = MAT_PI;
+	float c      = 21.1285f;
+
+	std::function<float(float)> fden = [=](float x){ return offset + A*cos(2*MAT_PI*f*x+phi); };
+	std::function<float(float)> fvx  = [=](float x){ return c*(fden(x) - 1); };
 
 	graph.InitialCondGeneral(fden, fvx);
 	//graph.InitialCondRand();
@@ -74,7 +80,7 @@ int main(int argc, char **argv){
 
 
 	//Main cycle
-	graph.SetTmax(10.0f);
+	graph.SetTmax(1.0f);
 	while(t <= graph.GetTmax()) {
 		t += dt;
 		GrapheneFluid1D::TimeStepCounter++;
