@@ -444,15 +444,15 @@ void DiracGraphene2D::Richtmyer(){
             hden_mid[ks] = hden_avg
 			              -0.5f*(dt/dx)*(HDensityFluxX(midpoint, 'E') - HDensityFluxX(midpoint, 'W'))
 			              -0.5f*(dt/dy)*(HDensityFluxY(midpoint, 'N') - HDensityFluxY(midpoint, 'S'));
-						  +0.5f*dt* DensitySource(den_avg, flx_x_avg, flx_y_avg, hden_avg, hflx_x_avg, hflx_y_avg, 0.0f, 0.0f);
+						  +0.5f*dt* HDensitySource(den_avg, flx_x_avg, flx_y_avg, hden_avg, hflx_x_avg, hflx_y_avg, 0.0f, 0.0f);
 			hflxX_mid[ks] = hflx_x_avg
 					-0.5f*(dt/dx)*(HXMomentumFluxX(midpoint, 'E') - HXMomentumFluxX(midpoint, 'W'))
 					-0.5f*(dt/dy)*(HXMomentumFluxY(midpoint, 'N') - HXMomentumFluxY(midpoint, 'S'));
-					+0.5f*dt*XMomentumSource(den_avg, flx_x_avg, flx_y_avg, hden_avg, hflx_x_avg, hflx_y_avg, 0.0f, 0.0f);
+					+0.5f*dt*HXMomentumSource(den_avg, flx_x_avg, flx_y_avg, hden_avg, hflx_x_avg, hflx_y_avg, 0.0f, 0.0f);
 			hflxY_mid[ks] = hflx_y_avg
 					-0.5f*(dt/dx)*(HYMomentumFluxX(midpoint, 'E') - HYMomentumFluxX(midpoint, 'W'))
 					-0.5f*(dt/dy)*(HYMomentumFluxY(midpoint, 'N') - HYMomentumFluxY(midpoint, 'S'));
-					+0.5f*dt*YMomentumSource(den_avg, flx_x_avg, flx_y_avg, hden_avg, hflx_x_avg, hflx_y_avg, 0.0f, 0.0f);
+					+0.5f*dt*HYMomentumSource(den_avg, flx_x_avg, flx_y_avg, hden_avg, hflx_x_avg, hflx_y_avg, 0.0f, 0.0f);
 		}
 	
 	ChooseGridPointers("MainGrid");
@@ -488,13 +488,13 @@ void DiracGraphene2D::Richtmyer(){
 
                 HDen[kp] = hden_old - (dt/dx)*(HDensityFluxX(mainpoint, 'E') - HDensityFluxX(mainpoint, 'W'))
 						          - (dt/dy)*(HDensityFluxY(mainpoint, 'N') - HDensityFluxY(mainpoint, 'S'));
-						          + dt*DensitySource(den_old, flx_x_old, flx_y_old, hden_old, hflx_x_old, hflx_y_old, 0.0f, 0.0f);
+						          + dt*HDensitySource(den_old, flx_x_old, flx_y_old, hden_old, hflx_x_old, hflx_y_old, 0.0f, 0.0f);
 				HFlxX[kp] = hflx_x_old - (dt/dx)*(HXMomentumFluxX(mainpoint, 'E') - HXMomentumFluxX(mainpoint, 'W'))
 						             - (dt/dy)*(HXMomentumFluxY(mainpoint, 'N') - HXMomentumFluxY(mainpoint, 'S'));
-						             + dt*XMomentumSource(den_old, flx_x_old, flx_y_old, hden_old, hflx_x_old, hflx_y_old, 0.0f, 0.0f);
+						             + dt*HXMomentumSource(den_old, flx_x_old, flx_y_old, hden_old, hflx_x_old, hflx_y_old, 0.0f, 0.0f);
 				HFlxY[kp] = hflx_y_old - (dt/dx)*(HYMomentumFluxX(mainpoint, 'E') - HYMomentumFluxX(mainpoint, 'W'))
 						        	 - (dt/dy)*(HYMomentumFluxY(mainpoint, 'N') - HYMomentumFluxY(mainpoint, 'S'));
-				                     + dt*YMomentumSource(den_old, flx_x_old, flx_y_old, hden_old, hflx_x_old, hflx_y_old, 0.0f, 0.0f);
+				                     + dt*HYMomentumSource(den_old, flx_x_old, flx_y_old, hden_old, hflx_x_old, hflx_y_old, 0.0f, 0.0f);
 
 
 			}
