@@ -61,7 +61,8 @@ int main(int argc, char **argv){
 //	graph.InitialCondGeneral([](float x,float y) { return 1.0f+0.1f/cosh(10.0f*sqrt((x-.5f)*(x-.5f)+(y-.5f)*(y-.5f))); },[](float x,float y) { return 0.5f; },[](float x,float y) { return 0.0f; });
 //	graph.InitialCondGeneral([](float x,float y) { return 1.0f+0.1f/cosh(10.0f*(x-.5f)); },[](float x,float y) { return 0.5f/cosh(10.0f*(x-.5f)); },[](float x,float y) { return 0.0f; });
 //	graph.InitialCondGeneral([](float x,float y) { return 0.8; },[](float x,float y) { return 0.5f; },[](float x,float y) { return 0.0f; });
-	graph.InitialCondRand();
+//	graph.InitialCondRand();
+	graph.InitialCondPointDen();
 	/*................................................................*/
 
 	/*................Setting.the.lateral.boundaries..................*/

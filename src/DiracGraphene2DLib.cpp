@@ -370,6 +370,21 @@ void DiracGraphene2D::InitialCondRand(){
 	}
 }
 
+void DiracGraphene2D::InitialCondPointDen(){
+	random_device rd;
+	float maxrand;
+	maxrand = (float) random_device::max();
+	for (int c = 0; c < Nx*Ny; c++ ){
+		
+		Den[c] = 1.0f;
+
+        HDen[c] = 1.0f;
+	}
+
+	Den[Nx*Ny/3] = 1.5f;
+	HDen[Nx*Ny*2/3] = 1.5f;
+}
+
 void DiracGraphene2D::WriteFluidFile(float t){
 	int j=Ny/2;
 	int pos_end = Nx - 1 + j*Nx ;

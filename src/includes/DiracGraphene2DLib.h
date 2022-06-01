@@ -75,6 +75,7 @@ public :
 		void CflCondition() override;
 
 		void InitialCondRand() override;             ///< Initial condition, zero velocity and constant density with 0.5% white noise
+		void InitialCondPointDen();					///< Initial condition, zero velocity and point of density with 0.5% white noise
 
 		/*!
 		 * @brief Sets the total simulation time in units of @f$v_0/L@f$
