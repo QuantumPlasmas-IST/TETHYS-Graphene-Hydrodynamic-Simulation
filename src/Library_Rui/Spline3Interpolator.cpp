@@ -12,7 +12,7 @@ Spline3Interpolator::Spline3Interpolator(int fN, double *fx, double *fy) : DataP
 
 	sort2(N,x,y);
 
-	SetCurvatureLines(); //define segment interpolators
+	if(N>2) SetCurvatureLines(); //define segment interpolators
 }
 
 Spline3Interpolator::Spline3Interpolator(std::vector<std::pair<double, double>> xy) : DataPoints(xy), K(N) {
@@ -23,7 +23,7 @@ Spline3Interpolator::Spline3Interpolator(std::vector<std::pair<double, double>> 
 
 	sort2(N,x,y);
 
-	SetCurvatureLines(); //define segment interpolators
+	if(N>2) SetCurvatureLines(); //define segment interpolators
 }
 
 Spline3Interpolator::Spline3Interpolator(const Spline3Interpolator& S3) : Spline3Interpolator(S3.N, S3.x, S3.y){
@@ -39,6 +39,27 @@ Spline3Interpolator::~Spline3Interpolator(){
 	#endif
 }
 
+
+void Spline3Interpolator::operator=(const Spline3Interpolator& v){
+#ifdef DEBUG
+  printf("[%s]\n", __PRETTY_FUNCTION__);
+#endif
+ 	N = v.N;
+	xmin = v.xmin;
+	xmax = v.xmax;
+
+    delete x;
+    delete y;
+    x = new double[N];
+  	y = new double[N];
+
+    for(int i=0; i<N; i++){
+    	x[i] = v.x[i];
+    	y[i] = v.y[i];
+    }
+
+    K = v.K; 
+}
 
 
 void Spline3Interpolator::SetCurvatureLines() {

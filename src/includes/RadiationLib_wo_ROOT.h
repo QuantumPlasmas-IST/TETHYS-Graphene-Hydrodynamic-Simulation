@@ -5,10 +5,6 @@
 \************************************************************************************************/
 
 
-/*!@file
- * @brief Header file for the radiation analysis post-processing class
- */
-
 #ifndef RADIATIONLIB_H
 #define RADIATIONLIB_H
 
@@ -24,11 +20,6 @@
 
 using namespace std;
 
-/*!
- * @brief Class to obtain the radiation pattern resulting from a set of dipole and quadrupole and study it's properties
- *
- *
- **/
 
 class Radiation{
 public:
@@ -36,9 +27,6 @@ public:
     
     int ReadFromElectroFile(const string input_file_name); ///< Read a file comming from EletronicAnalysis.cpp
     void Interpolation(int Nl_0, int Nl); ///< Cubic spline interpolation of the points stored for the used quatites
-    
-    void PrintGraphElectro(int Nl_0, int Nl);
-    void PrintGraphInterpolation(int Nl_0, int Nl);
 
     Vec E_field(double t, double x, double y, double z);
     Vec E_field_Image(double t, double x, double y, double z);
@@ -49,9 +37,6 @@ public:
 
     void RadiationPatternTimeAverage180(double t0, vector<double> O_x_v, vector<double> O_y_v, int N, int N_t_points, double delta_t);
     double RadiationPatternTimeAverage360(double t0, vector<double> O_x_v, vector<double> O_y_v, int N, int N_t_points, double delta_t);
-
-    void RadiationPatternTimeAverage180Graph(double t0, vector<double> O_x_v, vector<double> O_y_v, int N, int N_t_points, double delta_t, bool print);
-    double RadiationPatternTimeAverage360Graph(double t0, vector<double> O_x_v, vector<double> O_y_v, int N, int N_t_points, double delta_t, bool print);
 
     double RadiationTimeAverageIntegralSmallAngle(double t0, vector<double> O_x_v, vector<double> O_y_v, int N, int N_t_points, double delta_t, double small_angle);
 

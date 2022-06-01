@@ -12,7 +12,7 @@ FCmatrixFull::FCmatrixFull(double ** fM, int fm, int fn) : FCmatrix(fM, fm, fn){
 	  printf("[%s]\n", __PRETTY_FUNCTION__ );
 	#endif
 	if(!fM)
-		throw std::invalid_argument(Form("[%s] null pointer!\n",  __PRETTY_FUNCTION__));
+		throw std::invalid_argument("null pointer!\n");
 	rowindices = new int[fm];
 	colindices = new int[fn];
 	for (int i = 0; i < fm; ++i)
@@ -27,7 +27,7 @@ FCmatrixFull::FCmatrixFull(double * fM, int fm, int fn) : FCmatrix(fM, fm, fn) {
 	  printf("[%s]\n", __PRETTY_FUNCTION__ );
 	#endif
 	if(!fM)
-		throw std::invalid_argument(Form("[%s] null pointer!\n",  __PRETTY_FUNCTION__));
+		throw std::invalid_argument("null pointer!\n");
 	rowindices = new int[fm];
 	colindices = new int[fn];
 	for (int i = 0; i < fm; ++i)
@@ -44,7 +44,7 @@ FCmatrixFull::FCmatrixFull(std::vector<Vec> v) : FCmatrix(v) {
 	#endif
 
 	if(!(&v))
-		throw std::invalid_argument(Form("[%s] null pointer!\n",  __PRETTY_FUNCTION__));
+		throw std::invalid_argument("null pointer!\n");
 	int fm = v.size();
 	int fn = v[0].size();
 	colindices = new int[fn];
@@ -65,7 +65,7 @@ FCmatrixFull::FCmatrixFull(const FCmatrix& matrix){
 		std::cout << "It seems you know the wei..." << std::endl;
 		return;
 	}else if(!(&matrix))
-		throw std::invalid_argument(Form("[%s] null pointer!\n",  __PRETTY_FUNCTION__));
+		throw std::invalid_argument("null pointer!\n");
 
 
 	int fm = matrix.GetRowN();
@@ -287,7 +287,7 @@ FCmatrixFull FCmatrixFull::GetInverse(){
 
 	int n = this->GetColN();
 	if(n != this->GetRowN()){
-		throw std::invalid_argument(Form("[%s] Can't invert a non square matrix!\n",  __PRETTY_FUNCTION__));
+		throw std::invalid_argument("Can't invert a non square matrix!\n");
 	}
 
 	std::vector <Vec> X;
@@ -380,7 +380,7 @@ Vec& FCmatrixFull::operator[](int i){
 	  printf("[%s]\n", __PRETTY_FUNCTION__ );
 	#endif
 	if(i < 0 || i >= M3.size())
-		throw std::invalid_argument(Form("[%s] That number (%d) cant be reached!\n",  __PRETTY_FUNCTION__, i));
+		throw std::invalid_argument("That number cant be reached!\n");
 
 	return M3[rowindices[i]];
 }
@@ -390,7 +390,7 @@ Vec FCmatrixFull::operator[](int i) const{
 	  printf("[%s]\n", __PRETTY_FUNCTION__ );
 	#endif
 	if(i < 0 || i >= M3.size())
-		throw std::invalid_argument(Form("[%s] That number (%d) cant be reached!\n",  __PRETTY_FUNCTION__, i));
+		throw std::invalid_argument("That number cant be reached!\n");
 
 	return M3[rowindices[i]];
 }
@@ -400,7 +400,7 @@ FCmatrixFull FCmatrixFull::operator+(const FCmatrixFull& mtx){
 	  printf("[%s]\n", __PRETTY_FUNCTION__ );
 	#endif
 	if(this->GetColN() != mtx.GetColN() || this->GetRowN() != mtx.GetRowN())
-		throw std::invalid_argument(Form("[%s] The matrices are not of equal sizes (%ld x %d) vs. (%d x %d)!\n",  __PRETTY_FUNCTION__, this->M3.size(), this->M3[0].size(), mtx.GetSize(), mtx[0].size()));
+		throw std::invalid_argument("The matrices are not of equal sizes!\n");
 
 	std::vector<Vec> v;
 	for (int i = 0; i < this->GetColN(); ++i)
@@ -413,7 +413,7 @@ FCmatrixFull FCmatrixFull::operator-(const FCmatrixFull& mtx){
 	  printf("[%s]\n", __PRETTY_FUNCTION__ );
 	#endif
 	if(this->GetColN() != mtx.GetColN() || this->GetRowN() != mtx.GetRowN())
-		throw std::invalid_argument(Form("[%s] The matrices are not of equal sizes (%ld x %d) vs. (%d x %d)!\n",  __PRETTY_FUNCTION__, this->M3.size(), this->M3[0].size(), mtx.GetSize(), mtx[0].size()));
+		throw std::invalid_argument("The matrices are not of equal sizes!\n");
 
 	std::vector<Vec> v;
 	for (int i = 0; i < this->GetColN(); ++i)
@@ -426,7 +426,7 @@ void FCmatrixFull::operator-= (const FCmatrixFull& mtx) {
 	  printf("[%s]\n", __PRETTY_FUNCTION__ );
 	#endif
 	if(this->GetColN() != mtx.GetColN() || this->GetRowN() != mtx.GetRowN())
-		throw std::invalid_argument(Form("[%s] The matrices are not of equal sizes (%ld x %d) vs. (%d x %d)!\n",  __PRETTY_FUNCTION__, this->M3.size(), this->M3[0].size(), mtx.GetSize(), mtx[0].size()));
+		throw std::invalid_argument("The matrices are not of equal sizes!\n");
 	for (int i = 0; i < this->GetColN(); ++i)
 		M3[i] -= mtx[i];
 }
@@ -436,7 +436,7 @@ void FCmatrixFull::operator+= (const FCmatrixFull& mtx) {
 	  printf("[%s]\n", __PRETTY_FUNCTION__ );
 	#endif
 	if(this->GetColN() != mtx.GetColN() || this->GetRowN() != mtx.GetRowN())
-		throw std::invalid_argument(Form("[%s] The matrices are not of equal sizes (%ld x %d) vs. (%d x %d)!\n",  __PRETTY_FUNCTION__, this->M3.size(), this->M3[0].size(), mtx.GetSize(), mtx[0].size()));
+		throw std::invalid_argument("The matrices are not of equal sizes!\n");
 	for (int i = 0; i < this->GetColN(); ++i)
 		M3[i] += mtx[i];
 }
@@ -446,7 +446,7 @@ FCmatrixFull FCmatrixFull::operator*(const FCmatrixFull& mtx){
 	  printf("[%s]\n", __PRETTY_FUNCTION__ );
 	#endif
 	if(this->GetColN() != mtx.GetRowN())
-		throw std::invalid_argument(Form("[%s] You cant multiply these two matrices, the number of columns of the first (%d) should equal the number of rows of the second (%d)!", __PRETTY_FUNCTION__, this->GetColN(), mtx.GetRowN()));
+		throw std::invalid_argument("You cant multiply these two matrices, the number of columns of the first should equal the number of rows of the second!");
 	
 	std::vector<Vec> v;
 	int m = mtx.GetRowN();
@@ -481,7 +481,7 @@ FCmatrixFull FCmatrixFull::operator*(double lambda){
 	  printf("[%s]\n", __PRETTY_FUNCTION__ );
 	#endif
 	if(!this)
-		throw std::invalid_argument(Form("[%s]: Nullptr!", __PRETTY_FUNCTION__));
+		throw std::invalid_argument(": Nullptr!");
 
 	std::vector<Vec> v;
 	for (int i = 0; i < this->GetRowN(); ++i)
@@ -502,7 +502,7 @@ void FCmatrixFull::operator*=(const FCmatrixFull& mtx){
 	  printf("[%s]\n", __PRETTY_FUNCTION__ );
 	#endif
 	if(this->GetColN() != mtx.GetRowN())
-		throw std::invalid_argument(Form("[%s] You cant multiply these two matrices, the number of columns of the first (%d) should equal the number of rows of the second (%d)!", __PRETTY_FUNCTION__, this->GetColN(), mtx.GetRowN()));
+		throw std::invalid_argument("You cant multiply these two matrices, the number of columns of the first should equal the number of rows of the second!");
 	
 	std::vector<Vec> v;
 	int m = mtx.GetRowN();
@@ -536,7 +536,7 @@ Vec FCmatrixFull::operator*(const Vec& vec){
 	  printf("[%s]\n", __PRETTY_FUNCTION__ );
 	#endif
 	if(this->GetColN() != vec.size())
-		throw std::invalid_argument(Form("[%s] You cant multiply these two, the number of columns of the matrix (%d) should equal the number of rows of the vector (%d)!", __PRETTY_FUNCTION__, this->GetColN(), vec.size()));
+		throw std::invalid_argument("You cant multiply these two, the number of columns of the matrix should equal the number of rows of the vector!");
 	double x[this->GetRowN()];
 	for (int i = 0; i < this->GetRowN(); ++i)
 		x[i] = this->GetRow(i).dot(vec);

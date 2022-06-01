@@ -25,7 +25,7 @@ FCmatrixSparse::FCmatrixSparse(double ** fM, int fm, int fn) : n(fn) {
 	  printf("[%s]\n", __PRETTY_FUNCTION__ );
 	#endif
     if(!fM)
-		throw std::invalid_argument(Form("[%s] null pointer!\n",  __PRETTY_FUNCTION__));
+		throw std::invalid_argument("null pointer!\n");
 	
 	std::cout << "[FCmatrixSparse] Warning: You cant change the values once they are here!" << std::endl;
 
@@ -100,10 +100,10 @@ FCmatrixSparse::FCmatrixSparse(double * fM_i, int fm, int fn) : n(fn) {
 	  printf("[%s]\n", __PRETTY_FUNCTION__ );
 	#endif
     if(!fM_i)
-		throw std::invalid_argument(Form("[%s] null pointer!\n",  __PRETTY_FUNCTION__));
+		throw std::invalid_argument("null pointer!\n");
 	
 	if(fm < 1 || fn < 1)
-		throw std::invalid_argument(Form("[%s] Non positive number of rows or columns (m = %d, n =%d)!", __PRETTY_FUNCTION__, fm, fn));
+		throw std::invalid_argument("Non positive number of rows or columns!");
 
 	std::cout << "[FCmatrixSparse] Warning: You cant change the values once they are here!" << std::endl;
 
@@ -193,7 +193,7 @@ FCmatrixSparse::FCmatrixSparse(std::vector<Vec> v){
 	#endif
 
 	if(!&v)
-		throw std::invalid_argument(Form("[%s] null pointer!\n",  __PRETTY_FUNCTION__));
+		throw std::invalid_argument("null pointer!\n");
 
 	std::cout << "[FCmatrixSparse] Warning: You cant change the values once they are here!" << std::endl;
 	
@@ -327,7 +327,7 @@ int FCmatrixSparse::GetRowMax(int i){
 	#endif
 
 	if(i < 0 || i >= n)
-		throw std::invalid_argument(Form("[%s] Row must be non negative or smaller than the size of the matrix (i = %d, N = %d)!\n",  __PRETTY_FUNCTION__,i,n));
+		throw std::invalid_argument("Row must be non negative or smaller than the size of the matrix");
 	int index = M3[1][i];
 	double max = M3[0][index];
 	int cols_size = 0;
@@ -353,7 +353,7 @@ int FCmatrixSparse::GetColMax(int j){
 	#endif
 
 	if(j < 0 || j >= n)
-		throw std::invalid_argument(Form("[%s] Column must be non negative or smaller than the size of the matrix (i = %d, N = %d)!\n",  __PRETTY_FUNCTION__,j,M3[1].size()));
+		throw std::invalid_argument("Column must be non negative or smaller than the size of the matrix!\n");
 
 	int index = 0;
 	double max = 0;
@@ -504,9 +504,9 @@ FCmatrixSparse FCmatrixSparse::operator*(double lambda){
 
 FCmatrixSparse FCmatrixSparse::operator+(const FCmatrix& mtx){
 	if(!&mtx)
-		throw std::invalid_argument(Form("[%s] Nullpointer!!\n",  __PRETTY_FUNCTION__));
+		throw std::invalid_argument("Nullpointer!!\n");
 	if(this->GetColN() != mtx.GetColN() || this->GetRowN() != mtx.GetRowN())
-		throw std::invalid_argument(Form("[%s] Different size matrices!!\n",  __PRETTY_FUNCTION__));
+		throw std::invalid_argument("Different size matrices!!\n");
 
 	std::vector<Vec> a;
 	for (int i = 0; i < this->GetRowN(); ++i)
@@ -516,9 +516,9 @@ FCmatrixSparse FCmatrixSparse::operator+(const FCmatrix& mtx){
 
 FCmatrixSparse FCmatrixSparse::operator-(const FCmatrix& mtx){
 	if(!&mtx)
-		throw std::invalid_argument(Form("[%s] Nullpointer!!\n",  __PRETTY_FUNCTION__));
+		throw std::invalid_argument("Nullpointer!!\n");
 	if(this->GetColN() != mtx.GetColN() || this->GetRowN() != mtx.GetRowN())
-		throw std::invalid_argument(Form("[%s] Different size matrices!!\n",  __PRETTY_FUNCTION__));
+		throw std::invalid_argument("Different size matrices!!\n");
 
 	std::vector<Vec> a;
 	for (int i = 0; i < this->GetRowN(); ++i)
@@ -528,9 +528,9 @@ FCmatrixSparse FCmatrixSparse::operator-(const FCmatrix& mtx){
 
 void FCmatrixSparse::operator-=(const FCmatrix& mtx){
 	if(!&mtx)
-		throw std::invalid_argument(Form("[%s] Nullpointer!!\n",  __PRETTY_FUNCTION__));
+		throw std::invalid_argument("Nullpointer!!\n");
 	if(this->GetColN() != mtx.GetColN() || this->GetRowN() != mtx.GetRowN())
-		throw std::invalid_argument(Form("[%s] Different size matrices!!\n",  __PRETTY_FUNCTION__));
+		throw std::invalid_argument("Different size matrices!!\n");
 	std::vector<Vec> a;
 	for (int i = 0; i < this->GetRowN(); ++i)
 		a.push_back((*this)[i] - mtx[i]);
@@ -539,9 +539,9 @@ void FCmatrixSparse::operator-=(const FCmatrix& mtx){
 
 void FCmatrixSparse::operator+=(const FCmatrix& mtx){
 	if(!&mtx)
-		throw std::invalid_argument(Form("[%s] Nullpointer!!\n",  __PRETTY_FUNCTION__));
+		throw std::invalid_argument("Nullpointer!!\n");
 	if(this->GetColN() != mtx.GetColN() || this->GetRowN() != mtx.GetRowN())
-		throw std::invalid_argument(Form("[%s] Different size matrices!!\n",  __PRETTY_FUNCTION__));
+		throw std::invalid_argument("Different size matrices!!\n");
 
 	std::vector<Vec> a;
 	for (int i = 0; i < this->GetRowN(); ++i)

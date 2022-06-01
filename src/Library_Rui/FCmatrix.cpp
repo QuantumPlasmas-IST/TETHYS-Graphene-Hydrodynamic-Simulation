@@ -13,10 +13,10 @@ FCmatrix::FCmatrix(double** a, int m_s, int n_s){
 	  printf("[%s]\n", __PRETTY_FUNCTION__ );
 	#endif
 	if(!a)
-		throw std::invalid_argument(Form("[%s] null pointer!\n",  __PRETTY_FUNCTION__));
+		throw std::invalid_argument("null pointer!\n");
 
 	if(m_s < 1 || n_s < 1)
-		throw std::invalid_argument(Form("[%s] Invalid number of columns or rows!\n",  __PRETTY_FUNCTION__));
+		throw std::invalid_argument("Invalid number of columns or rows!\n");
 	//setting up M3, vector<Vec>
 	for(int i=0; i<m_s; ++i)
 		M3.emplace_back(n_s, a[i]);
@@ -27,9 +27,9 @@ FCmatrix::FCmatrix(double* a, int m_s, int n_s){
 	  printf("[%s]\n", __PRETTY_FUNCTION__ );
 	#endif
 	if(!a)
-		throw std::invalid_argument(Form("[%s] null pointer!\n",  __PRETTY_FUNCTION__));
+		throw std::invalid_argument("null pointer!\n");
 	if(m_s < 1 || n_s < 1)
-		throw std::invalid_argument(Form("[%s] Invalid number of columns or rows!\n",  __PRETTY_FUNCTION__));
+		throw std::invalid_argument("Invalid number of columns or rows!\n");
 	for(int i=0; i<m_s; ++i)
 		M3.emplace_back(n_s, &a[i*n_s]);
 }
@@ -39,7 +39,7 @@ FCmatrix::FCmatrix(const std::vector<Vec>& v){
 	  printf("[%s]\n", __PRETTY_FUNCTION__ );
 	#endif
 	if(!(&v))
-		throw std::invalid_argument(Form("[%s] null pointer!\n",  __PRETTY_FUNCTION__));
+		throw std::invalid_argument("null pointer!\n");
 
 	for(int i=0; i< v.size(); ++i)
 		M3.emplace_back(v[i]);
@@ -54,7 +54,7 @@ FCmatrix::FCmatrix(const FCmatrix& matrix) {
 		std::cout << "It seems you know the wei..." << std::endl;
 		return;
 	}else if(!(&matrix))
-		throw std::invalid_argument(Form("[%s] null pointer!\n",  __PRETTY_FUNCTION__));
+		throw std::invalid_argument("null pointer!\n");
 
 	for(int i=0; i < matrix.GetRowN(); ++i)
 	 	M3.emplace_back(matrix.M3[i]);

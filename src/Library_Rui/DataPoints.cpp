@@ -2,25 +2,6 @@
 
 //#define DEBUG
 
-void sort2(int n, double* a, double* b){
-	double dumb;
-	bool flag = true;
-	while(flag){
-		flag = false;
-		for (int i = 0; i < n-1; ++i){
-			if(a[i]>a[i+1]){
-				dumb = a[i+1];
-				a[i+1] = a[i];
-				a[i] = dumb;
-				dumb = b[i+1];
-				b[i+1] = b[i];
-				b[i] = dumb;
-				flag = true;
-			}
-		}
-	}
-}
-
 DataPoints::DataPoints() : N(1){
 	#ifdef DEBUG
 	  printf("[%s]\n", __PRETTY_FUNCTION__ );
@@ -36,7 +17,7 @@ DataPoints::DataPoints(int N_i, double* x_in, double* y_in) : N(N_i) {
 	#endif
 
 	if(N<0)
-		throw std::invalid_argument(Form("[%s] You can't have less than 0 data points [%d]\n",  __PRETTY_FUNCTION__, N));
+		throw std::invalid_argument("You can't have less than 0 data points\n");
 
 	x = new double[N];
 	y = new double[N];
@@ -73,7 +54,7 @@ DataPoints::DataPoints(std::vector<std::pair<double, double>> xy) {
 	N = xy.size();
 
 	if(N<0)
-		throw std::invalid_argument(Form("[%s] You can't have less than 0 data points [%d]\n",  __PRETTY_FUNCTION__, N));
+		throw std::invalid_argument("You can't have less than 0 data points\n");
 
 	x = new double[N];
 	y = new double[N];

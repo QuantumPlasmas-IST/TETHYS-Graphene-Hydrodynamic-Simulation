@@ -12,6 +12,7 @@ public:
 
 	~Spline3Interpolator();
 
+	void operator=(const Spline3Interpolator&);
 
 	double Interpolate(double x);
 

@@ -15,7 +15,7 @@ EqSolver::EqSolver(const FCmatrix& A, const Vec& vb) : b(vb){
 	else if(A.GetClassName().compare("FCmatrixBanded") == 0)
 		M = new FCmatrixFull((FCmatrixBanded&)A);
 	else
-		throw std::invalid_argument(Form("[%s] Matrix is not of any valid option for class\n", __PRETTY_FUNCTION__));
+		throw std::invalid_argument("Matrix is not of any valid option for class\n");
 }
 
 void EqSolver::SetConstants(const Vec& vb){
@@ -49,7 +49,7 @@ Vec EqSolver::GaussEliminationSolver(){
 	#endif
 
 	int n = M->GetRowN();
-	if (n != M->GetColN()) throw std::invalid_argument(Form("[%s] Matrix must be square for the usage of this method for specific solution!\n", __PRETTY_FUNCTION__));
+	if (n != M->GetColN()) throw std::invalid_argument("Matrix must be square for the usage of this method for specific solution!\n");
 	Vec x((*M)[0].size());
 	std::vector<int> index = M->GetRowIndices();
 
@@ -78,7 +78,7 @@ Vec EqSolver::LUdecompositionSolver(){
 	#endif
 
 	int n = M->GetRowN();
-	if (n != M->GetColN()) throw std::invalid_argument(Form("[%s] Matrix must be square for the usage of this method for specific solution!\n", __PRETTY_FUNCTION__));
+	if (n != M->GetColN()) throw std::invalid_argument("Matrix must be square for the usage of this method for specific solution!\n");
 	Vec x((*M)[0].size());
 	std::vector<int> index = M->GetRowIndices();
 
@@ -120,7 +120,7 @@ Vec EqSolver::GaussSeidelIterator(int tolerance){
 
 	int n = M->GetRowN();
 	if (n != M->GetColN()) 
-		throw std::invalid_argument(Form("[%s] Matrix must be square for the usage of this method for specific solution!\n", __PRETTY_FUNCTION__));
+		throw std::invalid_argument("Matrix must be square for the usage of this method for specific solution!\n");
 
 	bool diagonal_dominant = 1;
 	double sum_ndiag;

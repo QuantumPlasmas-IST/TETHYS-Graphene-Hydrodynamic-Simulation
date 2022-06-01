@@ -2,7 +2,6 @@
 #define __FCmatrix__
 
 #include "Vec.h"
-#include "TROOT.h"
 #include <vector>
 #include <iostream>
 #include <stdexcept>

@@ -1,7 +1,5 @@
 #include "Vec.h"
 
-#include "TROOT.h"
-
 //#define DEBUG
 
 //--------------------------------------------
@@ -12,7 +10,10 @@ Vec::Vec(int i, double x) :  N(i) {
 #ifdef DEBUG
   printf("[%s]\n", __PRETTY_FUNCTION__);
 #endif
-  if (N<0) throw std::invalid_argument(Form("[%s] received negative number of elements...!\n", __PRETTY_FUNCTION__));
+  if (N<0){
+    std::cout << "Number of elements = " << N << "\n";
+    throw std::invalid_argument(" received negative number of elements...!\n");
+  }
   entries = new double[N];
   indices = new int[N];
   for(int j=0; j<N; j++)
@@ -28,7 +29,7 @@ Vec::Vec(int i, const double* x) : Vec(i, 0.) { //c++11 on...
   if (x)
     std::copy(x, x+i, entries);
   else  
-    throw std::invalid_argument(Form("[%s] null pointer to array...!\n", __PRETTY_FUNCTION__));
+    throw std::invalid_argument("null pointer to array...!\n");
 }
 
 Vec::Vec(int i, const int* x) : Vec(i, 0.) { //c++11 on...
@@ -38,7 +39,7 @@ Vec::Vec(int i, const int* x) : Vec(i, 0.) { //c++11 on...
   if (x)
     std::copy(x, x+i, entries);
   else  
-    throw std::invalid_argument(Form("[%s] null pointer to array...!\n", __PRETTY_FUNCTION__));
+    throw std::invalid_argument("null pointer to array...!\n");
 }
 
 Vec::Vec(const Vec& v) : Vec(v.N, v.entries) { //c++11 on...
@@ -84,7 +85,7 @@ double Vec::operator[](int i) const {
   printf("[%s]\n", __PRETTY_FUNCTION__);
 #endif
   if (i>=N) 
-    throw std::invalid_argument(Form("[%s] index out of bounds...(i=%d N=%d)!\n", __PRETTY_FUNCTION__, i, N));  
+    throw std::invalid_argument("index out of bounds...!\n");  
   return entries[indices[i]];
 }
 
@@ -94,7 +95,7 @@ double& Vec::operator[](int i) {
   printf("[%s]\n", __PRETTY_FUNCTION__);
 #endif
   if (i>=N) 
-    throw std::invalid_argument(Form("[%s] index out of bounds...(i=%d N=%d)!\n", __PRETTY_FUNCTION__, i, N));  
+    throw std::invalid_argument("index out of bounds...\n");  
   
   return entries[indices[i]];
 }
@@ -124,7 +125,7 @@ Vec Vec::operator+(const Vec& other){
   printf("[%s]\n", __PRETTY_FUNCTION__ );
 #endif
   if (other.size()!=N) 
-    throw std::invalid_argument(Form("[%s] Vector size [%d] different from input vector size[%d]\n", __PRETTY_FUNCTION__, N, other.size()));  
+    throw std::invalid_argument("Vector size different from input vector size\n");  
 
   double* resultado = new double[N];
   for(int i=0; i<N; i++)
@@ -142,7 +143,7 @@ void Vec::operator+= (const Vec& v) {
   printf("[%s]\n", __PRETTY_FUNCTION__ );
 #endif
   if (v.N != N)
-    throw std::invalid_argument(Form("[%s] objects with different size...(N=%d v.N=%d)!\n", __PRETTY_FUNCTION__, N, v.N));        
+    throw std::invalid_argument("objects with different size...!\n");        
 
   for (int i=0; i<N; ++i)
     entries[indices[i]] += v[i];
@@ -154,7 +155,7 @@ Vec Vec::operator-(const Vec& other){
   printf("[%s]\n", __PRETTY_FUNCTION__ );
 #endif
   if (other.size()!=N) 
-    throw std::invalid_argument(Form("[%s] Vector size [%d] different from input vector size[%d]\n", __PRETTY_FUNCTION__, N, other.size()));  
+    throw std::invalid_argument("Vector size different from input vector size\n");  
 
   double* resultado = new double[N];
   for(int i=0; i<N; i++)
@@ -183,7 +184,7 @@ void Vec::operator-= (const Vec& v) {
   printf("[%s]\n", __PRETTY_FUNCTION__ );
 #endif
   if (v.N != N) 
-    throw std::invalid_argument(Form("[%s] objects with different size...(N=%d v.N=%d)!\n", __PRETTY_FUNCTION__, N, v.N));        
+    throw std::invalid_argument("objects with different size...\n");        
   
   for (int i=0; i<N; ++i) 
     entries[indices[i]] -= v[v.indices[i]];
@@ -210,7 +211,7 @@ Vec Vec::operator*(const Vec& other) const{
   printf("[%s]\n", __PRETTY_FUNCTION__ );
 #endif
   if (other.size()!=N) 
-    throw std::invalid_argument(Form("[%s] Vector size [%d] different from input vector size[%d]\n", __PRETTY_FUNCTION__, N, other.size()));  
+    throw std::invalid_argument("Vector size different from input vector size\n");  
   
   double* resultado = new double[N];
   for(int i=0; i<N; i++) 
@@ -228,7 +229,7 @@ void Vec::operator*= (const Vec& v) {
   printf("[%s]\n", __PRETTY_FUNCTION__ );
 #endif
   if (v.N != N)
-    throw std::invalid_argument(Form("[%s] objects with different size...(N=%d v.N=%d)!\n", __PRETTY_FUNCTION__, N, v.N));
+    throw std::invalid_argument("objects with different size...!\n");
   
   for (int i=0; i<N; ++i) 
     entries[indices[i]] *= v[i];
@@ -287,7 +288,7 @@ Vec operator*(double x, const Vec& v){
 //Dot product between 2 Vec's
 double Vec::dot(const Vec& v){
 	if(v.N != N)
-		throw std::invalid_argument(Form("[%s] objects with different size (%d , %d)", __PRETTY_FUNCTION__, N, v.N));
+		throw std::invalid_argument("objects with different size \n");
 	double dumb = 0;
   for (int i = 0; i < N; i++)
     dumb += (*this)[i]*v[i];
@@ -319,13 +320,13 @@ Vec Vec::ex(const Vec& v){
 		return Vec(7, pe);
 	}
 	else
-		throw std::invalid_argument(Form("[%s] x product not defined for dimensions diffent than 3 and 7. Your input was (%d,%d)", __PRETTY_FUNCTION__, N, v.N));
+		throw std::invalid_argument("x product not defined for dimensions different than 3 and 7");
 }
 
 //swap two numbers (Actually, it only swaps the indices, but shhh)
 void Vec::swap(int i, int j){
 	if(std::max(i,j) >= N)
-		throw std::invalid_argument(Form("[%s]indices out of range (%d , %d)", __PRETTY_FUNCTION__, N, std::max(i,j)));
+		throw std::invalid_argument("indices out of range");
 	
   if (i!=j){
     int a = indices[j];
@@ -336,7 +337,7 @@ void Vec::swap(int i, int j){
 
 double Vec::sumAbs(const Vec& v){
 	if(v.N != N)
-		throw std::invalid_argument(Form("[%s] objects with different size (%d , %d)", __PRETTY_FUNCTION__, N, v.N));
+		throw std::invalid_argument("objects with different size");
 	
   return std::accumulate(entries, entries+N, 0, 
 		[](double accum, double x){return accum+fabs(x);});	
@@ -401,7 +402,7 @@ int* Vec::GetIndices(){
 //Swapping 2 Vec's
 void swap(Vec& v1, Vec& v2){
 	if(v1.size() != v2.size())
-		throw std::invalid_argument(Form("[%s]Vectors must be of same size(%d , %d)", __PRETTY_FUNCTION__, v1.size(), v2.size()));
+		throw std::invalid_argument("Vectors must be of same size");
 	
   for(int i=0; i<v1.size(); i++) 
     std::swap(v1[i], v2[i]);

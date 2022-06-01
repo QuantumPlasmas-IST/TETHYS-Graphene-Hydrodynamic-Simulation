@@ -117,7 +117,7 @@ int FCmatrixAlgorithms::GaussEliminationSimple(FCmatrix& M_i){
 				if(scale_factor[j_aceite]!= 0) j_aceite = j;
 		}
 		if(fabs(M[j_aceite][k]/scale_factor[j_aceite])<1e-3) //mal condicionado
-			throw std::invalid_argument(Form("[%s] Matrix not well conditioned!\n", __PRETTY_FUNCTION__));
+			throw std::invalid_argument("Matrix not well conditioned!\n");
 
 		if(k != j_aceite){ //swaping the trade made above
 			std::swap(scale_factor[k], scale_factor[j_aceite]);

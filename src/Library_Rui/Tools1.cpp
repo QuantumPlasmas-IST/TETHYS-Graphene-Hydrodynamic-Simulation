@@ -149,6 +149,24 @@ void del(double*** ptr, int n, int m){
 	}
 }
 
+void sort2(int n, double* a, double* b){
+	double dumb;
+	bool flag = true;
+	while(flag){
+		flag = false;
+		for (int i = 0; i < n-1; ++i){
+			if(a[i]>a[i+1]){
+				dumb = a[i+1];
+				a[i+1] = a[i];
+				a[i] = dumb;
+				dumb = b[i+1];
+				b[i+1] = b[i];
+				b[i] = dumb;
+				flag = true;
+			}
+		}
+	}
+}
 
 double GetMax(int n, double* a){
 

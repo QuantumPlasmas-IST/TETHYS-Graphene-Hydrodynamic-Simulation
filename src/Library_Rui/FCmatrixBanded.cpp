@@ -22,7 +22,7 @@ FCmatrixBanded::FCmatrixBanded (double ** fBands, int flower, int fupper, int fn
 	//we assume that fBands is an array with the bands of the matrix only
 	classname = "FCmatrixBanded";
 	if(N < 1)
-		throw std::invalid_argument(Form("[%s] Amount of numbers in the main diagonal must be non negative or number of diagonals must be greater than 0 (%d)!!\n",  __PRETTY_FUNCTION__,fnDiag));
+		throw std::invalid_argument("Amount of numbers in the main diagonal must be non negative or number of diagonals must be greater than 0 !!\n");
 
 	int index = 0;
 	for (int i = 0; i <= upperD; ++i)
@@ -43,7 +43,7 @@ FCmatrixBanded::FCmatrixBanded(double * fBands, int flower, int fupper, int fnDi
 	#endif
 
 	if(fnDiag < 1 || flower < 0 || fupper < 0)
-		throw std::invalid_argument(Form("[%s] Amount of numbers in the main diagonal must be non negative or number of diagonals must be greater than 0 (%d)!!\n",  __PRETTY_FUNCTION__,fnDiag));
+		throw std::invalid_argument("Amount of numbers in the main diagonal must be non negative or number of diagonals must be greater than 0 !!\n");
    
     classname = "FCmatrixBanded";
    	int length = 0;
@@ -92,7 +92,7 @@ FCmatrixBanded::FCmatrixBanded(const FCmatrixBanded& mtx){
 	#endif
 
 	if(!&mtx)
-		throw std::invalid_argument(Form("[%s] Nullpointer!!\n",  __PRETTY_FUNCTION__));
+		throw std::invalid_argument("Nullpointer!!\n");
 	if(&mtx == this)
 		return;
 	lowerD = mtx.GetLowerD();
@@ -108,11 +108,11 @@ FCmatrixBanded::FCmatrixBanded(const FCmatrix& mtx){
 	  printf("[%s]\n", __PRETTY_FUNCTION__ );
 	#endif
 	if(!&mtx)
-		throw std::invalid_argument(Form("[%s] Nullpointer!!\n",  __PRETTY_FUNCTION__));
+		throw std::invalid_argument("Nullpointer!!\n");
 	if(&mtx == this)
 		return;
 	if(mtx.GetColN() != mtx.GetRowN())
-		throw std::invalid_argument(Form("[%s] The matrix you want to change to matrix is not square!!\n",  __PRETTY_FUNCTION__));
+		throw std::invalid_argument("The matrix you want to change to matrix is not square!!\n");
 	
 	//in development
 	upperD = 0;
@@ -126,8 +126,6 @@ FCmatrixBanded::FCmatrixBanded(const FCmatrix& mtx){
 		if((*this)[i][0] != 0)
 			lowerD++;		
 	}
-	
-
 }
 
 //-----------------------------------------------
@@ -208,7 +206,7 @@ Vec FCmatrixBanded::GetRow(int j) const{
 	#endif
 
 	if(j < 0 || j >= N)
-  		throw std::invalid_argument(Form("[%s] Number of diagonals must be greater than 0 (%d)!!\n",  __PRETTY_FUNCTION__,N));
+  		throw std::invalid_argument("Number of diagonals must be greater than 0!!\n");
   
 	double row[N];
 
@@ -282,7 +280,7 @@ Vec& FCmatrixBanded::operator[](int j){
 	#endif
 
 	if(j < 0 || j >= N)
-  		throw std::invalid_argument(Form("[%s] Number of diagonals must be greater than 0 (%d)!!\n",  __PRETTY_FUNCTION__,N));
+  		throw std::invalid_argument("Number of diagonals must be greater than 0!!\n");
   
 	double row[N];
 	//filling the upper part of the matrix
@@ -310,7 +308,7 @@ void FCmatrixBanded::operator=(const FCmatrixBanded& mtx){
 	  printf("[%s]\n", __PRETTY_FUNCTION__ );
 	#endif
 	if(!&mtx)
-		throw std::invalid_argument(Form("[%s] Nullpointer!!\n",  __PRETTY_FUNCTION__));
+		throw std::invalid_argument("Nullpointer!!\n");
 	if(&mtx == this)
 		return;
 	this->M3.clear();
@@ -327,9 +325,9 @@ FCmatrixBanded FCmatrixBanded::operator+(const FCmatrixBanded& mtx){
 	#endif
 
 	if(!&mtx)
-		throw std::invalid_argument(Form("[%s] Nullpointer!!\n",  __PRETTY_FUNCTION__));
+		throw std::invalid_argument("Nullpointer!!\n");
 	if(this->GetColN() != mtx.GetColN() || this->GetRowN() != mtx.GetRowN())
-		throw std::invalid_argument(Form("[%s] Matrices with different size!!\n",  __PRETTY_FUNCTION__));
+		throw std::invalid_argument("Matrices with different size!!\n");
 	
 	int this_ctr = this->GetMainDiagonalIndex();
 	int mtx_ctr = mtx.GetMainDiagonalIndex();
@@ -365,11 +363,11 @@ FCmatrixBanded FCmatrixBanded::operator+(const FCmatrixBanded& mtx){
 
 FCmatrixBanded FCmatrixBanded::operator-(const FCmatrixBanded& mtx){
 	if(!&mtx)
-		throw std::invalid_argument(Form("[%s] Nullpointer!!\n",  __PRETTY_FUNCTION__));
+		throw std::invalid_argument("Nullpointer!!\n");
 	if(!&mtx)
-		throw std::invalid_argument(Form("[%s] Nullpointer!!\n",  __PRETTY_FUNCTION__));
+		throw std::invalid_argument("Nullpointer!!\n");
 	if(this->GetColN() != mtx.GetColN() || this->GetRowN() != mtx.GetRowN())
-		throw std::invalid_argument(Form("[%s] Matrices with different size!!\n",  __PRETTY_FUNCTION__));
+		throw std::invalid_argument("Matrices with different size!!\n");
 	
 	int this_ctr = this->GetMainDiagonalIndex();
 	int mtx_ctr = mtx.GetMainDiagonalIndex();
@@ -410,9 +408,9 @@ void FCmatrixBanded::operator+=(const FCmatrixBanded& mtx){
 	#endif
 
 	if(!&mtx)
-		throw std::invalid_argument(Form("[%s] Nullpointer!!\n",  __PRETTY_FUNCTION__));
+		throw std::invalid_argument("Nullpointer!!\n");
 	if(this->GetColN() != mtx.GetColN() || this->GetRowN() != mtx.GetRowN())
-		throw std::invalid_argument(Form("[%s] Matrices with different size!!\n",  __PRETTY_FUNCTION__));
+		throw std::invalid_argument("Matrices with different size!!\n");
 	
 	int this_ctr = this->GetMainDiagonalIndex();
 	int mtx_ctr = mtx.GetMainDiagonalIndex();
@@ -454,9 +452,9 @@ void FCmatrixBanded::operator-=(const FCmatrixBanded& mtx){
 	#endif
 
 	if(!&mtx)
-		throw std::invalid_argument(Form("[%s] Nullpointer!!\n",  __PRETTY_FUNCTION__));
+		throw std::invalid_argument("Nullpointer!!\n");
 	if(this->GetColN() != mtx.GetColN() || this->GetRowN() != mtx.GetRowN())
-		throw std::invalid_argument(Form("[%s] Matrices with different size!!\n",  __PRETTY_FUNCTION__));
+		throw std::invalid_argument("Matrices with different size!!\n");
 	
 	int this_ctr = this->GetMainDiagonalIndex();
 	int mtx_ctr = mtx.GetMainDiagonalIndex();
@@ -494,7 +492,7 @@ void FCmatrixBanded::operator-=(const FCmatrixBanded& mtx){
 
 FCmatrixBanded FCmatrixBanded::operator*(const FCmatrix& mtx){
 	if(!&mtx)
-		throw std::invalid_argument(Form("[%s] Nullpointer!!\n",  __PRETTY_FUNCTION__));
+		throw std::invalid_argument("Nullpointer!!\n");
 
 	FCmatrixBanded a;
 	return a;
@@ -548,10 +546,10 @@ Vec FCmatrixBanded::Thomas(Vec d) const{
 	#endif
 
 	if(this->GetUpperD() != 1 || this->GetLowerD() != 1)
-		throw std::invalid_argument(Form("[%s] Matrix is not Tridiagonal [#Above D=%d][#Bellow D=%d]\n", __PRETTY_FUNCTION__, this->GetUpperD(), this->GetLowerD()));
+		throw std::invalid_argument("Matrix is not Tridiagonal\n");
 
 	if(d.size() != N)
-		throw std::invalid_argument(Form("[%s] b vector doesn't have the same size as M [N=%d & size.b=%d]\n", __PRETTY_FUNCTION__, N, d.size()));
+		throw std::invalid_argument("b vector doesn't have the same size as M\n");
 
 
 	int n = N-1;
@@ -564,7 +562,7 @@ Vec FCmatrixBanded::Thomas(Vec d) const{
 	Vec d_star(d);
 
 	if(fabs(band_b[0])==0)
-		throw std::invalid_argument(Form("[%s] Cannot use this method because of division by 0 in the first element of diagonal\n", __PRETTY_FUNCTION__));
+		throw std::invalid_argument("Cannot use this method because of division by 0 in the first element of diagonal\n");
 
 	c_star[0] = band_c[0] / band_b[0];
   	d_star[0] = d[0] / band_b[0];
@@ -574,7 +572,7 @@ Vec FCmatrixBanded::Thomas(Vec d) const{
 	    m = band_b[i] - band_a[i-1] * c_star[i-1];
 
 	    if(fabs(m)==0)
-			throw std::invalid_argument(Form("[%s] Cannot use this method because of division by 0 in m[%f]\n", __PRETTY_FUNCTION__,m));
+			throw std::invalid_argument("Cannot use this method because of division by 0 in m\n");
 
 	    c_star[i] = band_c[i] / m;
 	    d_star[i] = (d[i] - band_a[i-1] * d_star[i-1]) / m;
