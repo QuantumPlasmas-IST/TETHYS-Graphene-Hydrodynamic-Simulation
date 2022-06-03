@@ -378,15 +378,15 @@ void DiracGraphene2D::InitialCondPointDen(){
         HDen[c] = 1.0f;
 	}
 
-	for (int c = Ny/4; c < 2*Ny/4; c++){
-		for (int g = Nx/4; g < 2*Nx/4; g++){
+	for (int c = Ny/3; c < 2*Ny/3; c++){
+		for (int g = Nx/3; g < Nx/2; g++){
 			Den[c*Nx+g] = 1.5f;
 			HDen[c*Nx+g] = 0.5f;
 		}
 	}
 
-	for (int c = 3*Ny/4; c < Ny; c++){
-		for (int g = 3*Nx/4; g < Nx; g++){
+	for (int c = Ny/3; c < 2*Ny/3; c++){
+		for (int g = Nx/2; g < 2*Nx/3; g++){
 			Den[c*Nx+g] = 0.5f;
 			HDen[c*Nx+g] = 1.5f;
 		}
