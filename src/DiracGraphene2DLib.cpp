@@ -68,20 +68,20 @@ void DiracGraphene2D::CflCondition(){ // Eventual redefinition
 	}else{
 		lambda=0.75f-sqrt(49.0f+32.0f*vel_therm)/4.0f;
 	}
-	dt = dx/abs(lambda);
+	dt = 0.5f * dx/abs(lambda);
 
 
 	/*  CFL condition for FTCS method
 	if(kin_vis>0.0f&& kin_vis*dt > dx*dx*0.25f){
 		dt = 0.8f*0.25f*dx*dx/kin_vis;
-	}*/
+	}
 	//  CFL condition for (1,9) Weighted explicit method
 	if(kin_vis>0.0f&& kin_vis*dt > dx*dx*0.5f){
 		dt = 0.8f*0.5f*dx*dx/kin_vis;
 	}
 	if(therm_diff>0.0f&& therm_diff*dt > dx*dx*0.5f){
 		dt = 0.8f*0.5f*dx*dx/therm_diff;
-	}
+	}*/
 }
 
 
@@ -373,16 +373,24 @@ void DiracGraphene2D::InitialCondRand(){
 void DiracGraphene2D::InitialCondPointDen(){
 	random_device rd;
 	float maxrand;
-	maxrand = (float) random_device::max();
 	for (int c = 0; c < Nx*Ny; c++ ){
-		
 		Den[c] = 1.0f;
-
         HDen[c] = 1.0f;
 	}
 
-	Den[Nx*Ny/3] = 1.5f;
-	HDen[Nx*Ny*2/3] = 1.5f;
+	for (int c = Ny/4; c < 2*Ny/4; c++){
+		for (int g = Nx/4; g < 2*Nx/4; g++){
+			Den[c*Nx+g] = 1.5f;
+			HDen[c*Nx+g] = 0.5f;
+		}
+	}
+
+	for (int c = 3*Ny/4; c < Ny; c++){
+		for (int g = 3*Nx/4; g < Nx; g++){
+			Den[c*Nx+g] = 0.5f;
+			HDen[c*Nx+g] = 1.5f;
+		}
+	}
 }
 
 void DiracGraphene2D::WriteFluidFile(float t){
