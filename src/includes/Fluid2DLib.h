@@ -65,7 +65,7 @@ using namespace H5;
 		float *den_dy_mid;
 
 		std::ofstream data_preview; // file stream for simplified .dat file output
-		int snapshot_per_period = 40;
+		int snapshot_per_period = 80;
 		int snapshot_step = 1;
 
 		void ForwardTimeOperator(); ///< Time evolution for the FTCS method employed for the parabolic operators.
