@@ -42,6 +42,9 @@ protected:
 
 	float *hlap_flxX;      // mass density flux laplacian component x
 	float *hlap_flxY;      // mass density flux laplacian component y
+	
+	float *hlap_den;
+	float *hlap_den_mid;
 
 	void ForwardTimeOperator() override; ///< Time evolution for the FTCS method employed for the parabolic operators.
 	void ChooseGridPointers(const string &grid) override;

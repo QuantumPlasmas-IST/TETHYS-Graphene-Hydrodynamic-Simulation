@@ -33,6 +33,12 @@ DiracGraphene2D::DiracGraphene2D(SetUpParameters &input_parameters) : Fluid2D(in
 	HCurY 		= new float[Nx * Ny]();
 	hvel_snd_arr	= new float[Nx * Ny]();
 
+	hlap_den = new float[Nx*Ny]();
+	hlap_den_mid =new float[(Nx-1)*(Ny-1)]();
+
+	hlap_flxX = new float[Nx*Ny](); //new grids for the laplacians
+	hlap_flxY = new float[Nx*Ny](); //in fact they could be smaller but thiw way they are just 0 at the borders who do not evolve
+
 	// 1st Aux. Grid variables (Nx-1)*(Ny-1)
 	hden_mid	= new float[(Nx-1)*(Ny-1)]();
 	hvelX_mid	= new float[(Nx-1)*(Ny-1)]();
@@ -514,7 +520,7 @@ void DiracGraphene2D::Richtmyer(){
 void DiracGraphene2D::ForwardTimeOperator() {
 #pragma omp parallel for default(none) shared(Nx,Ny,FlxX,FlxY,lap_flxX,lap_flxY,HFlxX,HFlxY,hlap_flxX,hlap_flxY,dt)
 	for (int kp = 1 + Nx; kp <= Nx * Ny - Nx - 2; kp++) {
-		float flx_x_old, flx_y_old, hflx_x_old, hflx_y_old,;
+		float flx_x_old, flx_y_old, hflx_x_old, hflx_y_old;
 		if (kp % Nx != Nx - 1 && kp % Nx != 0) {
 			flx_x_old = FlxX[kp];
 			flx_y_old = FlxY[kp];
