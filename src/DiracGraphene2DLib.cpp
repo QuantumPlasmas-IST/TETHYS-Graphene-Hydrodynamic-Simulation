@@ -64,9 +64,9 @@ void DiracGraphene2D::CflCondition(){ // Eventual redefinition
 	dy = lengY / ( float ) ( Ny - 1 );
 	float lambda;
 	if(vel_therm<vel_snd){
-		lambda=0.75f-sqrt(49.0f+32.0f*vel_snd)/4.0f;
+		lambda=0.75f+sqrt(1.6+3.0f*vel_snd*vel_snd);
 	}else{
-		lambda=0.75f-sqrt(49.0f+32.0f*vel_therm)/4.0f;
+		lambda=0.75f+sqrt(1.6+3.0f*vel_therm*vel_therm);
 	}
 	dt = 0.5f * dx/abs(lambda);
 
