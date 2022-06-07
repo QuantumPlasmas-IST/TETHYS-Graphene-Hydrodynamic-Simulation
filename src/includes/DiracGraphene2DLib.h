@@ -40,11 +40,16 @@ protected:
 	float *hvelX_mid;
 	float *hvelY_mid;
 
+	float *hlap_flxX;      // mass density flux laplacian component x
+	float *hlap_flxY;      // mass density flux laplacian component y
+
+	void ForwardTimeOperator() override; ///< Time evolution for the FTCS method employed for the parabolic operators.
 	void ChooseGridPointers(const string &grid) override;
 
 	float *hptr_den;
 	float *hptr_px;
 	float *hptr_py;
+	float *hptr_lap_den;
 
 	float vel_therm = 10.0f; //new constant - pressure term
 	float A = 0.1f; //new constant - source function, equilibrium relaxation
@@ -139,6 +144,9 @@ public :
 		 * -# Mass flux along x at source contact for holes @f$p_x(x=0) @f$
 		 * */
 		void WriteFluidFile(float t); // writes the line of time t on the simplified .dat file output
+		
+		void VelocityLaplacianWeighted19() override;
+		void ParabolicOperatorWeightedExplicit19() override; ///< Forward Time Centered Space method for the diffusive terms
 };
 
 

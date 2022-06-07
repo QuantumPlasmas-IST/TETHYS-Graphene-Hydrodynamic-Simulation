@@ -71,13 +71,15 @@ void DiracGraphene2D::CflCondition(){ // Eventual redefinition
 	dt = 0.5f * dx/abs(lambda);
 
 
-	/*  CFL condition for FTCS method
-	if(kin_vis>0.0f&& kin_vis*dt > dx*dx*0.25f){
-		dt = 0.8f*0.25f*dx*dx/kin_vis;
-	}
+	
 	//  CFL condition for (1,9) Weighted explicit method
 	if(kin_vis>0.0f&& kin_vis*dt > dx*dx*0.5f){
 		dt = 0.8f*0.5f*dx*dx/kin_vis;
+	}
+	/* 
+	// CFL condition for FTCS method
+	if(kin_vis>0.0f&& kin_vis*dt > dx*dx*0.25f){
+		dt = 0.8f*0.25f*dx*dx/kin_vis;
 	}
 	if(therm_diff>0.0f&& therm_diff*dt > dx*dx*0.5f){
 		dt = 0.8f*0.5f*dx*dx/therm_diff;
@@ -144,7 +146,7 @@ float DiracGraphene2D::XMomentumFluxY(GridPoint2D p, char side) {
 
 float DiracGraphene2D::YMomentumFluxY(GridPoint2D p, char side) {
 
-	float sound ;
+	float sound;
 	float den;
 	float hden;
 	float py;
@@ -507,4 +509,45 @@ void DiracGraphene2D::Richtmyer(){
 
 			}
 		}
+}
+
+void DiracGraphene2D::ForwardTimeOperator() {
+#pragma omp parallel for default(none) shared(Nx,Ny,FlxX,FlxY,lap_flxX,lap_flxY,HFlxX,HFlxY,hlap_flxX,hlap_flxY,dt)
+	for (int kp = 1 + Nx; kp <= Nx * Ny - Nx - 2; kp++) {
+		float flx_x_old, flx_y_old, hflx_x_old, hflx_y_old,;
+		if (kp % Nx != Nx - 1 && kp % Nx != 0) {
+			flx_x_old = FlxX[kp];
+			flx_y_old = FlxY[kp];
+
+            FlxX[kp] = flx_x_old + lap_flxX[kp];
+			FlxY[kp] = flx_y_old + lap_flxY[kp];
+
+			hflx_x_old = HFlxX[kp];
+			hflx_y_old = HFlxY[kp];
+
+            HFlxX[kp] = hflx_x_old + hlap_flxX[kp];
+			HFlxY[kp] = hflx_y_old + hlap_flxY[kp];
+        }
+	}
+}
+
+void DiracGraphene2D::VelocityLaplacianWeighted19() {
+	this->MassFluxToVelocity("MainGrid");
+
+#pragma omp parallel for default(none) shared(lap_flxX,lap_flxY,hlap_flxX,hlap_flxY,VelX,VelY,HVelX,HVelY)
+	for (int kp = 1 + Nx; kp <= Nx * Ny - Nx - 2; kp++) {
+		GridPoint2D point(kp,Nx,Ny,false);
+		if (kp % Nx != Nx - 1 && kp % Nx != 0){
+			lap_flxX[kp] = Laplacian19( point, VelX, kin_vis);
+			lap_flxY[kp] = Laplacian19( point, VelY, kin_vis);
+
+			hlap_flxX[kp] = Laplacian19( point, HVelX, kin_vis);
+			hlap_flxY[kp] = Laplacian19( point, HVelY, kin_vis);
+		}
+	}
+}
+
+void DiracGraphene2D::ParabolicOperatorWeightedExplicit19() {
+	VelocityLaplacianWeighted19();
+	ForwardTimeOperator();
 }

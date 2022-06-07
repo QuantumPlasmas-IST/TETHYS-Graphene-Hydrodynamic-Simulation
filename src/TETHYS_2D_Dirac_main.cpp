@@ -40,7 +40,7 @@ int main(int argc, char **argv){
 	/*.........Fixed or variable vel_snd value........................*/
 	graph.SetSound();
 	//graph.SetSimulationTime();
-	graph.SetTmax(5.0f);
+	graph.SetTmax(7.0f);
 
 	/*................................................................*/
 
@@ -93,6 +93,8 @@ int main(int argc, char **argv){
 		BoundaryCondition::XPeriodic(graph);
 		BoundaryCondition::YPeriodic(graph);
 
+		if(graph.GetKinVis()!=0.0f ) {
+			graph.ParabolicOperatorWeightedExplicit19();
 
 		//Record full hdf5 data
 		if (parameters.SaveMode  && graph.Snapshot()) {
