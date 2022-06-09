@@ -26,22 +26,16 @@ int main(int argc, char **argv){
 
 	SetUpParameters parameters(argc, argv);
 	GrapheneFluid1D graph(parameters);
-	//DyakonovShurBoundaryCondition boundary_condition;
 
 	GrapheneFluid1D::BannerDisplay();
 	/*......CFL routine to determine dt...............................*/
 	graph.CflCondition();
 	dt=graph.GetDt();
-	// desperate attempt to make Richtmyer converge
-	//dt*=0.5f;
-	//graph.SetDt(dt);
 	/*................................................................*/
 	
 	/*.........Fixed or variable vel_snd value........................*/
 
 	float sound = graph.GetVelSnd();
-//	std::function<float(float)> variationS = [=](float x){ return sound+.5f* tanh(6.0f*cos(2.0f*MAT_PI*2.0f*x)); };
-//	graph.SetSound(variationS);
 	graph.SetSound();
 	graph.SetSimulationTime();
 
@@ -59,44 +53,26 @@ int main(int argc, char **argv){
 
 
 	/*...............Initialization...................................*/
-
-	float offset = 1.000f;
-	float A      = 0.010f;
-	float f      = 4.000f;
-	float phi    = MAT_PI;
-	float c      = 21.1285f;
-
-	std::function<float(float)> fden = [=](float x){ return offset + A*cos(2*MAT_PI*f*x+phi); };
-	std::function<float(float)> fvx  = [=](float x){ return c*(fden(x) - 1); };
-
-	graph.InitialCondGeneral(fden, fvx);
-	//graph.InitialCondRand();
+	graph.InitialCondRand();
 	//DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
 	//graph.InitialCondTest();
 
 	/*................................................................*/
 
-	std::cout << "\033[1;7;5;33m Program Running \033[0m"<<endl;
+	cout << "\033[1;7;5;33m Program Running \033[0m"<<endl;
 
 
+	graph.SetTmax(10.0);
 	//Main cycle
-	graph.SetTmax(1.0f);
-	while(t <= graph.GetTmax()) {
+	while(t <= graph.GetTmax() ) {
 		t += dt;
 		GrapheneFluid1D::TimeStepCounter++;
-		// Main algorithm
-		//graph.Richtmyer();
-		graph.RungeKuttaTVD();
-
+		// Main algorithm		
+		graph.Richtmyer();
 		// Impose boundary conditions
-		//DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
+		DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
 		//BoundaryCondition::XPeriodic(graph);
 
-		//graph.BohmOperator(0.015);
-		//BoundaryCondition::XPeriodic(graph);
-
-		// Applying average filters for smoothing 	
-		//graph.Smooth(2);
 		//Record full data
 		if (parameters.SaveMode  && graph.Snapshot()) {
 			graph.SaveSnapShot();
@@ -109,12 +85,11 @@ int main(int argc, char **argv){
 	}
 	graph.CloseHdf5File();
 
-	std::cout << "\033[1A\033[2K\033[1;32mDONE!\033[0m\n";
-	std::cout<<"═══════════════════════════════════════════════════════════════════════════" <<endl;
+	cout << "\033[1A\033[2K\033[1;32mDONE!\033[0m\n";
+	cout<<"═══════════════════════════════════════════════════════════════════════════" <<endl;
 
 	return 0;
 }
-
 
 
 

@@ -1,108 +1,101 @@
-
-
-
-#include "includes/Fluid1DLib.h"
 #include "includes/SetUpParametersLib.h"
-#include "includes/DirichletBoundaryLib.h"
-#include "includes/DyakonovShurBoundaryLib.h"
+#include "includes/Fluid1DLib.h"
+#include "includes/GrapheneFluid1DLib.h"
 
-#include "TethysBaseLib.h"
-#include "includes/TethysMathLib.h"
-
-#include "includes/Cell1DLib.h"
-#include "includes/StateVecLib.h"
-
-
-
+#include <functional>
 
 #ifndef MAT_PI
 #	define MAT_PI 3.14159265358979323846
 #endif
 
-
 using namespace std;
 
 
-int main(int argc, char **argv){
-
-/*
-StateVec U1(2,3);
-StateVec U2(4,5);
-StateVec U(U1);
-U=U2/3;
-cout << "\n\nTEsting operators"<<endl;
-	cout << U <<endl;
-cout <<"\n\n";
-*/
+float NonlinearWaveDESolver(float x, float dx, const float* Ic, const float* Par); // 4th order Runge-Kutta nonlinear wave DESolver
 
 
+int main(int argc, char **argv) {
+	float t = 0.0f;
+	float dt;		// time step
 
 
-SetUpParameters parameters(25, 10, 0, 0, 0, 0,0, 1, 1);
-
-GrapheneFluid1D teste(parameters);
-
-teste.CflCondition();
-cout <<"S\t"<<teste.GetVelSnd()<<endl;
-cout <<"VF\t"<<teste.GetVelFer()<<endl;
-cout <<"dt\t"<<teste.GetDt()<<endl;
-
-teste.SetSound();
+	SetUpParameters parameters(20.0f,10.0f,0.0f,0.0f,0.0f,0.0f,0.0f,1,1.0);
+	GrapheneFluid1D graph(parameters);
 
 
-///////////////////
-//testing algorithm
-teste.CreateFluidFile();
-teste.CreateHdf5File();
+	graph.CflCondition();
+	dt = graph.GetDt();
 
-teste.SaveSound();
-
+	graph.CreateFluidFile();
+	graph.CreateHdf5File();
 
 
-//teste.InitialCondTest();
-teste.InitialCondRand();
+	/*
+	// simplified B = 0.005f
+	float offset = 1.000f;
+	float A      = 0.010f;
+	float f      = 4.000f;
+	float phi    = MAT_PI;
+	float c      = 21.1285f;
+	*/
 
-	for (float h = 0.0f; h < 2.5f ; h+=teste.GetDt()) {
-		teste.WriteFluidFile(h);
-		if (GrapheneFluid1D::TimeStepCounter % 3 == 0) {
-			teste.CopyFields();
-			teste.SaveSnapShot();
-		}
+	/*
+	// simplified B = 0.005f
+	float offset = 1.0005f;
+	float A      = 0.0106f;
+	float f      = 2.0000f;
+	float phi    = MAT_PI;
+	float c      = 21.1943f;
+	*/
+
+	// simplified B = 0.005f
+	float offset =  1.0000f;
+	float A      =  0.3700f;
+	float mu     =  0.5000f;
+	float sigma  =  0.0550f;
+	float c      = -21.2318f;
+
+	// nonlinear wave approximate IC
+	//std::function<float(float)> fden = [=](float x) { return offset + A*cos(2*MAT_PI*f*x+phi); };
+
+	// soliton wave approximate IC
+	std::function<float(float)> fden = [=](float x) { return offset + A/cosh((x-mu)/sigma); };
+	std::function<float(float)> fvx  = [=](float x) { return c*(fden(x) - 1); };
+
+	graph.InitialCondGeneral(fden, fvx);
+
+
+	std::cout << "\033[1;7;5;33m Program Running \033[0m"<<endl;
+
+
+	graph.SetTmax(1.0f);
+	float Tmax = graph.GetTmax();
+
+	graph.CopyFields();
+	graph.SaveSnapShot();
+	while(t < Tmax) {
+
+		t += dt;
 		GrapheneFluid1D::TimeStepCounter++;
 
+		graph.RungeKuttaTVD();
 
-		teste.Richtmyer();
-		//teste.RungeKuttaTVD();
-		//teste.McCormack();
+		if (parameters.SaveMode && graph.Snapshot()) {
 
-		//BoundaryCondition::XPeriodic(teste);
-		DyakonovShurBoundaryCondition::DyakonovShurBc(teste);
-		//DirichletBoundaryCondition::Density(teste,1.0f,1.0f);
-		//DirichletBoundaryCondition::VelocityX(teste,.1f,0.1f);
-
+			graph.CopyFields();
+			graph.SaveSnapShot();
+		}
+		graph.WriteFluidFile(t);
 	}
-	teste.WriteAttributes();
-	teste.CloseHdf5File();
+	if(parameters.SaveMode) {
 
-/*
-	int Nx=151;
-	StateVec *Utest;
-	Utest = new StateVec[Nx]();
-	for (int i = 0; i < Nx; i++ ){
-		Utest[i].n()=1.0;
-		Utest[i].v()=(i>Nx/3 && i<2*Nx/3 ) ? 1.0f : 0.1f;
+		graph.WriteAttributes();
 	}
+	graph.CloseHdf5File();
 
 
-	ofstream outputfile;
-	outputfile.open ("TVDtest.dat");
-	for (int i = 0; i < Nx; ++i) {
-		CellHandler1D cell(i, nullptr, Utest);
-		outputfile <<i <<"\t"<<  Utest[i]  <<"\t"<< cell.VanLeer(Utest,i) <<endl;
-	}
+	std::cout << "\033[1A\033[2K\033[1;32mDONE!\033[0m" << endl;
 
-	outputfile.close();
-*/
 
 	return 0;
 }

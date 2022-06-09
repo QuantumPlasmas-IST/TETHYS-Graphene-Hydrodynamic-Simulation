@@ -210,28 +210,26 @@ void Fluid1D::SaveSnapShot(){
 	str_time.insert(str_time.begin(), 5 - str_time.length(), '0');
 	string name_dataset = "snapshot_" + str_time;
 
-	float currenttime= static_cast<float>(TimeStepCounter) * dt;
-	CopyFields();
-
 	DataSet dataset_den = GrpDen->createDataSet(name_dataset, HDF5FLOAT, *DataspaceDen);
 	Attribute atr_step_den = dataset_den.createAttribute("time step", HDF5INT, atr_dataspace);
 	Attribute atr_time_den = dataset_den.createAttribute("time", HDF5FLOAT, atr_dataspace);
-	dataset_den.write(Den, HDF5FLOAT);
-	dataset_den.close();
+	float currenttime= static_cast<float>(TimeStepCounter) * dt;
 	atr_step_den.write(HDF5INT, &TimeStepCounter);
 	atr_time_den.write(HDF5FLOAT , &currenttime);
 	atr_step_den.close();
 	atr_time_den.close();
+	dataset_den.write(Den, HDF5FLOAT);
+	dataset_den.close();
 
 	DataSet dataset_vel_x = GrpVelX->createDataSet(name_dataset, HDF5FLOAT, *DataspaceVelX);
 	Attribute atr_step_vel_x = dataset_vel_x.createAttribute("time step", HDF5INT, atr_dataspace);
 	Attribute atr_time_vel_x = dataset_vel_x.createAttribute("time", HDF5FLOAT, atr_dataspace);
-	dataset_vel_x.write(Vel, HDF5FLOAT);
-	dataset_vel_x.close();
 	atr_step_vel_x.write(HDF5INT, &TimeStepCounter);
 	atr_time_vel_x.write(HDF5FLOAT , &currenttime);
 	atr_step_vel_x.close();
 	atr_time_vel_x.close();
+	dataset_vel_x.write(Vel, HDF5FLOAT);
+	dataset_vel_x.close();
 }
 
 void Fluid1D::RungeKuttaTVD() {
@@ -241,7 +239,7 @@ void Fluid1D::RungeKuttaTVD() {
 	float VelNumFluxW;
 	float VelNumFluxE;
 
-	float BP = 0.01f;
+	float BP = 0.005f;
 	float VelNumFluxBohmW;
 	float VelNumFluxBohmE;
 
@@ -442,12 +440,6 @@ void Fluid1D::SaveSound() {
 
 void Fluid1D::CalcDensityLaplacian(StateVec* u_vec) {
 
-/*
-	// calculates the laplacian at the extreme cells
-	u_vec[0].lap_n()    = (2.0f*u_vec[0].n() - 5.0f*u_vec[1].n() + 4.0f*u_vec[2].n() - u_vec[2].n()) / (dx*dx);
-	u_vec[Nx-1].lap_n() = (2.0f*u_vec[Nx-1].n() - 5.0f*u_vec[Nx-2].n() + 4.0f*u_vec[Nx-3].n() - u_vec[Nx-4].n()) / (dx*dx);
-*/
-
 	// calculates the laplacian at the extreme cells (periodic boundary condition)
 	u_vec[0].lap_n()    = (u_vec[Nx-1].n() - 2.0f*u_vec[0].n() + u_vec[1].n()) / (dx*dx);
 	u_vec[Nx-1].lap_n() = (u_vec[Nx-2].n() - 2.0f*u_vec[Nx-1].n() + u_vec[0].n()) / (dx*dx);
@@ -456,24 +448,4 @@ void Fluid1D::CalcDensityLaplacian(StateVec* u_vec) {
 	for(int i = 1; i < Nx-1; ++i) {
 		u_vec[i].lap_n() = (u_vec[i-1].n() - 2.0f*u_vec[i].n() + u_vec[i+1].n()) / (dx*dx);
 	}
-
-/*
-	// density square root
-	float sqrt_n[Nx];
-
-	for (int i = 0; i < Nx; ++i) {
-		sqrt_n[i] = sqrt(u_vec[i].n());
-	}
-	
-	// calculates the third derivative at the extreme cells (periodic boundary condition)
-	u_vec[0].lap_n()    = (0.5f*sqrt_n[2] - sqrt_n[1] + sqrt_n[Nx-1] - 0.5f*sqrt_n[Nx-2]) / (dx*dx*dx);
-	u_vec[1].lap_n()    = (0.5f*sqrt_n[3] - sqrt_n[2] + sqrt_n[0] - 0.5f*sqrt_n[Nx-1]) / (dx*dx*dx);
-	u_vec[Nx-2].lap_n() = (0.5f*sqrt_n[0] - sqrt_n[Nx-1] + sqrt_n[Nx-3] - 0.5f*sqrt_n[Nx-4]) / (dx*dx*dx);
-	u_vec[Nx-1].lap_n() = (0.5f*sqrt_n[1] - sqrt_n[0] + sqrt_n[Nx-2] - 0.5f*sqrt_n[Nx-3]) / (dx*dx*dx);
-
-	// calculates the third derivative for all the other cells
-	for(int i = 2; i < Nx-2; ++i) {
-		u_vec[i].lap_n() = (0.5f*sqrt_n[i+2] - sqrt_n[i+1] + sqrt_n[i-1] - 0.5f*sqrt_n[i-2]) / (dx*dx*dx);
-	}
-*/
 }

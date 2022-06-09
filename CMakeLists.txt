@@ -12,8 +12,8 @@ include_directories(src/includes)
 find_package(HDF5 REQUIRED COMPONENTS CXX)
 include_directories(${HDF5_INCLUDE_DIRS})
 
-#find_package(GSL REQUIRED)
-#link_libraries(GSL::gsl GSL::gslcblas)
+find_package(GSL REQUIRED)
+link_libraries(GSL::gsl GSL::gslcblas)
 
 #set(CMAKE_CXX_FLAGS "-Wall -Wextra -Wno-unused-parameter -O2")
 set(CMAKE_CXX_FLAGS "-O2")
@@ -23,7 +23,7 @@ if(OPENMP_FOUND)
 endif()
 
 
-#add_executable(TEST_laplacian src/laplacian_main.cpp)
+add_executable(TEST_1d src/TEST_main.cpp)
 
 
 add_executable(TETHYS_1D src/TETHYS_1D_Main_v134.cpp)
@@ -33,15 +33,15 @@ add_executable(TETHYS_ELEC_2D src/TETHYS_2D_ElectronicAnalysis.cpp)
 file(GLOB SRC_LIB_FILES src/*Lib.cpp)
 add_library(tethys_library STATIC ${SRC_LIB_FILES})
 
-#target_link_libraries(TEST_laplacian PUBLIC tethys_library)
+target_link_libraries(TEST_1d PUBLIC tethys_library)
 
 target_link_libraries(TETHYS_1D PUBLIC tethys_library)
 
 target_link_libraries(TETHYS_2D PUBLIC tethys_library)
 target_link_libraries(TETHYS_ELEC_2D PUBLIC tethys_library)
 
-#target_include_directories(TEST_laplacian PRIVATE ${HDF5_INCLUDE_DIRS})
-#target_link_libraries(TEST_laplacian PRIVATE ${HDF5_CXX_LIBRARIES})
+target_include_directories(TEST_1d PRIVATE ${HDF5_INCLUDE_DIRS})
+target_link_libraries(TEST_1d PRIVATE ${HDF5_CXX_LIBRARIES})
 
 target_include_directories(TETHYS_1D PRIVATE ${HDF5_INCLUDE_DIRS})
 target_link_libraries(TETHYS_1D PRIVATE ${HDF5_CXX_LIBRARIES})
