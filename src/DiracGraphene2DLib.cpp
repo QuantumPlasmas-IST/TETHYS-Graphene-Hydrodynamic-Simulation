@@ -371,16 +371,14 @@ void DiracGraphene2D::InitialCondRand(){
 	for (int c = 0; c < Nx*Ny; c++ ){
 		float noise;
 		noise =  (float) rd()/maxrand ; //(float) rand()/ (float) RAND_MAX ;
-		Den[c] = 1.0f + 0.005f * (noise - 0.5f);
+		Den[c] = 1.0f + 0.5f * (noise - 0.5f);
 
 		noise =  (float) rd()/maxrand ; //(float) rand()/ (float) RAND_MAX ;
-        HDen[c] = 1.0f + 0.005f * (noise - 0.5f);
+        HDen[c] = 1.0f + 0.5f * (noise - 0.5f);
 	}
 }
 
 void DiracGraphene2D::InitialCondPointDen(){
-	random_device rd;
-	float maxrand;
 	for (int c = 0; c < Nx*Ny; c++ ){
 		Den[c] = 1.0f;
         HDen[c] = 1.0f;
@@ -398,6 +396,15 @@ void DiracGraphene2D::InitialCondPointDen(){
 			Den[c*Nx+g] = 0.5f;
 			HDen[c*Nx+g] = 1.5f;
 		}
+	}
+}
+
+void DiracGraphene2D::InitialCondUniform(){
+	for (int c = 0; c < Nx*Ny; c++ ){
+
+			Den[c] = 1.0f;
+
+        	HDen[c] = 1.0f;
 	}
 }
 

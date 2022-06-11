@@ -84,6 +84,7 @@ public :
 
 		void InitialCondRand() override;             ///< Initial condition, zero velocity and constant density with 0.5% white noise
 		void InitialCondPointDen();					///< Initial condition, zero velocity and point of density with 0.5% white noise
+		void InitialCondUniform();
 
 		/*!
 		 * @brief Sets the total simulation time in units of @f$v_0/L@f$
