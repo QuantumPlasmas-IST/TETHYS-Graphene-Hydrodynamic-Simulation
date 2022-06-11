@@ -12,22 +12,12 @@ void DirichletBoundaryCondition::Density(Fluid1D& fluid_class, float left, float
 	int nx=fluid_class.SizeX();
 	fluid_class.Den[0] = left;
 	fluid_class.Den[nx - 1] = right;
-
-	fluid_class.Umain[0].n()=left;
-	fluid_class.Umain[nx-1].n()=right;
-	fluid_class.Uaux[0].n()=left;
-	fluid_class.Uaux[nx-1].n()=right;
 }
 
 void DirichletBoundaryCondition::VelocityX(Fluid1D& fluid_class, float left, float right){
 	int nx=fluid_class.SizeX();
 	fluid_class.Vel[0] = left;
 	fluid_class.Vel[nx - 1] = right;
-
-	fluid_class.Umain[0].v()=left;
-	fluid_class.Umain[nx-1].v()=right;
-	fluid_class.Uaux[0].v()=left;
-	fluid_class.Uaux[nx-1].v()=right;
 }
 
 void DirichletBoundaryCondition::Density(Fluid2D& fluid_class, float left, float right, float top, float bottom){

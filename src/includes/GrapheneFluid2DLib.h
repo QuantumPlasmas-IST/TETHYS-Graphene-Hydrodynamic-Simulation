@@ -14,8 +14,6 @@
 
 #include "includes/Fluid2DLib.h"
 
-
-
 /*!
  * @brief Graphene electronic fluid class in two dimensions.
  *
@@ -31,9 +29,6 @@ protected:
 	   @f[ m^\star = n^{3/2} @f]
 	 * */
 	float DensityToMass(float density) override;
-
-
-	float coefBohm = 0.0001f;
 
 public :
 	explicit GrapheneFluid2D(SetUpParameters &input_parameters);
@@ -66,21 +61,21 @@ public :
 		 * Since the mass of the fluid element is not a constant the in the graphene electronic fluid, one needs to perform the transformation
 		   @f[ \vec{v} = \frac{\vec{p}}{n^{3/2}} @f]
 		 * */
-//		//void MassFluxToVelocity(string grid) override; // Converts the mass density flux back to velocity, in graphene  v = p n^{-3/2}
+		void MassFluxToVelocity() override; // Converts the mass density flux back to velocity, in graphene  v = p n^{-3/2}
 		/*Override fluxes and sources to specifics of graphene physics*/
 		float DensitySource(float n, float flx_x, float flx_y, float mass, float s)override;   ///< density equation (continuity equation) source term
 		float TemperatureSource(float n, float flx_x, float flx_y, float den_grad_x, float den_grad_y, float mass, float s) override;   ///< density equation (continuity equation) source term
 		float XMomentumSource(float n, float flx_x, float flx_y, float mass, float s)override; ///< velocity X component equation (momentum equation) source term
 		float YMomentumSource(float n, float flx_x, float flx_y, float mass, float s)override; ///< velocity y component equation (momentum equation) source term
 
-		float DensityFluxX(GridPoint2D p, char side ) override; ///< density equation (continuity equation) conserved flux X component
-		float DensityFluxY(GridPoint2D p, char side ) override; ///< density equation (continuity equation) conserved1 flux Y component
+		float DensityFluxX(GridPoint p, char side ) override; ///< density equation (continuity equation) conserved flux X component
+		float DensityFluxY(GridPoint p, char side ) override; ///< density equation (continuity equation) conserved1 flux Y component
 
-		float XMomentumFluxX(GridPoint2D p, char side ) override; ///< velocity X component equation (momentum equation) conserved flux X component
-		float XMomentumFluxY(GridPoint2D p, char side ) override; ///< velocity X component equation (momentum equation) conserved flux Y component
+		float XMomentumFluxX(GridPoint p, char side ) override; ///< velocity X component equation (momentum equation) conserved flux X component
+		float XMomentumFluxY(GridPoint p, char side ) override; ///< velocity X component equation (momentum equation) conserved flux Y component
 
-		float YMomentumFluxX(GridPoint2D p, char side ) override; ///< velocity Y component equation (momentum equation) conserved flux X component
-		float YMomentumFluxY(GridPoint2D p, char side ) override; ///< velocity Y component equation (momentum equation) conserved flux Y component
+		float YMomentumFluxX(GridPoint p, char side ) override; ///< velocity Y component equation (momentum equation) conserved flux X component
+		float YMomentumFluxY(GridPoint p, char side ) override; ///< velocity Y component equation (momentum equation) conserved flux Y component
 
 
 };

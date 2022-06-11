@@ -6,12 +6,11 @@
 
 
 
-
+#include "includes/Fluid2DLib.h"
 #include "includes/SetUpParametersLib.h"
 #include "includes/DirichletBoundaryLib.h"
 #include "includes/DyakonovShurBoundaryLib.h"
 #include "includes/GrapheneFluid2DLib.h"
-#include "TethysBaseLib.h"
 
 #ifndef MAT_PI
 #	define MAT_PI 3.14159265358979323846
@@ -33,7 +32,6 @@ int main(int argc, char **argv){
 
 	/*......CFL routine to determine dt...............................*/
 	graph.CflCondition();
-	graph.SetDt(graph.GetDt()*0.25f);
 	dt=graph.GetDt();
 	/*................................................................*/
 	
@@ -58,10 +56,7 @@ int main(int argc, char **argv){
 	graph.WelcomeScreen();
 
 	/*...............Initialization...................................*/
-//	graph.InitialCondGeneral([](float x,float y) { return 1.0f+0.1f/cosh(10.0f*sqrt((x-.5f)*(x-.5f)+(y-.5f)*(y-.5f))); },[](float x,float y) { return 0.5f; },[](float x,float y) { return 0.0f; });
-	graph.InitialCondGeneral([](float x,float y) { return 1.0f+0.1f/cosh(10.0f*(x-.5f)); },[](float x,float y) { return 0.5f/cosh(10.0f*(x-.5f)); },[](float x,float y) { return 0.0f; });
-//	graph.InitialCondGeneral([](float x,float y) { return 0.8; },[](float x,float y) { return 0.5f; },[](float x,float y) { return 0.0f; });
-	//graph.InitialCondRand();
+	graph.InitialCondRand();
 	/*................................................................*/
 
 	/*................Setting.the.lateral.boundaries..................*/
@@ -71,9 +66,8 @@ int main(int argc, char **argv){
 	/*................................................................*/
 
 
-
 	cout << "\033[1;7;5;33m Program Running \033[0m"<<endl;
-	while (t <= graph.GetTmax() ){
+	while (t <=  graph.GetTmax() ){
 		int percentage=100*GrapheneFluid2D::TimeStepCounter/(graph.GetTmax()/dt);
 		cout << percentage<<"%\033[?25l"; //prints the percentage of simulation completed
 
@@ -85,13 +79,8 @@ int main(int argc, char **argv){
 		/*+++++++++++++++++++++++++++++++++++++*
 		 * Change the boundary conditions here *
 		 *+++++++++++++++++++++++++++++++++++++*/
-		//DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
-		//DirichletBoundaryCondition::YClosedNoSlip(graph);
-		//DirichletBoundaryCondition::YClosedFreeSlip(graph);
-
-		BoundaryCondition::XPeriodic(graph);
-		BoundaryCondition::YPeriodic(graph);
-
+		DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
+		DirichletBoundaryCondition::YClosedNoSlip(graph);
 		if(graph.GetThermDiff()!=0.0){
 			DirichletBoundaryCondition::Temperature(graph,0.22f, 0.22f, 0.22f, 0.22f);  // 300K corresponds to 0.22*Fermi temperature
 		}
@@ -102,14 +91,8 @@ int main(int argc, char **argv){
 			/*+++++++++++++++++++++++++++++++++++++*
 			 * Change the boundary conditions here *
 			 *+++++++++++++++++++++++++++++++++++++*/
-			//DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
-			//DirichletBoundaryCondition::YClosedNoSlip(graph);
-		//	DirichletBoundaryCondition::YClosedFreeSlip(graph);
-
-			BoundaryCondition::XPeriodic(graph);
-			BoundaryCondition::YPeriodic(graph);
-
-
+			DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
+			DirichletBoundaryCondition::YClosedNoSlip(graph);
 			if(graph.GetThermDiff()!=0.0){
 				DirichletBoundaryCondition::Temperature(graph,0.22f, 0.22f, 0.22f, 0.22f); // 300K corresponds to 0.22*Fermi temperature
 			}

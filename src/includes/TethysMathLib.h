@@ -11,39 +11,11 @@
 #ifndef TETHYSMATHLIB_H
 #define TETHYSMATHLIB_H
 
-
-
-#include <cmath>
-#include <functional>
-
-#include <gsl/gsl_vector.h>
-#include <gsl/gsl_multiroots.h>
-
 #include <H5Cpp.h>
+#include "includes/TethysBaseLib.h"
+
 
 using namespace std;
-
-
-#ifndef MAT_PI
-#	define MAT_PI 3.14159265358979f
-#endif
-
-#ifndef MAT_EULER
-#	define MAT_EULER 2.71828182845905f
-#endif
-
-class MathUtils{
-
-protected:
-	gsl_matrix * FDmatrix2 ; //matrices to perform finite differenceing
-	gsl_matrix * FDmatrix3 ;
-	void SetFDmatrix2(int size);
-	void SetFDmatrix3(int size);
-
-public:
-	MathUtils()=default;
-	~MathUtils()=default;
-
 
 /*!
  * @brief 1D Function of local anisotropy of S
@@ -56,7 +28,7 @@ public:
  *
  * @return S(x) the value of local sound velocity
  * */
-static float Sound_Velocity_Anisotropy(float x, float s);
+float Sound_Velocity_Anisotropy(float x, float s);
 
 /*!
  * @brief 2D Function of local anisotropy of S
@@ -71,7 +43,7 @@ static float Sound_Velocity_Anisotropy(float x, float s);
  * @return S(x,y) the value of local sound velocity
 
  * */
-static float Sound_Velocity_Anisotropy(float x, float y, float s);
+float Sound_Velocity_Anisotropy(float x, float y, float s);
 
 /*!
  * @brief Smooth staircase function
@@ -87,7 +59,7 @@ static float Sound_Velocity_Anisotropy(float x, float y, float s);
  * @return @f$ f(x) @f$
  *
  * */
-static float Stair_Case_Function(float x, float step_width, float smoothness);
+float Stair_Case_Function(float x, float step_width, float smoothness);
 
 /*!
  * @brief Performs 1D convolution of array with a gaussian kernel or its derivative
@@ -103,7 +75,7 @@ static float Stair_Case_Function(float x, float step_width, float smoothness);
  * @see Gauss_Kernel
  * @see Gauss_Kernel_Derivative
  * */
-static void Convolve_Gauss(unsigned int type, unsigned int m, float t, const float * in, float * out, unsigned long size);
+void Convolve_Gauss(unsigned int type, unsigned int m, float t, const float * in, float * out, unsigned long size);
 //void Convolve_Gauss(int type, float m, float t, float * in, float * out, int size);
 
 /*!
@@ -116,7 +88,7 @@ static void Convolve_Gauss(unsigned int type, unsigned int m, float t, const flo
  *
  * @return @f$ g(x) @f$
  * */
-static float Gauss_Kernel(int pos , float t); //
+float Gauss_Kernel(int pos , float t); //
 
 /*!
  * @brief Gaussian kernel function derivative
@@ -128,7 +100,7 @@ static float Gauss_Kernel(int pos , float t); //
  *
  * @return @f$ g'(x) @f$
  * */
-static float Gauss_Kernel_Derivative(int pos , float t); //
+float Gauss_Kernel_Derivative(int pos , float t); //
 
 
 /*!
@@ -142,7 +114,7 @@ static float Gauss_Kernel_Derivative(int pos , float t); //
  *
  * @return Time average of sampled function
  * */
-static float Signal_Average(int n, float dt, const float * f);
+float Signal_Average(int n, float dt, const float * f);
 
 /*!
  * @brief 1D Numerical integration using composite Simpson's rule
@@ -153,7 +125,7 @@ static float Signal_Average(int n, float dt, const float * f);
  *
  * @returns 4th order approximation of integral
  * */
-static float Integral_1_D(int n, float ds, const float * f);
+float Integral_1_D(int n, float ds, const float * f);
 
 
 /*!
@@ -167,7 +139,7 @@ static float Integral_1_D(int n, float ds, const float * f);
  *
  * @returns 4th order approximation of integral
  * */
-static float Integral_2_D(int n, int m, float dx, float dy, const float * f);
+float Integral_2_D(int n, int m, float dx, float dy, const float * f);
 
 
 /*!
@@ -175,19 +147,12 @@ static float Integral_2_D(int n, int m, float dx, float dy, const float * f);
  *
  * Average moving filter for the smoothing of 1D simulation, suppressing the spurious oscillations inherent to the 2nd order solver
  *
- * @param array_in Input array to be smoothed
- * @param array_out Output array to store the smoothed result
+ * @param vec_in Input array to be smoothed
+ * @param vec_out Output array to store the smoothed result
  * @param size Size of the arrays
  * @param width Window filter width
  *
  * */
-static void Average_Filter(const float * array_in, float * array_out, int size , int width );
-
-
-static void LaplacianField(const float *array_in, float *array_out, float dx, int size_x, int size_y);
-
-static void GradientField(const float *array_in, float *array_out_x, float *array_out_y, float dx, float dy, int size_x, int size_y);
-static void GradientField(const float *array_in, float *array_out, float dx, int size_x);
-};
+void Average_Filter(const float * vec_in, float * vec_out, int size , int width );
 
 #endif

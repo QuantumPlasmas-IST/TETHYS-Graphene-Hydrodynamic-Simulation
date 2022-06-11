@@ -25,17 +25,8 @@
 #include <exception>
 #include <functional>
 
-
-#include <gsl/gsl_vector.h>
-#include <gsl/gsl_linalg.h>
-#include <gsl/gsl_multiroots.h>
-
-#include <gsl/gsl_cblas.h>
-
 #include <H5Cpp.h>
 #include <omp.h>
-#include "includes/TethysMathLib.h"
-//#include "includes/TethysBaseLib.h"
 
 using namespace std;
 using namespace H5;
@@ -56,16 +47,6 @@ using namespace H5;
 const FloatType      HDF5FLOAT(PredType::NATIVE_FLOAT);
 const IntType        HDF5INT(PredType::NATIVE_INT);
 
-struct PhysicalParameters{
-	float VSnd =50.0f;   // sound velocity parameter
-	float VFer =10.0f;
-	float CycF =0.0f;
-	float VisS =0.0f;    // kinetic shear viscosity parameter
-	float VisH =0.0f;    // kinetic odd viscosity parameter
-	float Diff =0.0f; // thermal diffusivity parameter
-	float ColF =0.0f;   // colision frequency parameter
-	float Bohm =0.0f;   // Bohm
-};
 
 /*!
  * @brief Base class for the fluid classes
@@ -73,7 +54,7 @@ struct PhysicalParameters{
  * This base class, from which the subsequent fluid classes are derived, establish the dimensios of the simulation grid and manage the creation of the HDF5 structures
  *
  * */
-class TethysBase : public MathUtils {
+class TethysBase {
 	protected:
 		int   Nx ;          // Simulation region (dataset) dimensions
 		int   Ny ;
@@ -83,7 +64,6 @@ class TethysBase : public MathUtils {
 		float dt=1.0f;      // temporal discretization. will later be redifined by the CFL condition
 		float lengX=1.0f;   // physical length along x. dx will be redifined as lengX/Nx
 		float lengY=1.0f;   // physical length along y. dy will be redifined as lengY/Ny
-
 		float vel_snd =50.0f;   // sound velocity parameter
 		float vel_fer =10.0f;
 		float cyc_freq =0.0f;
@@ -91,11 +71,8 @@ class TethysBase : public MathUtils {
 		float odd_vis =0.0f;    // kinetic odd viscosity parameter
 		float therm_diff = 0.0f; // thermal diffusivity parameter
 		float col_freq =0.0f;   // colision frequency parameter
-
 		std::string file_infix; // base name for the output files
 		float Tmax=2.0f;          // total time of simulation
-
-		PhysicalParameters param;
 
 	public:
 		/*!
@@ -172,11 +149,6 @@ class TethysBase : public MathUtils {
 
 		static void BannerDisplay() ; ///< launches the initial ASCII art banner
 		void WelcomeScreen() const; ///< launches screen with the relevant info
-
-
-
 };
-
-
 #endif
 

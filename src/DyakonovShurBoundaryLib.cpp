@@ -13,18 +13,6 @@ void DyakonovShurBoundaryCondition::DyakonovShurBc(GrapheneFluid1D& fluid_class)
 	fluid_class.Vel[0] = fluid_class.Vel[1];
 	fluid_class.Den[nx - 1] = fluid_class.Den[nx - 2];
 	fluid_class.Vel[nx - 1] = 1.0f / fluid_class.Den[nx - 1];
-
-	fluid_class.Umain[0].n()=1.0f;
-	fluid_class.Umain[0].v()=fluid_class.Umain[1].v();
-	fluid_class.Umain[nx-1].n()=fluid_class.Umain[nx-2].n();
-	fluid_class.Umain[nx-1].v()=1.0f/fluid_class.Umain[nx-1].n();
-
-
-	fluid_class.Uaux[0].n()=1.0f;
-	fluid_class.Uaux[0].v()=fluid_class.Uaux[1].v();
-	fluid_class.Uaux[nx-1].n()=fluid_class.Uaux[nx-2].n();
-	fluid_class.Uaux[nx-1].v()=1.0f/fluid_class.Uaux[nx-1].n();
-
 }
 
 void DyakonovShurBoundaryCondition::DyakonovShurBc(GrapheneFluid2D& fluid_class) {
