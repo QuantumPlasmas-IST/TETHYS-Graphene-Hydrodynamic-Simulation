@@ -8,6 +8,7 @@ enable_testing()
 
 include_directories(src/)
 include_directories(src/includes)
+include_directories(src/Library_Radiation)
 
 find_package(HDF5 REQUIRED COMPONENTS CXX)
 include_directories(${HDF5_INCLUDE_DIRS})
@@ -21,12 +22,14 @@ endif()
 
 add_executable(TETHYS_2D src/TETHYS_2D_Main_v261.cpp)
 add_executable(TETHYS_ELEC_2D src/TETHYS_2D_ElectronicAnalysis.cpp)
+add_executable(TETHYS_RADIATION_2D src/TETHYS_2D_Radiation.cpp)
 
-file(GLOB SRC_LIB_FILES src/*Lib.cpp)
+file(GLOB SRC_LIB_FILES src/*Lib.cpp src/Library_Radiation/*.cpp)
 add_library(tethys_library STATIC ${SRC_LIB_FILES})
 
 target_link_libraries(TETHYS_2D PUBLIC tethys_library)
 target_link_libraries(TETHYS_ELEC_2D PUBLIC tethys_library)
+target_link_libraries(TETHYS_RADIATION_2D PUBLIC tethys_library)
 
 target_include_directories(TETHYS_2D PRIVATE ${HDF5_INCLUDE_DIRS})
 target_link_libraries(TETHYS_2D PRIVATE ${HDF5_CXX_LIBRARIES})

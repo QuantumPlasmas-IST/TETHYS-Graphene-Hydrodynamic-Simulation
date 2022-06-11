@@ -51,6 +51,9 @@ private:
 	vector<float> QuadVarVarVarXX;
 	vector<float> QuadVarVarVarXY;
 	vector<float> QuadVarVarVarYY;
+	vector<float> DipMagZ;
+	vector<float> DipMagVarZ;
+	vector<float> DipMagVarVarZ;
 	vector<float> AvgCurDS;
 	vector<float> VoltDS;
 	vector<float> CurS;
@@ -240,9 +243,16 @@ public:
 	/*!
 	* @brief 2D Integrator for the electric quadrupole tensor yy component
 	*
-	* This method computes the integral @f$ \int_0^{W/L}\int_0^1 (2(x-1/2)^2 - (y-w/2)^2) n \,dxdy @f$
+	* This method computes the integral @f$ \int_0^{W/L}\int_0^1 3(x-w/2)*(y-1/2) n \,dxdy @f$
 	* */
 	static float ElectricQuadrupoleYY(const GrapheneFluid2D& graphene);
+
+	/*!
+	* @brief 2D Integrator for the electric quadrupole tensor yy component
+	*
+	* This method computes the integral @f$ \int_0^{W/L}\int_0^1 ( (x-w/2)*j_y - (y-1/2)*j_x ) \,dxdy @f$
+	* */
+	static float MagneticDipoleZ(const GrapheneFluid2D& graphene);
 
 
 

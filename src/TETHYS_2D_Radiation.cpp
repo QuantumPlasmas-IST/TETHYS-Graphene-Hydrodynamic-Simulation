@@ -4,7 +4,8 @@
 *                                                                                               *
 \************************************************************************************************/
 
-#include "../src/includes/RadiationLib_wo_ROOT.h"
+#include "includes/RadiationLib_w_ROOT.h"
+//#include "includes/RadiationLib.h"
 
 using namespace std;
 
@@ -18,7 +19,7 @@ int main(int argc, char **argv){
     }
     clock_t tStart = clock();
 
-    Radiation Rad(10.5,2.5,1.5,2,0.05,3000);
+    Radiation Rad(2.5,1.5,2,0.05,3000);
 
     int Nl = Rad.ReadFromElectroFile(input_file_name);
 
@@ -46,25 +47,25 @@ int main(int argc, char **argv){
         }
     }
 
-    //
+    /*/
     Rad.Set_n_index(2.5);
     Rad.SetD_Conductor(2);
     Rad.SetR_Conductor(2);
     Rad.RadiationPatternTimeAverage180(8.5, O_x1, O_y1, 50000, 100, 0.356);
     //*/
 
-    /*/
+    //
     Rad.Set_n_index(1.);
-    Rad.SetD_Conductor(0);
+    Rad.SetD_Conductor(0.);
     Rad.SetR_Conductor(0.);
-    cout << Rad.RadiationPatternTimeAverage360Graph(8.5, O_x1, O_y1, 50000, 100, 0.356, 1) << endl;
+    cout << Rad.RadiationPatternTimeAverage360(8.5, O_x1, O_y1, 50000, 100, 0.356) << "\n";
     //*/
 
-    /*/
+    //
     Rad.Set_n_index(2.5);
     Rad.SetD_Conductor(1.5);
     Rad.SetR_Conductor(2);
-    cout << Rad.RadiationTimeAverageIntegralSmallAngle(8.5, O_x5, O_y5, 100000, 100, 0.356, M_PI/18) << endl;
+    cout << Rad.RadiationTimeAverageIntegralSmallAngle(8.5, O_x5, O_y5, 100000, 100, 0.356, M_PI/18) << "\n";
     //*/
     
     cout << "[1A\033[2K\033[1;32mDONE!\033[0m\n";
