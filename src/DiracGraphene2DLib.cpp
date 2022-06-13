@@ -371,10 +371,10 @@ void DiracGraphene2D::InitialCondRand(){
 	for (int c = 0; c < Nx*Ny; c++ ){
 		float noise;
 		noise =  (float) rd()/maxrand ; //(float) rand()/ (float) RAND_MAX ;
-		Den[c] = 1.0f + 0.5f * (noise - 0.5f);
+		Den[c] = 1.0f + 0.05f * (noise - 0.5f);
 
 		noise =  (float) rd()/maxrand ; //(float) rand()/ (float) RAND_MAX ;
-        HDen[c] = 1.0f + 0.5f * (noise - 0.5f);
+        HDen[c] = 1.0f + 0.05f * (noise - 0.5f);
 	}
 }
 

@@ -40,7 +40,7 @@ int main(int argc, char **argv){
 	/*.........Fixed or variable vel_snd value........................*/
 	graph.SetSound();
 	//graph.SetSimulationTime();
-	graph.SetTmax(7.0f);
+	graph.SetTmax(4.0f);
 
 	/*................................................................*/
 
@@ -63,6 +63,7 @@ int main(int argc, char **argv){
 //	graph.InitialCondGeneral([](float x,float y) { return 0.8; },[](float x,float y) { return 0.5f; },[](float x,float y) { return 0.0f; });
 	graph.InitialCondRand();
 //	graph.InitialCondPointDen();
+//	graph.InitialCondUniform();
 	/*................................................................*/
 
 	/*................Setting.the.lateral.boundaries..................*/
