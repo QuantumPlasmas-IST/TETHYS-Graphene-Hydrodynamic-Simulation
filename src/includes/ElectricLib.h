@@ -28,7 +28,7 @@
  * This class provides the methods to compute such quantities from the data stored on the GrapheneFluid1D or GrapheneFluid2D classes.
  *
  **/
-class ElectroAnalysis : public MathUtils {
+class ElectroAnalysis{
 private:
 	std::ofstream data_electro;
 	vector<float> TmpArr;
@@ -39,6 +39,21 @@ private:
 	vector<float> DipVarY;
 	vector<float> DipVarVarX;
 	vector<float> DipVarVarY;
+	vector<float> QuadXX;
+	vector<float> QuadXY;
+	vector<float> QuadYY;
+	vector<float> QuadVarXX;
+	vector<float> QuadVarXY;
+	vector<float> QuadVarYY;
+	vector<float> QuadVarVarXX;
+	vector<float> QuadVarVarXY;
+	vector<float> QuadVarVarYY;
+	vector<float> QuadVarVarVarXX;
+	vector<float> QuadVarVarVarXY;
+	vector<float> QuadVarVarVarYY;
+	vector<float> DipMagZ;
+	vector<float> DipMagVarZ;
+	vector<float> DipMagVarVarZ;
 	vector<float> AvgCurDS;
 	vector<float> VoltDS;
 	vector<float> CurS;
@@ -208,6 +223,37 @@ public:
 	* This method computes the integral @f$ \int_0^{w}\int_0^1 j_y \,dxdy @f$
 	* */
 	static float ElectricDipoleVariationY(const GrapheneFluid2D& graphene);
+
+
+	//Quadrupole
+	/*!
+	* @brief 2D Integrator for the electric quadrupole tensor xx component
+	*
+	* This method computes the integral @f$ \int_0^{W/L}\int_0^1 (2(x-1/2)^2 - (y-w/2)^2) n \,dxdy @f$
+	* */
+	static float ElectricQuadrupoleXX(const GrapheneFluid2D& graphene);
+
+	/*!
+	* @brief 2D Integrator for the electric quadrupole tensor xy component
+	*
+	* This method computes the integral @f$ \int_0^{W/L}\int_0^1 3(y-w/2)*(x-1/2) n \,dxdy @f$
+	* */
+	static float ElectricQuadrupoleXY(const GrapheneFluid2D& graphene);
+
+	/*!
+	* @brief 2D Integrator for the electric quadrupole tensor yy component
+	*
+	* This method computes the integral @f$ \int_0^{W/L}\int_0^1 3(x-w/2)*(y-1/2) n \,dxdy @f$
+	* */
+	static float ElectricQuadrupoleYY(const GrapheneFluid2D& graphene);
+
+	/*!
+	* @brief 2D Integrator for the electric quadrupole tensor yy component
+	*
+	* This method computes the integral @f$ \int_0^{W/L}\int_0^1 ( (x-w/2)*j_y - (y-1/2)*j_x ) \,dxdy @f$
+	* */
+	static float MagneticDipoleZ(const GrapheneFluid2D& graphene);
+
 
 
 	/*!
