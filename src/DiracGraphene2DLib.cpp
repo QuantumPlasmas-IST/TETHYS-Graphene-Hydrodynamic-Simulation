@@ -74,22 +74,17 @@ void DiracGraphene2D::CflCondition(){ // Eventual redefinition
 	}else{
 		lambda=0.75f+sqrt(1.6+3.0f*vel_therm*vel_therm);
 	}
-	dt = 0.5f * dx/abs(lambda);
-
+	float dt1 = 0.5f * dx/abs(lambda);
+	dt = dt1;
 
 	
 	//  CFL condition for (1,9) Weighted explicit method
-	if(kin_vis>0.0f&& kin_vis*dt > dx*dx*0.5f){
-		dt = 0.8f*0.5f*dx*dx/kin_vis;
+	
+	if(kin_vis>0.0){
+		float dt2 = 0.8f*0.5f*dx*dx/kin_vis;
+		dt = min(dt1, dt2)
 	}
-	/* 
-	// CFL condition for FTCS method
-	if(kin_vis>0.0f&& kin_vis*dt > dx*dx*0.25f){
-		dt = 0.8f*0.25f*dx*dx/kin_vis;
-	}
-	if(therm_diff>0.0f&& therm_diff*dt > dx*dx*0.5f){
-		dt = 0.8f*0.5f*dx*dx/therm_diff;
-	}*/
+	
 }
 
 
