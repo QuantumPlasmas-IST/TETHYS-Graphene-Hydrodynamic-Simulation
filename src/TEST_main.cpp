@@ -38,12 +38,12 @@ cout <<"\n\n";
 
 
 
-SetUpParameters parameters(12.2, 9.1, 0, 0.0, 0, 0,0, 1, 1);
+SetUpParameters parameters(12.2, 9.1, 0, 0.05, 0, 0,0, 1, 1);
 
 GrapheneFluid1D teste(parameters);
 
 teste.CflCondition();
-teste.SetDt(teste.GetDt()*0.01f);
+teste.SetDt(teste.GetDt()*0.05f);
 cout <<"S\t"<<teste.GetVelSnd()<<endl;
 cout <<"VF\t"<<teste.GetVelFer()<<endl;
 cout <<"dt\t"<<teste.GetDt()<<endl;

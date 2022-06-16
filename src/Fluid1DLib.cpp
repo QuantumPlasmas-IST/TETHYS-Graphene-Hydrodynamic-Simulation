@@ -112,7 +112,8 @@ void Fluid1D::InitialCondRand(){
 
 void Fluid1D::InitialCondTest(){
  	for (int i = 0; i < Nx; i++ ){
-		Umain[i].v()= 1.5f; // (i>3*Nx/8 && i<5*Nx/8 ) ? 3.0f : 0.0f; //1.5f;//
+		//Umain[i].v()= 1.5f; // (i>3*Nx/8 && i<5*Nx/8 ) ? 3.0f : 0.0f; //1.5f;//
+	    Umain[i].v()= 1.0f/(1.0f+5.0f* pow(cosh((i*dx-0.5f)*12.0f),2));
 	    Umain[i].n()= 0.2f+0.2f/ pow(cosh((i*dx-0.5f)*12.0f),2); //(i>3*Nx/8 && i<5*Nx/8 ) ? 1.0f : 0.1f; //0.2f+0.2f/ pow(cosh((i*dx-0.5f)*12.0f),2);//
 	}
 	this->SetSound();
@@ -279,13 +280,21 @@ void Fluid1D::RungeKuttaTVD() {
 		VelNumSourceW= NumericalSource::Average(this, UWleft,UWright).v();
 		VelNumSourceE= NumericalSource::Average(this, UEleft,UEright).v();
 
-if(i>1&&i<Nx-2) {
-	VelNumFluxBohm =
-			0.01f * (-0.5f * Umain[i - 2].n() + Umain[i - 1].n() - Umain[i + 1].n() + 0.5f * Umain[i + 2].n()) /
-			(dx * dx);
-}else{
-	VelNumFluxBohm =0.0f;
-}
+		VelNumFluxBohm =0.0f;
+		if(i>1&&i<Nx-2) {
+			VelNumFluxBohm =
+					-0.01f * (-0.5f * Umain[i - 2].n() + Umain[i - 1].n() - Umain[i + 1].n() + 0.5f * Umain[i + 2].n()) /
+					(dx * dx);
+		}else{
+			if(i==1){
+				-0.01f * (-2.5f * Umain[0].n() + 9.0f*Umain[1].n() - 12.0f*Umain[2].n() + 7.f * Umain[3].n() -1.5f*Umain[4].n()) /
+				(dx * dx);
+			}
+			if(i==Nx-2){
+				-0.01f * (2.5f * Umain[Nx-2-0].n() - 9.0f*Umain[Nx-2-1].n() + 12.0f*Umain[Nx-2-2].n() - 7.f * Umain[Nx-2-3].n() +1.5f*Umain[Nx-2-4].n()) /
+				(dx * dx);
+			}
+		}
 
 		Uaux[i].n()=Umain[i].n()-(dt/dx)*(DenNumFluxE-DenNumFluxW) +0.5f*dt*(DenNumSourceW+DenNumSourceE);
 	//	if(kin_vis!=0){
@@ -317,12 +326,20 @@ if(i>1&&i<Nx-2) {
 		VelNumSourceW= NumericalSource::Average(this, UWleft,UWright).v();
 		VelNumSourceE= NumericalSource::Average(this, UEleft,UEright).v();
 
+		VelNumFluxBohm =0.0f;
 		if(i>1&&i<Nx-2) {
 			VelNumFluxBohm =
-					0.01f * (-0.5f * Uaux[i - 2].n() + Uaux[i - 1].n() - Uaux[i + 1].n() + 0.5f * Uaux[i + 2].n()) /
+					-0.01f * (-0.5f * Uaux[i - 2].n() + Uaux[i - 1].n() - Uaux[i + 1].n() + 0.5f * Uaux[i + 2].n()) /
 					(dx * dx);
 		}else{
-			VelNumFluxBohm =0.0f;
+			if(i==1){
+				-0.01f * (-2.5f * Uaux[0].n() + 9.0f*Uaux[1].n() - 12.0f*Uaux[2].n() + 7.f * Uaux[3].n() -1.5f*Uaux[4].n()) /
+				(dx * dx);
+			}
+			if(i==Nx-2){
+				-0.01f * (2.5f * Uaux[Nx-2-0].n() - 9.0f*Uaux[Nx-2-1].n() + 12.0f*Uaux[Nx-2-2].n() - 7.f * Uaux[Nx-2-3].n() +1.5f*Uaux[Nx-2-4].n()) /
+				(dx * dx);
+			}
 		}
 
 		Umain[i].n()=0.5f*(Umain[i].n()+Uaux[i].n())-(0.5f*dt/dx)*(DenNumFluxE-DenNumFluxW) + 0.25f*dt*(DenNumSourceW+DenNumSourceE);
