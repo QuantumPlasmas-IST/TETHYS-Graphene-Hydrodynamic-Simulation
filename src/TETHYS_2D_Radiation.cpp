@@ -27,8 +27,8 @@ int main(int argc, char **argv){
 
     Rad.Interpolation(Nl_0,Nl);
 
-    Rad.PrintGraphElectro(Nl_0, Nl);
-    Rad.PrintGraphInterpolation(Nl_0, Nl);
+//    Rad.PrintGraphElectro(Nl_0, Nl);
+//    Rad.PrintGraphInterpolation(Nl_0, Nl);
 
     vector<double> O_x1{0};
     vector<double> O_y1{0};
