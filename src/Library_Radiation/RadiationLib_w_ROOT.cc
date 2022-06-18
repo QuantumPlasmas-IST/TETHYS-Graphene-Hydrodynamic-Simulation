@@ -23,7 +23,7 @@
 #include "TImage.h"
 //*/
 
-#include "../src/includes/RadiationLib_w_ROOT.h"
+#include "includes/RadiationLib_w_ROOT.h"
 
 #ifndef MAT_PI
 #    define MAT_PI 3.14159265358979323846
