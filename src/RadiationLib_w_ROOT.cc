@@ -4,8 +4,26 @@
 *                                                                                               *
 \************************************************************************************************/
 
-//Version without ROOT
-#include "../src/includes/RadiationLib.h"
+//Version with ROOT
+#include <TCanvas.h>
+#include <TGraph.h>
+#include <TGraph2D.h>
+#include <TGraphPolar.h>
+#include <TGraphPolargram.h>
+#include "TF1.h"
+#include "TF2.h"
+#include "TH1F.h"
+#include "TH1.h"
+#include "TAxis.h"
+#include "TStyle.h"
+#include "TView.h"
+#include "TPad.h"
+#include "TSystem.h"
+#include "TApplication.h"
+#include "TImage.h"
+//*/
+
+#include "includes/RadiationLib_w_ROOT.h"
 
 #ifndef MAT_PI
 #    define MAT_PI 3.14159265358979323846
@@ -137,6 +155,132 @@ void Radiation::Interpolation(int Nl_0, int Nl){
         }
     }
     E_plane_angle = sum_c/contador+M_PI/2;
+}
+
+
+//Printing graphs
+void Radiation::PrintGraphElectro(int Nl_0, int Nl){
+    auto c1 = new TCanvas("c1", "c1", 200, 10, 1280, 720);
+
+    auto gr_CurS = new TGraph();
+
+    auto gr_DipX = new TGraph();
+    auto gr_DipY = new TGraph();
+    auto gr_DipX_dd = new TGraph();
+    auto gr_DipY_dd = new TGraph();
+
+    auto gr_QuadXX = new TGraph();
+    auto gr_QuadXY = new TGraph();
+    auto gr_QuadYY = new TGraph();
+    auto gr_QuadXX_ddd = new TGraph();
+    auto gr_QuadXY_ddd = new TGraph();
+    auto gr_QuadYY_ddd = new TGraph();
+
+    auto gr_DipMagZ = new TGraph();
+    auto gr_DipMagZ_dd = new TGraph();
+
+    for(int i=Nl_0; i<Nl; i++){
+        gr_CurS->SetPoint(i-Nl_0,time[i],CurS[i]);
+
+        gr_DipX->SetPoint(i-Nl_0,time[i],DipX[i]);
+        gr_DipY->SetPoint(i-Nl_0,time[i],DipY[i]);
+        gr_DipX_dd->SetPoint(i-Nl_0,time[i],DipX_dd[i]);
+        gr_DipY_dd->SetPoint(i-Nl_0,time[i],DipY_dd[i]);
+
+        gr_QuadXX->SetPoint(i-Nl_0,time[i],QuadXX[i]);
+        gr_QuadXY->SetPoint(i-Nl_0,time[i],QuadXY[i]);
+        gr_QuadYY->SetPoint(i-Nl_0,time[i],QuadYY[i]);
+        gr_QuadXX_ddd->SetPoint(i-Nl_0,time[i],QuadXX_ddd[i]);
+        gr_QuadXY_ddd->SetPoint(i-Nl_0,time[i],QuadXY_ddd[i]);
+        gr_QuadYY_ddd->SetPoint(i-Nl_0,time[i],QuadYY_ddd[i]);
+
+        gr_DipMagZ->SetPoint(i-Nl_0,time[i],DipMagZ[i]);
+        gr_DipMagZ_dd->SetPoint(i-Nl_0,time[i],DipMagZ_dd[i]);
+    }
+    gr_CurS->SetTitle(";Time;Current at x=0");
+    gr_DipX->SetTitle(";Time;p_{x}");
+    gr_DipY->SetTitle(";Time;p_{y}");
+    gr_DipX_dd->SetTitle(";Time;d^{2}p_{x}/dt^{2}");
+    gr_DipY_dd->SetTitle(";Time;d^{2}p_{y}/dt^{2}");
+    gr_QuadXX->SetTitle(";Time;Q_{xx}");
+    gr_QuadXY->SetTitle(";Time;Q_{xy}");
+    gr_QuadYY->SetTitle(";Time;Q_{yy}");
+    gr_QuadXX_ddd->SetTitle(";Time;d^{3}Q_{xx}/dt^{3}");
+    gr_QuadXY_ddd->SetTitle(";Time;d^{3}Q_{xy}/dt^{3}");
+    gr_QuadYY_ddd->SetTitle(";Time;d^{3}Q_{yy}/dt^{3}");
+    gr_DipMagZ->SetTitle(";Time;m_{z}");
+    gr_DipMagZ_dd->SetTitle(";Time;d^{2}m_{z}/dt^{2}");
+
+    c1->cd();   gr_CurS->Draw();c1->SaveAs("./CurS_t.pdf");
+
+    c1->Clear(); gr_DipX->Draw();c1->SaveAs("./DipX_t.pdf");
+    c1->Clear(); gr_DipY->Draw();c1->SaveAs("./DipY_t.pdf");
+    c1->Clear(); gr_DipX_dd->Draw();c1->SaveAs("./DipX_dd_t.pdf");
+    c1->Clear(); gr_DipY_dd->Draw();c1->SaveAs("./DipY_dd_t.pdf");
+
+    c1->Clear(); gr_QuadXX->Draw();c1->SaveAs("./QuadXX_t.pdf");
+    c1->Clear(); gr_QuadXY->Draw();c1->SaveAs("./QuadXY_t.pdf");
+    c1->Clear(); gr_QuadYY->Draw();c1->SaveAs("./QuadYY_t.pdf");
+    c1->Clear(); gr_QuadXX_ddd->Draw();c1->SaveAs("./QuadXX_ddd_t.pdf");
+    c1->Clear(); gr_QuadXY_ddd->Draw();c1->SaveAs("./QuadXY_ddd_t.pdf");
+    c1->Clear(); gr_QuadYY_ddd->Draw();c1->SaveAs("./QuadYY_ddd_t.pdf");
+
+    c1->Clear(); gr_DipMagZ->Draw();c1->SaveAs("./DipMag_t.pdf");
+    c1->Clear(); gr_DipMagZ_dd->Draw();c1->SaveAs("./DipMagZ_dd_t.pdf");
+
+    delete gr_CurS; delete gr_DipX; delete gr_DipY; delete gr_DipX_dd; delete gr_DipY_dd;
+    delete gr_QuadXX; delete gr_QuadXY; delete gr_QuadYY; delete gr_QuadXX_ddd; delete gr_QuadXY_ddd; delete gr_QuadYY_ddd;
+    delete gr_DipMagZ; delete gr_DipMagZ_dd;
+    delete c1;
+}
+
+void Radiation::PrintGraphInterpolation(int Nl_0, int Nl){
+    auto c1 = new TCanvas("c1", "c1", 200, 10, 1350, 720);
+
+    auto grI_CurS = new TGraph();
+
+    auto grI_DipX_dd = new TGraph();
+    auto grI_DipY_dd = new TGraph();
+
+    auto grI_QuadXX_ddd = new TGraph();
+    auto grI_QuadXY_ddd = new TGraph();
+    auto grI_QuadYY_ddd = new TGraph();
+
+    auto grI_DipMagZ_dd = new TGraph();
+
+    int Np_interpolation = 10000;
+    double t_interpolation = time[Nl_0];
+    for(int i=0; i<Np_interpolation; i++){
+        grI_DipX_dd->SetPoint(i,t_interpolation,SDipX_dd_t.Interpolate(t_interpolation));
+        grI_DipY_dd->SetPoint(i,t_interpolation,SDipY_dd_t.Interpolate(t_interpolation));
+
+        grI_QuadXX_ddd->SetPoint(i,t_interpolation,SQuadXX_ddd_t.Interpolate(t_interpolation));
+        grI_QuadXY_ddd->SetPoint(i,t_interpolation,SQuadXY_ddd_t.Interpolate(t_interpolation));
+        grI_QuadYY_ddd->SetPoint(i,t_interpolation,SQuadYY_ddd_t.Interpolate(t_interpolation));
+
+        grI_DipMagZ_dd->SetPoint(i,t_interpolation,SDipMagZ_dd_t.Interpolate(t_interpolation));
+
+        t_interpolation += (time[Nl]-time[Nl_0])/Np_interpolation;
+    }
+    grI_DipX_dd->SetTitle(";Time;d^{2}p_{x}/dt^{2}");
+    grI_DipY_dd->SetTitle(";Time;d^{2}p_{y}/dt^{2}");
+    grI_QuadXX_ddd->SetTitle(";Time;d^{3}Q_{xx}/dt^{3}");
+    grI_QuadXY_ddd->SetTitle(";Time;d^{3}Q_{xy}/dt^{3}");
+    grI_QuadYY_ddd->SetTitle(";Time;d^{3}Q_{yy}/dt^{3}");
+    grI_DipMagZ_dd->SetTitle(";Time;d^{2}m_{z}/dt^{2}");
+
+    c1->Clear(); grI_DipX_dd->Draw("AP");c1->SaveAs("./IDipX_dd_t.pdf");
+    c1->Clear(); grI_DipY_dd->Draw("AP");c1->SaveAs("./IDipY_dd_t.pdf");
+
+    c1->Clear(); grI_QuadXX_ddd->Draw("AP");c1->SaveAs("./IQuadXX_ddd_t.pdf");
+    c1->Clear(); grI_QuadXY_ddd->Draw("AP");c1->SaveAs("./IQuadXY_ddd_t.pdf");
+    c1->Clear(); grI_QuadYY_ddd->Draw("AP");c1->SaveAs("./IQuadYY_ddd_t.pdf");
+
+    c1->Clear(); grI_DipMagZ_dd->Draw("AP");c1->SaveAs("./IDipMagZ_dd_t.pdf");
+
+    delete grI_CurS; delete grI_DipX_dd; delete grI_DipY_dd; delete grI_QuadXX_ddd; delete grI_QuadXY_ddd; delete grI_QuadYY_ddd; delete grI_DipMagZ_dd;
+
+    delete c1;
 }
 
 
@@ -364,12 +508,9 @@ pair<Vec,Vec> Radiation::Emitter(double t, double O_x, double O_y, double x, dou
 
     if (z<0) return make_pair((*this).E_field(t,x-O_x,y-O_y,z),(*this).H_field(t,x-O_x,y-O_y,z));
 
-    if(fabs(z) < 20){
+    if(fabs(z) < -1e-3){
         theta_r_image = M_PI/2;
         d_star = D_Conductor*sin(asin(1/n_index));
-    }else if(d_xy<10){
-        theta_r_image = 0;
-        d_star = (z + D_dieletric)*tan(theta_r_image) - (D_Conductor - D_dieletric)*tan(asin(sin(theta_r_image)/n_index));
     }else{
         theta_r_image = NewtonsMethod();
         d_star = d_xy - (z + D_dieletric)*tan(theta_r_image) - (D_Conductor - D_dieletric)*tan(asin(sin(theta_r_image)/n_index));
@@ -495,16 +636,16 @@ double Radiation::RadiationPatternTimeAverage360(double t0, vector<double> O_x_v
     double a ,d_sphere, d_mu, d_phi, mu, phi, x, y, z;
     double integral, phase, S_integral;
 
-    if(Radius_Conductor>1e-3 || n_index> 1+1e-3) cout << "For a 360 degree calculation, refractive index needs to be 1 and no conductor (proceeding that way)\n";
-    n_index = 1;
-    Radius_Conductor = 0;
-
     ofstream file;
     string configuration = "_n=" + to_string_with_precision(n_index,1) + "_D_Cond=" + to_string_with_precision(D_Conductor,1) + "_R_Cond=" + to_string_with_precision(Radius_Conductor,1);
 
     file.open ("S_360" + configuration + ".txt");
     file << "Last line as integral over surface" << " -> sphere of radius" << distance_measure << "\n";
     file << "x    y    z    |S|*distance^2\n";    
+
+    if(Radius_Conductor>1e-3 || n_index> 1+1e-3) cout << "For a 360 degree calculation, refractive index needs to be 1 and no conductor (proceeding that way)\n";
+    n_index = 1;
+    Radius_Conductor = 0;
 
     a = 4*M_PI/N;
     d_sphere = sqrt(a);
@@ -543,6 +684,144 @@ double Radiation::RadiationPatternTimeAverage360(double t0, vector<double> O_x_v
     }
     file << S_integral*4*M_PI/Ncount;
     file.close();
+
+    return S_integral*4*M_PI/Ncount;
+}
+
+void Radiation::RadiationPatternTimeAverage180Graph3D(double t0, vector<double> O_x_v, vector<double> O_y_v, int N, int N_t_points, double delta_t, bool print){
+    pair<Vec,Vec> fieldsEH;
+    int Ncount;
+    int M_phi, M_mu;
+    double a ,d_sphere, d_mu, d_phi, mu, phi, x, y, z;
+    double integral, phase, S_integral;
+
+    string configuration = "_n=" + to_string_with_precision(n_index,1) + "_D_Cond=" + to_string_with_precision(D_Conductor,1) + "_R_Cond=" + to_string_with_precision(Radius_Conductor,1);
+    ofstream file;
+
+    if(print==1){
+        file.open ("S_180" + configuration + ".txt");
+        file << "sphere of radius" << distance_measure << "\n";
+        file << "x    y    z    |S|*distance^2\n";
+    }
+
+    N = N*2;
+
+    auto c1 = new TCanvas("c1", "c1", 200, 10, 1280, 720);
+    auto gr3d_sphere = new TGraph2D(N);
+
+    a = 4*M_PI/N;
+    d_sphere = sqrt(a);
+    M_mu = round(M_PI/d_sphere);
+    d_mu = M_PI/M_mu;
+    d_phi = a/d_mu;
+
+    Ncount = 0;
+    for(int m=0; m<M_mu-1; m++){
+        mu = M_PI*(m + 0.5)/M_mu;
+        M_phi = round(2*M_PI*sin(mu)/d_phi);
+        if(cos(mu)<1e-5) continue;
+
+        for(int n=0; n<M_phi-1; n++){
+            phi = 2*M_PI*n/M_phi;
+            x = sin(mu)*cos(phi);
+            y = sin(mu)*sin(phi);
+            z = cos(mu);
+
+            integral = 0;
+            for(int j=0; j<N_t_points; j++){
+                phase = t0+(double)j*delta_t/N_t_points;
+
+                fieldsEH = EmittingGrid(phase, O_x_v,O_y_v,distance_measure*x,distance_measure*y,distance_measure*z);
+
+                if(j == 0 || j == N_t_points-1) integral += 0.5*distance_measure*distance_measure*Poyting(fieldsEH.first, fieldsEH.second).mod();
+                else integral += distance_measure*distance_measure*Poyting(fieldsEH.first, fieldsEH.second).mod();
+            }
+
+            if(print==1) file << x*distance_measure << "   " << y*distance_measure << "   " << z*distance_measure << "   " << integral/N_t_points << "\n";
+            gr3d_sphere->SetPoint(Ncount, x*integral/N_t_points, y*integral/N_t_points, z*integral/N_t_points);
+
+            Ncount++;
+        }
+    }
+
+    c1->Clear();
+    gr3d_sphere->Draw("PCOL Fi");
+    c1->SaveAs(("S_180" + configuration + ".pdf").c_str());
+
+    if(print==1) file.close();
+    delete gr3d_sphere, c1;
+}
+
+double Radiation::RadiationPatternTimeAverage360Graph3D(double t0, vector<double> O_x_v, vector<double> O_y_v, int N, int N_t_points, double delta_t, bool print){
+    pair<Vec,Vec> fieldsEH;
+    int Ncount;
+    int M_phi, M_mu;
+    double a ,d_sphere, d_mu, d_phi, mu, phi, x, y, z;
+    double integral, phase, S_integral;
+
+    ofstream file;
+    string configuration = "_n=" + to_string_with_precision(n_index,1) + "_D_Cond=" + to_string_with_precision(D_Conductor,1) + "_R_Cond=" + to_string_with_precision(Radius_Conductor,1);
+
+    if(print==1){
+        file.open ("S_360" + configuration + ".txt");
+        file << "Last line as integral over surface" << " -> sphere of radius" << distance_measure << "\n";
+        file << "x    y    z    |S|*distance^2\n";
+    }
+    
+
+    if(Radius_Conductor>1e-3 || n_index> 1+1e-3) cout << "For a 360 degree calculation, refractive index needs to be 1 and no conductor (proceeding that way)\n";
+    n_index = 1;
+    Radius_Conductor = 0;
+
+    auto c1 = new TCanvas("c1", "c1", 200, 10, 1280, 720);
+    auto gr3d_4pi = new TGraph2D(N);
+
+    a = 4*M_PI/N;
+    d_sphere = sqrt(a);
+    M_mu = round(M_PI/d_sphere);
+    d_mu = M_PI/M_mu;
+    d_phi = a/d_mu;
+
+    Ncount = 0;
+    S_integral = 0;
+    for(int m=0; m<M_mu-1; m++){
+        mu = M_PI*(m + 0.5)/M_mu;
+        M_phi = round(2*M_PI*sin(mu)/d_phi);
+
+        for(int n=0; n<M_phi-1; n++){
+            phi = 2*M_PI*n/M_phi;
+            x = sin(mu)*cos(phi);
+            y = sin(mu)*sin(phi);
+            z = cos(mu);
+
+            integral = 0;
+            for(int j=0; j<N_t_points; j++){
+                phase = t0+(double)j*delta_t/N_t_points;
+
+                fieldsEH = EmittingGrid(phase,O_x_v,O_y_v,distance_measure*x,distance_measure*y,distance_measure*z);
+
+                if(j == 0 || j == N_t_points-1) integral += 0.5*distance_measure*distance_measure*Poyting(fieldsEH.first, fieldsEH.second).mod();
+                else integral += distance_measure*distance_measure*Poyting(fieldsEH.first, fieldsEH.second).mod();
+            }
+
+            S_integral += integral/N_t_points;
+
+            if(print==1) file << x*distance_measure << "   " << y*distance_measure << "   " << z*distance_measure << "   " << integral/N_t_points << "\n";
+            gr3d_4pi->SetPoint(Ncount, x*integral/N_t_points, y*integral/N_t_points, z*integral/N_t_points);
+            
+            Ncount++;
+        }
+    }
+    c1->Clear();
+    gr3d_4pi->Draw("PCOL Fi");
+    c1->SaveAs(("S_360" + configuration + ".pdf").c_str());
+
+    if(print==1){
+        file << S_integral*4*M_PI/Ncount;
+        file.close();
+    }
+
+    delete gr3d_4pi, c1;
 
     return S_integral*4*M_PI/Ncount;
 }
@@ -651,7 +930,6 @@ void Radiation::RadiationTimeAverageE_H_Planes180(double t0, vector<double> O_x_
     }
     file.close();
 }
-
 
 void Radiation::RadiationTimeAverageE_H_Planes360(double t0, vector<double> O_x_v, vector<double> O_y_v, int N, int N_t_points, double delta_t){
     pair<Vec,Vec> fieldsEH;
@@ -775,16 +1053,16 @@ double Radiation::RadiationPatternTimeAverage360_180Rotation(double t0, vector<d
     double a ,d_sphere, d_mu, d_phi, mu, phi, x, y, z;
     double integral, phase, S_integral;
 
-    if(Radius_Conductor>1e-3 || n_index> 1+1e-3) cout << "For a 360 degree calculation, refractive index needs to be 1 and no conductor (proceeding that way)\n";
-    n_index = 1;
-    Radius_Conductor = 0;
-
     ofstream file;
     string configuration = "_n=" + to_string_with_precision(n_index,1) + "_D_Cond=" + to_string_with_precision(D_Conductor,1) + "_R_Cond=" + to_string_with_precision(Radius_Conductor,1);
 
     file.open ("S_360" + configuration + ".txt");
     file << "Last line as integral over surface" << " -> sphere of radius" << distance_measure << "\n";
     file << "x    y    z    |S|*distance^2\n";    
+
+    if(Radius_Conductor>1e-3 || n_index> 1+1e-3) cout << "For a 360 degree calculation, refractive index needs to be 1 and no conductor (proceeding that way)\n";
+    n_index = 1;
+    Radius_Conductor = 0;
 
     a = 4*M_PI/N;
     d_sphere = sqrt(a);
@@ -823,6 +1101,144 @@ double Radiation::RadiationPatternTimeAverage360_180Rotation(double t0, vector<d
     }
     file << S_integral*4*M_PI/Ncount;
     file.close();
+
+    return S_integral*4*M_PI/Ncount;
+}
+
+void Radiation::RadiationPatternTimeAverage180Graph3D_180Rotation(double t0, vector<double> O_x_v, vector<double> O_y_v, vector<bool> O_rot, int N, int N_t_points, double delta_t, bool print){
+    pair<Vec,Vec> fieldsEH;
+    int Ncount;
+    int M_phi, M_mu;
+    double a ,d_sphere, d_mu, d_phi, mu, phi, x, y, z;
+    double integral, phase, S_integral;
+
+    string configuration = "_n=" + to_string_with_precision(n_index,1) + "_D_Cond=" + to_string_with_precision(D_Conductor,1) + "_R_Cond=" + to_string_with_precision(Radius_Conductor,1);
+    ofstream file;
+
+    if(print==1){
+        file.open ("S_180" + configuration + ".txt");
+        file << "sphere of radius" << distance_measure << "\n";
+        file << "x    y    z    |S|*distance^2\n";
+    }
+
+    N = N*2;
+
+    auto c1 = new TCanvas("c1", "c1", 200, 10, 1280, 720);
+    auto gr3d_sphere = new TGraph2D(N);
+
+    a = 4*M_PI/N;
+    d_sphere = sqrt(a);
+    M_mu = round(M_PI/d_sphere);
+    d_mu = M_PI/M_mu;
+    d_phi = a/d_mu;
+
+    Ncount = 0;
+    for(int m=0; m<M_mu-1; m++){
+        mu = M_PI*(m + 0.5)/M_mu;
+        M_phi = round(2*M_PI*sin(mu)/d_phi);
+        if(cos(mu)<1e-5) continue;
+
+        for(int n=0; n<M_phi-1; n++){
+            phi = 2*M_PI*n/M_phi;
+            x = sin(mu)*cos(phi);
+            y = sin(mu)*sin(phi);
+            z = cos(mu);
+
+            integral = 0;
+            for(int j=0; j<N_t_points; j++){
+                phase = t0+(double)j*delta_t/N_t_points;
+
+                fieldsEH = EmittingGrid180Rotation(phase, O_x_v,O_y_v,O_rot,distance_measure*x,distance_measure*y,distance_measure*z);
+
+                if(j == 0 || j == N_t_points-1) integral += 0.5*distance_measure*distance_measure*Poyting(fieldsEH.first, fieldsEH.second).mod();
+                else integral += distance_measure*distance_measure*Poyting(fieldsEH.first, fieldsEH.second).mod();
+            }
+
+            if(print==1) file << x*distance_measure << "   " << y*distance_measure << "   " << z*distance_measure << "   " << integral/N_t_points << "\n";
+            gr3d_sphere->SetPoint(Ncount, x*integral/N_t_points, y*integral/N_t_points, z*integral/N_t_points);
+
+            Ncount++;
+        }
+    }
+
+    c1->Clear();
+    gr3d_sphere->Draw("PCOL Fi");
+    c1->SaveAs(("S_180" + configuration + ".pdf").c_str());
+
+    if(print==1) file.close();
+    delete gr3d_sphere, c1;
+}
+
+double Radiation::RadiationPatternTimeAverage360Graph3D_180Rotation(double t0, vector<double> O_x_v, vector<double> O_y_v, vector<bool> O_rot, int N, int N_t_points, double delta_t, bool print){
+    pair<Vec,Vec> fieldsEH;
+    int Ncount;
+    int M_phi, M_mu;
+    double a ,d_sphere, d_mu, d_phi, mu, phi, x, y, z;
+    double integral, phase, S_integral;
+
+    ofstream file;
+    string configuration = "_n=" + to_string_with_precision(n_index,1) + "_D_Cond=" + to_string_with_precision(D_Conductor,1) + "_R_Cond=" + to_string_with_precision(Radius_Conductor,1);
+
+    if(print==1){
+        file.open ("S_360" + configuration + ".txt");
+        file << "Last line as integral over surface" << " -> sphere of radius" << distance_measure << "\n";
+        file << "x    y    z    |S|*distance^2\n";
+    }
+    
+
+    if(Radius_Conductor>1e-3 || n_index> 1+1e-3) cout << "For a 360 degree calculation, refractive index needs to be 1 and no conductor (proceeding that way)\n";
+    n_index = 1;
+    Radius_Conductor = 0;
+
+    auto c1 = new TCanvas("c1", "c1", 200, 10, 1280, 720);
+    auto gr3d_4pi = new TGraph2D(N);
+
+    a = 4*M_PI/N;
+    d_sphere = sqrt(a);
+    M_mu = round(M_PI/d_sphere);
+    d_mu = M_PI/M_mu;
+    d_phi = a/d_mu;
+
+    Ncount = 0;
+    S_integral = 0;
+    for(int m=0; m<M_mu-1; m++){
+        mu = M_PI*(m + 0.5)/M_mu;
+        M_phi = round(2*M_PI*sin(mu)/d_phi);
+
+        for(int n=0; n<M_phi-1; n++){
+            phi = 2*M_PI*n/M_phi;
+            x = sin(mu)*cos(phi);
+            y = sin(mu)*sin(phi);
+            z = cos(mu);
+
+            integral = 0;
+            for(int j=0; j<N_t_points; j++){
+                phase = t0+(double)j*delta_t/N_t_points;
+
+                fieldsEH = EmittingGrid180Rotation(phase,O_x_v,O_y_v,O_rot,distance_measure*x,distance_measure*y,distance_measure*z);
+
+                if(j == 0 || j == N_t_points-1) integral += 0.5*distance_measure*distance_measure*Poyting(fieldsEH.first, fieldsEH.second).mod();
+                else integral += distance_measure*distance_measure*Poyting(fieldsEH.first, fieldsEH.second).mod();
+            }
+
+            S_integral += integral/N_t_points;
+
+            if(print==1) file << x*distance_measure << "   " << y*distance_measure << "   " << z*distance_measure << "   " << integral/N_t_points << "\n";
+            gr3d_4pi->SetPoint(Ncount, x*integral/N_t_points, y*integral/N_t_points, z*integral/N_t_points);
+
+            Ncount++;
+        }
+    }
+    c1->Clear();
+    gr3d_4pi->Draw("PCOL Fi");
+    c1->SaveAs(("S_360" + configuration + ".pdf").c_str());
+
+    if(print==1){
+        file << S_integral*4*M_PI/Ncount;
+        file.close();
+    }
+
+    delete gr3d_4pi, c1;
 
     return S_integral*4*M_PI/Ncount;
 }
@@ -946,7 +1362,7 @@ void Radiation::RadiationTimeAverageE_H_Planes360_180Rotation(double t0, vector<
     string configuration = "_n=" + to_string_with_precision(n_index,1) + "_D_Cond=" + to_string_with_precision(D_Conductor,1) + "_R_Cond=" + to_string_with_precision(Radius_Conductor,1);
 
     file.open ("E_H_Planes" + configuration + ".txt");
-    file << "phi    |S|(E plane)    |S|(H plane)" << "\n";
+    file << "phi    |S|(E plane)    |S|(H plane)" << "\n";  
 
     Ncount = 0;
 
@@ -956,8 +1372,8 @@ void Radiation::RadiationTimeAverageE_H_Planes360_180Rotation(double t0, vector<
 
         x1 = sin(phi)*cos(E_plane_angle);
         y1 = sin(phi)*sin(E_plane_angle);
-        x2 = sin(M_PI/2+M_PI/1000)*cos(phi);
-        y2 = sin(M_PI/2+M_PI/1000)*sin(phi);
+        x2 = sin(phi)*cos(E_plane_angle+M_PI/2);
+        y2 = sin(phi)*sin(E_plane_angle+M_PI/2);
         z  = cos(phi);
 
         if(fabs(z)<1e-4){
@@ -980,7 +1396,7 @@ void Radiation::RadiationTimeAverageE_H_Planes360_180Rotation(double t0, vector<
         for(int j=0; j<N_t_points; j++){
             phase = t0+(double)j*delta_t/N_t_points;
 
-            fieldsEH = EmittingGrid180Rotation(phase,O_x_v,O_y_v,O_rot,distance_measure*x2,distance_measure*y2,distance_measure*cos(M_PI/2+M_PI/1000));
+            fieldsEH = EmittingGrid180Rotation(phase,O_x_v,O_y_v,O_rot,distance_measure*x2,distance_measure*y2,distance_measure*z);
 
             if(j == 0 || j == N_t_points-1) integral += 0.5*distance_measure*distance_measure*Poyting(fieldsEH.first, fieldsEH.second).mod();
             else integral += distance_measure*distance_measure*Poyting(fieldsEH.first, fieldsEH.second).mod();
@@ -993,7 +1409,6 @@ void Radiation::RadiationTimeAverageE_H_Planes360_180Rotation(double t0, vector<
     }
     file.close();
 }
-
 
 //Sets//
 void Radiation::SetVf(double x){
@@ -1054,8 +1469,6 @@ double Radiation::NewtonsMethod(double x1, double x2, double error_min, int iter
         else{
             cout << "We have found a stationary point at x = " << x2 << ". Ending Newton's method here." << endl;
             cout << "returning pi/2" << endl;
-            cout << d_xy << endl;
-            cout << global_z << endl;
             return M_PI/2;
         }
         if(x3>1.6) x3=M_PI-1e-3;

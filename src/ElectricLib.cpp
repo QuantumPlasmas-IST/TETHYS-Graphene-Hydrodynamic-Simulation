@@ -274,7 +274,7 @@ float ElectroAnalysis::ElectricQuadrupoleXY(const GrapheneFluid2D &graphene){
 		rx = i*graphene.GetDx()-0.5f*graphene.GetLengthX();
 		float ry;
 		ry = j*graphene.GetDy()-0.5f*graphene.GetLengthY();
-		vector[c] = (2*ry*ry-rx*rx)*graphene.Den[c];
+		vector[c] = 3*rx*ry*graphene.Den[c];
 	}
 	return Integral_2_D(graphene.SizeX(), graphene.SizeY(), graphene.GetDx(), graphene.GetDy(), vector);
 }
@@ -291,11 +291,11 @@ float ElectroAnalysis::ElectricQuadrupoleYY(const GrapheneFluid2D &graphene){
 		rx = i*graphene.GetDx()-0.5f*graphene.GetLengthX();
 		float ry;
 		ry = j*graphene.GetDy()-0.5f*graphene.GetLengthY();
-		vector[c] = 3*rx*ry*graphene.Den[c];
+		vector[c] = (2*ry*ry-rx*rx)*graphene.Den[c];
 	}
 	return Integral_2_D(graphene.SizeX(), graphene.SizeY(), graphene.GetDx(), graphene.GetDy(), vector);
 }
-//\int_0^{W/L}\int_0^1 ( (x-w/2)*j_y - (y-1/2)*j_x ) \,dxdy
+
 float ElectroAnalysis::MagneticDipoleZ(const GrapheneFluid2D &graphene){
 	int size = graphene.SizeX()*graphene.SizeY();
 	float vector[size];
