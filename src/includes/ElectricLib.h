@@ -28,7 +28,7 @@
  * This class provides the methods to compute such quantities from the data stored on the GrapheneFluid1D or GrapheneFluid2D classes.
  *
  **/
-class ElectroAnalysis : public MathUtils{
+class ElectroAnalysis{
 private:
 	std::ofstream data_electro;
 	vector<float> TmpArr;
@@ -243,7 +243,7 @@ public:
 	/*!
 	* @brief 2D Integrator for the electric quadrupole tensor yy component
 	*
-	* This method computes the integral @f$ \int_0^{W/L}\int_0^1 3(x-w/2)*(y-1/2) n \,dxdy @f$
+	* This method computes the integral @f$ \int_0^{W/L}\int_0^1 (2(y-w/2)^2 - (x-1/2)^2) n \,dxdy @f$
 	* */
 	static float ElectricQuadrupoleYY(const GrapheneFluid2D& graphene);
 

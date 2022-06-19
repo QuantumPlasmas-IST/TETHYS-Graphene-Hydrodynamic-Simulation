@@ -25,8 +25,11 @@ class Radiation{
 public:
     Radiation(double n_index_ref=2.5, double Dist_Conductor=1.5, double R_Conductor=2, double Dist_dieletric=0.05, double Distance_measure=3000);
     
-    int ReadFromElectroFile(const string input_file_name); ///< Read a file comming from EletronicAnalysis.cpp
-    void Interpolation(int Nl_0, int Nl); ///< Cubic spline interpolation of the points stored for the used quatites
+    //Read a file comming from EletronicAnalysis.cpp
+    int ReadFromElectroFile(const string input_file_name);
+   
+    //Cubic spline interpolation of the points stored and only on the used quatites
+    void Interpolation(int Nl_0, int Nl); 
 
     Vec E_field(double t, double x, double y, double z);
     Vec E_field_Image(double t, double x, double y, double z);
@@ -36,15 +39,25 @@ public:
     pair<Vec,Vec> EmittingGrid(double t, vector<double> O_x, vector<double> O_y, double x, double y, double z);
     pair<Vec,Vec> EmittingGrid180Rotation(double t, vector<double> O_x, vector<double> O_y, vector<bool> O_rot, double x, double y, double z);
 
+    //vectors O_x_v and O_y_v contain the position of each emmiter in the z=0 plane
 
+    //creates a file with the positions on a semi-sphere of radius distance_measure and |Poyting|*radius^2
     void RadiationPatternTimeAverage180(double t0, vector<double> O_x_v, vector<double> O_y_v, int N, int N_t_points, double delta_t);
+    
+    //returns total time averaged flux of Poyinting vector and creates a file with the positions on a sphere of radius distance_measure and |Poyting|*radius^2
     double RadiationPatternTimeAverage360(double t0, vector<double> O_x_v, vector<double> O_y_v, int N, int N_t_points, double delta_t);
 
+    //returns time averaged flux of Poyinting vector across the top angles
     double RadiationTimeAverageIntegralSmallAngle(double t0, vector<double> O_x_v, vector<double> O_y_v, int N, int N_t_points, double delta_t, double small_angle);
+    
+    //creates a file with |Poyting|*radius^2 on the intersection of the semi-sphere of radius distance_measure with the planes "E" and "H"
     void RadiationTimeAverageE_H_Planes180(double t0, vector<double> O_x_v, vector<double> O_y_v, int N, int N_t_points, double delta_t);
+    
+    //creates a file with |Poyting|*radius^2 on the intersection of the sphere of radius distance_measure with the planes "E" and "H"
     void RadiationTimeAverageE_H_Planes360(double t0, vector<double> O_x_v, vector<double> O_y_v, int N, int N_t_points, double delta_t);
 
-
+    //Same as the above functions but allows for 180 rotations on the emitters
+    //If in O_rot it's 1 emmiter will be considered rotated
     void RadiationPatternTimeAverage180_180Rotation(double t0, vector<double> O_x_v, vector<double> O_y_v, vector<bool> O_rot, int N, int N_t_points, double delta_t);
     double RadiationPatternTimeAverage360_180Rotation(double t0, vector<double> O_x_v, vector<double> O_y_v, vector<bool> O_rot, int N, int N_t_points, double delta_t);
 
