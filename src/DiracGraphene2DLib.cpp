@@ -50,21 +50,10 @@ DiracGraphene2D::DiracGraphene2D(SetUpParameters &input_parameters) : Fluid2D(in
 }
 
 void DiracGraphene2D::SetSimulationTime(){
-	/*float s;
-	s=this->GetVelSnd();*/
 	this->SetTmax(5.0f+0.02f*vel_therm+20.0f/vel_therm);
 }
 
 void DiracGraphene2D::CflCondition(){ // Eventual redefinition
-	/*dx = lengX / ( float ) ( Nx - 1 );
-	dy = lengY / ( float ) ( Ny - 1 );
-	float lambda;
-	if(vel_snd<0.36f*vel_fer){
-		lambda=1.2f*vel_fer;
-	}else{
-		lambda=1.97f*vel_snd + 0.5f*vel_fer;
-	}
-	dt = dx/lambda; */
 
 	dx = lengX / ( float ) ( Nx - 1 );
 	dy = lengY / ( float ) ( Ny - 1 );
@@ -82,7 +71,7 @@ void DiracGraphene2D::CflCondition(){ // Eventual redefinition
 	
 	if(kin_vis>0.0){
 		float dt2 = 0.8f*0.5f*dx*dx/kin_vis;
-		dt = min(dt1, dt2)
+		dt = min(dt1, dt2);
 	}
 	
 }
@@ -124,7 +113,6 @@ float DiracGraphene2D::XMomentumFluxX(GridPoint2D p, char side) {
 	mass=DensityToMass(den);
 
 	return px * px / mass + sound * sound * (den - hden) + vel_therm * vel_therm * (den + hden);
-	//return px * px / mass + vel_fer * vel_fer * mass / 3.0f + 0.5f * sound * sound * den * den ;
 }
 
 float DiracGraphene2D::XMomentumFluxY(GridPoint2D p, char side) {
@@ -160,7 +148,6 @@ float DiracGraphene2D::YMomentumFluxY(GridPoint2D p, char side) {
 	mass=DensityToMass(den);
 
 	return py * py / mass + sound * sound * (den - hden) + vel_therm * vel_therm * (den + hden);
-	//return py * py / mass + vel_fer * vel_fer * mass / 3.0f + 0.5f * sound * sound * den * den ;
 
 }
 
@@ -231,8 +218,6 @@ float DiracGraphene2D::HXMomentumFluxX(GridPoint2D p, char side) {
 	mass=DensityToMass(hden);
 
 	return px * px / mass - sound * sound * (den - hden) + vel_therm * vel_therm * (den + hden);
-	//return px * px / mass + vel_fer * vel_fer * mass / 3.0f - 0.5f * sound * sound * hden * hden ;
-	//return px * px / mass + vel_fer * vel_fer * mass / 3.0f + 0.5f * sound * sound * hden * hden ;
 }
 
 float DiracGraphene2D::HXMomentumFluxY(GridPoint2D p, char side) {
@@ -268,8 +253,6 @@ float DiracGraphene2D::HYMomentumFluxY(GridPoint2D p, char side) {
 	mass=DensityToMass(hden);
 
 	return py * py / mass - sound * sound * (den - hden) + vel_therm * vel_therm * (den + hden);
-	//return py * py / mass + vel_fer * vel_fer * mass / 3.0f - 0.5f * sound * sound * hden * hden;
-	//return py * py / mass + vel_fer * vel_fer * mass / 3.0f + 0.5f * sound * sound * hden * hden;
 }
 
 float DiracGraphene2D::HYMomentumFluxX(GridPoint2D p, char side) {
