@@ -4,8 +4,7 @@
 *                                                                                               *
 \************************************************************************************************/
 
-//Version without ROOT
-#include "../src/includes/RadiationLib.h"
+#include "includes/RadiationLib.h"
 
 #ifndef MAT_PI
 #    define MAT_PI 3.14159265358979323846
@@ -18,18 +17,22 @@
 using namespace std;
 
 //Constructor
-Radiation::Radiation(double n_index_ref, double Dist_Conductor, double R_Conductor, double Dist_dieletric, double Distance_measure){
+Radiation::Radiation(double n_index_ref, double epsilon_r_input, double Dist_Conductor, double R_Conductor, double Distance_measure){
     if (n_index_ref < (1-1e-3)) cout << "Refractive index must be bigger than 1\n";
+    if (epsilon_r_input < (1-1e-3)) cout << "Relative permittivity must be bigger than 1\n";
     if (Dist_Conductor<0) cout << "Distance to conductor must be bigger than 0 \n";
     if (R_Conductor<0) cout << "Radius must not be smaller than 0 \n";
-    if (Dist_dieletric<0) cout << "D_dieletric must not be smaller than 0 (note that this distance is very small)\n";
     if (Distance_measure<0) cout << "Measurement distance must be bigger than 0 \n";
 
     n_index = n_index_ref;
+    epsilon_r = epsilon_r_input;
     D_Conductor = Dist_Conductor;
     Radius_Conductor= R_Conductor;
-    D_dieletric = Dist_dieletric;
     distance_measure = Distance_measure;
+
+    mu_r = n_index*n_index/epsilon_r;
+
+    if(mu_r < 1) cout << "relative permeability can't be smaller than 1 \n";
 
     rotation180 = 1;
 }
@@ -91,6 +94,8 @@ void Radiation::Interpolation(int Nl_0, int Nl){
     vector<pair<double,double>> QuadYY_ddd_t;
     vector<pair<double,double>> DipMagZ_dd_t;
 
+    t_min = time[Nl_0];
+    t_max = time[Nl];
 
     pair<double,double> temp_pair;
     for(int i=Nl_0; i<Nl; i++){
@@ -142,13 +147,14 @@ void Radiation::Interpolation(int Nl_0, int Nl){
 
 //Fields//
 Vec Radiation::E_field(double t, double x, double y, double z){
-    Vec E_Dip = Vec(3,0.); Vec E_Quad = Vec(3,0.); Vec E_DipMag = Vec(3,0.); Vec E_field_v = Vec(3,0.); Vec E_field_T = Vec(3,0.);
+    Vec E_Dip = Vec(3,0.); Vec E_Quad = Vec(3,0.); Vec E_DipMag = Vec(3,0.);
 
     double theta_i = theta_i_original;
 
     double r2 = x*x+y*y+z*z;
     double r = sqrt(r2);
     double t_r = t-r/(300*vF);
+    if(t_r < t_min || t_r > t_max) cout << "Working outsided interpolated points [t_retarded = " << t_r << " ]\n";
 
     double* array = new double[3]{(x*SDipX_dd_t.Interpolate(t_r)+y*SDipY_dd_t.Interpolate(t_r))*x/r2-SDipX_dd_t.Interpolate(t_r),
                       (x*SDipX_dd_t.Interpolate(t_r)+y*SDipY_dd_t.Interpolate(t_r))*y/r2-SDipY_dd_t.Interpolate(t_r),
@@ -170,26 +176,7 @@ Vec Radiation::E_field(double t, double x, double y, double z){
     E_DipMag.SetEntries(3,array3);
     delete array3;
 
-    E_field_v = (1/(4*M_PI*r))*E_Dip*rotation180 + (1/(24*M_PI*300*vF*r))*E_Quad + (1/(4*M_PI*r2*300*vF))*E_DipMag*rotation180;
-
-    if(z<0) return E_field_v;
-
-    double theta_r = asin(sin(theta_i)/n_index);
-
-    double r_T, r_ll;
-    if(theta_i<1e-3){
-        r_T = (1-n_index)/(1+n_index);
-        r_ll = r_T;
-    }else{
-        r_T  = (cos(theta_i)-n_index*cos(theta_r))/(cos(theta_i)+n_index*cos(theta_r)); //perpendicular reflected coeficient
-        r_ll = (cos(theta_r)-n_index*cos(theta_i))/(cos(theta_r)+n_index*cos(theta_i));  //parallel refrected coeficient
-    }
-
-    double* array_T = new double[3]{E_field_v[0]*sin(theta), E_field_v[1]*cos(theta), 0};
-    E_field_T.SetEntries(3,array_T);
-    delete array_T;
-
-    return E_field_v+(E_field_T*r_T + (E_field_v-E_field_T)*r_ll);
+    return (1/(4*M_PI*r))*E_Dip*rotation180 + (1/(24*M_PI*300*vF*r))*E_Quad + (1/(4*M_PI*r2*300*vF))*E_DipMag*rotation180;
 }
 
 Vec Radiation::E_field_Image(double t, double x, double y, double z){
@@ -203,10 +190,11 @@ Vec Radiation::E_field_Image(double t, double x, double y, double z){
     double theta_i = asin(sin(theta_r)/n_index);
 
     double r_vacuum;
-    double r_dieletric = 2*(D_Conductor - D_dieletric)/cos(theta_i);
-    if(theta_r>1.5707) d_xy - sin(theta_i)*r_dieletric;
-    else r_vacuum = (z + 2*D_dieletric)/cos(theta_r);
+    double r_dieletric = 2*D_Conductor/cos(theta_i);
+    if(theta_r>1.5707) r_vacuum = d_xy;
+    else r_vacuum = z/cos(theta_r);
     double t_r = t - (n_index*r_dieletric+r_vacuum)/(300*vF);
+    if(t_r < t_min || t_r > t_max) cout << "Working outsided interpolated points [t_retarded = " << t_r << " ]\n";
 
     double* array = new double[3]{(x*SDipX_dd_t.Interpolate(t_r)+y*SDipY_dd_t.Interpolate(t_r))*x/r2-SDipX_dd_t.Interpolate(t_r),
                       (x*SDipX_dd_t.Interpolate(t_r)+y*SDipY_dd_t.Interpolate(t_r))*y/r2-SDipY_dd_t.Interpolate(t_r),
@@ -228,15 +216,15 @@ Vec Radiation::E_field_Image(double t, double x, double y, double z){
     E_DipMag.SetEntries(3,array3);
     delete array3;
 
-    E_field_v = (1/(4*M_PI*r))*E_Dip*rotation180 + (1/(24*M_PI*300*vF*r))*E_Quad + (1/(4*M_PI*r2*300*vF))*E_DipMag*rotation180;
+    E_field_v = (1/(4*M_PI*r))*E_Dip*rotation180*mu_r + (1/(24*M_PI*300*vF*r))*E_Quad*mu_r*n_index + (1/(4*M_PI*r2*300*vF))*E_DipMag*rotation180*mu_r*n_index;
 
     double t_T, t_ll;
     if(theta_i<1e-3){
-        t_T  = 4*n_index/((1+n_index)*(1+n_index));
+        t_T  = 2*n_index/(mu_r+n_index);
         t_ll = t_T;
     }else{
-        t_T  = 4*n_index*cos(theta_r)*cos(theta_i)/((cos(theta_r)+n_index*cos(theta_i))*(cos(theta_r)+n_index*cos(theta_i))); //perpendicular transmited coeficient
-        t_ll = 4*n_index*cos(theta_r)*cos(theta_i)/((n_index*cos(theta_r)+cos(theta_i))*(n_index*cos(theta_r)+cos(theta_i)));                       //parallel transmited coeficient
+        t_T  = sqrt(cos(theta_r)/cos(theta_i))*2*n_index*cos(theta_i)/(mu_r*cos(theta_i)+n_index*cos(theta_r)); //perpendicular transmited coeficient
+        t_ll = sqrt(cos(theta_r)/cos(theta_i))*2*n_index*cos(theta_i)/(mu_r*cos(theta_r)+n_index*cos(theta_i)); //parallel transmited coeficient
     }
 
     double* array_T = new double[3]{E_field_v[0]*sin(theta), E_field_v[1]*cos(theta), 0};
@@ -248,9 +236,6 @@ Vec Radiation::E_field_Image(double t, double x, double y, double z){
 
 Vec Radiation::H_field(double t, double x, double y, double z){
     Vec r_vec = Vec(3,0.); Vec p_dd = Vec(3,0.); Vec Q_ddd = Vec(3,0.); Vec H_DipMag = Vec(3,0.);
-    Vec H_field_v = Vec(3,0.); Vec H_field_T = Vec(3,0.); Vec Vec_temp = Vec(3,0.);
-
-    double theta_i = theta_i_original;
 
     double r2 = x*x+y*y+z*z;
     double r = sqrt(r2);
@@ -276,31 +261,12 @@ Vec Radiation::H_field(double t, double x, double y, double z){
     H_DipMag.SetEntries(3,array3);
     delete array3;
 
-    H_field_v = (-1/(4*M_PI*r2))*r_vec.ex(p_dd)*rotation180 + (-1/(24*M_PI*300*vF*r2))*r_vec.ex(Q_ddd) + (1/(4*M_PI*r*300*vF))*H_DipMag*rotation180;
-
-    if(z<0) return H_field_v;
-
-    double theta_r = asin(sin(theta_i)/n_index);
-
-    double r_T, r_ll;
-    if(theta_i<1e-3){
-        r_T = (1-n_index)/(1+n_index);
-        r_ll = r_T;
-    }else{
-        r_T  = (cos(theta_i)-n_index*cos(theta_r))/(cos(theta_i)+n_index*cos(theta_r)); //perpendicular reflected coeficient
-        r_ll = (cos(theta_r)-n_index*cos(theta_i))/(cos(theta_r)+n_index*cos(theta_i));  //parallel refrected coeficient
-    }
-
-    double* array_T = new double[3]{H_field_v[0]*sin(theta), H_field_v[1]*cos(theta), 0};
-    H_field_T.SetEntries(3,array_T);
-    delete array_T;
-
-    return H_field_v+(H_field_T*r_T + (H_field_v-H_field_T)*r_ll);
+    return (-1/(4*M_PI*r2))*r_vec.ex(p_dd)*rotation180 + (-1/(24*M_PI*300*vF*r2))*r_vec.ex(Q_ddd) + (1/(4*M_PI*r*300*vF))*H_DipMag*rotation180;
 }
 
 Vec Radiation::H_field_Image(double t, double x, double y, double z){
     Vec r_vec = Vec(3,0.); Vec p_dd = Vec(3,0.); Vec Q_ddd = Vec(3,0.); Vec H_DipMag = Vec(3,0.);
-    Vec H_field_v = Vec(3,0.); Vec H_field_T = Vec(3,0.); Vec Vec_temp = Vec(3,0.);
+    Vec H_field_v = Vec(3,0.); Vec H_field_T = Vec(3,0.);
 
     double theta_r = theta_r_image; 
 
@@ -310,9 +276,9 @@ Vec Radiation::H_field_Image(double t, double x, double y, double z){
     double theta_i = asin(sin(theta_r)/n_index);
 
     double r_vacuum;
-    double r_dieletric = 2*(D_Conductor - D_dieletric)/cos(theta_i);
-    if(theta_r>1.5707) d_xy - sin(theta_i)*r_dieletric;
-    else r_vacuum = (z + 2*D_dieletric)/cos(theta_r);
+    double r_dieletric = 2*D_Conductor/cos(theta_i);
+    if(theta_r>1.5707) r_vacuum = d_xy;
+    else r_vacuum = z/cos(theta_r);
     double t_r = t - (n_index*r_dieletric+r_vacuum)/(300*vF);
 
     double* array_r = new double[3]{x,y,z};
@@ -335,15 +301,15 @@ Vec Radiation::H_field_Image(double t, double x, double y, double z){
     H_DipMag.SetEntries(3,array3);
     delete array3;
 
-    H_field_v = (-1/(4*M_PI*r2))*r_vec.ex(p_dd)*rotation180 + (-1/(24*M_PI*300*vF*r2))*r_vec.ex(Q_ddd) + (1/(4*M_PI*r*300*vF))*H_DipMag*rotation180;
+    H_field_v = (-1/(4*M_PI*r2))*r_vec.ex(p_dd)*rotation180*n_index + (-1/(24*M_PI*300*vF*r2))*r_vec.ex(Q_ddd)*n_index*n_index + (1/(4*M_PI*r*300*vF))*H_DipMag*rotation180*n_index*n_index;
 
     double t_T, t_ll;
     if(theta_i<1e-3){
-        t_T  = 4*n_index/((1+n_index)*(1+n_index));
+        t_T  = 2*n_index/(mu_r+n_index);
         t_ll = t_T;
     }else{
-        t_T  = 4*n_index*cos(theta_r)*cos(theta_i)/((cos(theta_r)+n_index*cos(theta_i))*(cos(theta_r)+n_index*cos(theta_i))); //perpendicular transmited coeficient
-        t_ll = 4*n_index*cos(theta_r)*cos(theta_i)/((n_index*cos(theta_r)+cos(theta_i))*(n_index*cos(theta_r)+cos(theta_i)));                       //parallel transmited coeficient
+        t_T  = sqrt(cos(theta_r)/cos(theta_i))*2*n_index*cos(theta_i)/(mu_r*cos(theta_i)+n_index*cos(theta_r)); //perpendicular transmited coeficient
+        t_ll = sqrt(cos(theta_r)/cos(theta_i))*2*n_index*cos(theta_i)/(mu_r*cos(theta_r)+n_index*cos(theta_i)); //parallel transmited coeficient
     }
 
     double* array_T = new double[3]{H_field_v[0]*sin(theta), H_field_v[1]*cos(theta), 0};
@@ -358,7 +324,6 @@ pair<Vec,Vec> Radiation::Emitter(double t, double O_x, double O_y, double x, dou
     global_z = z;
 
     double d_star;
-    theta_i_original = atan(sqrt(d_xy/z));
 
     if(n_index < 1+1e-5) n_index = 1+1e-5;
 
@@ -366,13 +331,13 @@ pair<Vec,Vec> Radiation::Emitter(double t, double O_x, double O_y, double x, dou
 
     if(fabs(z) < 20){
         theta_r_image = M_PI/2;
-        d_star = D_Conductor*sin(asin(1/n_index));
+        d_star = D_Conductor*tan(asin(sin(theta_r_image)/n_index));
     }else if(d_xy<10){
         theta_r_image = 0;
-        d_star = (z + D_dieletric)*tan(theta_r_image) - (D_Conductor - D_dieletric)*tan(asin(sin(theta_r_image)/n_index));
+        d_star = D_Conductor*tan(asin(sin(theta_r_image)/n_index));
     }else{
         theta_r_image = NewtonsMethod();
-        d_star = d_xy - (z + D_dieletric)*tan(theta_r_image) - (D_Conductor - D_dieletric)*tan(asin(sin(theta_r_image)/n_index));
+        d_star = D_Conductor*tan(asin(sin(theta_r_image)/n_index));
     }
 
     if(fabs(x) < 1e-3)
@@ -380,7 +345,7 @@ pair<Vec,Vec> Radiation::Emitter(double t, double O_x, double O_y, double x, dou
     else 
         theta = fabs(atan((y - O_y)/(x - O_x)));
 
-    if((InConductor(O_x + d_star*(x-O_x)/d_xy, O_y + d_star*(y-O_y)/d_xy) == 0) || z < 0){
+    if((InConductor(d_star*cos(theta)-O_x, d_star*sin(theta)-O_y) == 0) || z < 0){
         return make_pair((*this).E_field(t,x-O_x,y-O_y,z),(*this).H_field(t,x-O_x,y-O_y,z));
     }else{
         return make_pair((*this).E_field(t,x-O_x,y-O_y,z)+(*this).E_field_Image(t,x-O_x,y-O_y,z),(*this).H_field(t,x-O_x,y-O_y,z)+(*this).H_field_Image(t,x-O_x,y-O_y,z));
@@ -1001,44 +966,52 @@ void Radiation::SetVf(double x){
     vF = x;
 }
 void Radiation::Set_n_index(double x){
-    if (n_index < (1-1e-3)) cout << "Refractive index must be bigger than 1\n";
+    if (x < (1-1e-3)) cout << "Refractive index must be bigger than 1\n";
     n_index = x;
+    mu_r = n_index*n_index/epsilon_r;
+    if(mu_r < 1) cout << "relative permeability can't be smaller than 1 \n";
+}
+void Radiation::Set_epsilon_r(double x){
+    if (x < (1-1e-3)) cout << "Refractive index must be bigger than 1\n";
+    epsilon_r = x;
+    mu_r = n_index*n_index/epsilon_r;
+    if(mu_r < 1) cout << "relative permeability can't be smaller than 1 \n";
 }
 void Radiation::SetD_Conductor(double x){
-    if (D_Conductor<0) cout << "Distance to conductor must be bigger than 0 \n";
+    if (x<0) cout << "Distance to conductor must be bigger than 0 \n";
     D_Conductor = x;
 }
 void Radiation::SetR_Conductor(double x){
-    if (Radius_Conductor<0) cout << "Radius must not be smaller than 0 \n";
+    if (x<0) cout << "Radius must not be smaller than 0 \n";
     Radius_Conductor = x;
 }
-void Radiation::SetD_Dieletric(double x){
-    if (D_dieletric<0) cout << "D_dieletric must not be smaller than 0 (note that this distance is very small)\n";
-    D_dieletric = x;
-}
+
 void Radiation::SetDistance_Measure(double x){
-    if (distance_measure<0) cout << "Measurement distance must be bigger than 0 \n";
+    if (x<0) cout << "Measurement distance must be bigger than 0 \n";
     distance_measure = x;
 }
 
 
 //Gets//
-double Radiation::GetVf(double x){
+double Radiation::GetVf(){
     return vF;
 }
-double Radiation::Get_n_index(double x){
+double Radiation::Get_n_index(){
     return n_index;
 }
-double Radiation::GetD_Conductor(double x){
+double Radiation::Get_epsilon_r(){
+    return epsilon_r;
+}
+double Radiation::Get_mu_r(){
+    return  mu_r;
+}
+double Radiation::GetD_Conductor(){
     return D_Conductor;
 }
-double Radiation::GetR_Conductor(double x){
+double Radiation::GetR_Conductor(){
     return Radius_Conductor;
 }
-double Radiation::GetD_Dieletric(double x){
-    return D_dieletric;
-}
-double Radiation::GetDistance_Measure(double x){
+double Radiation::GetDistance_Measure(){
     return distance_measure;
 }
 
@@ -1069,7 +1042,7 @@ double Radiation::NewtonsMethod(double x1, double x2, double error_min, int iter
 }
 
 double Radiation::Theta_refraction_equation(double theta_r){
-    return (global_z+2*D_dieletric)*tan(theta_r) + 2*(D_Conductor-D_dieletric)*tan(asin(sin(theta_r)/n_index)) - d_xy;
+    return global_z*tan(theta_r) + 2*D_Conductor*sin(theta_r)/cos(asin(sin(theta_r)/n_index)) - d_xy;
 }
 
 bool Radiation::InConductor(double x, double y){
