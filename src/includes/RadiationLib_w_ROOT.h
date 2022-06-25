@@ -32,7 +32,7 @@ using namespace std;
 
 class Radiation{
 public:
-    Radiation(double n_index_ref=2.5, double Dist_Conductor=1.5, double R_Conductor=2, double Dist_dieletric=0.05, double Distance_measure=3000);
+    Radiation(double n_index_ref=3, double epsilon_0_input=7, double Dist_Conductor=0.75, double R_Conductor=2, double Distance_measure=3000);
     
     //Read a file comming from EletronicAnalysis.cpp
     int ReadFromElectroFile(const string input_file_name);
@@ -90,17 +90,18 @@ public:
 
     void SetVf(double x);
     void Set_n_index(double x);
+    void Set_epsilon_r(double x);
     void SetD_Conductor(double x);
     void SetR_Conductor(double x);
-    void SetD_Dieletric(double x);
     void SetDistance_Measure(double x);
 
-    double GetVf(double x);
-    double Get_n_index(double x);
-    double GetD_Conductor(double x);
-    double GetR_Conductor(double x);
-    double GetD_Dieletric(double x);
-    double GetDistance_Measure(double x);
+    double GetVf();
+    double Get_epsilon_r();
+    double Get_mu_r();
+    double Get_n_index();
+    double GetD_Conductor();
+    double GetR_Conductor();
+    double GetDistance_Measure();
 
     double NewtonsMethod(double x1=1.56, double x2=1.57, double error_min=1e-5, int iter_max=40);
     double Theta_refraction_equation(double theta_r);
@@ -117,18 +118,20 @@ private:
 
     int rotation180 = 1;
 
-    double vF, n_index;
-    double D_Conductor, Radius_Conductor, D_dieletric, distance_measure;
+    double t_min, t_max;
+
+    double vF, n_index, epsilon_r, mu_r;
+    double D_Conductor, Radius_Conductor, distance_measure;
     double d_xy, global_z;
     double theta, theta_i_original, theta_r_image;
     double E_plane_angle;
 
     Spline3Interpolator SDipX_dd_t = Spline3Interpolator();
     Spline3Interpolator SDipY_dd_t = Spline3Interpolator();
+    Spline3Interpolator SDipMagZ_dd_t = Spline3Interpolator();
     Spline3Interpolator SQuadXX_ddd_t = Spline3Interpolator();
     Spline3Interpolator SQuadXY_ddd_t = Spline3Interpolator();
     Spline3Interpolator SQuadYY_ddd_t = Spline3Interpolator();
-    Spline3Interpolator SDipMagZ_dd_t = Spline3Interpolator();
 };
 
 Vec Poyting(Vec E, Vec H);
