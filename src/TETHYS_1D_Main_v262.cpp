@@ -15,10 +15,6 @@
 using namespace std;
 
 
-
-
-
-
 int main(int argc, char **argv){
 	//const int npoints=101; 							// number of spatial points
 	float t=0.0;
@@ -38,7 +34,7 @@ int main(int argc, char **argv){
 
 	float sound = graph.GetVelSnd();
 	graph.SetSound();
-	//graph.SetSimulationTime();
+	graph.SetSimulationTime();
 
 	/*................................................................*/
 
@@ -62,15 +58,17 @@ int main(int argc, char **argv){
 
 	cout << "\033[1;7;5;33m Program Running \033[0m"<<endl;
 
+	//In the case of feedbacked boundary conditions
+	/*
     float* Hfeed = new float[4];
     Hfeed[0]=0.2;
     Hfeed[1]=0.0;
     Hfeed[2]=0.0;
     Hfeed[3]=0.0;
-
     FeedbackBoundaryCondition feed(0.26,dt);
+    */
 
-	//graph.SetTmax(10.0);
+	graph.SetTmax(10.0);
 	
     //Main cycle
 	while(t <= graph.GetTmax() ) {
@@ -81,11 +79,14 @@ int main(int argc, char **argv){
 		graph.Richtmyer();
 
 		// Impose boundary conditions
-        //DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
-		DirichletBoundaryCondition::DensityLeft(graph,1);
-        DirichletBoundaryCondition::VelocityXLeft(graph,1);
-        BoundaryCondition::XFreeRight(graph);
-        feed.VoltageDelayFeedbackBc(graph,Hfeed,0.1,5*2*M_PI,t);
+        DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
+
+		//In the case of feedback aply:
+		/*DirichletBoundaryCondition::DensityLeft(graph,1);
+        //DirichletBoundaryCondition::VelocityXLeft(graph,1);
+        //BoundaryCondition::XFreeRight(graph);
+        //feed.VoltageDelayFeedbackBc(graph,Hfeed,0.1,5*2*M_PI,t);
+        */
 
 		//Record full data
 		if (parameters.SaveMode  && graph.Snapshot()) {

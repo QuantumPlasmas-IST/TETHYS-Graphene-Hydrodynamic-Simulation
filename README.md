@@ -1,17 +1,25 @@
 <img align="right" height="100" src="./.images/logo/logo_png-01.png" alt="icon">
 
 # TETHYS - *Two-dimensional Emitter of THz, Hydrodynamic Simulation.*
-## Version 2.6.1
+## Version 2.6.2
 
 [![DOI](https://zenodo.org/badge/208904575.svg)](https://zenodo.org/badge/latestdoi/208904575)
 
 ![GitHub](https://img.shields.io/github/license/pcosme/TETHYS-Graphene-Hydrodynamic-Simulation)
 ![](https://img.shields.io/github/languages/top/pcosme/TETHYS-Graphene-Hydrodynamic-Simulation)
 
-[![CodeScore](https://www.code-inspector.com/project/1694/score/svg)](https://www.code-inspector.com/project/1694/score/svg)
-[![CodeStatus](https://www.code-inspector.com/project/1694/status/svg)](https://www.code-inspector.com/project/1694/status/svg)
+
+
+[![CodeScore](https://api.codiga.io/project/1694/score/svg)](https://api.codiga.io/project/1694/score/svg)
+[![CodeStatus](https://api.codiga.io/project/1694/status/svg)](https://api.codiga.io/project/1694/status/svg)
 [![CodeFactor](https://www.codefactor.io/repository/github/pcosme/tethys-graphene-hydrodynamic-simulation/badge?s=13e31a6a03d6b485a3f259a2e963d8584e2b0054)](https://www.codefactor.io/repository/github/pcosme/tethys-graphene-hydrodynamic-simulation)
 ![.github/workflows/main.yml](https://github.com/pcosme/TETHYS-Graphene-Hydrodynamic-Simulation/workflows/.github/workflows/main.yml/badge.svg)
+
+##### Companion paper:
+Pedro Cosme, João S. Santos, João P.S. Bizarro, Ivan Figueiredo,
+_TETHYS: A simulation tool for graphene hydrodynamic models,_
+**Computer Physics Communications**,
+Volume 282, (2023) [![DOI:10.1016/j.cpc.2022.108550](http://img.shields.io/badge/DOI-10.1016/j.cpc.2022.108550-B31B1B.svg)](https://doi.org/10.1016/j.cpc.2022.108550)
 
 
 ## Documentation
@@ -241,6 +249,7 @@ Standard form of numeric *major.minor.patch* starting with the initial commit 1.
   <br>&emsp;**2.5.2** cmake update   *[29 Aug. 2021]*
   <br>&emsp;**2.6.0** Joule heating source added  *[6 Oct. 2021]*
   <br>&emsp;**2.6.1** Documentation revision  *[8 Oct. 2021]*
+  <br>&emsp;**2.6.2** Feedback w/ delay in the 1D boundary conditions   *[15 Jun. 2022]*
 ### Internal syntax
 
 | Type            | Style                                 | E.g.              |
