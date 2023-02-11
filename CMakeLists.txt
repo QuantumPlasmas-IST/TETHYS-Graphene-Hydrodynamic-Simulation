@@ -26,7 +26,7 @@ endif()
 #add_executable(TEST_laplacian src/laplacian_main.cpp)
 
 
-add_executable(TETHYS_1D src/TETHYS_1D_Main_v134.cpp)
+add_executable(TETHYS_1D src/TETHYS_1D_Main_v262.cpp)
 add_executable(TETHYS_2D src/TETHYS_2D_Main_v261.cpp)
 add_executable(TETHYS_ELEC_2D src/TETHYS_2D_ElectronicAnalysis.cpp)
 add_executable(TETHYS_RADIATION_2D src/TETHYS_2D_Radiation.cpp)
