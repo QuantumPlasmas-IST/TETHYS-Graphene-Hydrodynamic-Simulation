@@ -57,6 +57,8 @@ target_link_libraries(TETHYS_2D PRIVATE ${HDF5_CXX_LIBRARIES})
 target_include_directories(TETHYS_ELEC_2D PRIVATE ${HDF5_INCLUDE_DIRS})
 target_link_libraries(TETHYS_ELEC_2D PRIVATE ${HDF5_CXX_LIBRARIES})
 
+
+add_test(test1D TETHYS_1D 33 11 0.2 0.01 0 0 0 1 1)
 add_test(test2D TETHYS_2D 2DTESTparameters.ini)
 set(H5_TEST_FILE "hdf5_2D_S=21.00vF=10.50vis=0.010odd=0.002l=0.001wc=0.00therm=0.45.h5")
 add_test(testElec2D TETHYS_ELEC_2D ${H5_TEST_FILE})
