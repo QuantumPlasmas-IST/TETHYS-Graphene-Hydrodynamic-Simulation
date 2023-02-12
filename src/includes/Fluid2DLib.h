@@ -68,11 +68,11 @@ using namespace H5;
 		int snapshot_per_period = 40;
 		int snapshot_step = 1;
 
-		void ForwardTimeOperator(); ///< Time evolution for the FTCS method employed for the parabolic operators.
+		virtual void ForwardTimeOperator(); ///< Time evolution for the FTCS method employed for the parabolic operators.
 
 		virtual float DensityToMass(float density);
 
-		void ChooseGridPointers(const string &grid);
+		virtual void ChooseGridPointers(const string &grid);
 
 		float SideAverage(const float *input_array, GridPoint2D p, char side);
 
@@ -107,7 +107,7 @@ using namespace H5;
 		void SetSound();     ///< Applies the anisotropy (in the cases there is one) to the sound velocity array
 		void SetSound(std::function<float(float,float)>);     ///< Applies the anisotropy (in the cases there is one) to the sound velocity array
 		virtual void SetSimulationTime();   ///< Finds and set the appropriate simulation time
-		void InitialCondRand();             ///< Initial condition, zero velocity and constant density with 0.5% white noise
+		virtual void InitialCondRand();             ///< Initial condition, zero velocity and constant density with 0.5% white noise
 		void InitialCondWave();
 
 		void InitialCondTest();             ///< Initial condition for testing and debugging
@@ -141,7 +141,7 @@ using namespace H5;
 		 * @see YMomentumSource
 		 *
 		 */
-		void Richtmyer();                   // Central Algorithm for solving the hyperbolic conservation law
+		virtual void Richtmyer();                   // Central Algorithm for solving the hyperbolic conservation law
 
 		virtual float DensitySource(float n, float flx_x, float flx_y, float mass,
 		                            float s); ///< density equation (continuity equation) source term
@@ -205,7 +205,7 @@ using namespace H5;
 		 * -# Density at source contact @f$n_x(x=0) @f$
 		 * -# Mass flux along x at source contact @f$p_x(x=0) @f$
 		 * */
-		void WriteFluidFile(float t); // writes the line of time t on the simplified .dat file output
+		virtual void WriteFluidFile(float t); // writes the line of time t on the simplified .dat file output
 
 		/*!
 		 * @brief Saves the current snapshot on HDF5 file
@@ -252,7 +252,7 @@ using namespace H5;
 		* */
 		float Laplacian19(GridPoint2D p, float *input_ptr, float constant);
 
-		void VelocityLaplacianWeighted19();
+		virtual void VelocityLaplacianWeighted19();
 
 		/*!
 		* @brief Forward Time Centered Space method for the viscous terms
@@ -265,7 +265,7 @@ using namespace H5;
 		*
 		* @see VelocityLaplacianWeighted19()
 		* */
-		void ParabolicOperatorWeightedExplicit19(); ///< Forward Time Centered Space method for the diffusive terms
+		virtual void ParabolicOperatorWeightedExplicit19(); ///< Forward Time Centered Space method for the diffusive terms
 		void TemperatureLaplacianWeighted19();
 	};
 

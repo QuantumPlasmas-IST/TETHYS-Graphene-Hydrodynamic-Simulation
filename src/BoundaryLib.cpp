@@ -124,6 +124,31 @@ void BoundaryCondition::XPeriodic(Fluid2D& fluid_class){
 		fluid_class.FlxX[right] =  fluid_class.FlxX[left + 1];
 	}	
 }
+
+void BoundaryCondition::XPeriodic(DiracGraphene2D& fluid_class){
+	int nx=fluid_class.SizeX();
+	int ny=fluid_class.SizeY();
+	for(int j=0; j < ny; j++){
+		int left;
+		left = 0 + j * nx;
+		int right;
+		right = nx - 1 + j * nx;
+		fluid_class.Den[left]=fluid_class.Den[right - 1];
+		fluid_class.Den[right]=fluid_class.Den[1 + j * nx];
+		fluid_class.FlxY[left] = 0.0f; 					//flux only on x at x=0
+		fluid_class.FlxY[right] = 0.0f ;					//idem at x=L
+		fluid_class.FlxX[left] = fluid_class.FlxX[right - 1];
+		fluid_class.FlxX[right] =  fluid_class.FlxX[left + 1];		fluid_class.Den[left]=fluid_class.Den[right - 1];
+		
+		fluid_class.HDen[left]=fluid_class.HDen[right - 1];
+		fluid_class.HDen[right]=fluid_class.HDen[1 + j * nx];
+		fluid_class.HFlxY[left] = 0.0f; 					//flux only on x at x=0
+		fluid_class.HFlxY[right] = 0.0f ;					//idem at x=L
+		fluid_class.HFlxX[left] = fluid_class.HFlxX[right - 1];
+		fluid_class.HFlxX[right] =  fluid_class.HFlxX[left + 1];
+	}	
+}
+
 void BoundaryCondition::YFree(Fluid2D& fluid_class){
 	int nx=fluid_class.SizeX();
 	int ny=fluid_class.SizeY();
@@ -184,6 +209,30 @@ void BoundaryCondition::YPeriodic(Fluid2D& fluid_class){
 		fluid_class.Den[top] = fluid_class.Den[bottom + nx];
 		fluid_class.FlxX[top] = fluid_class.FlxX[bottom + nx];
 		fluid_class.FlxY[top] = fluid_class.FlxY[bottom + nx];
+	}
+}
+
+void BoundaryCondition::YPeriodic(DiracGraphene2D& fluid_class){
+	int nx=fluid_class.SizeX();
+	int ny=fluid_class.SizeY();
+	for (int i=0; i < nx; i++){
+		int bottom;
+		bottom = i; //i+0*nx
+		int top;
+		top = i + (ny - 1) * nx;
+		fluid_class.Den[bottom] = fluid_class.Den[top - nx];
+		fluid_class.FlxX[bottom] = fluid_class.FlxX[top - nx];
+		fluid_class.FlxY[bottom] = fluid_class.FlxY[top - nx];
+		fluid_class.Den[top] = fluid_class.Den[bottom + nx];
+		fluid_class.FlxX[top] = fluid_class.FlxX[bottom + nx];
+		fluid_class.FlxY[top] = fluid_class.FlxY[bottom + nx];
+
+		fluid_class.HDen[bottom] = fluid_class.HDen[top - nx];
+		fluid_class.HFlxX[bottom] = fluid_class.HFlxX[top - nx];
+		fluid_class.HFlxY[bottom] = fluid_class.HFlxY[top - nx];
+		fluid_class.HDen[top] = fluid_class.HDen[bottom + nx];
+		fluid_class.HFlxX[top] = fluid_class.HFlxX[bottom + nx];
+		fluid_class.HFlxY[top] = fluid_class.HFlxY[bottom + nx];
 	}
 }
 
