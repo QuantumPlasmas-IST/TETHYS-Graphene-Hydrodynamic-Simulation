@@ -27,7 +27,8 @@ endif()
 
 
 add_executable(TETHYS_1D src/TETHYS_1D_Main_v262.cpp)
-add_executable(TETHYS_2D src/TETHYS_2D_Main_v261.cpp)
+add_executable(TETHYS_2D src/TETHYS_2D_Main_v262.cpp)
+add_executable(TETHYS_2D_CNP src/TETHYS_2D_Dirac_main.cpp)
 add_executable(TETHYS_ELEC_2D src/TETHYS_2D_ElectronicAnalysis.cpp)
 add_executable(TETHYS_RADIATION_2D src/TETHYS_2D_Radiation.cpp)
 
@@ -41,6 +42,7 @@ add_library(tethys_library STATIC ${SRC_LIB_FILES})
 target_link_libraries(TETHYS_1D PUBLIC tethys_library)
 
 target_link_libraries(TETHYS_2D PUBLIC tethys_library)
+target_link_libraries(TETHYS_2D_CNP PUBLIC tethys_library)
 target_link_libraries(TETHYS_ELEC_2D PUBLIC tethys_library)
 
 target_link_libraries(TETHYS_RADIATION_2D PUBLIC tethys_library)
@@ -53,6 +55,9 @@ target_link_libraries(TETHYS_1D PRIVATE ${HDF5_CXX_LIBRARIES})
 
 target_include_directories(TETHYS_2D PRIVATE ${HDF5_INCLUDE_DIRS})
 target_link_libraries(TETHYS_2D PRIVATE ${HDF5_CXX_LIBRARIES})
+
+target_include_directories(TETHYS_2D_CNP PRIVATE ${HDF5_INCLUDE_DIRS})
+target_link_libraries(TETHYS_2D_CNP PRIVATE ${HDF5_CXX_LIBRARIES})
 
 target_include_directories(TETHYS_ELEC_2D PRIVATE ${HDF5_INCLUDE_DIRS})
 target_link_libraries(TETHYS_ELEC_2D PRIVATE ${HDF5_CXX_LIBRARIES})
