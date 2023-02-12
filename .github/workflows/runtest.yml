@@ -34,3 +34,6 @@ jobs:
 
     - name: Run test 2
       run: ctest --extra-verbose -I 2,2,,2
+
+    - name: Run test 3
+      run: ctest --extra-verbose -I 3,3,,3
