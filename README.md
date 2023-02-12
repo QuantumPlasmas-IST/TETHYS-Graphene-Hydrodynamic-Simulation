@@ -5,17 +5,21 @@
 
 [![DOI](https://zenodo.org/badge/208904575.svg)](https://zenodo.org/badge/latestdoi/208904575)
 
-![GitHub](https://img.shields.io/github/license/pcosme/TETHYS-Graphene-Hydrodynamic-Simulation)
-![](https://img.shields.io/github/languages/top/pcosme/TETHYS-Graphene-Hydrodynamic-Simulation)
+
+![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/pcosme/TETHYS-Graphene-Hydrodynamic-Simulation)![GitHub](https://img.shields.io/github/license/pcosme/TETHYS-Graphene-Hydrodynamic-Simulation)
 
 
+![](https://img.shields.io/github/languages/top/pcosme/TETHYS-Graphene-Hydrodynamic-Simulation)![GitHub contributors](https://img.shields.io/github/contributors/pcosme/TETHYS-Graphene-Hydrodynamic-Simulation)![GitHub commits since tagged version](https://img.shields.io/github/commits-since/pcosme/TETHYS-Graphene-Hydrodynamic-Simulation/v2.6.1-beta/dev/TestingArea)
+
+![.github/workflows/main.yml](https://github.com/pcosme/TETHYS-Graphene-Hydrodynamic-Simulation/workflows/.github/workflows/main.yml/badge.svg)
+![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/pcosme/TETHYS-Graphene-Hydrodynamic-Simulation/compiletest.yml?label=Ubuntu-Latest)
+![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/pcosme/TETHYS-Graphene-Hydrodynamic-Simulation/runtest.yml)
 
 [![CodeScore](https://api.codiga.io/project/1694/score/svg)](https://api.codiga.io/project/1694/score/svg)
 [![CodeStatus](https://api.codiga.io/project/1694/status/svg)](https://api.codiga.io/project/1694/status/svg)
 [![CodeFactor](https://www.codefactor.io/repository/github/pcosme/tethys-graphene-hydrodynamic-simulation/badge?s=13e31a6a03d6b485a3f259a2e963d8584e2b0054)](https://www.codefactor.io/repository/github/pcosme/tethys-graphene-hydrodynamic-simulation)
-![.github/workflows/main.yml](https://github.com/pcosme/TETHYS-Graphene-Hydrodynamic-Simulation/workflows/.github/workflows/main.yml/badge.svg)
 
-##### Companion paper:
+##### Companion paper: 
 Pedro Cosme, João S. Santos, João P.S. Bizarro, Ivan Figueiredo,
 _TETHYS: A simulation tool for graphene hydrodynamic models,_
 **Computer Physics Communications**,
