@@ -53,11 +53,11 @@ class SetUpParameters {
 		float CyclotronFrequency;
 		float ThermalDiffusivity;
 
-		float ThermalVelocity;  //new Dirac terms
-		float Diffusive_sourceterm; //new Dirac terms
-		float Creation_sourceterm; //new Dirac terms
+		float ThermalVelocity=1.0f;  //new Dirac terms
+		float Diffusive_sourceterm=.1f; //new Dirac terms
+		float Creation_sourceterm=.1f; //new Dirac terms
 
-	    float SimulationTime=0.0f;
+	    float SimulationTime=1.0f;
 		void ParametersChecking() const; ///< Runs a checking on the physical feasibility of the parameters
 		/*!
 		 * @brief Sets up the 2D grid dimensions
