@@ -59,9 +59,9 @@ int main(int argc, char **argv){
 
 	/*...............Initialization...................................*/
 //	graph.InitialCondGeneral([](float x,float y) { return 1.0f+0.1f/cosh(10.0f*sqrt((x-.5f)*(x-.5f)+(y-.5f)*(y-.5f))); },[](float x,float y) { return 0.5f; },[](float x,float y) { return 0.0f; });
-	graph.InitialCondGeneral([](float x,float y) { return 1.0f+0.1f/cosh(10.0f*(x-.5f)); },[](float x,float y) { return 0.5f/cosh(10.0f*(x-.5f)); },[](float x,float y) { return 0.0f; });
+//	graph.InitialCondGeneral([](float x,float y) { return 1.0f+0.1f/cosh(10.0f*(x-.5f)); },[](float x,float y) { return 0.5f/cosh(10.0f*(x-.5f)); },[](float x,float y) { return 0.0f; });
 //	graph.InitialCondGeneral([](float x,float y) { return 0.8; },[](float x,float y) { return 0.5f; },[](float x,float y) { return 0.0f; });
-	//graph.InitialCondRand();
+	graph.InitialCondRand();
 	/*................................................................*/
 
 	/*................Setting.the.lateral.boundaries..................*/
@@ -85,12 +85,12 @@ int main(int argc, char **argv){
 		/*+++++++++++++++++++++++++++++++++++++*
 		 * Change the boundary conditions here *
 		 *+++++++++++++++++++++++++++++++++++++*/
-		//DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
+		DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
 		//DirichletBoundaryCondition::YClosedNoSlip(graph);
-		//DirichletBoundaryCondition::YClosedFreeSlip(graph);
+		DirichletBoundaryCondition::YClosedFreeSlip(graph);
 
-		BoundaryCondition::XPeriodic(graph);
-		BoundaryCondition::YPeriodic(graph);
+		//BoundaryCondition::XPeriodic(graph);
+		//BoundaryCondition::YPeriodic(graph);
 
 		if(graph.GetThermDiff()!=0.0){
 			DirichletBoundaryCondition::Temperature(graph,0.22f, 0.22f, 0.22f, 0.22f);  // 300K corresponds to 0.22*Fermi temperature
@@ -102,12 +102,12 @@ int main(int argc, char **argv){
 			/*+++++++++++++++++++++++++++++++++++++*
 			 * Change the boundary conditions here *
 			 *+++++++++++++++++++++++++++++++++++++*/
-			//DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
+			DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
 			//DirichletBoundaryCondition::YClosedNoSlip(graph);
-		//	DirichletBoundaryCondition::YClosedFreeSlip(graph);
+			DirichletBoundaryCondition::YClosedFreeSlip(graph);
 
-			BoundaryCondition::XPeriodic(graph);
-			BoundaryCondition::YPeriodic(graph);
+		//	BoundaryCondition::XPeriodic(graph);
+		//	BoundaryCondition::YPeriodic(graph);
 
 
 			if(graph.GetThermDiff()!=0.0){
