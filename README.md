@@ -1,7 +1,7 @@
 <img align="right" height="100" src="./.images/logo/logo_png-01.png" alt="icon">
 
 # TETHYS - *Two-dimensional Emitter of THz, Hydrodynamic Simulation.*
-## Version 2.6.2
+## Version 2.7.0
 
 [![DOI](https://zenodo.org/badge/208904575.svg)](https://zenodo.org/badge/latestdoi/208904575)
 
@@ -254,6 +254,7 @@ Standard form of numeric *major.minor.patch* starting with the initial commit 1.
   <br>&emsp;**2.6.0** Joule heating source added  *[6 Oct. 2021]*
   <br>&emsp;**2.6.1** Documentation revision  *[8 Oct. 2021]*
   <br>&emsp;**2.6.2** Feedback w/ delay in the 1D boundary conditions   *[15 Jun. 2022]*
+  <br>&emsp;**2.7.0** Reaction diffusion module of charge neutrality point   *[22 Jun. 2022]*
 ### Internal syntax
 
 | Type            | Style                                 | E.g.              |
