@@ -23,6 +23,11 @@
 
 *.backup
 
+#VSCODE stuff
+/src/.vscode
+.vscode/settings.json
+
+
 #CMAke and Clion stuff
 .idea/
 build/
@@ -100,4 +105,4 @@ dkms.conf
 !/.images/FlowchartTETHYS_2D.png
 !/.images/FlowchartTETHYS_ELEC_2D.png
 !/.images/UML_Class_Diagram.png
-.vscode/settings.json
+
