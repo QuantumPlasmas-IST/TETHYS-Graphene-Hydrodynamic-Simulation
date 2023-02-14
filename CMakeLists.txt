@@ -33,9 +33,11 @@ add_executable(TETHYS_ELEC_2D src/TETHYS_2D_ElectronicAnalysis.cpp)
 #add_executable(TETHYS_RADIATION_2D src/TETHYS_2D_Radiation.cpp)
 
 #file(GLOB SRC_LIB_FILES src/*Lib.cpp)
-file(GLOB SRC_LIB_FILES src/*Lib.cpp src/Library_Radiation/*.cpp)
-
+file(GLOB SRC_LIB_FILES src/*Lib.cpp)
 add_library(tethys_library STATIC ${SRC_LIB_FILES})
+
+file(GLOB POLY_FILES src/external/polylogarithm-6.11.0/src/cpp/Li2.cpp)
+add_library(poly_library STATIC ${POLY_FILES})
 
 #target_link_libraries(TEST_laplacian PUBLIC tethys_library)
 
