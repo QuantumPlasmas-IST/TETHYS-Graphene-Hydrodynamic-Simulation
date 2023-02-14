@@ -142,7 +142,6 @@ long double Cl3(long double x) noexcept
       const long double z2 = z*z;
       const long double z4 = z2*z2;
       const long double z8 = z4*z4;
-      // @todo(alex) add one more term:
       const long double p = P[0] + z * P[1] + z2 * (P[2] + z * P[3]) +
          z4 * (P[4] + z * P[5] + z2 * (P[6] + z * P[7])) + z8 * P[8];
       const long double q = Q[0] + z * Q[1] + z2 * (Q[2] + z * Q[3]) +
