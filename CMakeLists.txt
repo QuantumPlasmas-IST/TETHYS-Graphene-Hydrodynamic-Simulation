@@ -33,7 +33,7 @@ add_executable(TETHYS_ELEC_2D src/TETHYS_2D_ElectronicAnalysis.cpp)
 #add_executable(TETHYS_RADIATION_2D src/TETHYS_2D_Radiation.cpp)
 
 #file(GLOB SRC_LIB_FILES src/*Lib.cpp)
-file(GLOB SRC_LIB_FILES src/*Lib.cpp src/Library_Radiation/*.cpp)
+file(GLOB SRC_LIB_FILES src/*Lib.cpp)
 
 add_library(tethys_library STATIC ${SRC_LIB_FILES})
 
