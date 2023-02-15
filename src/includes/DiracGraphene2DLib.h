@@ -68,7 +68,7 @@ public :
 	float *HCurX;      // current density x component
 	float *HCurY;      // current density y component
 
-	explicit DiracGraphene2D(SetUpParameters &input_parameters);
+	explicit DiracGraphene2D(SetUpParametersCNP &input_parameters);
 		~DiracGraphene2D();
 
 		/*!

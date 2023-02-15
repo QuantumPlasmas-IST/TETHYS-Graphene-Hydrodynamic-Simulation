@@ -53,12 +53,9 @@ class SetUpParameters {
 		float CyclotronFrequency;
 		float ThermalDiffusivity;
 
-		float ThermalVelocity=1.0f;  //new Dirac terms
-		float Diffusive_sourceterm=.1f; //new Dirac terms
-		float Creation_sourceterm=.1f; //new Dirac terms
 
 	    float SimulationTime=1.0f;
-		void ParametersChecking() const; ///< Runs a checking on the physical feasibility of the parameters
+		virtual void ParametersChecking() const; ///< Runs a checking on the physical feasibility of the parameters
 		/*!
 		 * @brief Sets up the 2D grid dimensions
 		 *
@@ -68,8 +65,8 @@ class SetUpParameters {
 		 * */
 		void DefineGeometry();
 		void ParametersFromHdf5File(const std::string& hdf5name); ///< Imports the parameters from a saved HDF5 file
-        void PrintParameters() const; ///< Prints the read parameters to standard output
-		void PromptParameters() ; ///< Asks the user for the simulation parameters
+        virtual void PrintParameters() const; ///< Prints the read parameters to standard output
+	    virtual void PromptParameters() ; ///< Asks the user for the simulation parameters
 		/*!
 		 * @brief Imports the parameters from a saved .ini file
 		 *
@@ -89,9 +86,33 @@ class SetUpParameters {
 		 * |  aspect   |  Aspect ratio    | @f$ AR @f$    |
 		 * |  save   |  Save mode    | -    |
 		 * */
-        void ReadIniFile(char * file_name);
+        virtual void ReadIniFile(char * file_name);
 };
 
+class  SetUpParametersCNP  : public  SetUpParameters{
+
+	public:
+	explicit SetUpParametersCNP();
+	explicit SetUpParametersCNP(int argc, char ** argv);
+//explicit SetUpParametersCNP():SetUpParameters(){};
+//		explicit SetUpParametersCNP(int argc, char ** argv):SetUpParameters(argc,argv){};
+		float ThermalVelocity=1.0f;  //new Dirac terms
+		float Diffusive_sourceterm=.1f; //new Dirac terms
+		float Creation_sourceterm=.1f; //new Dirac terms
+
+		void ReadIniFile(char * file_name) override;
+		void PromptParameters() override; ///< Asks the user for the simulation parameters
+
+};
+
+/*
+class  SetUpParameters1D  : public  SetUpParameters{
+	public:
+		void ReadIniFile(char * file_name) override;
+		void PromptParameters() override; ///< Asks the user for the simulation parameters
+		virtual void PrintParameters() const override;
+};
+*/
 
 
 #endif //SETUPPARAMETERSLIB_H
