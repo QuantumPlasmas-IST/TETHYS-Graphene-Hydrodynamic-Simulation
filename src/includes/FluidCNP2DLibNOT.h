@@ -1,0 +1,304 @@
+/************************************************************************************************\
+* 2020 Pedro Cosme , João Santos and Ivan Figueiredo                                             *
+* DOI: 10.5281/zenodo.4319281																	 *
+* Distributed under the MIT License (license terms are at http://opensource.org/licenses/MIT).   *
+\************************************************************************************************/
+
+
+/*!@file
+ * @brief Header file for 1D general fluid
+ */
+
+
+#ifndef FLUIDCNP2DLIBNOT_H
+#define FLUIDCNP2DLIBNOT_H
+
+#include <H5Cpp.h>
+#include "includes/TethysBaseLib.h"
+#include "includes/TethysMathLib.h"
+#include "includes/SetUpParametersLib.h"
+#include "includes/Grid2DLibNOT.h"
+
+using namespace H5;
+
+
+/*!
+ * @brief Generalistic fluid class in two dimensions, mainly for testing purposes.
+ *
+ * The FluidCNP2D class describes a regular newtonian compressible fluid governed by the usual continuity and Cauchy momemtum equations, where the mass of the fluid element is constant.
+ * It is maintained mainly for testing, the GrapheneCNP2D class is derived from it and overrides the necessary methods in order to describe the semi-classical electronic fluid.
+ * */
+class FluidCNP2D : public TethysBase
+{
+	protected:
+		float * vel_snd_arr;    // array for saving the (potentially varying) S(x,y) function at main grid
+		float * vel_snd_arr_mid;// array for saving the (potentially varying) S(x,y) function at auxiliary grid
+		float * den_mid ;       // mid or auxiliary grids defined with (Nx-1)*(Ny-1) size
+		float * tmp_mid ;
+		float * flxX_mid ;
+		float * flxY_mid ;
+
+		float * velX_dx;
+		float * velX_dy;
+
+		float * velY_dx;
+		float * velY_dy;
+
+		float * velX_dx_mid;
+		float * velX_dy_mid;
+
+		float * velY_dx_mid;
+		float * velY_dy_mid;
+
+		float * lap_flxX ;      // mass density flux laplacian component x
+		float * lap_flxY ;      // mass density flux laplacian component y
+        float * lap_tmp ;      // temperature laplacian
+
+		float * den_dx;
+		float * den_dy;
+		float * den_dx_mid;
+		float * den_dy_mid;
+
+		//Save the values of the quantities at the interfaces
+		float* UL_x;
+		float* UR_x;
+
+		float* UL_y;
+		float* UR_y;
+
+		//Fluxes along x and y
+		float* F;
+		float* G;
+
+		//Electrostatic potential
+		float* phi;
+
+		//Save half step variables
+		float* den_half;
+		float* den_h_half;
+	
+		float* curX_half;
+		float* curY_half;
+	
+		float* curX_h_half;
+		float* curY_h_half;
+
+		float* e_half;
+		float* e_h_half;
+
+		float* p_half;
+		float* p_h_half;
+
+		float* t_half;
+		float* t_h_half;
+
+    	std::ofstream data_preview; // file stream for simplified .dat file output
+		int snapshot_per_period = 40;
+		int snapshot_step = 1;
+		void ForwardTimeOperator(); ///< Time evolution for the FTCS method employed for the parabolic operators.
+
+
+		void VelocityGradient(); ///< Computes the gradient of the velocity grid  by second order finite differences.
+		void VelocityGradientMid(); ///< Computes the gradient of the velocity mid grid  by second order finite differences.
+     	void DensityGradient(); ///<  Computes the gradient of the number density grid by second order finite differences.
+    	void DensityGradientMid(); ///< Computes the gradient of the number density mid grid  by second order finite differences.
+
+		virtual float DensityToMass(float density);
+
+public :
+		float * Den ;       // number density
+		float * Den_h;      // hole density
+		
+		float * Tmp ;       // electron temperature
+		float * Tmp_h;      // hole temperature
+		
+		float * VelX ;      // electron fluid velocity x component
+		float * VelX_h ;    // hole fluid velocity x component
+		
+		float * VelY ;      // electron fluid velocity y component
+		float * VelY_h ;    // hole fluid velocity y component
+		
+		float * FlxX ;      // mass density flux x component
+		float * FlxY ;      // mass density flux y component
+		
+		float * CurX ;      // electron current density x component
+		float * CurX_h;     // hole current density x component
+
+		float * CurY ;      // electron current density y component
+		float * CurY_h;		// hole current density y component
+
+		float * E;			// electron internal energy
+		float * E_h;		// hole internal energy
+
+		float * P;          //electron pressure
+		float * P_h;		//hole pressure
+
+		float * cur_totX;   //total current density x component
+		float * cur_totY;   //total current density y component
+
+		float* den_E_kin;    // kinetic energy density
+		float* den_E_energy; // electrostatic energy density
+		float* den_E_th;     // thermal energy density
+		
+		float* EX;           // electric field x component
+		float* EY;           // electric field y component
+
+
+
+	Group* GrpDen_h ;     ///< group for ALL hole Density snapshots
+	Group* GrpVelX_h ;    ///< group for ALL hole Velocity X snapshots
+	Group* GrpVelY_h ;    ///< group for ALL hole Velocity X snapshots
+	DataSpace* DataspaceDen_h;    ///< dataspace for EACH hole Density snapshots
+	DataSpace* DataspaceVelX_h;   ///< dataspace for EACH hole Velocity X snapshots
+	DataSpace* DataspaceVelY_h;   ///< dataspace for EACH hole Velocity Y snapshots
+
+		float E_energy, E_th, E_kin, J_power; //save electrostatic, thermal, kinetic energy and Joule dissipated power
+		float I_x, I_y; //save total current along x and y
+		explicit FluidCNP2D(const SetUpParameters &input_parameters);
+		~FluidCNP2D();
+		bool Snapshot() const;
+
+		void SetSound();     ///< Applies the anisotropy (in the cases there is one) to the sound velocity array
+		virtual void SetSimulationTime();   ///< Finds and set the appropriate simulation time
+		void InitialCondRand();             ///< Initial condition, zero velocity and constant density with 0.5% white noise
+		void InitialCondTest();             ///< Initial condition for testing and debugging
+		/*!
+		 * @brief Calculates @f$\Delta x@f$ and imposes Courant–Friedrichs–Lewy condition to @f$\Delta t@f$
+		 *
+		 * The method retrieves the spatial discretization @f$\Delta x = L / N_x @f$ and then sets the time sted as @f$\Delta t = \Delta x /10 @f$.
+		 * This in general will suffice for the tests and runs performed solely with the FluidCNP2D class.
+		 */
+		virtual void CflCondition();
+
+		/*!
+		 * @brief Richtmyer method to solve the hyperbolic fluid equations
+		 *
+		 * Central algorithm for solving the 2D hyperbolic conservation law equations @cite LeVeque1992.
+		 * The behaviour of this solver is controlled by the definitions of the appropriate flux and source functions, cf. the @ref twodrich "descriptive page"
+		 *
+		 *
+		 *
+		 * @see DensityFluxX
+		 * @see DensityFluxY
+		 * @see XMomentumFluxX
+		 * @see XMomentumFluxY
+		 * @see YMomentumFluxX
+		 * @see YMomentumFluxY
+		 * @see DensitySource
+		 * @see XMomentumSource
+		 * @see YMomentumSource
+		 *
+		 */
+		void Richtmyer();                   // Central Algorithm for solving the hyperbolic conservation law
+
+		virtual float DensitySource( float n, float flx_x, float flx_y, float mass, float s); ///< density equation (continuity equation) source term
+		virtual float XMomentumSource(float n, float flx_x, float flx_y, float mass, float s); ///< velocity X component equation (momentum equation) source term
+		virtual float YMomentumSource(float n, float flx_x, float flx_y, float mass, float s); ///< velocity y component equation (momentum equation) source term
+
+		virtual float TemperatureSource(float n, float flx_x, float flx_y, float den_grad_x, float den_grad_y, float mass, float s); ///< density equation (continuity equation) source term
+
+
+		virtual float DensityFluxX(GridPoint p, char side ); ///< density equation (continuity equation) conserved flux X component
+	    virtual float DensityFluxY(GridPoint p, char side ); ///< density equation (continuity equation) conserved1 flux Y component
+
+	    virtual float XMomentumFluxX(GridPoint p, char side ); ///< velocity X component equation (momentum equation) conserved flux X component
+	    virtual float XMomentumFluxY(GridPoint p, char side ); ///< velocity X component equation (momentum equation) conserved flux Y component
+
+	    virtual float YMomentumFluxX(GridPoint p, char side ); ///< velocity Y component equation (momentum equation) conserved flux X component
+	    virtual float YMomentumFluxY(GridPoint p, char side ); ///< velocity Y component equation (momentum equation) conserved flux Y component
+
+	    float TemperatureFluxX(GridPoint p, char side ); ///< Temperature equation (heat equation) conserved flux X component
+	    float TemperatureFluxY(GridPoint p, char side ); ///< Temperature equation (heat equation) conserved flux Y component
+
+
+		/*!
+		* @brief Converts the mass density flux to velocity on the entire simulation grid.
+		*
+		* Since the mass of the fluid element is constant one needs only to perform the transformation
+		@f[ \vec{v} = \frac{\vec{p}}{n} @f]
+		* */
+		virtual void MassFluxToVelocity(); // Converts the mass flux density p=mnv to velocity
+
+		/*!
+		* @brief Converts velocity field to current density on the entire simulation grid.
+		*
+		* The method simply performs
+		@f[ \vec{j} = \vec{v}n @f]
+		* */
+		void VelocityToCurrent(); // Converts the mass flux density p=mnv to velocity
+
+
+		void CreateFluidFile();     ///< creates and opens the simplified .dat file output
+
+		/*!
+		 * @brief Writes the line of time t on the simplified .dat file output
+		 *
+		 * As a way to easily access the main results of the simulation the simplified .dat file stores the following quantities by columns:
+		 * -# Time @f$t@f$
+		 * -# Density at drain contact @f$n(x=L)@f$
+		 * -# Mass flux along x at drain contact  @f$p_x(x=L)@f$
+		 * -# Density at source contact @f$n_x(x=0) @f$
+		 * -# Mass flux along x at source contact @f$p_x(x=0) @f$
+		 * */
+		void WriteFluidFile(float t) ; // writes the line of time t on the simplified .dat file output
+
+		/*!
+		 * @brief Saves the current snapshot on HDF5 file
+		 *
+		 *
+		 * */
+		void SaveSnapShot();
+
+		/*!
+		 * @brief Imports snapshot to a FluidCNP2D class
+		 *
+		 * @param snap_name Name of the snapshot to import
+		 * */
+		void ReadSnapShot(const H5std_string &snap_name);
+
+		/*!
+		 * @brief Saves the grid of the spatial distribution of the parameter S at the output HDF5 file
+		 *
+		 * */
+		void SaveSound(); ///< Records a mesh of eventual sound velocity anisotropy at the HDF5 file
+		int GetSnapshotStep() const; ///< Returns the number of the present snapshot @return snapshot_step order number of the snapshot
+		int GetSnapshotFreq() const; ///< Returns the number of snapshots per period to record  @return snapshot_per_period number of the snapshots per period
+
+
+
+		/*!
+		 * @brief Calculates the velocity Laplacians for the FTCS method
+		 *
+		 * Them method computes both laplacians @f$ \nabla^2 v_x @f$ and @f$ \nabla^2 v_y @f$ using a five points second order stencil
+		 * @f[\nabla^2 u \approx \frac{1}{\Delta x^2} ( -4u_{i,j}+u_{i-1,j}+u_{i+1,j}+u_{i,j-1}+u_{i,j+1} )  @f]
+		 * @see ParabolicOperatorFtcs
+ 		 * */
+		void VelocityLaplacianFtcs();
+		/*!
+		* @brief Calculates the velocity Laplacians for the Weighted (1,9) method
+		*
+		* The method computes both laplacians @f$ \nabla^2 v_x @f$ and @f$ \nabla^2 v_y @f$ using a nine points fourth order stencil. More details can be found, instance in:
+		* <a href="https://digital.library.adelaide.edu.au/dspace/bitstream/2440/18689/2/02whole.pdf">this work</a>
+		*
+		* @see ParabolicOperatorWeightedExplicit19()
+		* */
+		float Laplacian19(GridPoint p, float *input_ptr, float constant);
+
+		void VelocityLaplacianWeighted19();
+		/*!
+		* @brief Forward Time Centered Space method for the viscous terms
+		*
+		* @see VelocityLaplacianFtcs()
+		* */
+		void ParabolicOperatorFtcs();       // Forward Time Centered Space method for the viscous terms
+		/*!
+		* @brief Forward Time Weighted (1,9) space method
+		*
+		* @see VelocityLaplacianWeighted19()
+		* */
+		void ParabolicOperatorWeightedExplicit19(); ///< Forward Time Centered Space method for the diffusive terms
+        void TemperatureLaplacianWeighted19();
+};
+
+
+#endif

@@ -94,11 +94,18 @@ class  SetUpParametersCNP  : public  SetUpParameters{
 	public:
 	explicit SetUpParametersCNP();
 	explicit SetUpParametersCNP(int argc, char ** argv);
-//explicit SetUpParametersCNP():SetUpParameters(){};
-//		explicit SetUpParametersCNP(int argc, char ** argv):SetUpParameters(argc,argv){};
+
 		float ThermalVelocity=1.0f;  //new Dirac terms
 		float Diffusive_sourceterm=.1f; //new Dirac terms
 		float Creation_sourceterm=.1f; //new Dirac terms
+
+
+	//BLG
+	float InitialTemperature;
+	float InitialVelocity;
+	float ExternalEfield;
+	float ChargeImbalance;
+	int NumVars;
 
 		void ReadIniFile(char * file_name) override;
 		void PromptParameters() override; ///< Asks the user for the simulation parameters
