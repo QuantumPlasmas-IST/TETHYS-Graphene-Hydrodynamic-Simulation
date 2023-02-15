@@ -9,7 +9,7 @@
 
 
 
-DiracGraphene2D::DiracGraphene2D(SetUpParameters &input_parameters) : Fluid2D(input_parameters) {
+DiracGraphene2D::DiracGraphene2D(SetUpParametersCNP &input_parameters) : Fluid2D(input_parameters) {
 	vel_fer = input_parameters.FermiVelocity ;//fermi_velocity;
 	col_freq = input_parameters.CollisionFrequency ; // collision_frequency
 	cyc_freq = input_parameters.CyclotronFrequency ; //cyclotron_frequency

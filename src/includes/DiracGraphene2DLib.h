@@ -68,7 +68,7 @@ public :
 	float *HCurX;      // current density x component
 	float *HCurY;      // current density y component
 
-	explicit DiracGraphene2D(SetUpParameters &input_parameters);
+	explicit DiracGraphene2D(SetUpParametersCNP &input_parameters);
 		~DiracGraphene2D();
 
 		/*!
@@ -147,7 +147,7 @@ public :
 		 * -# Density at source contact for holes @f$n_x(x=0) @f$
 		 * -# Mass flux along x at source contact for holes @f$p_x(x=0) @f$
 		 * */
-		void WriteFluidFile(float t); // writes the line of time t on the simplified .dat file output
+		void WriteFluidFile(float t) override; // writes the line of time t on the simplified .dat file output
 		
 		void VelocityLaplacianWeighted19() override;
 		void ParabolicOperatorWeightedExplicit19() override; ///< Forward Time Centered Space method for the diffusive terms
