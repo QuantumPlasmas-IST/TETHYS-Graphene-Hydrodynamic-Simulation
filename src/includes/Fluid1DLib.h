@@ -18,7 +18,7 @@
 #include "includes/TethysMathLib.h"
 #include "includes/SetUpParametersLib.h"
 #include "includes/GridLib.h"
-#include "includes/StateVecLib.h"
+#include "includes/StateVec1DLib.h"
 
 using namespace H5;
 using namespace std;
@@ -76,13 +76,13 @@ class Fluid1D : public TethysBase{
 //	int permutation_index_s;
 //	gsl_permutation * permutation_matrix ;
 
-	virtual float JacobianSpectralRadius( StateVec U);
+	virtual float JacobianSpectralRadius(StateVec1D U);
 	friend class NumericalFlux;
 
 public :
 
-	StateVec * Umain;
-	StateVec * Uaux;
+	StateVec1D * Umain;
+	StateVec1D * Uaux;
 
 		float * Den ;       // number density
 		float * Vel ;       // fluid velocity
@@ -116,10 +116,10 @@ void RungeKuttaTVD();
 	//	virtual float VelocityFlux(float n, float v, float dv, float s, float d2n); ///< velocity equation (momentum equation) conserved flux
 
 	virtual float DensityFlux(GridPoint1D p, char side);    ///< density equation (continuity equation) conserved flux
-	virtual float DensityFlux(StateVec U);
+	virtual float DensityFlux(StateVec1D U);
 	virtual float VelocityFlux(GridPoint1D p, char side); ///< velocity equation (momentum equation) conserved flux
-	virtual float VelocityFlux(StateVec U);
-	virtual StateVec ConservedFlux(StateVec U);
+	virtual float VelocityFlux(StateVec1D U);
+	virtual StateVec1D ConservedFlux(StateVec1D U);
 
 //	void SetBTCSmatrix(float beta);
 

@@ -44,8 +44,8 @@ Fluid1D::Fluid1D(const SetUpParameters &input_parameters) : TethysBase{input_par
 	d3_den_mid = new float[Nx - 1]();
 	d3_den = new float[Nx]();
 
-Umain = new StateVec[Nx]();
-Uaux = new StateVec[Nx]();
+Umain = new StateVec1D[Nx]();
+Uaux = new StateVec1D[Nx]();
 
 //	SetFDmatrix2(Nx);
 //	SetFDmatrix3(Nx);
@@ -106,7 +106,7 @@ float Fluid1D::VelocityFlux(GridPoint1D p, char side) {
 	return 0.5f * v * v + n - kin_vis * dv;
 }
 
-float Fluid1D::VelocityFlux(StateVec U) {
+float Fluid1D::VelocityFlux(StateVec1D U) {
 	return 0.5f*U.v()*U.v()+U.n();
 }
 
@@ -117,7 +117,7 @@ float Fluid1D::DensityFlux(GridPoint1D p, char side) {
 	return n * v;
 }
 
-float Fluid1D::DensityFlux(StateVec U) {
+float Fluid1D::DensityFlux(StateVec1D U) {
 	return U.n()*U.v();
 }
 
@@ -352,10 +352,10 @@ void Fluid1D::RungeKuttaTVD() {
 	float DenNumFluxE;
 	float VelNumFluxW;
 	float VelNumFluxE;
-	StateVec UEleft(Umain[0]);
-	StateVec UEright(Umain[0]);
-	StateVec UWleft(Umain[0]);
-	StateVec UWright(Umain[0]);
+	StateVec1D UEleft(Umain[0]);
+	StateVec1D UEright(Umain[0]);
+	StateVec1D UWleft(Umain[0]);
+	StateVec1D UWright(Umain[0]);
 
 	for (int i = 1; i < Nx-1; ++i) {
 		Umain[i].n()=Den[i];
@@ -425,14 +425,14 @@ void Fluid1D::LaxFriedrichs(){
 	}
 }
 
-float Fluid1D::JacobianSpectralRadius(StateVec U) {
+float Fluid1D::JacobianSpectralRadius(StateVec1D U) {
 	float l1=abs(U.v()+ sqrt(U.n()));
 	float l2=abs(U.v()- sqrt(U.n()));
 	return max(l1,l2);
 }
 
-StateVec Fluid1D::ConservedFlux(StateVec U) {
-	StateVec Uout{};
+StateVec1D Fluid1D::ConservedFlux(StateVec1D U) {
+	StateVec1D Uout{};
 	Uout.n()= this->DensityFlux(U);
 	Uout.v()= this->VelocityFlux(U);
 	return Uout;

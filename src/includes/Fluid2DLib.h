@@ -19,6 +19,7 @@
 #include "includes/TethysMathLib.h"
 #include "includes/SetUpParametersLib.h"
 #include "includes/GridLib.h"
+#include "includes/StateVec2DLib.h"
 
 using namespace H5;
 
@@ -30,6 +31,7 @@ using namespace H5;
  * */
 	class Fluid2D : public TethysBase {
 	protected:
+
 		float *vel_snd_arr;    // array for saving the (potentially varying) S(x,y) function at main grid
 		float *vel_snd_arr_mid;// array for saving the (potentially varying) S(x,y) function at auxiliary grid
 		float *den_mid;       // mid or auxiliary grids defined with (Nx-1)*(Ny-1) size
@@ -90,6 +92,10 @@ using namespace H5;
 		float *ptr_lap_den;
 
 	public :
+
+		StateVec2D * Umain;
+		StateVec2D * Uaux;
+
 		float *Den;       // number density
 		float *Tmp;       // electron temperature
 		float *VelX;      // fluid velocity x component

@@ -2,14 +2,14 @@
 // Created by pcosme on 04/02/2022.
 //
 
-#include "Cell1DLib.h"
+#include "Cell2DLibNOT.h"
 
-CellHandler1D::CellHandler1D(int i, Fluid1D * ptr_fluid, StateVec1D * ptr_state) {
+CellHandler2D::CellHandler1D(int i, Fluid2D * ptr_fluid, StateVec2D * ptr_state) {
 	index=i;
 	fluid_ptr=ptr_fluid;
 	U_ptr=ptr_state;
 }
-
+/*
 float CellHandler1D::VanLeer(int i) {
 	float denom,numer,r=0,f=0;
 	float limit=2.0f;
@@ -89,6 +89,7 @@ StateVec1D CellHandler1D::UNO(char side, char edge) {
 	StateVec1D Uuno(U_ptr[0]);
 	return Uuno;
 }
+*/
 
 StateVec1D NumericalFlux::Average(Fluid1D *fluido, StateVec1D L, StateVec1D R) {
 	StateVec1D Ureturn(fluido->DensityFlux(0.5f * (L + R)), fluido->VelocityFlux(0.5f * (L + R)));
