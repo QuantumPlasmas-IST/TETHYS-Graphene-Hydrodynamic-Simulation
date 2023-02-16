@@ -79,6 +79,10 @@ float GrapheneFluid2D::DensityFluxX(GridPoint2D p, char side) {
 
 	return px / sqrt(den);
 }
+float GrapheneFluid2D::DensityFluxX(StateVec2D U) {
+	return U.px() / sqrt(U.n());
+}
+
 
 float GrapheneFluid2D::DensityFluxY(GridPoint2D p, char side) {
 	float den;
@@ -86,6 +90,10 @@ float GrapheneFluid2D::DensityFluxY(GridPoint2D p, char side) {
 	py = SideAverage(ptr_py, p, side);
 	den = SideAverage(ptr_den, p, side);
 	return py / sqrt(den);
+}
+
+float GrapheneFluid2D::DensityFluxY(StateVec2D U) {
+return U.py()/ sqrt(U.n());
 }
 
 float GrapheneFluid2D::XMomentumFluxX(GridPoint2D p, char side) {
@@ -109,6 +117,12 @@ float GrapheneFluid2D::XMomentumFluxX(GridPoint2D p, char side) {
 	return px * px / mass + vel_fer * vel_fer * mass / 3.0f + 0.5f * sound * sound * den * den - odd_vis*dvy   ;
 }
 
+float GrapheneFluid2D::XMomentumFluxX(StateVec2D U) {
+	float 	mass=DensityToMass(U.n());
+	return U.px()*U.px()/mass + vel_fer * vel_fer * mass / 3.0f + 0.5f * U.S()* U.S()* U.n()* U.n();
+}
+
+
 float GrapheneFluid2D::XMomentumFluxY(GridPoint2D p, char side) {
 
 	float den;
@@ -126,6 +140,11 @@ float GrapheneFluid2D::XMomentumFluxY(GridPoint2D p, char side) {
 	mass=DensityToMass(den);
 
 	return px * py / mass - odd_vis*dvy;
+}
+
+float GrapheneFluid2D::XMomentumFluxY(StateVec2D U) {
+	float 	mass=DensityToMass(U.n());
+	return U.px()*U.py()/mass;
 }
 
 
@@ -147,6 +166,10 @@ float GrapheneFluid2D::YMomentumFluxY(GridPoint2D p, char side) {
 
 	return py * py / mass + vel_fer * vel_fer * mass / 3.0f + 0.5f * sound * sound * den * den + odd_vis*dvx ;
 }
+float GrapheneFluid2D::YMomentumFluxY(StateVec2D U) {
+	float 	mass=DensityToMass(U.n());
+	return U.py()*U.py()/mass + vel_fer * vel_fer * mass / 3.0f + 0.5f * U.S()* U.S()* U.n()* U.n();
+}
 
 float GrapheneFluid2D::YMomentumFluxX(GridPoint2D p, char side) {
 
@@ -164,6 +187,10 @@ float GrapheneFluid2D::YMomentumFluxX(GridPoint2D p, char side) {
 
 	return px * py / mass  + odd_vis*dvx;
 }
+float GrapheneFluid2D::YMomentumFluxX(StateVec2D U) {
+	float 	mass=DensityToMass(U.n());
+	return U.px()*U.px()/mass ;
+}
 
 
 float GrapheneFluid2D::DensitySource(__attribute__((unused)) float n,__attribute__((unused)) float flx_x,__attribute__((unused)) float flx_y,__attribute__((unused)) float mass,__attribute__((unused)) float s) {
@@ -176,6 +203,22 @@ float GrapheneFluid2D::XMomentumSource(float n, float flx_x, float flx_y, __attr
 
 float GrapheneFluid2D::YMomentumSource(float n, float flx_x, float flx_y, __attribute__((unused)) float mass, __attribute__((unused)) float s) {
 	return -1.0f*col_freq*flx_y  + cyc_freq*flx_x/sqrt(n);
+}
+
+float GrapheneFluid2D::DensitySource(StateVec2D U) {
+	return 0;
+}
+
+float GrapheneFluid2D::XMomentumSource(StateVec2D U) {
+	return -1.0f*col_freq*U.px()  - cyc_freq*U.py()/sqrt(U.n());
+}
+
+float GrapheneFluid2D::YMomentumSource(StateVec2D U) {
+	return -1.0f*col_freq*U.py()  + cyc_freq*U.px()/sqrt(U.n());
+}
+
+float GrapheneFluid2D::TemperatureSource(StateVec2D U) {
+	return 0;
 }
 
 
