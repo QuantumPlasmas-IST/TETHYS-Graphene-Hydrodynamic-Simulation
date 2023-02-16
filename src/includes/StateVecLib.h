@@ -10,18 +10,18 @@
 
 #include <iostream>
 
-class StateVec{
+class StateVec1D{
 private:
 	float density;
 	float velocity;
 	float velocity_gradient;
 	float sound=1.0f;
 public:
-	StateVec()=default; //default constructor
-	StateVec(const StateVec&); //copy constructor
-	StateVec(float den,float vel,float snd);
-	StateVec(float den,float vel);
-	~StateVec()=default;
+	StateVec1D()=default; //default constructor
+	StateVec1D(const StateVec1D&); //copy constructor
+	StateVec1D(float den, float vel, float snd);
+	StateVec1D(float den, float vel);
+	~StateVec1D()=default;
 
 
 
@@ -30,15 +30,15 @@ public:
 	float& n();
 	float& S();
 
-	StateVec& operator=(const StateVec&);
-	StateVec operator + (StateVec const &obj) const ;
-	StateVec operator - (StateVec const &obj) const ;
-	StateVec operator * (StateVec const &obj) const ;
-	StateVec operator / (StateVec const &obj) const ;
-	friend StateVec operator*(const StateVec &obj, float value);
-	friend StateVec operator*(float value, const StateVec &obj);
-	friend StateVec operator/(const StateVec &obj, float value);
-	friend std::ostream& operator<<(std::ostream& outstream, const StateVec &obj);
+	StateVec1D& operator=(const StateVec1D&);
+	StateVec1D operator + (StateVec1D const &obj) const ;
+	StateVec1D operator - (StateVec1D const &obj) const ;
+	StateVec1D operator * (StateVec1D const &obj) const ;
+	StateVec1D operator / (StateVec1D const &obj) const ;
+	friend StateVec1D operator*(const StateVec1D &obj, float value);
+	friend StateVec1D operator*(float value, const StateVec1D &obj);
+	friend StateVec1D operator/(const StateVec1D &obj, float value);
+	friend std::ostream& operator<<(std::ostream& outstream, const StateVec1D &obj);
 };
 
 #endif //STATEVECLIB_H

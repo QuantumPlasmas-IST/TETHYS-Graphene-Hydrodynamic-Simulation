@@ -51,17 +51,17 @@ class Fluid1D : public TethysBase{
 
 	void VelocityToCurrent();
 
-	virtual float JacobianSpectralRadius( StateVec U);
-	virtual float JacobianSignum(StateVec U,std::string key);
+//	virtual float JacobianSpectralRadius( StateVec1D U);
+//	virtual float JacobianSignum(StateVec1D U,std::string key);
 
 
 	friend class NumericalFlux;
 
 public :
 
-		StateVec * Umain;
-		StateVec * Uaux;
-		StateVec * Umid;
+		StateVec1D * Umain;
+		StateVec1D * Uaux;
+		StateVec1D * Umid;
 
 		float * Den ;       // number density
 		float * Vel ;       // fluid velocity
@@ -81,10 +81,11 @@ public :
 		void InitialCondGeneral(function<float(float)> fden, function<float(float)> fvx);
 
 		void Richtmyer();
-		void McCormack();
-		void Upwind();
-		void RungeKuttaTVD();
-		void LaxFriedrichs();
+
+//		void McCormack();
+//		void Upwind();
+//		void RungeKuttaTVD();
+//		void LaxFriedrichs();
 
 		void ParabolicFTCS();
 
@@ -96,23 +97,24 @@ public :
 	    void SetSound(const std::function<float(float)>& func);            ///< Applies the anisotropy to the sound velocity array
 		virtual void CflCondition();    ///< Calculates dx and imposes Courant–Friedrichs–Lewy condition to dt
 
-		virtual float DensityFlux(StateVec U); ///< density equation (continuity equation) conserved flux
-		virtual float VelocityFlux(StateVec U); ///< velocity equation (momentum equation) conserved flux
+		virtual float DensityFlux(StateVec1D U); ///< density equation (continuity equation) conserved flux
+		virtual float VelocityFlux(StateVec1D U); ///< velocity equation (momentum equation) conserved flux
 
-		virtual StateVec ConservedFlux(StateVec U);
+		virtual StateVec1D ConservedFlux(StateVec1D U);
 
-		virtual float DensitySource(StateVec U); ///< density equation (continuity equation) source term
-		virtual float VelocitySource(StateVec U); ///< velocity equation (momentum equation) source term
+		virtual float DensitySource(StateVec1D U); ///< density equation (continuity equation) source term
+		virtual float VelocitySource(StateVec1D U); ///< velocity equation (momentum equation) source term
 		virtual float DensitySource(__attribute__((unused)) float n,  __attribute__((unused)) float v, __attribute__((unused)) float s); ///< density equation (continuity equation) source term
 		virtual float VelocitySource(float n, float v, float s, float d3den); ///< velocity equation (momentum equation) source term
+
 		void CreateFluidFile();     ///< create and open the simplified .dat file output
 		void SaveSnapShot(); ///< saves the all the simulated quantities on the appropriate dataspace of the HDF5 file
 		void WriteFluidFile(float t) ; ///< writes the line of time t on the simplified .dat file output
 		int GetSnapshotStep() const;
 		int GetSnapshotFreq() const;
 
-		void CalcVelocityGradient( StateVec * u_vec , int size_x);
-		void CalcVelocityLaplacian(StateVec * u_vec, int size_x);
+		void CalcVelocityGradient(StateVec1D * u_vec , int size_x);
+		void CalcVelocityLaplacian(StateVec1D * u_vec, int size_x);
 		//float SideAverage(const float *input_array, GridPoint1D p, char side);
 };
 

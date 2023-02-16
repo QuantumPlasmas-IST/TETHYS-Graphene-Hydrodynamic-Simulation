@@ -4,26 +4,28 @@
 
 #include "Cell1DLib.h"
 
-CellHandler1D::CellHandler1D(int i, int total, Fluid1D * ptr_fluid, StateVec * ptr_state) {
+CellHandler1D::CellHandler1D(int i, int total, Fluid1D * ptr_fluid, StateVec1D * ptr_state) {
 	index=i;
 	size=total;
 	fluid_ptr=ptr_fluid;
 	U_ptr=ptr_state;
 }
 
-CellHandler1D::CellHandler1D(int i, int total, StateVec * ptr_state) {
+CellHandler1D::CellHandler1D(int i, int total, StateVec1D * ptr_state) {
 	index=i;
 	size=total;
 	fluid_ptr= nullptr;
 	U_ptr=ptr_state;
 }
 
-StateVec CellHandler1D::VanLeer(int i) {
-	StateVec Ureturn(U_ptr[0]);
+
+/*
+StateVec1D CellHandler1D::VanLeer(int i) {
+	StateVec1D Ureturn(U_ptr[0]);
 	float denom,numer,r,f_vel,f_den;
 	float tolerance=1E-6;
-	StateVec Numer = U_ptr[i]-U_ptr[i-1];
-	StateVec Denom = U_ptr[i+1]-U_ptr[i];
+	StateVec1D Numer = U_ptr[i]-U_ptr[i-1];
+	StateVec1D Denom = U_ptr[i+1]-U_ptr[i];
 
 	/////////////////////////////VELOCITY
 	numer=Numer.v();
@@ -45,12 +47,12 @@ StateVec CellHandler1D::VanLeer(int i) {
 }
 
 
-StateVec CellHandler1D::Roe(int i) {
-	StateVec Ureturn(U_ptr[0]);
+StateVec1D CellHandler1D::Roe(int i) {
+	StateVec1D Ureturn(U_ptr[0]);
 	float denom,numer,r,f_vel,f_den;
 	float tolerance=1E-6;
-	StateVec Numer = U_ptr[i]-U_ptr[i-1];
-	StateVec Denom = U_ptr[i+1]-U_ptr[i];
+	StateVec1D Numer = U_ptr[i]-U_ptr[i-1];
+	StateVec1D Denom = U_ptr[i+1]-U_ptr[i];
 
 	/////////////////////////////VELOCITY
 	numer=Numer.v();
@@ -68,8 +70,8 @@ StateVec CellHandler1D::Roe(int i) {
 	return Ureturn;
 }
 
-StateVec CellHandler1D::TVD(char side, char edge) {
-	StateVec Utvd(U_ptr[index]);
+StateVec1D CellHandler1D::TVD(char side, char edge) {
+	StateVec1D Utvd(U_ptr[index]);
 	int pos=index;
 	switch(side) {
 		case 'E' :
@@ -102,17 +104,18 @@ StateVec CellHandler1D::TVD(char side, char edge) {
 	}
 	return Utvd;
 }
+*/
 
-
-StateVec NumericalFlux::Average(Fluid1D *fluido, StateVec L, StateVec R) {
-	StateVec Ureturn{};
+StateVec1D NumericalFlux::Average(Fluid1D *fluido, StateVec1D L, StateVec1D R) {
+	StateVec1D Ureturn{};
 	Ureturn.n()=fluido->DensityFlux(0.5f*(L+R));
 	Ureturn.v()=fluido->VelocityFlux(0.5f*(L+R));
 	return Ureturn;
 }
 
-StateVec NumericalFlux::Central(Fluid1D *fluido, StateVec L, StateVec R) {
-	StateVec Ureturn(L);
+/*
+StateVec1D NumericalFlux::Central(Fluid1D *fluido, StateVec1D L, StateVec1D R) {
+	StateVec1D Ureturn(L);
 	Ureturn.n()=fluido->DensityFlux(R)+fluido->DensityFlux(L);
 	Ureturn.v()=fluido->VelocityFlux(R)+fluido->VelocityFlux(L);
 	//Ureturn.S()=fluido->GetVelSnd();
@@ -122,10 +125,10 @@ StateVec NumericalFlux::Central(Fluid1D *fluido, StateVec L, StateVec R) {
 	return 0.5f*Ureturn;
 }
 
-StateVec NumericalFlux::Characteristic(Fluid1D *fluido,  StateVec L, StateVec R) {
-	StateVec Ureturn(fluido->DensityFlux(R)+fluido->DensityFlux(L),fluido->VelocityFlux(R)+fluido->VelocityFlux(L));
+StateVec1D NumericalFlux::Characteristic(Fluid1D *fluido,  StateVec1D L, StateVec1D R) {
+	StateVec1D Ureturn(fluido->DensityFlux(R)+fluido->DensityFlux(L),fluido->VelocityFlux(R)+fluido->VelocityFlux(L));
 
-	StateVec u{};
+	StateVec1D u{};
 	u= 0.5f*(L+R);
 
 	float Fden,Fvel;
@@ -138,9 +141,10 @@ StateVec NumericalFlux::Characteristic(Fluid1D *fluido,  StateVec L, StateVec R)
 
 	return 0.5f*Ureturn;
 }
+*/
 
-StateVec NumericalSource::Average(Fluid1D *fluido, StateVec L, StateVec R) {
-	StateVec Ureturn{};
+StateVec1D NumericalSource::Average(Fluid1D *fluido, StateVec1D L, StateVec1D R) {
+	StateVec1D Ureturn{};
 	Ureturn.n()=fluido->DensitySource(0.5f*(L+R));
 	Ureturn.v()=fluido->VelocitySource(0.5f*(L+R));
 	return Ureturn;

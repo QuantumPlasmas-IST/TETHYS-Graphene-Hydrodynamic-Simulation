@@ -31,22 +31,22 @@ Fluid1D::Fluid1D(const SetUpParameters &input_parameters) : TethysBase{input_par
 	Cur = new float[Nx]();
 	vel_snd_arr = new float[Nx]();
 
-	Umain = new StateVec[Nx]();
-	Uaux = new StateVec[Nx]();
-	Umid = new StateVec[Nx-1]();
+	Umain = new StateVec1D[Nx]();
+	Uaux = new StateVec1D[Nx]();
+	Umid = new StateVec1D[Nx - 1]();
 
 }	
 
 Fluid1D::~Fluid1D() = default;
 
 
-float Fluid1D::VelocityFlux( StateVec U) {
+float Fluid1D::VelocityFlux(StateVec1D U) {
 	return 0.5f*U.v()*U.v() + vel_fer * vel_fer  *0.5f* log(U.n()+1.0E-6) ;//- kin_vis*U.grad_v();
 }
 
 
 
-float Fluid1D::DensityFlux(StateVec U) {
+float Fluid1D::DensityFlux(StateVec1D U) {
 	return U.n()*U.v();
 }
 
@@ -57,10 +57,10 @@ float Fluid1D::VelocitySource(float n, float v, float s, float d3den) {
 	return 0;
 }
 
-float  Fluid1D::DensitySource(StateVec U){
+float  Fluid1D::DensitySource(StateVec1D U){
 	return 0;
 }
-float Fluid1D::VelocitySource(StateVec U) {
+float Fluid1D::VelocitySource(StateVec1D U) {
 	return  -1.0f * col_freq * U.v() ;
 }
 
@@ -161,24 +161,26 @@ void Fluid1D::Richtmyer(){
 }
 void Fluid1D::RichtmyerStep1() {
 	for ( int i = 0; i <= Nx - 2; i++ ){
-		float den_avg   = 0.5f * (Umain[i+1] + Umain[i] ).n();
-		float vel_avg   = 0.5f * (Umain[i+1] + Umain[i] ).v();
-		Umid[i].n() = den_avg - 0.5f*(dt/dx)*(DensityFlux(Umain[i+1]) - DensityFlux(Umain[i]))
-							+ (0.5f*dt) * DensitySource(0.5f * (Umain[i+1] + Umain[i] )) ;
-		Umid[i].v() = vel_avg - 0.5f*(dt/dx)*(VelocityFlux(Umain[i+1]) - VelocityFlux(Umain[i]))
-							+ (0.5f*dt) * VelocitySource(0.5f * (Umain[i+1] + Umain[i] )) ;
+//		float den_avg   = 0.5f * (Umain[i+1] + Umain[i] ).n();
+//		float vel_avg   = 0.5f * (Umain[i+1] + Umain[i] ).v();
+
+		StateVec1D Uavg{};
+		Uavg = 0.5f*(Umain[i+1] + Umain[i]);
+
+		Umid[i].n() = Uavg.n() - 0.5f*(dt/dx)*(DensityFlux(Umain[i+1]) - DensityFlux(Umain[i]))
+							+ (0.5f*dt) * DensitySource(Uavg) ;
+		Umid[i].v() = Uavg.v() - 0.5f*(dt/dx)*(VelocityFlux(Umain[i+1]) - VelocityFlux(Umain[i]))
+							+ (0.5f*dt) * VelocitySource(Uavg) ;
 	}
 }
 void Fluid1D::RichtmyerStep2() {
 	for ( int i = 1; i <= Nx - 2; i++ ){
-		StateVec Uold(Umain[i]);
-		float den_old = Uold.n();
-		float vel_old = Uold.v();
-//		float den_old = Umain[i].n();
-//		float vel_old = Umain[i].v();
-		Umain[i].n() = den_old - (dt/dx)*(DensityFlux(Umid[i]) - DensityFlux(Umid[i-1]))
+		StateVec1D Uold(Umain[i]);
+//		float den_old = Uold.n();
+//		float vel_old = Uold.v();
+		Umain[i].n() = Uold.n() - (dt/dx)*(DensityFlux(Umid[i]) - DensityFlux(Umid[i-1]))
 				                 + dt * DensitySource(Uold);
-		Umain[i].v() = vel_old - (dt/dx)*(VelocityFlux(Umid[i]) - VelocityFlux(Umid[i-1]))
+		Umain[i].v() = Uold.v() - (dt/dx)*(VelocityFlux(Umid[i]) - VelocityFlux(Umid[i-1]))
 		                         + dt * VelocitySource(Uold);
 	}
 }
@@ -202,6 +204,8 @@ bool Fluid1D::Snapshot() const {
 
 
 void Fluid1D::SaveSnapShot(){
+
+	CopyFields();
 
 	hsize_t dim_atr[1] = { 1 };
 	DataSpace atr_dataspace = DataSpace (1, dim_atr );
@@ -236,6 +240,8 @@ void Fluid1D::SaveSnapShot(){
 	dataset_vel_x.close();
 }
 
+
+/*
 void Fluid1D::RungeKuttaTVD() {
 	float DenNumFluxW;
 	float DenNumFluxE;
@@ -252,10 +258,10 @@ void Fluid1D::RungeKuttaTVD() {
 	float VelNumFluxBohm;
 
 
-	StateVec UEleft(Umain[0]);
-	StateVec UEright(Umain[0]);
-	StateVec UWleft(Umain[0]);
-	StateVec UWright(Umain[0]);
+	StateVec1D UEleft(Umain[0]);
+	StateVec1D UEright(Umain[0]);
+	StateVec1D UWleft(Umain[0]);
+	StateVec1D UWright(Umain[0]);
 
 	for (int i = 1; i < Nx-1; ++i) { //apenas pontos interiores
 
@@ -382,20 +388,23 @@ void Fluid1D::LaxFriedrichs(){
 	}
 }
 
-float Fluid1D::JacobianSpectralRadius(StateVec U) {
+float Fluid1D::JacobianSpectralRadius(StateVec1D U) {
 	float l1=abs( U.v() + vel_fer*0.5f );
 	float l2=abs( U.v() - vel_fer*0.5f );
 	return max(l1,l2);
 }
+*/
 
-StateVec Fluid1D::ConservedFlux(StateVec U) {
-	StateVec Uout{};
+
+StateVec1D Fluid1D::ConservedFlux(StateVec1D U) {
+	StateVec1D Uout{};
 	Uout.n()= this->DensityFlux(U);
 	Uout.v()= this->VelocityFlux(U);
 	return Uout;
 }
 
-float Fluid1D::JacobianSignum( StateVec U, std::string key) {
+/*
+float Fluid1D::JacobianSignum( StateVec1D U, std::string key) {
 
 	float l1= Signum(U.v()+vel_snd*sqrt(U.n()));
 	float l2= Signum(U.v()-vel_snd*sqrt(U.n()));
@@ -411,6 +420,7 @@ float Fluid1D::JacobianSignum( StateVec U, std::string key) {
 	}else entry=0.0f;
 return entry;
 }
+*/
 
 void Fluid1D::CopyFields() {
 	for (int i = 0; i < Nx; ++i) {
@@ -427,7 +437,7 @@ void Fluid1D::SaveSound() {
 	dataset_vel_snd.close();
 }
 
-void Fluid1D::CalcVelocityGradient(StateVec * u_vec,int size_x) {
+void Fluid1D::CalcVelocityGradient(StateVec1D * u_vec, int size_x) {
 	for ( int i = 1; i < size_x-1 ; i++ )
 	{
 		u_vec[i].grad_v() = (-0.5f * u_vec[i - 1].v() + 0.5f * u_vec[i + 1].v()) / dx;
@@ -436,7 +446,7 @@ void Fluid1D::CalcVelocityGradient(StateVec * u_vec,int size_x) {
 	u_vec[size_x - 1].grad_v() = (0.5f * u_vec[size_x - 1 - 2].v() - 2.0f * u_vec[size_x - 1 - 1].v() + 1.5f * u_vec[size_x - 1].v()) / dx;
 }
 
-void Fluid1D::CalcVelocityLaplacian(StateVec * u_vec,int size_x) {
+void Fluid1D::CalcVelocityLaplacian(StateVec1D * u_vec, int size_x) {
 	for ( int i = 1; i < size_x-1 ; i++ )
 	{
 		u_vec[i].grad_v() = (u_vec[i - 1].v() -2.0f*u_vec[i].v() + u_vec[i + 1].v()) / (dx*dx);

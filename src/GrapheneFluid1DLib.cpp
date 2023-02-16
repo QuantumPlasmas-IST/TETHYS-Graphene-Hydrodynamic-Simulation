@@ -32,20 +32,20 @@ GrapheneFluid1D::~GrapheneFluid1D(){
 
 
 
-float GrapheneFluid1D::VelocityFlux(StateVec U) {
+float GrapheneFluid1D::VelocityFlux(StateVec1D U) {
 	return 0.25f * U.v() * U.v() + vel_fer * vel_fer * 0.5f * log(U.n()+1E-6) + 2.0f * U.S() * U.S() * sqrt(U.n()) - kin_vis*U.grad_v();
 }
 
 
-float GrapheneFluid1D::DensityFlux(StateVec U) {
+float GrapheneFluid1D::DensityFlux(StateVec1D U) {
 	return U.n()*U.v();
 }
 
-float GrapheneFluid1D::DensitySource(StateVec U){
+float GrapheneFluid1D::DensitySource(StateVec1D U){
 	return 0.0f;
 }
 
-float GrapheneFluid1D::VelocitySource(StateVec U) {
+float GrapheneFluid1D::VelocitySource(StateVec1D U) {
 	return -1.0f * col_freq * U.v();
 }
 
@@ -73,9 +73,11 @@ void GrapheneFluid1D::CflCondition(){
 	dt = dx/lambda;
 }
 
-float GrapheneFluid1D::JacobianSpectralRadius(StateVec U) {
+/*
+float GrapheneFluid1D::JacobianSpectralRadius(StateVec1D U) {
 	float SQRT = sqrt(16.0f*sqrt(U.n())*vel_snd*vel_snd+U.v()*U.v() );
 	float l1 = abs(3.0f*U.v() + SQRT);
 	float l2 = abs(3.0f*U.v() - SQRT);
 	return 0.25f*max(l1,l2);
 }
+*/
