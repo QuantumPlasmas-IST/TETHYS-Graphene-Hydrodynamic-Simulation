@@ -15,6 +15,10 @@
 using namespace std;
 
 
+
+
+
+
 int main(int argc, char **argv){
 	//const int npoints=101; 							// number of spatial points
 	float t=0.0;
@@ -23,6 +27,7 @@ int main(int argc, char **argv){
 
 	SetUpParameters parameters(argc, argv);
 	GrapheneFluid1D graph(parameters);
+	//DyakonovShurBoundaryCondition boundary_condition;
 
 	GrapheneFluid1D::BannerDisplay();
 	/*......CFL routine to determine dt...............................*/
@@ -33,6 +38,8 @@ int main(int argc, char **argv){
 	/*.........Fixed or variable vel_snd value........................*/
 
 	float sound = graph.GetVelSnd();
+//	std::function<float(float)> variationS = [=](float x){ return sound+.5f* tanh(6.0f*cos(2.0f*MAT_PI*2.0f*x)); };
+//	graph.SetSound(variationS);
 	graph.SetSound();
 	graph.SetSimulationTime();
 
@@ -58,36 +65,25 @@ int main(int argc, char **argv){
 
 	cout << "\033[1;7;5;33m Program Running \033[0m"<<endl;
 
-	//In the case of feedbacked boundary conditions
-	/*
-    float* Hfeed = new float[4];
-    Hfeed[0]=0.2;
-    Hfeed[1]=0.0;
-    Hfeed[2]=0.0;
-    Hfeed[3]=0.0;
-    FeedbackBoundaryCondition feed(0.26,dt);
-    */
 
 	graph.SetTmax(10.0);
-	
-    //Main cycle
+	//Main cycle
 	while(t <= graph.GetTmax() ) {
 		t += dt;
 		GrapheneFluid1D::TimeStepCounter++;
-		
-        // Main algorithm		
+		// Main algorithm		
 		graph.Richtmyer();
+		//graph.RungeKuttaTVD();
 
 		// Impose boundary conditions
-        DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
+		DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
+		//BoundaryCondition::XPeriodic(graph);
 
-		//In the case of feedback aply:
-		/*DirichletBoundaryCondition::DensityLeft(graph,1);
-        //DirichletBoundaryCondition::VelocityXLeft(graph,1);
-        //BoundaryCondition::XFreeRight(graph);
-        //feed.VoltageDelayFeedbackBc(graph,Hfeed,0.1,5*2*M_PI,t);
-        */
+		//graph.BohmOperator(0.015);
+		//BoundaryCondition::XPeriodic(graph);
 
+		// Applying average filters for smoothing 	
+		//graph.Smooth(2);
 		//Record full data
 		if (parameters.SaveMode  && graph.Snapshot()) {
 			graph.SaveSnapShot();

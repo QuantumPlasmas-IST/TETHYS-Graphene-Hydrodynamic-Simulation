@@ -57,6 +57,7 @@
  *
  * This class is responsible for finding the position of the grid neighbours, either at the main or mid grid, for the numerical methods employed.
  * */
+ /*
 	class GridPoint1D {
 	private:
 		int size_x;
@@ -79,7 +80,7 @@
 		void SecondNeighbours(); ///< Finds the second neighbours of a mesh point, i.e. sets the WW and EE points
 		void ThirdNeighbours(); ///< Finds the second neighbours of a mesh point, i.e. sets the WWW and EEE points
 	};
-
+*/
 
 
 #endif //GRIDLIB_H

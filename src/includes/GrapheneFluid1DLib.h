@@ -1,5 +1,5 @@
 /************************************************************************************************\
-* 2020 Pedro Cosme , João Santos, Ivan Figueiredom, João Rebelo, Diogo Simões                    *
+* 2020 Pedro Cosme , João Santos and Ivan Figueiredo                                             *
 * DOI: 10.5281/zenodo.4319281																	 *
 * Distributed under the MIT License (license terms are at http://opensource.org/licenses/MIT).   *
 \************************************************************************************************/
@@ -24,10 +24,8 @@
  * */
 class GrapheneFluid1D : public Fluid1D{
 	private:
-//	void BohmPotencial(string grid) override;
-//	void BohmSource(string grid) override;
-	float JacobianSpectralRadius(StateVec1D U) override;
-	friend class NumericalFlux;
+		float JacobianSpectralRadius( StateVec U) override;
+		friend class NumericalFlux;
 
 	public :
 		explicit GrapheneFluid1D(SetUpParameters &input_parameters);
@@ -35,18 +33,17 @@ class GrapheneFluid1D : public Fluid1D{
 		/*Override CFL condition to the case of graphene equations */
 		void CflCondition() override;
 		/*Override fluxes and sources to specifics of graphene physics*/
-	//	float DensityFlux(float n,float v,__attribute__((unused)) float s) override;
-	//	float VelocityFlux(float n, float v, float dv, float s, float d2n) override;
 
-	float DensityFlux(GridPoint1D p, char side) override;    ///< density equation (continuity equation) conserved flux
-	float VelocityFlux(GridPoint1D p, char side) override; ///< velocity equation (momentum equation) conserved flux
-	float DensityFlux(StateVec1D U) override;
-	float VelocityFlux(StateVec1D U) override;
+		float DensityFlux(StateVec U) override;
+		float VelocityFlux(StateVec U) override;
+
+		float DensitySource(StateVec U) override;
+		float VelocitySource(StateVec U) override;
+
+		//float DensitySource(__attribute__((unused)) float n,__attribute__((unused)) float v, __attribute__((unused)) float s) override;
+		//float VelocitySource(float n, float v, float s, float d3den) override;
 
 
-
-	float DensitySource(__attribute__((unused)) float n,__attribute__((unused)) float v, __attribute__((unused)) float s) override;
-		float VelocitySource(float n, float v, float s, float d3den) override;
 };
 
 #endif //GRAPHENEFLUID1DLIB_H

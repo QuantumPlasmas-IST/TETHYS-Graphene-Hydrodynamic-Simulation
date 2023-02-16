@@ -250,82 +250,10 @@ void MathUtils::GradientField(const float *array_in, float *array_out, float dx,
 }
 
 
-/*
-void MathUtils::SetFDmatrix2(int size) {
-	FDmatrix2 = gsl_matrix_calloc (size, size) ; //TODO passsar a atributo
-
-	for (int i=0;i<size;i++) {
-		for (int j = 0; j < size; j++) {
-			if(j==i){
-				gsl_matrix_set(FDmatrix2, i, j, -2);
-			}else
-			if(j==i+1){
-				gsl_matrix_set(FDmatrix2, i, j, 1);
-			}else
-			if(j==i-1){
-				gsl_matrix_set(FDmatrix2, i, j, 1);
-			}
-		}
-	}
-//primeira linha 2	−5	4	−1
-	gsl_matrix_set(FDmatrix2, 0, 0, 2);
-	gsl_matrix_set(FDmatrix2, 0, 1, -5);
-	gsl_matrix_set(FDmatrix2, 0, 2, 4);
-	gsl_matrix_set(FDmatrix2, 0, 3, -1);
-//ultima linha
-	gsl_matrix_set(FDmatrix2, size-1, size-1, -2);
-	gsl_matrix_set(FDmatrix2, size-1, size-1-1, 5);
-	gsl_matrix_set(FDmatrix2, size-1, size-1-2, -4);
-	gsl_matrix_set(FDmatrix2, size-1, size-1-3, 1);
+float MathUtils::Signum(float x) {
+	return x/abs(x);
 }
 
-
-void MathUtils::SetFDmatrix3(int size) {
-	FDmatrix3 = gsl_matrix_calloc (size, size) ; //TODO passsar a atributo
-	for (int i=0;i<size;i++) {
-		for (int j = 0; j < size; j++) {
-			if(j==i){
-				gsl_matrix_set(FDmatrix3, i, j, 0.0);
-			}else
-			if(j==i+1){
-				gsl_matrix_set(FDmatrix3, i, j, -1);
-			}else
-			if(j==i-1){
-				gsl_matrix_set(FDmatrix3, i, j, 1);
-			}else
-			if(j==i-2){
-				gsl_matrix_set(FDmatrix3, i, j, -0.5);
-			}else
-			if(j==i+2){
-				gsl_matrix_set(FDmatrix3, i, j, 0.5);
-			}
-		}
-	}
-//primeira linha 2	−5	4	−1
-	gsl_matrix_set(FDmatrix3, 0, 0, -2.5);
-	gsl_matrix_set(FDmatrix3, 0, 1, 9);
-	gsl_matrix_set(FDmatrix3, 0, 2, -12);
-	gsl_matrix_set(FDmatrix3, 0, 3, 7);
-	gsl_matrix_set(FDmatrix3, 0, 4, -1.5);
-//segunda linha
-	gsl_matrix_set(FDmatrix3, 1, 0, 0);
-	gsl_matrix_set(FDmatrix3, 1, 1, -2.5);
-	gsl_matrix_set(FDmatrix3, 1, 2, 9);
-	gsl_matrix_set(FDmatrix3, 1, 3, -12);
-	gsl_matrix_set(FDmatrix3, 1, 4, 7);
-	gsl_matrix_set(FDmatrix3, 1, 5, -1.5);
-//ultima linha
-	gsl_matrix_set(FDmatrix3, size-1, size-1, 2.5);
-	gsl_matrix_set(FDmatrix3, size-1, size-1-1, -9);
-	gsl_matrix_set(FDmatrix3, size-1, size-1-2, 12);
-	gsl_matrix_set(FDmatrix3, size-1, size-1-3, -7);
-	gsl_matrix_set(FDmatrix3, size-1, size-1-4, 1.5);
-//penultima linha
-	gsl_matrix_set(FDmatrix3, size-1-1, size-1, 0);
-	gsl_matrix_set(FDmatrix3, size-1-1, size-1-1, 2.5);
-	gsl_matrix_set(FDmatrix3, size-1-1, size-1-2, -9);
-	gsl_matrix_set(FDmatrix3, size-1-1, size-1-3, 12);
-	gsl_matrix_set(FDmatrix3, size-1-1, size-1-4, -7);
-	gsl_matrix_set(FDmatrix3, size-1-1, size-1-5, 1.5);
-
-}*/
+float MathUtils::MinMod(float a, float b) {
+	return 0.5f*(Signum(a)+ Signum(b))* min(abs(a), abs(b));
+}

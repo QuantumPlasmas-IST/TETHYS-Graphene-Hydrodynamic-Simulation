@@ -15,30 +15,37 @@
 class CellHandler1D {
 private:
 	int index;
-	StateVec1D U{};
-	StateVec1D *U_ptr;
+	int size;
+	StateVec *U_ptr;
 	Fluid1D *fluid_ptr;
 public:
-	CellHandler1D(int, Fluid1D *, StateVec1D *);
+	CellHandler1D(int, int, Fluid1D *, StateVec *);
+	CellHandler1D(int, int, StateVec *);
 	~CellHandler1D()=default;
-//	StateVec1D &E(StateVec1D * Uin);
-//	StateVec1D &W(StateVec1D * Uin);
 
-	StateVec1D TVD(char side, char edge);
-	StateVec1D UNO(char side, char edge); //TODO implementar a reconstrução com o UNO2
+	StateVec TVD(char side,char edge);
 
-	float VanLeer(int i);
-	float Roe(int i); //TODO adicionar mais flux limiters
+
+//TODO adicionar mais flux limiters
+
+	StateVec VanLeer(int i);
+	StateVec Roe(int i);
+
 };
 
 
 
 class NumericalFlux{
 public:
-	static StateVec1D Average(Fluid1D* fluido, StateVec1D L, StateVec1D R);
-	static StateVec1D Central(Fluid1D* fluido, StateVec1D L, StateVec1D R);
-	static StateVec1D Characteristic(Fluid1D* fluido, StateVec1D L, StateVec1D R);
+	static StateVec Average(Fluid1D* fluido, StateVec L, StateVec R);
+	static StateVec Central(Fluid1D* fluido, StateVec L, StateVec R);
+	static StateVec Characteristic(Fluid1D* fluido, StateVec L, StateVec R);
 
+};
+
+class NumericalSource{
+public:
+	static StateVec Average(Fluid1D* fluido, StateVec L, StateVec R);
 };
 
 #endif //CELL1D_H

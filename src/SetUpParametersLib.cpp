@@ -163,7 +163,7 @@ void SetUpParameters::ParametersFromHdf5File(const string& hdf5name){
 }
 
 void SetUpParameters::DefineGeometry() {
-	int sampling=151;
+	int sampling=201;
 	if(AspectRatio>1.0f){
 		Length=1.0f*AspectRatio;
 		Width=1.0f;
