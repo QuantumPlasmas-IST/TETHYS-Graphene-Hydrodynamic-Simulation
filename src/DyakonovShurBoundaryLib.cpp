@@ -9,7 +9,7 @@
 
 
 
-void DyakonovShurBoundaryCondition::DyakonovShurBc(Fluid1D& fluid_class) {
+void DyakonovShurBoundaryCondition::DyakonovShurBc(GrapheneFluid1D& fluid_class) {
 	int nx=fluid_class.SizeX();
 	fluid_class.Umain[0].n()=1.0f;
 	fluid_class.Umain[0].v()=fluid_class.Umain[1].v();
