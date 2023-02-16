@@ -5,8 +5,8 @@
 \************************************************************************************************/
 
 
-#ifndef STATEVECLIB_H
-#define STATEVECLIB_H
+#ifndef STATEVEC1DLIB_H
+#define STATEVEC1DLIB_H
 
 #include <iostream>
 
@@ -41,6 +41,6 @@ public:
 	friend std::ostream& operator<<(std::ostream& outstream, const StateVec1D &obj);
 };
 
-#endif //STATEVECLIB_H
+#endif //STATEVEC1DLIB_H
 
 

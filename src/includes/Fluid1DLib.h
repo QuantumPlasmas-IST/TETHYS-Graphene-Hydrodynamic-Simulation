@@ -18,7 +18,7 @@
 #include "includes/TethysMathLib.h"
 #include "includes/SetUpParametersLib.h"
 #include "includes/GridLib.h"
-#include "includes/StateVecLib.h"
+#include "includes/StateVec1DLib.h"
 
 using namespace H5;
 using namespace std;

@@ -91,6 +91,9 @@ using namespace H5;
 		float *ptr_tmp;
 		float *ptr_lap_den;
 
+		void RichtmyerStep1();
+		void RichtmyerStep2();
+
 	public :
 
 		StateVec2D * Umain;
@@ -149,37 +152,37 @@ using namespace H5;
 		 */
 		virtual void Richtmyer();                   // Central Algorithm for solving the hyperbolic conservation law
 
-		virtual float DensitySource(float n, float flx_x, float flx_y, float mass,
-		                            float s); ///< density equation (continuity equation) source term
-		virtual float XMomentumSource(float n, float flx_x, float flx_y, float mass,
-		                              float s); ///< velocity X component equation (momentum equation) source term
-		virtual float YMomentumSource(float n, float flx_x, float flx_y, float mass,
-		                              float s); ///< velocity y component equation (momentum equation) source term
-
-		virtual float
-		TemperatureSource(float n, float flx_x, float flx_y, float den_grad_x, float den_grad_y, float mass,
-		                  float s); ///< density equation (continuity equation) source term
+		virtual float DensitySource(float n, float flx_x, float flx_y, float mass,float s); ///< density equation (continuity equation) source term
+		virtual float XMomentumSource(float n, float flx_x, float flx_y, float mass, float s); ///< velocity X component equation (momentum equation) source term
+		virtual float YMomentumSource(float n, float flx_x, float flx_y, float mass, float s); ///< velocity y component equation (momentum equation) source term
+		virtual float TemperatureSource(float n, float flx_x, float flx_y, float den_grad_x, float den_grad_y, float mass, float s); ///< density equation (continuity equation) source term
 
 
-		virtual float
-		DensityFluxX(GridPoint2D p, char side); ///< density equation (continuity equation) conserved flux X component
-		virtual float
-		DensityFluxY(GridPoint2D p, char side); ///< density equation (continuity equation) conserved1 flux Y component
+		virtual float DensitySource(StateVec2D U); ///< density equation (continuity equation) source term
+		virtual float XMomentumSource(StateVec2D U); ///< velocity X component equation (momentum equation) source term
+		virtual float YMomentumSource(StateVec2D U); ///< velocity y component equation (momentum equation) source term
+		virtual float TemperatureSource(StateVec2D U); ///< density equation (continuity equation) source term
 
-		virtual float XMomentumFluxX(GridPoint2D p,
-		                             char side); ///< velocity X component equation (momentum equation) conserved flux X component
-		virtual float XMomentumFluxY(GridPoint2D p,
-		                             char side); ///< velocity X component equation (momentum equation) conserved flux Y component
+		virtual float DensityFluxX(GridPoint2D p, char side); ///< density equation (continuity equation) conserved flux X component
+		virtual float DensityFluxX(StateVec2D U);///< density equation (continuity equation) conserved flux X component
 
-		virtual float YMomentumFluxX(GridPoint2D p,
-		                             char side); ///< velocity Y component equation (momentum equation) conserved flux X component
-		virtual float YMomentumFluxY(GridPoint2D p,
-		                             char side); ///< velocity Y component equation (momentum equation) conserved flux Y component
+		virtual float DensityFluxY(GridPoint2D p, char side); ///< density equation (continuity equation) conserved1 flux Y component
+		virtual float DensityFluxY(StateVec2D U); ///< density equation (continuity equation) conserved1 flux Y component
 
-		float
-		TemperatureFluxX(GridPoint2D p, char side); ///< Temperature equation (heat equation) conserved flux X component
-		float
-		TemperatureFluxY(GridPoint2D p, char side); ///< Temperature equation (heat equation) conserved flux Y component
+		virtual float XMomentumFluxX(GridPoint2D p, char side); ///< velocity X component equation (momentum equation) conserved flux X component
+		virtual float XMomentumFluxX(StateVec2D U); ///< velocity X component equation (momentum equation) conserved flux X component
+		virtual float XMomentumFluxY(GridPoint2D p, char side); ///< velocity X component equation (momentum equation) conserved flux Y component
+		virtual float XMomentumFluxY(StateVec2D U); ///< velocity X component equation (momentum equation) conserved flux Y component
+
+		virtual float YMomentumFluxX(GridPoint2D p, char side); ///< velocity Y component equation (momentum equation) conserved flux X component
+		virtual float YMomentumFluxX(StateVec2D U); ///< velocity Y component equation (momentum equation) conserved flux X component
+		virtual float YMomentumFluxY(GridPoint2D p, char side); ///< velocity Y component equation (momentum equation) conserved flux Y component
+		virtual float YMomentumFluxY(StateVec2D U); ///< velocity Y component equation (momentum equation) conserved flux Y component
+
+		float TemperatureFluxX(GridPoint2D p, char side); ///< Temperature equation (heat equation) conserved flux X component
+		float TemperatureFluxX(StateVec2D U); ///< Temperature equation (heat equation) conserved flux X component
+		float TemperatureFluxY(GridPoint2D p, char side); ///< Temperature equation (heat equation) conserved flux Y component
+		float TemperatureFluxY(StateVec2D U); ///< Temperature equation (heat equation) conserved flux Y component
 
 
 		/*!

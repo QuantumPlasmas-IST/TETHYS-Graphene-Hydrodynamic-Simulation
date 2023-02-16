@@ -187,6 +187,8 @@ void Fluid2D::VelocityToCurrent() {
 	}
 }
 
+
+
 void Fluid2D::Richtmyer(){
 	if(odd_vis) {
 		//this->VelocityGradient();
@@ -273,6 +275,21 @@ void Fluid2D::Richtmyer(){
 			}
 		}
 }
+
+
+
+void Fluid2D::RichtmyerStep1(){
+
+
+}
+
+
+void Fluid2D::RichtmyerStep2(){
+
+
+}
+
+
 
 void Fluid2D::CflCondition(){
 		dx = lengX / ( float ) ( Nx - 1 );
