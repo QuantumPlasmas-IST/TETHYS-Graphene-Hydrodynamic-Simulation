@@ -79,6 +79,22 @@ public :
 
 		float YMomentumFluxX(GridPoint2D p, char side ) override; ///< velocity Y component equation (momentum equation) conserved flux X component
 		float YMomentumFluxY(GridPoint2D p, char side ) override; ///< velocity Y component equation (momentum equation) conserved flux Y component
+
+
+	float DensitySource(StateVec2D U)override;   ///< density equation (continuity equation) source term
+	float TemperatureSource(StateVec2D U) override;   ///< density equation (continuity equation) source term
+	float XMomentumSource(StateVec2D U)override; ///< velocity X component equation (momentum equation) source term
+	float YMomentumSource(StateVec2D U)override; ///< velocity y component equation (momentum equation) source term
+
+	float DensityFluxX(StateVec2D U ) override; ///< density equation (continuity equation) conserved flux X component
+	float DensityFluxY(StateVec2D U ) override; ///< density equation (continuity equation) conserved1 flux Y component
+
+	float XMomentumFluxX(StateVec2D U ) override; ///< velocity X component equation (momentum equation) conserved flux X component
+	float XMomentumFluxY(StateVec2D U ) override; ///< velocity X component equation (momentum equation) conserved flux Y component
+
+	float YMomentumFluxX(StateVec2D U) override; ///< velocity Y component equation (momentum equation) conserved flux X component
+	float YMomentumFluxY(StateVec2D U ) override; ///< velocity Y component equation (momentum equation) conserved flux Y component
+
 };
 
 

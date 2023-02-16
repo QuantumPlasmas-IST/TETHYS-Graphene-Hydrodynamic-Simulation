@@ -97,7 +97,7 @@ using namespace H5;
 	public :
 
 		StateVec2D * Umain;
-		StateVec2D * Uaux;
+		StateVec2D * Umid;
 
 		float *Den;       // number density
 		float *Tmp;       // electron temperature

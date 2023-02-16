@@ -13,8 +13,8 @@
 class StateVec2D{
 private:
 	float density;
-	float velocity_x;
-	float velocity_y;
+	float momentum_x;
+	float momentum_y;
 	float sound=1.0f;
 	float temperature;
 public:
@@ -24,8 +24,8 @@ public:
 	StateVec2D(float den, float velx, float vely,float temp,float snd);
 	~StateVec2D()=default;
 
-	float& vx();
-	float& vy();
+	float& px();
+	float& py();
 	float& n();
 	float& tmp();
 	float& S();

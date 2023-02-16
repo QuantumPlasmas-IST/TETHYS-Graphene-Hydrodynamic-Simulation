@@ -71,6 +71,11 @@ Fluid2D::Fluid2D(const SetUpParameters &input_parameters) : TethysBase{input_par
 	flxX_mid	= new float[(Nx-1)*(Ny-1)]();
 	flxY_mid	= new float[(Nx-1)*(Ny-1)]();
 	vel_snd_arr_mid	= new float[(Nx-1)*(Ny-1)]();
+
+
+	Umain = new StateVec2D[Nx*Ny]();
+	Umid = new StateVec2D[(Nx-1)*(Ny-1)]();
+
 }
 
 Fluid2D::~Fluid2D() = default;
@@ -533,12 +538,19 @@ float Fluid2D::DensityFluxX(GridPoint2D p, char side) {
 	px = SideAverage(ptr_px, p, side);
 	return px;
 }
+float Fluid2D::DensityFluxX(StateVec2D U) {
+	return U.px();
+}
 
 float Fluid2D::DensityFluxY(GridPoint2D p, char side) {
 	float py;
 	py = SideAverage(ptr_py, p, side);
 	return py;
 }
+float Fluid2D::DensityFluxY(StateVec2D U) {
+	return U.py();
+}
+
 
 float Fluid2D::XMomentumFluxX(GridPoint2D p, char side) {
 	float den;
@@ -546,6 +558,9 @@ float Fluid2D::XMomentumFluxX(GridPoint2D p, char side) {
 	den = SideAverage(ptr_den, p, side);
 	px = SideAverage(ptr_px, p, side);
 	return px * px / den + den;
+}
+float Fluid2D::XMomentumFluxX(StateVec2D U) {
+	return U.px()*U.px()/U.n() + U.n();
 }
 
 float Fluid2D::XMomentumFluxY(GridPoint2D p, char side) {
@@ -558,6 +573,11 @@ float Fluid2D::XMomentumFluxY(GridPoint2D p, char side) {
 	return px * py / den;
 }
 
+float Fluid2D::XMomentumFluxY(StateVec2D U) {
+	return U.px()*U.py()/U.n();
+}
+
+
 
 float Fluid2D::YMomentumFluxY(GridPoint2D p, char side) {
 	float den;
@@ -565,6 +585,9 @@ float Fluid2D::YMomentumFluxY(GridPoint2D p, char side) {
 	den = SideAverage(ptr_den, p, side);
 	py = SideAverage(ptr_py, p, side);
 	return py * py / den + den;
+}
+float Fluid2D::YMomentumFluxY(StateVec2D U) {
+	return U.py()*U.py()/U.n() + U.n();
 }
 
 float Fluid2D::YMomentumFluxX(GridPoint2D p, char side) {
@@ -575,6 +598,10 @@ float Fluid2D::YMomentumFluxX(GridPoint2D p, char side) {
 	px = SideAverage(ptr_px, p, side);
 	py = SideAverage(ptr_py, p, side);
 	return px * py / den;
+}
+
+float Fluid2D::YMomentumFluxX(StateVec2D U) {
+	return U.py()*U.py()/U.n();
 }
 
 
@@ -663,5 +690,31 @@ float Fluid2D::SideAverage(const float * input_array, GridPoint2D p, char side){
 		default: avg=0.0f;
 	}
 	return avg;
+}
+
+float Fluid2D::DensitySource(StateVec2D U) {
+	return 0;
+}
+
+float Fluid2D::XMomentumSource(StateVec2D U) {
+	return 0;
+}
+
+float Fluid2D::YMomentumSource(StateVec2D U) {
+	return 0;
+}
+
+float Fluid2D::TemperatureSource(StateVec2D U) {
+	return 0;
+}
+
+
+
+float Fluid2D::TemperatureFluxX(StateVec2D U) {
+	return 0;
+}
+
+float Fluid2D::TemperatureFluxY(StateVec2D U) {
+	return 0;
 }
 
