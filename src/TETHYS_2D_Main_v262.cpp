@@ -65,9 +65,9 @@ int main(int argc, char **argv){
 	/*................................................................*/
 
 	/*................Setting.the.lateral.boundaries..................*/
-	BoundaryCondition::SetSlope(0.0f);
-	BoundaryCondition::SetBottomEdge(graph);
-	BoundaryCondition::SetTopEdge(graph);
+	//BoundaryCondition::SetSlope(0.0f);
+	//BoundaryCondition::SetBottomEdge(graph);
+	//BoundaryCondition::SetTopEdge(graph);
 	/*................................................................*/
 
 

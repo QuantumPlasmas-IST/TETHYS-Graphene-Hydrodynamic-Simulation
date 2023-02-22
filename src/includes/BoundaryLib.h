@@ -29,14 +29,14 @@
  * */
 class BoundaryCondition {
 	protected:
-		static int * BottomEdge;
-		static int * TopEdge;
-		static float  Slope;
+//		static int * BottomEdge;
+//		static int * TopEdge;
+//		static float  Slope;
 	public :
-		static void SetTopEdge(Fluid2D &fluid_class); ///< Defines which grid points belong to the upper edge, i.e. y=W, useful for non-rectangular domains
-		static void SetBottomEdge(Fluid2D &fluid_class); ///<  Defines which grid points belong to the lower edge, i.e. y=0, useful for non-rectangular domains
-		static void SetSlope(float boundary_slope); ///< Sets the slope of the lateral edges, for the scenarion of non rectangular domains
-		static float GetSlope() ; ///< Returns the slope of the lateral edges, for the scenarion of non rectangular domains
+//		static void SetTopEdge(Fluid2D &fluid_class); ///< Defines which grid points belong to the upper edge, i.e. y=W, useful for non-rectangular domains
+//		static void SetBottomEdge(Fluid2D &fluid_class); ///<  Defines which grid points belong to the lower edge, i.e. y=0, useful for non-rectangular domains
+//		static void SetSlope(float boundary_slope); ///< Sets the slope of the lateral edges, for the scenarion of non rectangular domains
+//		static float GetSlope() ; ///< Returns the slope of the lateral edges, for the scenarion of non rectangular domains
 		static void XFree(Fluid1D& fluid_class);           ///< open boundaries at x=0 and x=L for all variables and zero tangent velocity
 		static void XFreeLeft(Fluid1D& fluid_class);
         static void XFreeRight(Fluid1D& fluid_class);
