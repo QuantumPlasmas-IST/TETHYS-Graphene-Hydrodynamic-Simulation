@@ -96,6 +96,8 @@ using namespace H5;
 
 	public :
 
+		void CopyFields();
+
 		StateVec2D * Umain;
 		StateVec2D * Umid;
 
@@ -113,12 +115,12 @@ using namespace H5;
 
 		bool Snapshot() const;
 
-		void SetSound();     ///< Applies the anisotropy (in the cases there is one) to the sound velocity array
+		void SetSound();     ///< sets a constant sound velocity
 		void SetSound(std::function<float(float,float)>);     ///< Applies the anisotropy (in the cases there is one) to the sound velocity array
 		virtual void SetSimulationTime();   ///< Finds and set the appropriate simulation time
+
 		virtual void InitialCondRand();             ///< Initial condition, zero velocity and constant density with 0.5% white noise
 		void InitialCondWave();
-
 		void InitialCondTest();             ///< Initial condition for testing and debugging
 		void InitialCondGeneral(function<float(float, float)> fden, function<float(float, float)> fvx,
 		                        function<float(float, float)> fvy);

@@ -82,10 +82,12 @@ Fluid2D::~Fluid2D() = default;
 
 void Fluid2D::SetSound(){
 	for(int kp=0; kp<=Nx*Ny-1; kp++) {
-		vel_snd_arr[kp] = vel_snd;
+		//vel_snd_arr[kp] = vel_snd;
+		Umain[kp].S() = vel_snd;
 	}
 	for(int ks=0; ks<=Nx*Ny-Nx-Ny; ks++) {
-		vel_snd_arr_mid[ks]= vel_snd;
+		//vel_snd_arr_mid[ks]= vel_snd;
+		Umid[ks].S()= vel_snd;
 	}
 }
 
@@ -95,20 +97,24 @@ void Fluid2D::SetSound(std::function<float(float,float)> func){
 		divresult = div(kp, Nx);
 		auto j = static_cast<float>(divresult.quot);
 		auto i = static_cast<float>(divresult.rem);
-		vel_snd_arr[kp]= func(i*dx,j*dy);
+		//vel_snd_arr[kp]= func(i*dx,j*dy);
+		Umain[kp].S()= func(i*dx,j*dy);
 	}
 	for(int ks=0; ks<=Nx*Ny-Nx-Ny; ks++) { //correr todos os pontos da grelha secundaria
 		div_t divresult;
 		divresult = div(ks, Nx - 1);
 		auto j = static_cast<float>(divresult.quot);
 		auto i = static_cast<float>(divresult.rem);
-		vel_snd_arr_mid[ks]=  func((i+0.5f)*dx,(j+0.5f)*dy);
+		//vel_snd_arr_mid[ks]=  func((i+0.5f)*dx,(j+0.5f)*dy);
+		Umid[ks].S()=  func((i+0.5f)*dx,(j+0.5f)*dy);
 	}
 }
 
 
 
-
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+// Initial condition setting
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 void Fluid2D::InitialCondRand(){
 	random_device rd;
@@ -117,10 +123,10 @@ void Fluid2D::InitialCondRand(){
 	for (int c = 0; c < Nx*Ny; c++ ){
 		float noise;
 		noise =  (float) rd()/maxrand ; //(float) rand()/ (float) RAND_MAX ;
-		Den[c] = 1.0f + 0.005f * (noise - 0.5f);
+		Umain[c].n() = 1.0f + 0.005f * (noise - 0.5f);
 
 		noise =  (float) rd()/maxrand ; //(float) rand()/ (float) RAND_MAX ;
-        Tmp[c] =  .2f + 0.005f * (noise - 0.5f);
+		Umain[c].tmp()=  .2f + 0.005f * (noise - 0.5f);
 	}
 }
 
@@ -131,9 +137,9 @@ void Fluid2D::InitialCondGeneral(function<float(float, float)> fden, function<fl
 		for (int j=0; j<Ny; j++){
 			x=i*dx;
 			y=j*dy;
-			Den[i + j * Nx] = fden(x,y);
-			VelX[i + j * Nx] = fvx(x,y);
-			VelY[i + j * Nx] = fvy(x,y);
+			Umain[i + j * Nx].n() = fden(x,y);
+			Umain[i + j * Nx].px() = fvx(x,y);
+			Umain[i + j * Nx].py() = fvy(x,y);
 		}
 	}
 }
@@ -143,9 +149,9 @@ void Fluid2D::InitialCondWave() {
 	for (int i = 0; i < Nx; i++ ){
 		for (int j=0; j<Ny; j++){
 			//Den[i + j * Nx] = 1.0f+0.3f*sin(2.0f*MAT_PI*i*dx/lengX) ;
-			Den[i + j * Nx] = 1.0f+0.05f*sin(5.0f*2.0f*MAT_PI*i*dx/lengX) ;
+			Umain[i + j * Nx].n() = 1.0f+0.05f*sin(5.0f*2.0f*MAT_PI*i*dx/lengX) ;
 			//Den[i + j * Nx] = 1.0f+0.3f/cosh((i*dx-0.5f)*20.0f);
-			VelX[i + j * Nx] = 0.0f;
+			Umain[i + j * Nx].px() = 0.0f;
 		}
 	}
 }
@@ -160,12 +166,12 @@ void Fluid2D::InitialCondTest(){
 			else{
 			densi=0.0f;
 			}
-			Den[i + j * Nx] = 1.0f + densi;
-			VelX[i + j * Nx] = 0.1f;
+			Umain[i + j * Nx].n() = 1.0f + densi;
+			Umain[i + j * Nx].px() = 0.1f;
 		}
 	}
 }
-
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 void Fluid2D::MassFluxToVelocity(const string grid) {
 	float den;
@@ -320,16 +326,20 @@ void Fluid2D::WriteFluidFile(float t){
 	int j=Ny/2;
 	int pos_end = Nx - 1 + j*Nx ;
 	int pos_ini = j*Nx ;
-		if(!isfinite(Den[pos_end]) || !isfinite(Den[pos_ini]) || !isfinite(FlxX[pos_end]) || !isfinite(FlxX[pos_ini])){
+		//if(!isfinite(Den[pos_end]) || !isfinite(Den[pos_ini]) || !isfinite(FlxX[pos_end]) || !isfinite(FlxX[pos_ini])){
+		if(!isfinite(Umain[pos_ini].n()) || !isfinite(Umain[pos_end].n()) || !isfinite(Umain[pos_ini].px()) || !isfinite(Umain[pos_end].px())){
 			cerr << "ERROR: numerical method failed to converge" <<"\nExiting"<< endl;
 			CloseHdf5File();
 			exit(EXIT_FAILURE);
 		}
+	/*
 	data_preview << t << "\t"
 	<< Den[pos_end]  << "\t"
 	<< FlxX[pos_end] << "\t"
 	<< Den[pos_ini]  << "\t"
 	<< FlxX[pos_ini] << "\n";
+	*/
+	data_preview << t <<"\t"<< Umain[pos_ini] <<"\t"<<Umain[pos_end]<< "\n";
 }
 
 void Fluid2D::SetSimulationTime(){
@@ -401,6 +411,11 @@ void Fluid2D::ParabolicOperatorWeightedExplicit19() {
 
 
 void Fluid2D::SaveSound() {
+
+	for (int i = 0; i < Nx*Ny; ++i) {
+		vel_snd_arr[i]=Umain[i].S();
+	}
+
 	DataSet dataset_vel_snd = GrpDat->createDataSet("Sound velocicity", HDF5FLOAT, *DataspaceVelSnd);
 	dataset_vel_snd.write(vel_snd_arr, HDF5FLOAT);
 	dataset_vel_snd.close();
@@ -438,7 +453,10 @@ void Fluid2D::SaveSnapShot() {
 	int points_per_period = static_cast<int>((2.0 * MAT_PI / this->RealFreq()) / dt);
 	snapshot_step = points_per_period / snapshot_per_period;
 
-	this->MassFluxToVelocity("MainGrid");
+	//this->MassFluxToVelocity("MainGrid");
+
+	this->CopyFields();
+
 	string str_time = to_string(TimeStepCounter / snapshot_step);
 	str_time.insert(str_time.begin(), 5 - str_time.length(), '0');
 	string name_dataset = "snapshot_" + str_time;
@@ -716,5 +734,16 @@ float Fluid2D::TemperatureFluxX(StateVec2D U) {
 
 float Fluid2D::TemperatureFluxY(StateVec2D U) {
 	return 0;
+}
+
+void Fluid2D::CopyFields() {
+	float mass;
+	for (int i = 0; i < Nx*Ny; ++i) {
+		Den[i]=Umain[i].n();
+		mass= DensityToMass(Den[i]);
+		VelX[i]=Umain[i].px()/mass;
+		VelY[i]=Umain[i].py()/mass;
+		Tmp[i] =Umain[i].tmp();
+	}
 }
 
