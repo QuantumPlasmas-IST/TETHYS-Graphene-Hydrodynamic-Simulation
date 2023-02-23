@@ -264,7 +264,7 @@ void Fluid2D::RichtmyerStep1(){
 		}
 		*/
 
-
+/*
 		StateVec2D Uavg{};
 		Uavg = 0.25f * (Umain[midpoint.SW] + Umain[midpoint.SE] + Umain[midpoint.NW] + Umain[midpoint.NE]);
 		StateVec2D UNorth{};
@@ -290,8 +290,8 @@ void Fluid2D::RichtmyerStep1(){
 		                -0.5f*(dt/dx)*(YMomentumFluxX(UEast) - YMomentumFluxX(UWest))
 		                -0.5f*(dt/dy)*(YMomentumFluxY(UNorth) - YMomentumFluxY(USouth))
 		                +0.5f*dt*YMomentumSource(Uavg);
+*/
 
-		/*
 		den_mid[ks] = den_avg
 		              -0.5f*(dt/dx)*(DensityFluxX(midpoint, 'E') - DensityFluxX(midpoint, 'W'))
 		              -0.5f*(dt/dy)*(DensityFluxY(midpoint, 'N') - DensityFluxY(midpoint, 'S'))
@@ -304,7 +304,7 @@ void Fluid2D::RichtmyerStep1(){
 		               -0.5f*(dt/dx)*(YMomentumFluxX(midpoint, 'E') - YMomentumFluxX(midpoint, 'W'))
 		               -0.5f*(dt/dy)*(YMomentumFluxY(midpoint, 'N') - YMomentumFluxY(midpoint, 'S'))
 		               +0.5f*dt*YMomentumSource(den_avg, flx_x_avg, flx_y_avg, 0.0f, 0.0f);
-		*/
+
 
 		/*
 		if(therm_diff){
@@ -314,6 +314,8 @@ void Fluid2D::RichtmyerStep1(){
 			              +0.5f * dt * TemperatureSource(den_avg, flx_x_avg, flx_y_avg, n_dx, n_dy, 0.0f, 0.0f);
 		}*/
 	}
+
+	cout<<"mid"<<den_mid[Nx*Ny/2]<<"\t"<<flxX_mid[Nx*Ny/2]<<"\n";
 
 }
 
@@ -326,8 +328,8 @@ void Fluid2D::RichtmyerStep2(){
 		GridPoint2D mainpoint(kp, Nx, Ny, false);
 		if( kp%Nx!=Nx-1 && kp%Nx!=0){
 
+/*
 			StateVec2D Uold(Umain[kp]);
-
 			StateVec2D UNorth{};
 			StateVec2D USouth{};
 			StateVec2D UEast{};
@@ -351,12 +353,12 @@ void Fluid2D::RichtmyerStep2(){
 			                 - (dt/dx)*(YMomentumFluxX(UEast) - YMomentumFluxX(UWest))
 			                 - (dt/dy)*(YMomentumFluxY(UNorth) - YMomentumFluxY(USouth))
 			                 + dt*YMomentumSource(Uold);
+*/
 
 
 
 
 
-			/*
 			float den_old = Den[kp];
 			float flx_x_old = FlxX[kp];
 			float flx_y_old = FlxY[kp];
@@ -371,7 +373,7 @@ void Fluid2D::RichtmyerStep2(){
 			FlxY[kp] = flx_y_old - (dt/dx)*(YMomentumFluxX(mainpoint, 'E') - YMomentumFluxX(mainpoint, 'W'))
 			           - (dt/dy)*(YMomentumFluxY(mainpoint, 'N') - YMomentumFluxY(mainpoint, 'S'))
 			           + dt*YMomentumSource(den_old, flx_x_old, flx_y_old, 0.0f, 0.0f);
-			*/
+
 
 			/*
 			if(therm_diff) {
@@ -403,20 +405,20 @@ void Fluid2D::WriteFluidFile(float t){
 	int j=Ny/2;
 	int pos_end = Nx - 1 + j*Nx ;
 	int pos_ini = j*Nx ;
-		//if(!isfinite(Den[pos_end]) || !isfinite(Den[pos_ini]) || !isfinite(FlxX[pos_end]) || !isfinite(FlxX[pos_ini])){
-		if(!isfinite(Umain[pos_ini].n()) || !isfinite(Umain[pos_end].n()) || !isfinite(Umain[pos_ini].px()) || !isfinite(Umain[pos_end].px())){
+		if(!isfinite(Den[pos_end]) || !isfinite(Den[pos_ini]) || !isfinite(FlxX[pos_end]) || !isfinite(FlxX[pos_ini])){
+		//if(!isfinite(Umain[pos_ini].n()) || !isfinite(Umain[pos_end].n()) || !isfinite(Umain[pos_ini].px()) || !isfinite(Umain[pos_end].px())){
 			cerr << "ERROR: numerical method failed to converge" <<"\nExiting"<< endl;
 			CloseHdf5File();
 			exit(EXIT_FAILURE);
 		}
-	/*
+
 	data_preview << t << "\t"
 	<< Den[pos_end]  << "\t"
 	<< FlxX[pos_end] << "\t"
 	<< Den[pos_ini]  << "\t"
 	<< FlxX[pos_ini] << "\n";
-	*/
-	data_preview << t <<"\t"<< Umain[pos_ini] <<"\t"<<Umain[pos_end]<< "\n";
+
+	//data_preview << t <<"\t"<< Umain[pos_ini] <<"\t"<<Umain[pos_end]<< "\n";
 }
 
 void Fluid2D::SetSimulationTime(){

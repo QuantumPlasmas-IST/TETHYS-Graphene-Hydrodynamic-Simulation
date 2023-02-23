@@ -70,17 +70,29 @@ int main(int argc, char **argv){
 	//BoundaryCondition::SetTopEdge(graph);
 	/*................................................................*/
 
+	DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
+	DirichletBoundaryCondition::YClosedFreeSlip(graph);
 
 
 	cout << "\033[1;7;5;33m Program Running \033[0m"<<endl;
 	while (t <= graph.GetTmax() ){
 		int percentage=100*GrapheneFluid2D::TimeStepCounter/(graph.GetTmax()/dt);
-		cout << percentage<<"%\033[?25l"; //prints the percentage of simulation completed
+	//	cout << percentage<<"%\033[?25l"; //prints the percentage of simulation completed
 
 		t += dt;
 		GrapheneFluid2D::TimeStepCounter++;
 
+		for (int i=0;i<graph.SizeX()*graph.SizeY();i++) {
+			graph.Den[i]=graph.Umain[i].n();
+			graph.FlxX[i]=graph.Umain[i].px();
+			graph.FlxY[i]=graph.Umain[i].py();
+			graph.vel_snd_arr[i]=graph.Umain[i].S();
+			graph.Tmp[i]=graph.Umain[i].tmp();
+		}
+
 		graph.Richtmyer();
+
+		cout<<"main"<<graph.Den[graph.SizeX()*graph.SizeY()/2]<<"\t"<<graph.FlxX[graph.SizeX()*graph.SizeY()/2]<<"\n";
 
 		/*+++++++++++++++++++++++++++++++++++++*
 		 * Change the boundary conditions here *
@@ -118,7 +130,7 @@ int main(int argc, char **argv){
 		if( !( GrapheneFluid2D::TimeStepCounter % 2) ){
 			graph.WriteFluidFile(t);
 		}
-		cout <<"\033[1G\033[2K"; //clears percentage of completion
+//		cout <<"\033[1G\033[2K"; //clears percentage of completion
 	}
 	//Record atributes on hdf5 file
 	if(parameters.SaveMode) {

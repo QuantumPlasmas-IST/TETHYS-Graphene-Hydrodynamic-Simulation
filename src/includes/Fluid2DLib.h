@@ -32,7 +32,7 @@ using namespace H5;
 	class Fluid2D : public TethysBase {
 	protected:
 
-		float *vel_snd_arr;    // array for saving the (potentially varying) S(x,y) function at main grid
+
 		float *vel_snd_arr_mid;// array for saving the (potentially varying) S(x,y) function at auxiliary grid
 		float *den_mid;       // mid or auxiliary grids defined with (Nx-1)*(Ny-1) size
 		float *tmp_mid;
@@ -100,6 +100,8 @@ using namespace H5;
 
 		StateVec2D * Umain;
 		StateVec2D * Umid;
+
+		float *vel_snd_arr;    // array for saving the (potentially varying) S(x,y) function at main grid
 
 		float *Den;       // number density
 		float *Tmp;       // electron temperature
