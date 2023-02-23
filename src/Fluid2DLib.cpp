@@ -82,11 +82,11 @@ Fluid2D::~Fluid2D() = default;
 
 void Fluid2D::SetSound(){
 	for(int kp=0; kp<=Nx*Ny-1; kp++) {
-		//vel_snd_arr[kp] = vel_snd;
+		vel_snd_arr[kp] = vel_snd;
 		Umain[kp].S() = vel_snd;
 	}
 	for(int ks=0; ks<=Nx*Ny-Nx-Ny; ks++) {
-		//vel_snd_arr_mid[ks]= vel_snd;
+		vel_snd_arr_mid[ks]= vel_snd;
 		Umid[ks].S()= vel_snd;
 	}
 }
@@ -201,6 +201,7 @@ void Fluid2D::VelocityToCurrent() {
 
 
 void Fluid2D::Richtmyer(){
+	/*
 	if(odd_vis) {
 		//this->VelocityGradient();
 		this->MassFluxToVelocity("MainGrid");
@@ -213,9 +214,11 @@ void Fluid2D::Richtmyer(){
 	}
 	//this->DensityLaplacian();
 	LaplacianField(Den,lap_den,dx,Nx,Ny);
+	*/
 
 	RichtmyerStep1();
 
+	/*
 	if(odd_vis) {
 		//this->VelocityGradientMid();
 		this->MassFluxToVelocity("MidGrid");
@@ -228,7 +231,7 @@ void Fluid2D::Richtmyer(){
 	GradientField(den_mid,den_dx_mid,den_dy_mid,dx,dy,Nx-1,Ny-1);
 	}
 	LaplacianField(den_mid,lap_den_mid,dx,Nx-1,Ny-1);
-
+	*/
 
 	RichtmyerStep2();
 
@@ -249,11 +252,46 @@ void Fluid2D::RichtmyerStep1(){
 		float flx_x_avg = 0.25f * (FlxX[midpoint.SW] + FlxX[midpoint.SE] + FlxX[midpoint.NW] + FlxX[midpoint.NE]);
 		float flx_y_avg = 0.25f * (FlxY[midpoint.SW] + FlxY[midpoint.SE] + FlxY[midpoint.NW] + FlxY[midpoint.NE]);
 		float tmp_avg   = 0.25f * (Tmp[midpoint.SW] + Tmp[midpoint.SE] + Tmp[midpoint.NW] + Tmp[midpoint.NE]);
+
+
+
+
+		/*
 		float n_dx=0.0f,n_dy=0.0f;
 		if(therm_diff) {
 			n_dx =0.25f * (den_dx[midpoint.SW] + den_dx[midpoint.SE] + den_dx[midpoint.NW] + den_dx[midpoint.NE]);
 			n_dy =0.25f * (den_dy[midpoint.SW] + den_dy[midpoint.SE] + den_dy[midpoint.NW] + den_dy[midpoint.NE]) ;
 		}
+		*/
+
+
+		StateVec2D Uavg{};
+		Uavg = 0.25f * (Umain[midpoint.SW] + Umain[midpoint.SE] + Umain[midpoint.NW] + Umain[midpoint.NE]);
+		StateVec2D UNorth{};
+		StateVec2D USouth{};
+		StateVec2D UEast{};
+		StateVec2D UWest{};
+		UNorth = 0.5f*(Umain[midpoint.NE]+Umain[midpoint.NW]);
+		USouth = 0.5f*(Umain[midpoint.SE]+Umain[midpoint.SW]);
+		UEast = 0.5f*(Umain[midpoint.NE]+Umain[midpoint.SE]);
+		UWest = 0.5f*(Umain[midpoint.NW]+Umain[midpoint.SW]);
+
+		Umid[ks].n() =  Uavg.n()
+		                -0.5f*(dt/dx)*(DensityFluxX(UEast) - DensityFluxX(UWest))
+		                -0.5f*(dt/dy)*(DensityFluxY(UNorth) - DensityFluxY(USouth))
+		                +0.5f*dt* DensitySource(Uavg);
+
+		Umid[ks].px() = Uavg.px()
+		                -0.5f*(dt/dx)*(XMomentumFluxX(UEast) - XMomentumFluxX(UWest))
+		                -0.5f*(dt/dy)*(XMomentumFluxY(UNorth) - XMomentumFluxY(USouth))
+		                +0.5f*dt*XMomentumSource(Uavg);
+
+		Umid[ks].py() = Uavg.py()
+		                -0.5f*(dt/dx)*(YMomentumFluxX(UEast) - YMomentumFluxX(UWest))
+		                -0.5f*(dt/dy)*(YMomentumFluxY(UNorth) - YMomentumFluxY(USouth))
+		                +0.5f*dt*YMomentumSource(Uavg);
+
+		/*
 		den_mid[ks] = den_avg
 		              -0.5f*(dt/dx)*(DensityFluxX(midpoint, 'E') - DensityFluxX(midpoint, 'W'))
 		              -0.5f*(dt/dy)*(DensityFluxY(midpoint, 'N') - DensityFluxY(midpoint, 'S'))
@@ -266,12 +304,15 @@ void Fluid2D::RichtmyerStep1(){
 		               -0.5f*(dt/dx)*(YMomentumFluxX(midpoint, 'E') - YMomentumFluxX(midpoint, 'W'))
 		               -0.5f*(dt/dy)*(YMomentumFluxY(midpoint, 'N') - YMomentumFluxY(midpoint, 'S'))
 		               +0.5f*dt*YMomentumSource(den_avg, flx_x_avg, flx_y_avg, 0.0f, 0.0f);
+		*/
+
+		/*
 		if(therm_diff){
 			tmp_mid[ks] = tmp_avg
 			              -0.5f * (dt / dx) * (TemperatureFluxX(midpoint, 'E') - TemperatureFluxX(midpoint, 'W'))
 			              -0.5f * (dt / dy) * (TemperatureFluxY(midpoint, 'N') - TemperatureFluxY(midpoint, 'S'))
 			              +0.5f * dt * TemperatureSource(den_avg, flx_x_avg, flx_y_avg, n_dx, n_dy, 0.0f, 0.0f);
-		}
+		}*/
 	}
 
 }
@@ -284,6 +325,38 @@ void Fluid2D::RichtmyerStep2(){
 	for(int kp=1+Nx; kp<=Nx*Ny-Nx-2; kp++){ //correr a grelha principal evitando as fronteiras
 		GridPoint2D mainpoint(kp, Nx, Ny, false);
 		if( kp%Nx!=Nx-1 && kp%Nx!=0){
+
+			StateVec2D Uold(Umain[kp]);
+
+			StateVec2D UNorth{};
+			StateVec2D USouth{};
+			StateVec2D UEast{};
+			StateVec2D UWest{};
+			UNorth = 0.5f*(Umid[mainpoint.NE]+Umid[mainpoint.NW]);
+			USouth = 0.5f*(Umid[mainpoint.SE]+Umid[mainpoint.SW]);
+			UEast = 0.5f*(Umid[mainpoint.NE]+Umid[mainpoint.SE]);
+			UWest = 0.5f*(Umid[mainpoint.NW]+Umid[mainpoint.SW]);
+
+
+			Umain[kp].n() = Uold.n()
+			                - (dt/dx)*(DensityFluxX(UEast) - DensityFluxX(UWest))
+			                - (dt/dy)*(DensityFluxY(UNorth) - DensityFluxY(USouth))
+			                + dt*DensitySource(Uold);
+			Umain[kp].px() = Uold.px()
+			                 - (dt/dx)*(XMomentumFluxX(UEast) - XMomentumFluxX(UWest))
+			                 - (dt/dy)*(XMomentumFluxY(UNorth) - XMomentumFluxY(USouth))
+			                 + dt*XMomentumSource(Uold);
+
+			Umain[kp].py() = Uold.py()
+			                 - (dt/dx)*(YMomentumFluxX(UEast) - YMomentumFluxX(UWest))
+			                 - (dt/dy)*(YMomentumFluxY(UNorth) - YMomentumFluxY(USouth))
+			                 + dt*YMomentumSource(Uold);
+
+
+
+
+
+			/*
 			float den_old = Den[kp];
 			float flx_x_old = FlxX[kp];
 			float flx_y_old = FlxY[kp];
@@ -298,11 +371,15 @@ void Fluid2D::RichtmyerStep2(){
 			FlxY[kp] = flx_y_old - (dt/dx)*(YMomentumFluxX(mainpoint, 'E') - YMomentumFluxX(mainpoint, 'W'))
 			           - (dt/dy)*(YMomentumFluxY(mainpoint, 'N') - YMomentumFluxY(mainpoint, 'S'))
 			           + dt*YMomentumSource(den_old, flx_x_old, flx_y_old, 0.0f, 0.0f);
+			*/
+
+			/*
 			if(therm_diff) {
 				Tmp[kp] = tmp_old - (dt / dx) * (TemperatureFluxX(mainpoint, 'E') - TemperatureFluxX(mainpoint, 'W'))
 				          - (dt / dy) * (TemperatureFluxY(mainpoint, 'N') - TemperatureFluxY(mainpoint, 'S'))
 				          + dt * TemperatureSource(den_old, flx_x_old, flx_y_old, den_dx[kp], den_dy[kp], 0.0f, 0.0f);
 			}
+			*/
 		}
 	}
 

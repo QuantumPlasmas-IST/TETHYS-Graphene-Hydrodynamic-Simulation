@@ -92,29 +92,25 @@ int main(int argc, char **argv){
 		//BoundaryCondition::XPeriodic(graph);
 		//BoundaryCondition::YPeriodic(graph);
 
+/*
 		if(graph.GetThermDiff()!=0.0){
 			DirichletBoundaryCondition::Temperature(graph,0.22f, 0.22f, 0.22f, 0.22f);  // 300K corresponds to 0.22*Fermi temperature
 		}
-
 		if(graph.GetKinVis()!=0.0f || graph.GetThermDiff()!=0.0f  ) {
 			graph.ParabolicOperatorWeightedExplicit19();
-
-			/*+++++++++++++++++++++++++++++++++++++*
-			 * Change the boundary conditions here *
-			 *+++++++++++++++++++++++++++++++++++++*/
+			//*+++++++++++++++++++++++++++++++++++++*
+			// * Change the boundary conditions here *
+			// *+++++++++++++++++++++++++++++++++++++
 			DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
 			//DirichletBoundaryCondition::YClosedNoSlip(graph);
 			DirichletBoundaryCondition::YClosedFreeSlip(graph);
-
 		//	BoundaryCondition::XPeriodic(graph);
 		//	BoundaryCondition::YPeriodic(graph);
-
-
 			if(graph.GetThermDiff()!=0.0){
 				DirichletBoundaryCondition::Temperature(graph,0.22f, 0.22f, 0.22f, 0.22f); // 300K corresponds to 0.22*Fermi temperature
 			}
 		}
-
+*/
 		//Record full hdf5 data
 		if (parameters.SaveMode  && graph.Snapshot()) {
 			graph.SaveSnapShot();
