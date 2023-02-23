@@ -12,6 +12,7 @@ StateVec2D::StateVec2D(const StateVec2D & obj) {
 	momentum_x=obj.momentum_x;
 	momentum_y=obj.momentum_y;
 	temperature=obj.temperature;
+	sound=obj.sound;
 }
 
 
@@ -69,7 +70,7 @@ StateVec2D StateVec2D::operator+(const StateVec2D &obj) const {
 	res.momentum_x = momentum_x + obj.momentum_x;
 	res.momentum_y = momentum_y + obj.momentum_y;
 	res.temperature = temperature + obj.temperature;
-	res.sound = sound + obj.sound;
+//	res.sound = sound + obj.sound;
 	return res;
 }
 
@@ -79,7 +80,7 @@ StateVec2D StateVec2D::operator-(const StateVec2D &obj) const {
 	res.momentum_x = momentum_x - obj.momentum_x;
 	res.momentum_y = momentum_y - obj.momentum_y;
 	res.temperature = temperature - obj.temperature;
-	res.sound = sound - obj.sound;
+//	res.sound = sound - obj.sound;
 	return res;
 }
 
@@ -89,7 +90,7 @@ StateVec2D StateVec2D::operator*(const StateVec2D &obj) const {
 	res.momentum_x = momentum_x * obj.momentum_x;
 	res.momentum_y = momentum_y * obj.momentum_y;
 	res.temperature = temperature * obj.temperature;
-	res.sound = sound * obj.sound;
+//	res.sound = sound * obj.sound;
 	return res;
 }
 
@@ -99,7 +100,7 @@ StateVec2D StateVec2D::operator/(const StateVec2D &obj) const{
 	res.momentum_x = momentum_x / obj.momentum_x;
 	res.momentum_y = momentum_y / obj.momentum_y;
 	res.temperature = temperature / obj.temperature;
-	res.sound = sound / obj.sound;
+//	res.sound = sound / obj.sound;
 	return res;
 }
 
@@ -110,7 +111,7 @@ StateVec2D operator*(const StateVec2D &obj, float value){
 	res.momentum_x = value * obj.momentum_x;
 	res.momentum_y = value * obj.momentum_y;
 	res.temperature = value*obj.temperature;
-	res.sound = value*obj.sound;
+//	res.sound = value*obj.sound;
 	return res;
 }
 StateVec2D operator*(float value, const StateVec2D &obj) {
@@ -119,7 +120,7 @@ StateVec2D operator*(float value, const StateVec2D &obj) {
 	res.momentum_x = value * obj.momentum_x;
 	res.momentum_y = value * obj.momentum_y;
 	res.temperature = value*obj.temperature;
-	res.sound = value*obj.sound;
+//	res.sound = value*obj.sound;
 	return res;
 }
 
@@ -129,7 +130,7 @@ StateVec2D operator/(const StateVec2D &obj, float value){
 	res.momentum_x = obj.momentum_x / value;
 	res.momentum_y = obj.momentum_y / value;
 	res.temperature =obj.temperature/value;
-	res.sound =obj.sound/value;
+//	res.sound =obj.sound/value;
 	return res;
 }
 

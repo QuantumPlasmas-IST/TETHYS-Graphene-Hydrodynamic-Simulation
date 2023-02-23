@@ -293,16 +293,17 @@ void BoundaryCondition::YClosedFreeSlip(Fluid2D& fluid_class){
 		int top;
 		top = i + (ny - 1) * nx;
 
-//		fluid_class.Den[bottom] = fluid_class.Den[bottom + nx];
-//		fluid_class.Den[top] = fluid_class.Den[top - nx];
+		fluid_class.Den[bottom] = fluid_class.Den[bottom + nx];
+		fluid_class.Den[top] = fluid_class.Den[top - nx];
 
-//		fluid_class.FlxX[bottom] = fluid_class.FlxX[top - nx];
-//		fluid_class.FlxY[bottom] = 0.0f; //Slope * fluid_class.FlxX[top - nx];
-//		fluid_class.FlxX[top] = fluid_class.FlxX[bottom + nx];
-//		fluid_class.FlxY[top] = 0.0f; //-1.0f * Slope * fluid_class.FlxX[bottom + nx];
+		fluid_class.FlxX[bottom] = fluid_class.FlxX[top - nx];
+		fluid_class.FlxY[bottom] = 0.0f; //Slope * fluid_class.FlxX[top - nx];
+		fluid_class.FlxX[top] = fluid_class.FlxX[bottom + nx];
+		fluid_class.FlxY[top] = 0.0f; //-1.0f * Slope * fluid_class.FlxX[bottom + nx];
 
-//		fluid_class.Umain[bottom].n() = fluid_class.Umain[bottom+nx].n();
-//		fluid_class.Umain[top].n() = fluid_class.Umain[top-nx].n(); nao faz sentido impor logo aqui densidades
+		fluid_class.Umain[bottom].n() = fluid_class.Umain[bottom+nx].n();
+		fluid_class.Umain[top].n() = fluid_class.Umain[top-nx].n(); //nao faz sentido impor logo aqui densidades
+
 		fluid_class.Umain[bottom].px() = fluid_class.Umain[top - nx].px();
 		fluid_class.Umain[bottom].py() = 0.0f; //Slope * fluid_class.FlxX[top - nx];
 		fluid_class.Umain[top].px() = fluid_class.Umain[bottom + nx].px();

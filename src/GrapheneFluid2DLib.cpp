@@ -189,7 +189,7 @@ float GrapheneFluid2D::YMomentumFluxX(GridPoint2D p, char side) {
 }
 float GrapheneFluid2D::YMomentumFluxX(StateVec2D U) {
 	float 	mass=DensityToMass(U.n());
-	return U.px()*U.px()/mass ;
+	return U.px()*U.py()/mass ;
 }
 
 
