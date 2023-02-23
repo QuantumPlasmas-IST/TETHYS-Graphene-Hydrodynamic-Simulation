@@ -200,7 +200,7 @@ using namespace H5;
 		* Since the mass of the fluid element is constant one needs only to perform the transformation
 		@f[ \vec{v} = \frac{\vec{p}}{n} @f]
 		* */
-		//void MassFluxToVelocity(string grid); // Converts the mass flux density p=mnv to velocity
+		void MassFluxToVelocity(string grid){}; // Converts the mass flux density p=mnv to velocity
 
 		/*!
 		* @brief Converts velocity field to current density on the entire simulation grid.
@@ -208,7 +208,7 @@ using namespace H5;
 		* The method simply performs
 		@f[ \vec{j} = \vec{v}n @f]
 		* */
-		//void VelocityToCurrent(); // Converts the mass flux density p=mnv to velocity
+		void VelocityToCurrent(){}; // Converts the mass flux density p=mnv to velocity
 
 
 		void CreateFluidFile();     ///< creates and opens the simplified .dat file output

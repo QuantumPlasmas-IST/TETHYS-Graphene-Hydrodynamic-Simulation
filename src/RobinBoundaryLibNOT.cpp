@@ -5,7 +5,7 @@
 \************************************************************************************************/
 
 #include "includes/BoundaryLib.h"
-#include "includes/RobinBoundaryLib.h"
+#include "includes/RobinBoundaryLibNOT.h"
 
 void RobinBoundaryCondition::SlipLength(Fluid2D &fluid_class, float slip_length) {
 	int nx=fluid_class.SizeX();

@@ -1,5 +1,5 @@
 #include "includes/Fluid1DLib.h"
-#include "includes/ElectricLib.h"
+#include "includes/ElectricLibNOT.h"
 #include "includes/SetUpParametersLib.h"
 #include "includes/DyakonovShurBoundaryLib.h"
 #include "includes/GrapheneFluid1DLib.h"
@@ -46,8 +46,8 @@ int main(int argc, char **argv){
 	/*................................................................*/
 
 	/*.........Output files and streams...............................*/
-	ElectroAnalysis elec;
-	elec.CreateElectroFile(graph);
+//	ElectroAnalysis elec;
+//	elec.CreateElectroFile(graph);
 	graph.CreateFluidFile();
 	graph.CreateHdf5File();
 	/*................................................................*/
@@ -89,7 +89,7 @@ int main(int argc, char **argv){
 			graph.SaveSnapShot();
 		}
 		graph.WriteFluidFile(t);
-		elec.WriteElectroFile(t,graph);
+		//elec.WriteElectroFile(t,graph);
 	}
 	if(parameters.SaveMode ) {
 		graph.WriteAttributes();

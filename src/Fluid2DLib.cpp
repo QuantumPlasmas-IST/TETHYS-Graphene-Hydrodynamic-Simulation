@@ -634,17 +634,20 @@ float Fluid2D::YMomentumSource(__attribute__((unused)) float n, __attribute__((u
 }
 
 void Fluid2D::ForwardTimeOperator() {
-#pragma omp parallel for default(none) shared(Nx,Ny,FlxX,FlxY,lap_flxX,lap_flxY,dt,cyc_freq)
+//#pragma omp parallel for default(none) shared(Nx,Ny,FlxX,FlxY,lap_flxX,lap_flxY,dt,cyc_freq)
 	for (int kp = 1 + Nx; kp <= Nx * Ny - Nx - 2; kp++) {
 		float flx_x_old, flx_y_old, tmp_old;
 		if (kp % Nx != Nx - 1 && kp % Nx != 0) {
-			flx_x_old = FlxX[kp];
-			flx_y_old = FlxY[kp];
-            tmp_old = Tmp[kp];
+			//flx_x_old = FlxX[kp];
+			//flx_y_old = FlxY[kp];
 
-            FlxX[kp] = flx_x_old + lap_flxX[kp];
-			FlxY[kp] = flx_y_old + lap_flxY[kp];
-            Tmp[kp] = tmp_old + lap_tmp[kp];
+			flx_x_old = Umain[kp].px();
+			flx_y_old = Umain[kp].py();
+            tmp_old = Umain[kp].tmp();
+
+			Umain[kp].px() = flx_x_old + lap_flxX[kp];
+			Umain[kp].py() = flx_y_old + lap_flxY[kp];
+			Umain[kp].tmp() = tmp_old + lap_tmp[kp];
         }
 	}
 }

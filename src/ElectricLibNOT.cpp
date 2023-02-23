@@ -4,7 +4,7 @@
 * Distributed under the MIT License (license terms are at http://opensource.org/licenses/MIT).   *
 \************************************************************************************************/
 
-#include "includes/ElectricLib.h"
+#include "includes/ElectricLibNOT.h"
 #include "includes/GrapheneFluid2DLib.h"
 #include "includes/GrapheneFluid1DLib.h"
 

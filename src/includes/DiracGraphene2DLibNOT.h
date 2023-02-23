@@ -9,8 +9,8 @@
  * @brief Header file for 2D Dirac-Fermi fluid
  */
 
-#ifndef DIRACGRAPHENE2DLIB_H
-#define DIRACGRAPHENE2DLIB_H
+#ifndef DIRACGRAPHENE2DLIBNOT_H
+#define DIRACGRAPHENE2DLIBNOT_H
 
 #include "includes/Fluid2DLib.h"
 
@@ -154,4 +154,4 @@ public :
 };
 
 
-#endif //DIRACGRAPHENE2DLIB_H
+#endif //DIRACGRAPHENE2DLIBNOT_H

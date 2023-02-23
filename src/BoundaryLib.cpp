@@ -156,6 +156,7 @@ void BoundaryCondition::XPeriodic(Fluid2D& fluid_class){
 	}	
 }
 
+/*
 void BoundaryCondition::XPeriodic(DiracGraphene2D& fluid_class){
 	int nx=fluid_class.SizeX();
 	int ny=fluid_class.SizeY();
@@ -183,7 +184,7 @@ void BoundaryCondition::XPeriodic(DiracGraphene2D& fluid_class){
 		fluid_class.Umain[right] =  fluid_class.Umain[left + 1];
 	}	
 }
-
+*/
 void BoundaryCondition::YFree(Fluid2D& fluid_class){
 	int nx=fluid_class.SizeX();
 	int ny=fluid_class.SizeY();
@@ -249,18 +250,19 @@ void BoundaryCondition::YPeriodic(Fluid2D& fluid_class){
 		bottom = i; //i+0*nx
 		int top;
 		top = i + (ny - 1) * nx;
-		fluid_class.Den[bottom] = fluid_class.Den[top - nx];
+/*		fluid_class.Den[bottom] = fluid_class.Den[top - nx];
 		fluid_class.FlxX[bottom] = fluid_class.FlxX[top - nx];
 		fluid_class.FlxY[bottom] = fluid_class.FlxY[top - nx];
 		fluid_class.Den[top] = fluid_class.Den[bottom + nx];
 		fluid_class.FlxX[top] = fluid_class.FlxX[bottom + nx];
 		fluid_class.FlxY[top] = fluid_class.FlxY[bottom + nx];
-
+*/
 		fluid_class.Umain[bottom] = fluid_class.Umain[top - nx];
 		fluid_class.Umain[top] = fluid_class.Umain[bottom + nx];
 	}
 }
 
+/*
 void BoundaryCondition::YPeriodic(DiracGraphene2D& fluid_class){
 	int nx=fluid_class.SizeX();
 	int ny=fluid_class.SizeY();
@@ -284,7 +286,7 @@ void BoundaryCondition::YPeriodic(DiracGraphene2D& fluid_class){
 		fluid_class.HFlxY[top] = fluid_class.HFlxY[bottom + nx];
 	}
 }
-
+*/
 void BoundaryCondition::YClosedFreeSlip(Fluid2D& fluid_class){
 	int nx=fluid_class.SizeX();
 	int ny=fluid_class.SizeY();
