@@ -32,7 +32,7 @@ using namespace H5;
 	class Fluid2D : public TethysBase {
 	protected:
 
-
+/*
 		float *vel_snd_arr_mid;// array for saving the (potentially varying) S(x,y) function at auxiliary grid
 		float *den_mid;       // mid or auxiliary grids defined with (Nx-1)*(Ny-1) size
 		float *tmp_mid;
@@ -53,7 +53,7 @@ using namespace H5;
 
 		float *velY_dx_mid;
 		float *velY_dy_mid;
-
+*/
 		float *lap_flxX;      // mass density flux laplacian component x
 		float *lap_flxY;      // mass density flux laplacian component y
 		float *lap_tmp;      // temperature laplacian
@@ -79,6 +79,7 @@ using namespace H5;
 		float SideAverage(const float *input_array, GridPoint2D p, char side);
 		StateVec2D SideAverage(const StateVec2D *input_array, GridPoint2D p, char side);
 
+		/*
 		float *ptr_snd;
 		float *ptr_den;
 		float *ptr_px;
@@ -91,7 +92,7 @@ using namespace H5;
 		float *ptr_velYdy;
 		float *ptr_tmp;
 		float *ptr_lap_den;
-
+*/
 		StateVec2D *ptr_StateVec;
 
 		void RichtmyerStep1();
@@ -110,12 +111,13 @@ using namespace H5;
 		float *Tmp;       // electron temperature
 		float *VelX;      // fluid velocity x component
 		float *VelY;      // fluid velocity y component
-		float *FlxX;      // mass density flux x component
-		float *FlxY;      // mass density flux y component
-		float *CurX;      // current density x component
-		float *CurY;      // current density y component
-		explicit Fluid2D(const SetUpParameters &input_parameters);
 
+	//	float *FlxX;      // mass density flux x component
+	//	float *FlxY;      // mass density flux y component
+	//	float *CurX;      // current density x component
+	//	float *CurY;      // current density y component
+
+		explicit Fluid2D(const SetUpParameters &input_parameters);
 		~Fluid2D();
 
 		bool Snapshot() const;
@@ -170,25 +172,25 @@ using namespace H5;
 		virtual float YMomentumSource(StateVec2D U); ///< velocity y component equation (momentum equation) source term
 		virtual float TemperatureSource(StateVec2D U); ///< density equation (continuity equation) source term
 
-		virtual float DensityFluxX(GridPoint2D p, char side); ///< density equation (continuity equation) conserved flux X component
+		//virtual float DensityFluxX(GridPoint2D p, char side); ///< density equation (continuity equation) conserved flux X component
 		virtual float DensityFluxX(StateVec2D U);///< density equation (continuity equation) conserved flux X component
 
-		virtual float DensityFluxY(GridPoint2D p, char side); ///< density equation (continuity equation) conserved1 flux Y component
+		//virtual float DensityFluxY(GridPoint2D p, char side); ///< density equation (continuity equation) conserved1 flux Y component
 		virtual float DensityFluxY(StateVec2D U); ///< density equation (continuity equation) conserved1 flux Y component
 
-		virtual float XMomentumFluxX(GridPoint2D p, char side); ///< velocity X component equation (momentum equation) conserved flux X component
+		//virtual float XMomentumFluxX(GridPoint2D p, char side); ///< velocity X component equation (momentum equation) conserved flux X component
 		virtual float XMomentumFluxX(StateVec2D U); ///< velocity X component equation (momentum equation) conserved flux X component
-		virtual float XMomentumFluxY(GridPoint2D p, char side); ///< velocity X component equation (momentum equation) conserved flux Y component
+		//virtual float XMomentumFluxY(GridPoint2D p, char side); ///< velocity X component equation (momentum equation) conserved flux Y component
 		virtual float XMomentumFluxY(StateVec2D U); ///< velocity X component equation (momentum equation) conserved flux Y component
 
-		virtual float YMomentumFluxX(GridPoint2D p, char side); ///< velocity Y component equation (momentum equation) conserved flux X component
+		//virtual float YMomentumFluxX(GridPoint2D p, char side); ///< velocity Y component equation (momentum equation) conserved flux X component
 		virtual float YMomentumFluxX(StateVec2D U); ///< velocity Y component equation (momentum equation) conserved flux X component
-		virtual float YMomentumFluxY(GridPoint2D p, char side); ///< velocity Y component equation (momentum equation) conserved flux Y component
+		//virtual float YMomentumFluxY(GridPoint2D p, char side); ///< velocity Y component equation (momentum equation) conserved flux Y component
 		virtual float YMomentumFluxY(StateVec2D U); ///< velocity Y component equation (momentum equation) conserved flux Y component
 
-		float TemperatureFluxX(GridPoint2D p, char side); ///< Temperature equation (heat equation) conserved flux X component
+		//float TemperatureFluxX(GridPoint2D p, char side); ///< Temperature equation (heat equation) conserved flux X component
 		float TemperatureFluxX(StateVec2D U); ///< Temperature equation (heat equation) conserved flux X component
-		float TemperatureFluxY(GridPoint2D p, char side); ///< Temperature equation (heat equation) conserved flux Y component
+		//float TemperatureFluxY(GridPoint2D p, char side); ///< Temperature equation (heat equation) conserved flux Y component
 		float TemperatureFluxY(StateVec2D U); ///< Temperature equation (heat equation) conserved flux Y component
 
 
@@ -198,7 +200,7 @@ using namespace H5;
 		* Since the mass of the fluid element is constant one needs only to perform the transformation
 		@f[ \vec{v} = \frac{\vec{p}}{n} @f]
 		* */
-		void MassFluxToVelocity(string grid); // Converts the mass flux density p=mnv to velocity
+		//void MassFluxToVelocity(string grid); // Converts the mass flux density p=mnv to velocity
 
 		/*!
 		* @brief Converts velocity field to current density on the entire simulation grid.
@@ -206,7 +208,7 @@ using namespace H5;
 		* The method simply performs
 		@f[ \vec{j} = \vec{v}n @f]
 		* */
-		void VelocityToCurrent(); // Converts the mass flux density p=mnv to velocity
+		//void VelocityToCurrent(); // Converts the mass flux density p=mnv to velocity
 
 
 		void CreateFluidFile();     ///< creates and opens the simplified .dat file output

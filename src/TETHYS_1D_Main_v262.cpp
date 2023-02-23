@@ -37,7 +37,7 @@ int main(int argc, char **argv){
 	
 	/*.........Fixed or variable vel_snd value........................*/
 
-	float sound = graph.GetVelSnd();
+//	float sound = graph.GetVelSnd();
 //	std::function<float(float)> variationS = [=](float x){ return sound+.5f* tanh(6.0f*cos(2.0f*MAT_PI*2.0f*x)); };
 //	graph.SetSound(variationS);
 	graph.SetSound();

@@ -71,14 +71,14 @@ public :
 		float XMomentumSource(float n, float flx_x, float flx_y, float mass, float s)override; ///< velocity X component equation (momentum equation) source term
 		float YMomentumSource(float n, float flx_x, float flx_y, float mass, float s)override; ///< velocity y component equation (momentum equation) source term
 
-		float DensityFluxX(GridPoint2D p, char side ) override; ///< density equation (continuity equation) conserved flux X component
-		float DensityFluxY(GridPoint2D p, char side ) override; ///< density equation (continuity equation) conserved1 flux Y component
+//		float DensityFluxX(GridPoint2D p, char side ) override; ///< density equation (continuity equation) conserved flux X component
+//		float DensityFluxY(GridPoint2D p, char side ) override; ///< density equation (continuity equation) conserved1 flux Y component
 
-		float XMomentumFluxX(GridPoint2D p, char side ) override; ///< velocity X component equation (momentum equation) conserved flux X component
-		float XMomentumFluxY(GridPoint2D p, char side ) override; ///< velocity X component equation (momentum equation) conserved flux Y component
+//		float XMomentumFluxX(GridPoint2D p, char side ) override; ///< velocity X component equation (momentum equation) conserved flux X component
+//		float XMomentumFluxY(GridPoint2D p, char side ) override; ///< velocity X component equation (momentum equation) conserved flux Y component
 
-		float YMomentumFluxX(GridPoint2D p, char side ) override; ///< velocity Y component equation (momentum equation) conserved flux X component
-		float YMomentumFluxY(GridPoint2D p, char side ) override; ///< velocity Y component equation (momentum equation) conserved flux Y component
+//		float YMomentumFluxX(GridPoint2D p, char side ) override; ///< velocity Y component equation (momentum equation) conserved flux X component
+//		float YMomentumFluxY(GridPoint2D p, char side ) override; ///< velocity Y component equation (momentum equation) conserved flux Y component
 
 
 	float DensitySource(StateVec2D U)override;   ///< density equation (continuity equation) source term

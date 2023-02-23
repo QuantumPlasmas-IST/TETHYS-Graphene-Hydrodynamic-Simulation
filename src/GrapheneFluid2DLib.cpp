@@ -69,7 +69,7 @@ void GrapheneFluid2D::CflCondition(){ // Eventual redefinition
 }
 
 
-
+/*
 float GrapheneFluid2D::DensityFluxX(GridPoint2D p, char side) {
 	float den;
 	float px;
@@ -78,7 +78,7 @@ float GrapheneFluid2D::DensityFluxX(GridPoint2D p, char side) {
 	den = SideAverage(ptr_den, p, side);
 
 	return px / sqrt(den);
-}
+}*/
 float GrapheneFluid2D::DensityFluxX(StateVec2D U) {
 	//return U.px() / sqrt(U.n());
 	float den=U.n();
@@ -86,14 +86,14 @@ float GrapheneFluid2D::DensityFluxX(StateVec2D U) {
 	return px / sqrt(den);
 }
 
-
+/*
 float GrapheneFluid2D::DensityFluxY(GridPoint2D p, char side) {
 	float den;
 	float py;
 	py = SideAverage(ptr_py, p, side);
 	den = SideAverage(ptr_den, p, side);
 	return py / sqrt(den);
-}
+}*/
 
 float GrapheneFluid2D::DensityFluxY(StateVec2D U) {
 //return U.py()/ sqrt(U.n());
@@ -101,7 +101,7 @@ float GrapheneFluid2D::DensityFluxY(StateVec2D U) {
 	float py=U.py();
 	return py / sqrt(den);
 }
-
+/*
 float GrapheneFluid2D::XMomentumFluxX(GridPoint2D p, char side) {
 
 	float sound;
@@ -121,7 +121,7 @@ float GrapheneFluid2D::XMomentumFluxX(GridPoint2D p, char side) {
 	d2den = SideAverage(ptr_lap_den, p, side);
 
 	return px * px / mass + vel_fer * vel_fer * mass / 3.0f + 0.5f * sound * sound * den * den - odd_vis*dvy   ;
-}
+}*/
 
 float GrapheneFluid2D::XMomentumFluxX(StateVec2D U) {
 	//float 	mass=DensityToMass(U.n());
@@ -135,7 +135,7 @@ float GrapheneFluid2D::XMomentumFluxX(StateVec2D U) {
 	return px * px / mass + vel_fer * vel_fer * mass / 3.0f + 0.5f * sound * sound * den * den ;
 }
 
-
+/*
 float GrapheneFluid2D::XMomentumFluxY(GridPoint2D p, char side) {
 
 	float den;
@@ -155,7 +155,7 @@ float GrapheneFluid2D::XMomentumFluxY(GridPoint2D p, char side) {
 	return px * py / mass - odd_vis*dvy;
 
 }
-
+*/
 float GrapheneFluid2D::XMomentumFluxY(StateVec2D U) {
 //	float 	mass=DensityToMass(U.n());
 //	return U.px()*U.py()/mass;
@@ -168,7 +168,7 @@ float GrapheneFluid2D::XMomentumFluxY(StateVec2D U) {
 	return px * py / mass ;
 }
 
-
+/*
 float GrapheneFluid2D::YMomentumFluxY(GridPoint2D p, char side) {
 
 	float sound ;
@@ -186,7 +186,7 @@ float GrapheneFluid2D::YMomentumFluxY(GridPoint2D p, char side) {
 	float d2den = SideAverage(ptr_lap_den, p, side);
 
 	return py * py / mass + vel_fer * vel_fer * mass / 3.0f + 0.5f * sound * sound * den * den + odd_vis*dvx ;
-}
+}*/
 float GrapheneFluid2D::YMomentumFluxY(StateVec2D U) {
 	//float 	mass=DensityToMass(U.n());
 	//return U.py()*U.py()/mass + vel_fer * vel_fer * mass / 3.0f + 0.5f * U.S()*U.S()*U.n()*U.n();
@@ -199,8 +199,8 @@ float GrapheneFluid2D::YMomentumFluxY(StateVec2D U) {
 	return py * py / mass + vel_fer * vel_fer * mass / 3.0f + 0.5f * sound * sound * den * den ;
 }
 
+/*
 float GrapheneFluid2D::YMomentumFluxX(GridPoint2D p, char side) {
-
 	float den;
 	float px;
 	float py;
@@ -214,17 +214,13 @@ float GrapheneFluid2D::YMomentumFluxX(GridPoint2D p, char side) {
 	mass=DensityToMass(den);
 
 	return px * py / mass  + odd_vis*dvx;
-}
+}*/
 float GrapheneFluid2D::YMomentumFluxX(StateVec2D U) {
-	//float 	mass=DensityToMass(U.n());
-
 	//float sound=U.S();
 	float den=U.n();
 	float px=U.px();
 	float py=U.py();
 	float mass=DensityToMass(den);
-
-	//return U.px()*U.py()/mass ;
 	return px * py / mass;
 }
 
@@ -262,7 +258,7 @@ GrapheneFluid2D::~GrapheneFluid2D(){
 delete[] Den;
 delete[] VelX;
 delete[] VelY;
-delete[] FlxX;
+/*delete[] FlxX;
 delete[] FlxY;
 delete[] CurX;
 delete[] CurY;
@@ -270,27 +266,27 @@ delete[] den_mid;
 delete[] velX_mid;
 delete[] velY_mid;
 delete[] flxX_mid;
-delete[] flxY_mid;
+delete[] flxY_mid;*/
 delete[] lap_flxX;
 delete[] lap_flxY;
-delete[] vel_snd_arr;
-delete[] vel_snd_arr_mid;
+//delete[] vel_snd_arr;
+//delete[] vel_snd_arr_mid;
 delete[] den_dx;
 delete[] den_dy;
 delete[] den_dx_mid;
 delete[] den_dy_mid;
-delete[] velX_dx;
+/*delete[] velX_dx;
 delete[] velX_dx_mid;
 delete[] velX_dy;
 delete[] velX_dy_mid;
 delete[] velY_dx;
 delete[] velY_dx_mid;
 delete[] velY_dy;
-delete[] velY_dy_mid;
+delete[] velY_dy_mid;*/
 delete[] lap_den;
 delete[] lap_tmp;
 delete[] lap_den_mid;
-delete[] tmp_mid;
+//delete[] tmp_mid;
 delete[] Tmp;
 }
 

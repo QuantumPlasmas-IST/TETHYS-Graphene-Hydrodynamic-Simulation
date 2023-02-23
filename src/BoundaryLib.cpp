@@ -142,13 +142,14 @@ void BoundaryCondition::XPeriodic(Fluid2D& fluid_class){
 		left = 0 + j * nx;
 		int right;
 		right = nx - 1 + j * nx;
+/*
 		fluid_class.Den[left]=fluid_class.Den[right - 1];
 		fluid_class.Den[right]=fluid_class.Den[1 + j * nx];
 		fluid_class.FlxY[left] = 0.0f; 					//flux only on x at x=0
 		fluid_class.FlxY[right] = 0.0f ;					//idem at x=L
 		fluid_class.FlxX[left] = fluid_class.FlxX[right - 1];
 		fluid_class.FlxX[right] =  fluid_class.FlxX[left + 1];
-
+*/
 		fluid_class.Umain[left] = fluid_class.Umain[right - 1];
 		fluid_class.Umain[right] =  fluid_class.Umain[left + 1];
 
@@ -163,6 +164,7 @@ void BoundaryCondition::XPeriodic(DiracGraphene2D& fluid_class){
 		left = 0 + j * nx;
 		int right;
 		right = nx - 1 + j * nx;
+
 		fluid_class.Den[left]=fluid_class.Den[right - 1];
 		fluid_class.Den[right]=fluid_class.Den[1 + j * nx];
 		fluid_class.FlxY[left] = 0.0f; 					//flux only on x at x=0
@@ -292,7 +294,7 @@ void BoundaryCondition::YClosedFreeSlip(Fluid2D& fluid_class){
 		bottom = i; //i+0*nx
 		int top;
 		top = i + (ny - 1) * nx;
-
+/*
 		fluid_class.Den[bottom] = fluid_class.Den[bottom + nx];
 		fluid_class.Den[top] = fluid_class.Den[top - nx];
 
@@ -300,9 +302,9 @@ void BoundaryCondition::YClosedFreeSlip(Fluid2D& fluid_class){
 		fluid_class.FlxY[bottom] = 0.0f; //Slope * fluid_class.FlxX[top - nx];
 		fluid_class.FlxX[top] = fluid_class.FlxX[bottom + nx];
 		fluid_class.FlxY[top] = 0.0f; //-1.0f * Slope * fluid_class.FlxX[bottom + nx];
-
-		fluid_class.Umain[bottom].n() = fluid_class.Umain[bottom+nx].n();
-		fluid_class.Umain[top].n() = fluid_class.Umain[top-nx].n(); //nao faz sentido impor logo aqui densidades
+*/
+//		fluid_class.Umain[bottom].n() = fluid_class.Umain[bottom+nx].n();
+//		fluid_class.Umain[top].n() = fluid_class.Umain[top-nx].n(); //nao faz sentido impor logo aqui densidades
 
 		fluid_class.Umain[bottom].px() = fluid_class.Umain[top - nx].px();
 		fluid_class.Umain[bottom].py() = 0.0f; //Slope * fluid_class.FlxX[top - nx];

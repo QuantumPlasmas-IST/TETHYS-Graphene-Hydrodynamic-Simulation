@@ -35,6 +35,7 @@ Fluid2D::Fluid2D(const SetUpParameters &input_parameters) : TethysBase{input_par
 	Den 		= new float[Nx * Ny]();
 	VelX 		= new float[Nx * Ny]();
 	VelY 		= new float[Nx * Ny]();
+/*
 	FlxX 		= new float[Nx * Ny]();
 	FlxY 		= new float[Nx * Ny]();
 	CurX 		= new float[Nx * Ny]();
@@ -44,7 +45,7 @@ Fluid2D::Fluid2D(const SetUpParameters &input_parameters) : TethysBase{input_par
 	velX_dy	= new float[Nx * Ny]();
 	velY_dx	= new float[Nx * Ny]();
 	velY_dy	= new float[Nx * Ny]();
-
+*/
 	den_dx = new float[Nx * Ny]();
 	den_dy = new float[Nx * Ny]();
 
@@ -56,7 +57,7 @@ Fluid2D::Fluid2D(const SetUpParameters &input_parameters) : TethysBase{input_par
     lap_tmp = new float[Nx*Ny]();
 
 	// 1st Aux. Grid variables (Nx-1)*(Ny-1)
-	tmp_mid		= new float[(Nx-1)*(Ny-1)]();
+/*	tmp_mid		= new float[(Nx-1)*(Ny-1)]();
 	den_mid		= new float[(Nx-1)*(Ny-1)]();
 	velX_mid	= new float[(Nx-1)*(Ny-1)]();
 	velY_mid	= new float[(Nx-1)*(Ny-1)]();
@@ -64,13 +65,13 @@ Fluid2D::Fluid2D(const SetUpParameters &input_parameters) : TethysBase{input_par
 	velX_dy_mid	= new float[(Nx-1)*(Ny-1)]();
 	velY_dx_mid	= new float[(Nx-1)*(Ny-1)]();
 	velY_dy_mid	= new float[(Nx-1)*(Ny-1)]();
-
+*/
 	den_dx_mid = new float[(Nx-1)*(Ny-1)]();
 	den_dy_mid = new float[(Nx-1)*(Ny-1)]();
 
-	flxX_mid	= new float[(Nx-1)*(Ny-1)]();
-	flxY_mid	= new float[(Nx-1)*(Ny-1)]();
-	vel_snd_arr_mid	= new float[(Nx-1)*(Ny-1)]();
+//	flxX_mid	= new float[(Nx-1)*(Ny-1)]();
+//	flxY_mid	= new float[(Nx-1)*(Ny-1)]();
+//	vel_snd_arr_mid	= new float[(Nx-1)*(Ny-1)]();
 
 
 	Umain = new StateVec2D[Nx*Ny]();
@@ -82,11 +83,11 @@ Fluid2D::~Fluid2D() = default;
 
 void Fluid2D::SetSound(){
 	for(int kp=0; kp<=Nx*Ny-1; kp++) {
-		vel_snd_arr[kp] = vel_snd;
+//		vel_snd_arr[kp] = vel_snd;
 		Umain[kp].S() = vel_snd;
 	}
 	for(int ks=0; ks<=Nx*Ny-Nx-Ny; ks++) {
-		vel_snd_arr_mid[ks]= vel_snd;
+//		vel_snd_arr_mid[ks]= vel_snd;
 		Umid[ks].S()= vel_snd;
 	}
 }
@@ -124,10 +125,10 @@ void Fluid2D::InitialCondRand(){
 		float noise;
 		noise =  (float) rd()/maxrand ; //(float) rand()/ (float) RAND_MAX ;
 		Umain[c].n() = 1.0f + 0.005f * (noise - 0.5f);
-		Den[c] = 1.0f + 0.005f * (noise - 0.5f);
+	//	Den[c] = 1.0f + 0.005f * (noise - 0.5f);
 		noise =  (float) rd()/maxrand ; //(float) rand()/ (float) RAND_MAX ;
 		Umain[c].tmp()=  .2f + 0.005f * (noise - 0.5f);
-		Tmp[c]=  .2f + 0.005f * (noise - 0.5f);
+	//	Tmp[c]=  .2f + 0.005f * (noise - 0.5f);
 	}
 }
 
@@ -169,13 +170,14 @@ void Fluid2D::InitialCondTest(){
 			}
 			Umain[i + j * Nx].n() = 1.0f + densi;
 			Umain[i + j * Nx].px() = 0.1f;
-			Den[i + j * Nx] = 1.0f + densi;
-			FlxX[i + j * Nx] = 0.1f;
+		//	Den[i + j * Nx] = 1.0f + densi;
+		//	FlxX[i + j * Nx] = 0.1f;
 		}
 	}
 }
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+/*
 void Fluid2D::MassFluxToVelocity(const string grid) {
 	float den;
 	if(grid=="MainGrid"){
@@ -200,7 +202,7 @@ void Fluid2D::VelocityToCurrent() {
 		CurY[c] = VelY[c] * Den[c];
 	}
 }
-
+*/
 
 
 void Fluid2D::Richtmyer(){
@@ -251,11 +253,12 @@ void Fluid2D::RichtmyerStep1(){
 	for(int ks=0; ks<=Nx*Ny-Nx-Ny; ks++){ //correr todos os pontos da grelha secundaria de den_mid
 		GridPoint2D midpoint(ks, Nx, Ny, true);
 
+		/*
 		float den_avg   = 0.25f * (Den[midpoint.SW] + Den[midpoint.SE] + Den[midpoint.NW] + Den[midpoint.NE]);
 		float flx_x_avg = 0.25f * (FlxX[midpoint.SW] + FlxX[midpoint.SE] + FlxX[midpoint.NW] + FlxX[midpoint.NE]);
 		float flx_y_avg = 0.25f * (FlxY[midpoint.SW] + FlxY[midpoint.SE] + FlxY[midpoint.NW] + FlxY[midpoint.NE]);
 		float tmp_avg   = 0.25f * (Tmp[midpoint.SW] + Tmp[midpoint.SE] + Tmp[midpoint.NW] + Tmp[midpoint.NE]);
-
+		*/
 
 
 
@@ -300,7 +303,7 @@ void Fluid2D::RichtmyerStep1(){
 		                -0.5f*(dt/dy)*(YMomentumFluxY(UNorth) - YMomentumFluxY(USouth));
 		                //+0.5f*dt*YMomentumSource(Uavg);
 
-
+/*
 		den_mid[ks] = den_avg
 		              -0.5f*(dt/dx)*(DensityFluxX(midpoint, 'E') - DensityFluxX(midpoint, 'W'))
 		              -0.5f*(dt/dy)*(DensityFluxY(midpoint, 'N') - DensityFluxY(midpoint, 'S'))
@@ -313,7 +316,7 @@ void Fluid2D::RichtmyerStep1(){
 		               -0.5f*(dt/dx)*(YMomentumFluxX(midpoint, 'E') - YMomentumFluxX(midpoint, 'W'))
 		               -0.5f*(dt/dy)*(YMomentumFluxY(midpoint, 'N') - YMomentumFluxY(midpoint, 'S'))
 		               +0.5f*dt*YMomentumSource(den_avg, flx_x_avg, flx_y_avg, 0.0f, 0.0f);
-
+*/
 
 
 
@@ -340,10 +343,11 @@ void Fluid2D::RichtmyerStep2(){
 		if( kp%Nx!=Nx-1 && kp%Nx!=0){
 
 
-			float den_old = Den[kp];
+		/*	float den_old = Den[kp];
 			float flx_x_old = FlxX[kp];
 			float flx_y_old = FlxY[kp];
 			float tmp_old = Tmp[kp];
+		 */
 
 			StateVec2D Uold(Umain[kp]);
 			StateVec2D UNorth{};
@@ -382,7 +386,7 @@ void Fluid2D::RichtmyerStep2(){
 
 
 
-
+/*
 			Den[kp] = den_old - (dt/dx)*(DensityFluxX(mainpoint, 'E') - DensityFluxX(mainpoint, 'W'))
 			          - (dt/dy)*(DensityFluxY(mainpoint, 'N') - DensityFluxY(mainpoint, 'S'))
 			          + dt*DensitySource(den_old, flx_x_old, flx_y_old, 0.0f, 0.0f);
@@ -393,7 +397,7 @@ void Fluid2D::RichtmyerStep2(){
 			           - (dt/dy)*(YMomentumFluxY(mainpoint, 'N') - YMomentumFluxY(mainpoint, 'S'))
 			           + dt*YMomentumSource(den_old, flx_x_old, flx_y_old, 0.0f, 0.0f);
 
-
+*/
 
 
 			/*
@@ -426,18 +430,18 @@ void Fluid2D::WriteFluidFile(float t){
 	int j=Ny/2;
 	int pos_end = Nx - 1 + j*Nx ;
 	int pos_ini = j*Nx ;
-		if(!isfinite(Den[pos_end]) || !isfinite(Den[pos_ini]) || !isfinite(FlxX[pos_end]) || !isfinite(FlxX[pos_ini])){
-		//if(!isfinite(Umain[pos_ini].n()) || !isfinite(Umain[pos_end].n()) || !isfinite(Umain[pos_ini].px()) || !isfinite(Umain[pos_end].px())){
+		//if(!isfinite(Den[pos_end]) || !isfinite(Den[pos_ini]) || !isfinite(FlxX[pos_end]) || !isfinite(FlxX[pos_ini])){
+		if(!isfinite(Umain[pos_ini].n()) || !isfinite(Umain[pos_end].n()) || !isfinite(Umain[pos_ini].px()) || !isfinite(Umain[pos_end].px())){
 			cerr << "ERROR: numerical method failed to converge" <<"\nExiting"<< endl;
 			CloseHdf5File();
 			exit(EXIT_FAILURE);
 		}
 
-	data_preview << t << "\t"
+/*	data_preview << t << "\t"
 	<< Den[pos_end]  << "\t"
 	<< FlxX[pos_end] << "\t"
 	<< Den[pos_ini]  << "\t"
-	<< FlxX[pos_ini] << "\t\t";
+	<< FlxX[pos_ini] << "\t\t";*/
 	data_preview << t <<"\t"<< Umain[pos_ini] <<"\t"<<Umain[pos_end]<< "\n";
 }
 
@@ -649,45 +653,39 @@ void Fluid2D::ForwardTimeOperator() {
 float Fluid2D::DensityToMass(float density) {
 	return density;
 }
-
+/*
 float Fluid2D::DensityFluxX(GridPoint2D p, char side) {
 	float px;
 	px = SideAverage(ptr_px, p, side);
-
-	StateVec2D U{};
-	U = SideAverage(ptr_StateVec,p,side);
-
 	return px;
-}
+}*/
 float Fluid2D::DensityFluxX(StateVec2D U) {
 	return U.px();
 }
 
+/*
 float Fluid2D::DensityFluxY(GridPoint2D p, char side) {
 	float py;
 	py = SideAverage(ptr_py, p, side);
-	StateVec2D U{};
-	U = SideAverage(ptr_StateVec,p,side);
 	return py;
-}
+}*/
+
 float Fluid2D::DensityFluxY(StateVec2D U) {
 	return U.py();
 }
 
-
+/*
 float Fluid2D::XMomentumFluxX(GridPoint2D p, char side) {
 	float den;
 	float px;
 	den = SideAverage(ptr_den, p, side);
 	px = SideAverage(ptr_px, p, side);
-	StateVec2D U{};
-	U = SideAverage(ptr_StateVec,p,side);
 	return px * px / den + den;
-}
+}*/
 float Fluid2D::XMomentumFluxX(StateVec2D U) {
 	return U.px()*U.px()/U.n() + U.n();
 }
-
+/*
 float Fluid2D::XMomentumFluxY(GridPoint2D p, char side) {
 	float den;
 	float px;
@@ -695,28 +693,27 @@ float Fluid2D::XMomentumFluxY(GridPoint2D p, char side) {
 	den = SideAverage(ptr_den, p, side);
 	px = SideAverage(ptr_px, p, side);
 	py = SideAverage(ptr_py, p, side);
-	StateVec2D U{};
-	U = SideAverage(ptr_StateVec,p,side);
 	return px * py / den;
-}
+}*/
 
 float Fluid2D::XMomentumFluxY(StateVec2D U) {
 	return U.px()*U.py()/U.n();
 }
 
 
-
+/*
 float Fluid2D::YMomentumFluxY(GridPoint2D p, char side) {
 	float den;
 	float py;
 	den = SideAverage(ptr_den, p, side);
 	py = SideAverage(ptr_py, p, side);
 	return py * py / den + den;
-}
+}*/
 float Fluid2D::YMomentumFluxY(StateVec2D U) {
 	return U.py()*U.py()/U.n() + U.n();
 }
 
+/*
 float Fluid2D::YMomentumFluxX(GridPoint2D p, char side) {
 	float den;
 	float px;
@@ -725,13 +722,13 @@ float Fluid2D::YMomentumFluxX(GridPoint2D p, char side) {
 	px = SideAverage(ptr_px, p, side);
 	py = SideAverage(ptr_py, p, side);
 	return px * py / den;
-}
+}*/
 
 float Fluid2D::YMomentumFluxX(StateVec2D U) {
 	return U.py()*U.px()/U.n();
 }
 
-
+/*
 float Fluid2D::TemperatureFluxX(GridPoint2D p, char side) {
 	float tmp;
     float px;
@@ -755,7 +752,7 @@ float Fluid2D::TemperatureFluxY(GridPoint2D p, char side) {
 	return PHYS_FERMI_CNVC*py  + tmp*py / DensityToMass(den) ;
 }
 
-
+*/
 
 float Fluid2D::Laplacian19(GridPoint2D p, float *input_ptr, float constant) {
 	float sx=constant*dt/(dx*dx);
@@ -775,7 +772,7 @@ float Fluid2D::TemperatureSource(float n, float flx_x, float flx_y, float den_gr
 
 void Fluid2D::ChooseGridPointers(const string &grid) {
 	if(grid == "MidGrid"){  // se ESTÁ na grelha média tem de APONTAR pra outra grelha
-		ptr_snd = vel_snd_arr;
+/*		ptr_snd = vel_snd_arr;
 		ptr_den = Den;
 		ptr_px = FlxX;
 		ptr_py = FlxY;
@@ -787,11 +784,11 @@ void Fluid2D::ChooseGridPointers(const string &grid) {
 		ptr_velYdy = velY_dy;
 		ptr_tmp = Tmp;
 		ptr_lap_den = lap_den ;
-
+*/
 		ptr_StateVec = Umain;
 
 	}if(grid == "MainGrid"){ // e vice-versa
-		ptr_snd = vel_snd_arr_mid;
+/*		ptr_snd = vel_snd_arr_mid;
 		ptr_den = den_mid;
 		ptr_px = flxX_mid;
 		ptr_py = flxY_mid;
@@ -803,7 +800,7 @@ void Fluid2D::ChooseGridPointers(const string &grid) {
 		ptr_velYdy = velY_dy_mid;
 		ptr_tmp = tmp_mid;
 		ptr_lap_den = lap_den_mid ;
-
+*/
 		ptr_StateVec = Umid;
 	}
 }
