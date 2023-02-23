@@ -169,6 +169,8 @@ void Fluid2D::InitialCondTest(){
 			}
 			Umain[i + j * Nx].n() = 1.0f + densi;
 			Umain[i + j * Nx].px() = 0.1f;
+			Den[i + j * Nx] = 1.0f + densi;
+			FlxX[i + j * Nx] = 0.1f;
 		}
 	}
 }
@@ -273,10 +275,15 @@ void Fluid2D::RichtmyerStep1(){
 		StateVec2D USouth{};
 		StateVec2D UEast{};
 		StateVec2D UWest{};
-		UNorth = 0.5f*(Umain[midpoint.NE]+Umain[midpoint.NW]);
-		USouth = 0.5f*(Umain[midpoint.SE]+Umain[midpoint.SW]);
-		UEast = 0.5f*(Umain[midpoint.NE]+Umain[midpoint.SE]);
-		UWest = 0.5f*(Umain[midpoint.NW]+Umain[midpoint.SW]);
+		//UNorth = 0.5f*(Umain[midpoint.NE]+Umain[midpoint.NW]);
+		//USouth = 0.5f*(Umain[midpoint.SE]+Umain[midpoint.SW]);
+		//UEast = 0.5f*(Umain[midpoint.NE]+Umain[midpoint.SE]);
+		//UWest = 0.5f*(Umain[midpoint.NW]+Umain[midpoint.SW]);
+
+		UEast = SideAverage(ptr_StateVec,midpoint,'E');
+		UWest = SideAverage(ptr_StateVec,midpoint,'W');
+		UNorth = SideAverage(ptr_StateVec,midpoint,'N');
+		USouth = SideAverage(ptr_StateVec,midpoint,'S');
 
 		Umid[ks].n() =  Uavg.n()
 		                -0.5f*(dt/dx)*(DensityFluxX(UEast) - DensityFluxX(UWest))
@@ -343,11 +350,17 @@ void Fluid2D::RichtmyerStep2(){
 			StateVec2D USouth{};
 			StateVec2D UEast{};
 			StateVec2D UWest{};
-			UNorth = 0.5f*(Umid[mainpoint.NE]+Umid[mainpoint.NW]);
-			USouth = 0.5f*(Umid[mainpoint.SE]+Umid[mainpoint.SW]);
-			UEast = 0.5f*(Umid[mainpoint.NE]+Umid[mainpoint.SE]);
-			UWest = 0.5f*(Umid[mainpoint.NW]+Umid[mainpoint.SW]);
 
+			//UNorth = 0.5f*(Umid[mainpoint.NE]+Umid[mainpoint.NW]);
+			//USouth = 0.5f*(Umid[mainpoint.SE]+Umid[mainpoint.SW]);
+			//UEast = 0.5f*(Umid[mainpoint.NE]+Umid[mainpoint.SE]);
+			//UWest = 0.5f*(Umid[mainpoint.NW]+Umid[mainpoint.SW]);
+
+
+			UEast = SideAverage(ptr_StateVec,mainpoint,'E');
+			UWest = SideAverage(ptr_StateVec,mainpoint,'W');
+			UNorth = SideAverage(ptr_StateVec,mainpoint,'N');
+			USouth = SideAverage(ptr_StateVec,mainpoint,'S');
 
 			Umain[kp].n() = Uold.n()
 			                - (dt/dx)*(DensityFluxX(UEast) - DensityFluxX(UWest))
@@ -640,6 +653,10 @@ float Fluid2D::DensityToMass(float density) {
 float Fluid2D::DensityFluxX(GridPoint2D p, char side) {
 	float px;
 	px = SideAverage(ptr_px, p, side);
+
+	StateVec2D U{};
+	U = SideAverage(ptr_StateVec,p,side);
+
 	return px;
 }
 float Fluid2D::DensityFluxX(StateVec2D U) {
@@ -649,6 +666,8 @@ float Fluid2D::DensityFluxX(StateVec2D U) {
 float Fluid2D::DensityFluxY(GridPoint2D p, char side) {
 	float py;
 	py = SideAverage(ptr_py, p, side);
+	StateVec2D U{};
+	U = SideAverage(ptr_StateVec,p,side);
 	return py;
 }
 float Fluid2D::DensityFluxY(StateVec2D U) {
@@ -661,6 +680,8 @@ float Fluid2D::XMomentumFluxX(GridPoint2D p, char side) {
 	float px;
 	den = SideAverage(ptr_den, p, side);
 	px = SideAverage(ptr_px, p, side);
+	StateVec2D U{};
+	U = SideAverage(ptr_StateVec,p,side);
 	return px * px / den + den;
 }
 float Fluid2D::XMomentumFluxX(StateVec2D U) {
@@ -674,6 +695,8 @@ float Fluid2D::XMomentumFluxY(GridPoint2D p, char side) {
 	den = SideAverage(ptr_den, p, side);
 	px = SideAverage(ptr_px, p, side);
 	py = SideAverage(ptr_py, p, side);
+	StateVec2D U{};
+	U = SideAverage(ptr_StateVec,p,side);
 	return px * py / den;
 }
 
@@ -764,6 +787,9 @@ void Fluid2D::ChooseGridPointers(const string &grid) {
 		ptr_velYdy = velY_dy;
 		ptr_tmp = Tmp;
 		ptr_lap_den = lap_den ;
+
+		ptr_StateVec = Umain;
+
 	}if(grid == "MainGrid"){ // e vice-versa
 		ptr_snd = vel_snd_arr_mid;
 		ptr_den = den_mid;
@@ -777,6 +803,8 @@ void Fluid2D::ChooseGridPointers(const string &grid) {
 		ptr_velYdy = velY_dy_mid;
 		ptr_tmp = tmp_mid;
 		ptr_lap_den = lap_den_mid ;
+
+		ptr_StateVec = Umid;
 	}
 }
 
@@ -795,6 +823,25 @@ float Fluid2D::SideAverage(const float * input_array, GridPoint2D p, char side){
 	}
 	return avg;
 }
+
+
+
+StateVec2D Fluid2D::SideAverage(const StateVec2D *input_array, GridPoint2D p, char side) {
+	StateVec2D avg(input_array[p.C]);
+	switch(side) {
+		case 'N': avg=0.5f*(input_array[p.NE]+input_array[p.NW]);
+			break;
+		case 'S': avg=0.5f*(input_array[p.SE]+input_array[p.SW]);
+			break;
+		case 'E': avg=0.5f*(input_array[p.NE]+input_array[p.SE]);
+			break;
+		case 'W': avg=0.5f*(input_array[p.NW]+input_array[p.SW]);
+			break;
+		default: avg=input_array[p.C];
+	}
+	return avg;
+}
+
 
 float Fluid2D::DensitySource(StateVec2D U) {
 	return 0;

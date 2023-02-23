@@ -77,6 +77,7 @@ using namespace H5;
 		virtual void ChooseGridPointers(const string &grid);
 
 		float SideAverage(const float *input_array, GridPoint2D p, char side);
+		StateVec2D SideAverage(const StateVec2D *input_array, GridPoint2D p, char side);
 
 		float *ptr_snd;
 		float *ptr_den;
@@ -90,6 +91,8 @@ using namespace H5;
 		float *ptr_velYdy;
 		float *ptr_tmp;
 		float *ptr_lap_den;
+
+		StateVec2D *ptr_StateVec;
 
 		void RichtmyerStep1();
 		void RichtmyerStep2();

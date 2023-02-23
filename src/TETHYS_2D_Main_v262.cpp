@@ -61,7 +61,9 @@ int main(int argc, char **argv){
 //	graph.InitialCondGeneral([](float x,float y) { return 1.0f+0.1f/cosh(10.0f*sqrt((x-.5f)*(x-.5f)+(y-.5f)*(y-.5f))); },[](float x,float y) { return 0.5f; },[](float x,float y) { return 0.0f; });
 //	graph.InitialCondGeneral([](float x,float y) { return 1.0f+0.1f/cosh(10.0f*(x-.5f)); },[](float x,float y) { return 0.5f/cosh(10.0f*(x-.5f)); },[](float x,float y) { return 0.0f; });
 //	graph.InitialCondGeneral([](float x,float y) { return 0.8; },[](float x,float y) { return 0.5f; },[](float x,float y) { return 0.0f; });
+
 	graph.InitialCondRand();
+//	graph.InitialCondTest();
 	/*................................................................*/
 
 	/*................Setting.the.lateral.boundaries..................*/
@@ -72,6 +74,9 @@ int main(int argc, char **argv){
 
 	DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
 	DirichletBoundaryCondition::YClosedFreeSlip(graph);
+
+//	BoundaryCondition::XPeriodic(graph);
+//	BoundaryCondition::YPeriodic(graph);
 
 
 	cout << "\033[1;7;5;33m Program Running \033[0m"<<endl;
@@ -94,8 +99,8 @@ int main(int argc, char **argv){
 		//DirichletBoundaryCondition::YClosedNoSlip(graph);
 		DirichletBoundaryCondition::YClosedFreeSlip(graph);
 
-		//BoundaryCondition::XPeriodic(graph);
-		//BoundaryCondition::YPeriodic(graph);
+//		BoundaryCondition::XPeriodic(graph);
+//		BoundaryCondition::YPeriodic(graph);
 
 /*
 		if(graph.GetThermDiff()!=0.0){

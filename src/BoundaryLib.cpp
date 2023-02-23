@@ -142,12 +142,12 @@ void BoundaryCondition::XPeriodic(Fluid2D& fluid_class){
 		left = 0 + j * nx;
 		int right;
 		right = nx - 1 + j * nx;
-//		fluid_class.Den[left]=fluid_class.Den[right - 1];
-//		fluid_class.Den[right]=fluid_class.Den[1 + j * nx];
-//		fluid_class.FlxY[left] = 0.0f; 					//flux only on x at x=0
-//		fluid_class.FlxY[right] = 0.0f ;					//idem at x=L
-//		fluid_class.FlxX[left] = fluid_class.FlxX[right - 1];
-//		fluid_class.FlxX[right] =  fluid_class.FlxX[left + 1];
+		fluid_class.Den[left]=fluid_class.Den[right - 1];
+		fluid_class.Den[right]=fluid_class.Den[1 + j * nx];
+		fluid_class.FlxY[left] = 0.0f; 					//flux only on x at x=0
+		fluid_class.FlxY[right] = 0.0f ;					//idem at x=L
+		fluid_class.FlxX[left] = fluid_class.FlxX[right - 1];
+		fluid_class.FlxX[right] =  fluid_class.FlxX[left + 1];
 
 		fluid_class.Umain[left] = fluid_class.Umain[right - 1];
 		fluid_class.Umain[right] =  fluid_class.Umain[left + 1];
@@ -247,12 +247,12 @@ void BoundaryCondition::YPeriodic(Fluid2D& fluid_class){
 		bottom = i; //i+0*nx
 		int top;
 		top = i + (ny - 1) * nx;
-//		fluid_class.Den[bottom] = fluid_class.Den[top - nx];
-//		fluid_class.FlxX[bottom] = fluid_class.FlxX[top - nx];
-//		fluid_class.FlxY[bottom] = fluid_class.FlxY[top - nx];
-//		fluid_class.Den[top] = fluid_class.Den[bottom + nx];
-//		fluid_class.FlxX[top] = fluid_class.FlxX[bottom + nx];
-//		fluid_class.FlxY[top] = fluid_class.FlxY[bottom + nx];
+		fluid_class.Den[bottom] = fluid_class.Den[top - nx];
+		fluid_class.FlxX[bottom] = fluid_class.FlxX[top - nx];
+		fluid_class.FlxY[bottom] = fluid_class.FlxY[top - nx];
+		fluid_class.Den[top] = fluid_class.Den[bottom + nx];
+		fluid_class.FlxX[top] = fluid_class.FlxX[bottom + nx];
+		fluid_class.FlxY[top] = fluid_class.FlxY[bottom + nx];
 
 		fluid_class.Umain[bottom] = fluid_class.Umain[top - nx];
 		fluid_class.Umain[top] = fluid_class.Umain[bottom + nx];
