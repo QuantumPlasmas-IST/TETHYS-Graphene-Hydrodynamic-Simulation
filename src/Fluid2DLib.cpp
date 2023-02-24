@@ -278,16 +278,16 @@ void Fluid2D::RichtmyerStep1(){
 		StateVec2D USouth{};
 		StateVec2D UEast{};
 		StateVec2D UWest{};
-		//UNorth = 0.5f*(Umain[midpoint.NE]+Umain[midpoint.NW]);
-		//USouth = 0.5f*(Umain[midpoint.SE]+Umain[midpoint.SW]);
-		//UEast = 0.5f*(Umain[midpoint.NE]+Umain[midpoint.SE]);
-		//UWest = 0.5f*(Umain[midpoint.NW]+Umain[midpoint.SW]);
+		UNorth = 0.5f*(Umain[midpoint.NE]+Umain[midpoint.NW]);
+		USouth = 0.5f*(Umain[midpoint.SE]+Umain[midpoint.SW]);
+		UEast = 0.5f*(Umain[midpoint.NE]+Umain[midpoint.SE]);
+		UWest = 0.5f*(Umain[midpoint.NW]+Umain[midpoint.SW]);
 
-		UEast = SideAverage(ptr_StateVec,midpoint,'E');
+/*		UEast = SideAverage(ptr_StateVec,midpoint,'E');
 		UWest = SideAverage(ptr_StateVec,midpoint,'W');
 		UNorth = SideAverage(ptr_StateVec,midpoint,'N');
 		USouth = SideAverage(ptr_StateVec,midpoint,'S');
-
+*/
 		Umid[ks].n() =  Uavg.n()
 		                -0.5f*(dt/dx)*(DensityFluxX(UEast) - DensityFluxX(UWest))
 		                -0.5f*(dt/dy)*(DensityFluxY(UNorth) - DensityFluxY(USouth));
@@ -355,16 +355,16 @@ void Fluid2D::RichtmyerStep2(){
 			StateVec2D UEast{};
 			StateVec2D UWest{};
 
-			//UNorth = 0.5f*(Umid[mainpoint.NE]+Umid[mainpoint.NW]);
-			//USouth = 0.5f*(Umid[mainpoint.SE]+Umid[mainpoint.SW]);
-			//UEast = 0.5f*(Umid[mainpoint.NE]+Umid[mainpoint.SE]);
-			//UWest = 0.5f*(Umid[mainpoint.NW]+Umid[mainpoint.SW]);
+			UNorth = 0.5f*(Umid[mainpoint.NE]+Umid[mainpoint.NW]);
+			USouth = 0.5f*(Umid[mainpoint.SE]+Umid[mainpoint.SW]);
+			UEast = 0.5f*(Umid[mainpoint.NE]+Umid[mainpoint.SE]);
+			UWest = 0.5f*(Umid[mainpoint.NW]+Umid[mainpoint.SW]);
 
 
-			UEast = SideAverage(ptr_StateVec,mainpoint,'E');
-			UWest = SideAverage(ptr_StateVec,mainpoint,'W');
-			UNorth = SideAverage(ptr_StateVec,mainpoint,'N');
-			USouth = SideAverage(ptr_StateVec,mainpoint,'S');
+	//		UEast = SideAverage(ptr_StateVec,mainpoint,'E');
+	//		UWest = SideAverage(ptr_StateVec,mainpoint,'W');
+	//		UNorth = SideAverage(ptr_StateVec,mainpoint,'N');
+	//		USouth = SideAverage(ptr_StateVec,mainpoint,'S');
 
 			Umain[kp].n() = Uold.n()
 			                - (dt/dx)*(DensityFluxX(UEast) - DensityFluxX(UWest))

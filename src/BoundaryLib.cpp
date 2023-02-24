@@ -305,8 +305,8 @@ void BoundaryCondition::YClosedFreeSlip(Fluid2D& fluid_class){
 		fluid_class.FlxX[top] = fluid_class.FlxX[bottom + nx];
 		fluid_class.FlxY[top] = 0.0f; //-1.0f * Slope * fluid_class.FlxX[bottom + nx];
 */
-//		fluid_class.Umain[bottom].n() = fluid_class.Umain[bottom+nx].n();
-//		fluid_class.Umain[top].n() = fluid_class.Umain[top-nx].n(); //nao faz sentido impor logo aqui densidades
+		fluid_class.Umain[bottom].n() = fluid_class.Umain[bottom+nx].n();
+		fluid_class.Umain[top].n() = fluid_class.Umain[top-nx].n();
 
 		fluid_class.Umain[bottom].px() = fluid_class.Umain[top - nx].px();
 		fluid_class.Umain[bottom].py() = 0.0f; //Slope * fluid_class.FlxX[top - nx];
