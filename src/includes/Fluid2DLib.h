@@ -71,6 +71,8 @@ using namespace H5;
 		int snapshot_step = 1;
 
 		virtual void ForwardTimeOperator(); ///< Time evolution for the FTCS method employed for the parabolic operators.
+		virtual void ForwardTimeOperator(char field); ///< Time evolution for the FTCS method employed for the parabolic operators.
+
 
 		virtual float DensityToMass(float density);
 
@@ -284,6 +286,7 @@ using namespace H5;
 		* @see VelocityLaplacianWeighted19()
 		* */
 		virtual void ParabolicOperatorWeightedExplicit19(); ///< Forward Time Centered Space method for the diffusive terms
+		virtual void ParabolicOperatorWeightedExplicit19(char field); ///< Forward Time Centered Space method for the diffusive terms
 		void TemperatureLaplacianWeighted19();
 	};
 
