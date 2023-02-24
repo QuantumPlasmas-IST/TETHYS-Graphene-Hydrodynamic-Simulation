@@ -255,6 +255,10 @@ float GrapheneFluid2D::TemperatureSource(StateVec2D U) {
 
 
 GrapheneFluid2D::~GrapheneFluid2D(){
+
+delete[] Umain;
+delete[] Umid;
+
 delete[] Den;
 delete[] VelX;
 delete[] VelY;
