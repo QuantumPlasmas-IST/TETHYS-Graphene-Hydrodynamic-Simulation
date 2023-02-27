@@ -40,12 +40,15 @@ Fluid2D::Fluid2D(const SetUpParameters &input_parameters) : TethysBase{input_par
 	FlxY 		= new float[Nx * Ny]();
 	CurX 		= new float[Nx * Ny]();
 	CurY 		= new float[Nx * Ny]();
-	vel_snd_arr	= new float[Nx * Ny]();
+
 	velX_dx	= new float[Nx * Ny]();
 	velX_dy	= new float[Nx * Ny]();
 	velY_dx	= new float[Nx * Ny]();
 	velY_dy	= new float[Nx * Ny]();
 */
+
+	vel_snd_arr	= new float[Nx * Ny]();
+
 	den_dx = new float[Nx * Ny]();
 	den_dy = new float[Nx * Ny]();
 
@@ -526,10 +529,11 @@ void Fluid2D::ParabolicOperatorWeightedExplicit19(char field) {
 void Fluid2D::SaveSound() {
 
 	for (int i = 0; i < Nx*Ny; ++i) {
-		vel_snd_arr[i]=Umain[i].S();
+	//	vel_snd_arr[i]=Umain[i].S();
+		vel_snd_arr[i]=vel_snd;
 	}
 
-	DataSet dataset_vel_snd = GrpDat->createDataSet("Sound velocicity", HDF5FLOAT, *DataspaceVelSnd);
+	DataSet dataset_vel_snd = GrpDat->createDataSet("Sound velocity", HDF5FLOAT, *DataspaceVelSnd);
 	dataset_vel_snd.write(vel_snd_arr, HDF5FLOAT);
 	dataset_vel_snd.close();
 }
@@ -608,15 +612,17 @@ void Fluid2D::SaveSnapShot() {
 	atr_step_vel_y.close();
 	atr_time_vel_y.close();
 
-    DataSet dataset_tmp = GrpTmp->createDataSet(name_dataset, HDF5FLOAT, *DataspaceTmp);
-    Attribute atr_step_tmp = dataset_tmp.createAttribute("time step", HDF5INT, atr_dataspace);
-    Attribute atr_time_tmp = dataset_tmp.createAttribute("time", HDF5FLOAT, atr_dataspace);
-    dataset_tmp.write(Tmp, HDF5FLOAT);
-    dataset_tmp.close();
-    atr_step_tmp.write(HDF5INT, &TimeStepCounter);
-    atr_time_tmp.write(HDF5FLOAT , &currenttime);
-    atr_step_tmp.close();
-    atr_time_tmp.close();
+	if(therm_diff!=0){
+		DataSet dataset_tmp = GrpTmp->createDataSet(name_dataset, HDF5FLOAT, *DataspaceTmp);
+		Attribute atr_step_tmp = dataset_tmp.createAttribute("time step", HDF5INT, atr_dataspace);
+		Attribute atr_time_tmp = dataset_tmp.createAttribute("time", HDF5FLOAT, atr_dataspace);
+		dataset_tmp.write(Tmp, HDF5FLOAT);
+		dataset_tmp.close();
+		atr_step_tmp.write(HDF5INT, &TimeStepCounter);
+		atr_time_tmp.write(HDF5FLOAT, &currenttime);
+		atr_step_tmp.close();
+		atr_time_tmp.close();
+	}
 }
 
 int Fluid2D::GetSnapshotStep() const { return snapshot_step;}
