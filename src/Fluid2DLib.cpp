@@ -481,7 +481,14 @@ void Fluid2D::VelocityLaplacianFtcs() {
 }
 
 void Fluid2D::VelocityLaplacianWeighted19() {
-	this->MassFluxToVelocity("MainGrid");
+
+
+	for (int kp = 0; kp < Nx * Ny ; kp++) {
+		float den =Umain[kp].n();
+		float mass = DensityToMass(den);
+		VelX[kp] = Umain[kp].px()/mass;
+		VelY[kp] = Umain[kp].py()/mass;
+	}
 
 #pragma omp parallel for default(none) shared(lap_flxX,lap_flxY,VelX,VelY)
 	for (int kp = 1 + Nx; kp <= Nx * Ny - Nx - 2; kp++) {
@@ -529,8 +536,8 @@ void Fluid2D::ParabolicOperatorWeightedExplicit19(char field) {
 void Fluid2D::SaveSound() {
 
 	for (int i = 0; i < Nx*Ny; ++i) {
-	//	vel_snd_arr[i]=Umain[i].S();
-		vel_snd_arr[i]=vel_snd;
+		vel_snd_arr[i]=Umain[i].S();
+//		vel_snd_arr[i]=vel_snd;
 	}
 
 	DataSet dataset_vel_snd = GrpDat->createDataSet("Sound velocity", HDF5FLOAT, *DataspaceVelSnd);
