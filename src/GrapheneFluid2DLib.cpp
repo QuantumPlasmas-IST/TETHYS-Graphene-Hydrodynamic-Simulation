@@ -25,25 +25,7 @@ void GrapheneFluid2D::SetSimulationTime(){
 	this->SetTmax(5.0f+0.02f*s+20.0f/s);
 }
 
-/*
-void GrapheneFluid2D::MassFluxToVelocity(const string grid) {
-float den;
-	if(grid=="MainGrid"){
-		for(int c=0; c <= Nx * Ny - 1; c++){
-			den = Den[c];
-			VelX[c] = FlxX[c] / sqrt(den*den*den);
-			VelY[c] = FlxY[c] / sqrt(den*den*den);
-		}
-	}
-	if(grid=="MidGrid"){
-		for(int c=0; c <= (Nx-1) * (Ny-1) - 1; c++){
-			den = den_mid[c];
-			velX_mid[c] = flxX_mid[c] / sqrt(den*den*den);
-			velY_mid[c] = flxY_mid[c] / sqrt(den*den*den);
-		}
-	}
-}
-*/
+
 
 void GrapheneFluid2D::CflCondition(){ // Eventual redefinition
 	dx = lengX / ( float ) ( Nx - 1 );
@@ -69,16 +51,6 @@ void GrapheneFluid2D::CflCondition(){ // Eventual redefinition
 }
 
 
-/*
-float GrapheneFluid2D::DensityFluxX(GridPoint2D p, char side) {
-	float den;
-	float px;
-
-	px = SideAverage(ptr_px, p, side);
-	den = SideAverage(ptr_den, p, side);
-
-	return px / sqrt(den);
-}*/
 float GrapheneFluid2D::DensityFluxX(StateVec2D U) {
 	//return U.px() / sqrt(U.n());
 	float den=U.n();
@@ -86,14 +58,6 @@ float GrapheneFluid2D::DensityFluxX(StateVec2D U) {
 	return px / sqrt(den);
 }
 
-/*
-float GrapheneFluid2D::DensityFluxY(GridPoint2D p, char side) {
-	float den;
-	float py;
-	py = SideAverage(ptr_py, p, side);
-	den = SideAverage(ptr_den, p, side);
-	return py / sqrt(den);
-}*/
 
 float GrapheneFluid2D::DensityFluxY(StateVec2D U) {
 //return U.py()/ sqrt(U.n());
@@ -101,27 +65,6 @@ float GrapheneFluid2D::DensityFluxY(StateVec2D U) {
 	float py=U.py();
 	return py / sqrt(den);
 }
-/*
-float GrapheneFluid2D::XMomentumFluxX(GridPoint2D p, char side) {
-
-	float sound;
-	float den;
-	float px;
-	float dvy;
-	float mass;
-	float d2den;
-
-	sound = SideAverage(ptr_snd, p, side);
-	den = SideAverage(ptr_den, p, side);
-	px = SideAverage(ptr_px, p, side);
-	dvy = SideAverage(ptr_velYdx, p, side);
-
-	mass=DensityToMass(den);
-
-	d2den = SideAverage(ptr_lap_den, p, side);
-
-	return px * px / mass + vel_fer * vel_fer * mass / 3.0f + 0.5f * sound * sound * den * den - odd_vis*dvy   ;
-}*/
 
 float GrapheneFluid2D::XMomentumFluxX(StateVec2D U) {
 	//float 	mass=DensityToMass(U.n());
@@ -135,58 +78,13 @@ float GrapheneFluid2D::XMomentumFluxX(StateVec2D U) {
 	return px * px / mass + vel_fer * vel_fer * mass / 3.0f + 0.5f * sound * sound * den * den ;
 }
 
-/*
-float GrapheneFluid2D::XMomentumFluxY(GridPoint2D p, char side) {
-
-	float den;
-	float py;
-	float px;
-	float dvy;
-	float mass;
-
-
-
-	den = SideAverage(ptr_den, p, side);
-	px = SideAverage(ptr_px, p, side);
-	py = SideAverage(ptr_py, p, side);
-	dvy = SideAverage(ptr_velYdy, p, side);
-	mass=DensityToMass(den);
-
-	return px * py / mass - odd_vis*dvy;
-
-}
-*/
 float GrapheneFluid2D::XMomentumFluxY(StateVec2D U) {
-//	float 	mass=DensityToMass(U.n());
-//	return U.px()*U.py()/mass;
-
 	float den=U.n();
 	float px=U.px();
 	float py=U.py();
 	float mass=DensityToMass(den);
-
 	return px * py / mass ;
 }
-
-/*
-float GrapheneFluid2D::YMomentumFluxY(GridPoint2D p, char side) {
-
-	float sound ;
-	float den;
-	float py;
-	float dvx;
-	float mass;
-
-	sound = SideAverage(ptr_snd, p, side);
-	den = SideAverage(ptr_den, p, side);
-	py = SideAverage(ptr_py, p, side);
-	dvx = SideAverage(ptr_velXdy, p, side);
-	mass=DensityToMass(den);
-
-	float d2den = SideAverage(ptr_lap_den, p, side);
-
-	return py * py / mass + vel_fer * vel_fer * mass / 3.0f + 0.5f * sound * sound * den * den + odd_vis*dvx ;
-}*/
 float GrapheneFluid2D::YMomentumFluxY(StateVec2D U) {
 	//float 	mass=DensityToMass(U.n());
 	//return U.py()*U.py()/mass + vel_fer * vel_fer * mass / 3.0f + 0.5f * U.S()*U.S()*U.n()*U.n();
@@ -199,22 +97,6 @@ float GrapheneFluid2D::YMomentumFluxY(StateVec2D U) {
 	return py * py / mass + vel_fer * vel_fer * mass / 3.0f + 0.5f * sound * sound * den * den ;
 }
 
-/*
-float GrapheneFluid2D::YMomentumFluxX(GridPoint2D p, char side) {
-	float den;
-	float px;
-	float py;
-	float dvx;
-	float mass;
-
-	den = SideAverage(ptr_den, p, side);
-	px = SideAverage(ptr_px, p, side);
-	py = SideAverage(ptr_py, p, side);
-	dvx = SideAverage(ptr_velXdx, p, side);
-	mass=DensityToMass(den);
-
-	return px * py / mass  + odd_vis*dvx;
-}*/
 float GrapheneFluid2D::YMomentumFluxX(StateVec2D U) {
 	//float sound=U.S();
 	float den=U.n();
@@ -224,18 +106,6 @@ float GrapheneFluid2D::YMomentumFluxX(StateVec2D U) {
 	return px * py / mass;
 }
 
-
-float GrapheneFluid2D::DensitySource(__attribute__((unused)) float n,__attribute__((unused)) float flx_x,__attribute__((unused)) float flx_y,__attribute__((unused)) float mass,__attribute__((unused)) float s) {
-	return 0.0f;
-}
-
-float GrapheneFluid2D::XMomentumSource(float n, float flx_x, float flx_y, __attribute__((unused)) float mass, __attribute__((unused)) float s) {
-	return -1.0f*col_freq*flx_x  - cyc_freq*flx_y/sqrt(n);
-}
-
-float GrapheneFluid2D::YMomentumSource(float n, float flx_x, float flx_y, __attribute__((unused)) float mass, __attribute__((unused)) float s) {
-	return -1.0f*col_freq*flx_y  + cyc_freq*flx_x/sqrt(n);
-}
 
 float GrapheneFluid2D::DensitySource(StateVec2D U) {
 	return 0;
@@ -255,42 +125,15 @@ float GrapheneFluid2D::TemperatureSource(StateVec2D U) {
 
 
 GrapheneFluid2D::~GrapheneFluid2D(){
-
 delete[] Umain;
 delete[] Umid;
-
 delete[] Den;
 delete[] VelX;
 delete[] VelY;
-/*delete[] FlxX;
-delete[] FlxY;
-delete[] CurX;
-delete[] CurY;
-delete[] den_mid;
-delete[] velX_mid;
-delete[] velY_mid;
-delete[] flxX_mid;
-delete[] flxY_mid;*/
-//delete[] lap_flxX;
-//delete[] lap_flxY;
-//delete[] vel_snd_arr;
-//delete[] vel_snd_arr_mid;
 delete[] den_dx;
 delete[] den_dy;
 delete[] den_dx_mid;
 delete[] den_dy_mid;
-/*delete[] velX_dx;
-delete[] velX_dx_mid;
-delete[] velX_dy;
-delete[] velX_dy_mid;
-delete[] velY_dx;
-delete[] velY_dx_mid;
-delete[] velY_dy;
-delete[] velY_dy_mid;*/
-//delete[] lap_den;
-//delete[] lap_tmp;
-//delete[] lap_den_mid;
-//delete[] tmp_mid;
 delete[] Tmp;
 }
 
@@ -298,9 +141,5 @@ float GrapheneFluid2D::DensityToMass(float density) {
 	return sqrt(density*density*density);
 }
 
-float
-GrapheneFluid2D::TemperatureSource(float n, float flx_x, float flx_y, float den_grad_x, float den_grad_y, float mass, float s) {
-	return vel_snd * vel_snd * (den_grad_x * flx_x / sqrt(n) + den_grad_y * flx_y / sqrt(n)  ) / (vel_fer * vel_fer);
-}
 
 
