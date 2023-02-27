@@ -668,14 +668,17 @@ void Fluid2D::ForwardTimeOperator(char field) {  //TODO meter o switch
 		if (kp % Nx != Nx - 1 && kp % Nx != 0) {
 			//flx_x_old = FlxX[kp];
 			//flx_y_old = FlxY[kp];
-
-			flx_x_old = Umain[kp].px();
-			flx_y_old = Umain[kp].py();
-			tmp_old = Umain[kp].tmp();
-
-			Umain[kp].px() = flx_x_old + lap_flxX[kp];
-			Umain[kp].py() = flx_y_old + lap_flxY[kp];
-			Umain[kp].tmp() = tmp_old + lap_tmp[kp];
+			switch(field) {
+				case 'T': 	tmp_old = Umain[kp].tmp();
+							Umain[kp].tmp() = tmp_old + lap_tmp[kp];
+							break;
+				case 'V': 	flx_x_old = Umain[kp].px();
+							flx_y_old = Umain[kp].py();
+							Umain[kp].px() = flx_x_old + lap_flxX[kp];
+							Umain[kp].py() = flx_y_old + lap_flxY[kp];
+							break;
+				default: ;
+			}
 		}
 	}
 }
