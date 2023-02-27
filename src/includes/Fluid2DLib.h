@@ -54,12 +54,12 @@ using namespace H5;
 		float *velY_dx_mid;
 		float *velY_dy_mid;
 */
-		float *lap_flxX;      // mass density flux laplacian component x
-		float *lap_flxY;      // mass density flux laplacian component y
-		float *lap_tmp;      // temperature laplacian
+//		float *lap_flxX;      // mass density flux laplacian component x
+//		float *lap_flxY;      // mass density flux laplacian component y
+//		float *lap_tmp;      // temperature laplacian
 
-		float *lap_den;
-		float *lap_den_mid;
+//		float *lap_den;
+//		float *lap_den_mid;
 
 		float *den_dx;
 		float *den_dy;

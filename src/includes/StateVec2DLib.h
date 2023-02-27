@@ -17,6 +17,9 @@ private:
 	float momentum_y;
 	float sound=1.0f;
 	float temperature;
+	float velLaplacian_x;
+	float velLaplacian_y;
+	float tmpLaplacian;
 public:
 	StateVec2D()=default; //default constructor
 	StateVec2D(const StateVec2D&); //copy constructor
@@ -29,6 +32,9 @@ public:
 	float& n();
 	float& tmp();
 	float& S();
+	float& d2vx();
+	float& d2vy();
+	float& d2tmp();
 
 	StateVec2D& operator=(const StateVec2D&);
 	StateVec2D operator + (StateVec2D const &obj) const ;

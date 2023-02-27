@@ -44,6 +44,20 @@ float &StateVec2D::py() {
 	return momentum_y;
 }
 
+float &StateVec2D::d2vx(){
+	return velLaplacian_x;
+}
+
+float &StateVec2D::d2vy(){
+	return velLaplacian_y;
+}
+
+float &StateVec2D::d2tmp(){
+	return tmpLaplacian;
+}
+
+
+
 float &StateVec2D::tmp() {
 	return temperature;
 }

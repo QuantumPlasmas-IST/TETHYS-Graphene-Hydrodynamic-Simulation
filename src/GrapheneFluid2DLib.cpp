@@ -271,8 +271,8 @@ delete[] velX_mid;
 delete[] velY_mid;
 delete[] flxX_mid;
 delete[] flxY_mid;*/
-delete[] lap_flxX;
-delete[] lap_flxY;
+//delete[] lap_flxX;
+//delete[] lap_flxY;
 //delete[] vel_snd_arr;
 //delete[] vel_snd_arr_mid;
 delete[] den_dx;
@@ -287,9 +287,9 @@ delete[] velY_dx;
 delete[] velY_dx_mid;
 delete[] velY_dy;
 delete[] velY_dy_mid;*/
-delete[] lap_den;
-delete[] lap_tmp;
-delete[] lap_den_mid;
+//delete[] lap_den;
+//delete[] lap_tmp;
+//delete[] lap_den_mid;
 //delete[] tmp_mid;
 delete[] Tmp;
 }

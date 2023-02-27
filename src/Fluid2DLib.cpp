@@ -52,12 +52,12 @@ Fluid2D::Fluid2D(const SetUpParameters &input_parameters) : TethysBase{input_par
 	den_dx = new float[Nx * Ny]();
 	den_dy = new float[Nx * Ny]();
 
-	lap_den = new float[Nx*Ny]();
-	lap_den_mid =new float[(Nx-1)*(Ny-1)]();
+//	lap_den = new float[Nx*Ny]();
+//	lap_den_mid =new float[(Nx-1)*(Ny-1)]();
 
-	lap_flxX = new float[Nx*Ny](); //new grids for the laplacians
-	lap_flxY = new float[Nx*Ny](); //in fact they could be smaller but thiw way they are just 0 at the borders who do not evolve
-    lap_tmp = new float[Nx*Ny]();
+//	lap_flxX = new float[Nx*Ny](); //new grids for the laplacians
+///	lap_flxY = new float[Nx*Ny](); //in fact they could be smaller but thiw way they are just 0 at the borders who do not evolve
+//    lap_tmp = new float[Nx*Ny]();
 
 	// 1st Aux. Grid variables (Nx-1)*(Ny-1)
 /*	tmp_mid		= new float[(Nx-1)*(Ny-1)]();
@@ -456,7 +456,7 @@ void Fluid2D::VelocityLaplacianFtcs() {
 	this->MassFluxToVelocity("MainGrid");
 
 //calculate laplacians
-#pragma omp parallel for  default(none) shared(lap_flxX,lap_flxY,VelX,VelY,Nx,Ny)
+//#pragma omp parallel for  default(none) shared(lap_flxX,lap_flxY,VelX,VelY,Nx,Ny)
 	for (int kp = 1 + Nx; kp <= Nx * Ny - Nx - 2; kp++) {
 		int north, south, east, west;
 		div_t divresult;
@@ -470,10 +470,10 @@ void Fluid2D::VelocityLaplacianFtcs() {
 			south = i + (j - 1) * Nx;
 			east = i + 1 + j * Nx;
 			west = i - 1 + j * Nx;
-			lap_flxX[kp] =
+			Umain[kp].d2vx() =
 					kin_vis*dt*(-4.0f * VelX[kp]  + VelX[north]  + VelX[south]  + VelX[east]  +
 							VelX[west] ) / (dx * dx);
-			lap_flxY[kp] =
+			Umain[kp].d2vy() =
 					kin_vis*dt*(-4.0f * VelY[kp]  + VelY[north]  + VelY[south]  + VelY[east]  +
 							VelY[west] ) / (dx * dx);
 		}
@@ -490,22 +490,27 @@ void Fluid2D::VelocityLaplacianWeighted19() {
 		VelY[kp] = Umain[kp].py()/mass;
 	}
 
-#pragma omp parallel for default(none) shared(lap_flxX,lap_flxY,VelX,VelY)
+#pragma omp parallel for default(none) shared(Umain,VelX,VelY)
 	for (int kp = 1 + Nx; kp <= Nx * Ny - Nx - 2; kp++) {
 		GridPoint2D point(kp,Nx,Ny,false);
 		if (kp % Nx != Nx - 1 && kp % Nx != 0){
-			lap_flxX[kp] = Laplacian19( point, VelX, kin_vis);
-			lap_flxY[kp] = Laplacian19( point, VelY, kin_vis);
+			//lap_flxX[kp] = Laplacian19( point, VelX, kin_vis);
+			//lap_flxY[kp] = Laplacian19( point, VelY, kin_vis);
+			Umain[kp].d2vx() = Laplacian19( point, VelX, kin_vis);
+			Umain[kp].d2vy() = Laplacian19( point, VelY, kin_vis);
 		}
 	}
 }
 
 void Fluid2D::TemperatureLaplacianWeighted19() {
-#pragma omp parallel for default(none) shared(lap_tmp,Tmp)
+	for (int kp = 0; kp < Nx * Ny ; kp++) {
+		Tmp[kp] = Umain[kp].tmp();
+	}
+#pragma omp parallel for default(none) shared(Umain,Tmp)
     for (int kp = 1 + Nx; kp <= Nx * Ny - Nx - 2; kp++) {
 	    GridPoint2D point(kp,Nx,Ny,false);
         if (kp % Nx != Nx - 1 && kp % Nx != 0){
-	        lap_tmp[kp] = Laplacian19( point, Tmp, therm_diff );
+	        Umain[kp].d2tmp() = Laplacian19( point, Tmp, therm_diff );
         }
     }
 }
@@ -668,10 +673,16 @@ void Fluid2D::ForwardTimeOperator() {
 			flx_y_old = Umain[kp].py();
             tmp_old = Umain[kp].tmp();
 
-			Umain[kp].px() = flx_x_old + lap_flxX[kp];
-			Umain[kp].py() = flx_y_old + lap_flxY[kp];
-			Umain[kp].tmp() = tmp_old + lap_tmp[kp];
-        }
+//			Umain[kp].px() = flx_x_old + lap_flxX[kp];
+//			Umain[kp].py() = flx_y_old + lap_flxY[kp];
+//			Umain[kp].tmp() = tmp_old + lap_tmp[kp];
+
+			Umain[kp].px() = flx_x_old + Umain[kp].d2vx();
+			Umain[kp].py() = flx_y_old + Umain[kp].d2vy();
+			Umain[kp].tmp() = tmp_old + Umain[kp].d2tmp();
+
+
+		}
 	}
 }
 void Fluid2D::ForwardTimeOperator(char field) {  //TODO meter o switch
@@ -683,12 +694,12 @@ void Fluid2D::ForwardTimeOperator(char field) {  //TODO meter o switch
 			//flx_y_old = FlxY[kp];
 			switch(field) {
 				case 'T': 	tmp_old = Umain[kp].tmp();
-							Umain[kp].tmp() = tmp_old + lap_tmp[kp];
+							Umain[kp].tmp() = tmp_old + Umain[kp].d2tmp();
 							break;
 				case 'V': 	flx_x_old = Umain[kp].px();
 							flx_y_old = Umain[kp].py();
-							Umain[kp].px() = flx_x_old + lap_flxX[kp];
-							Umain[kp].py() = flx_y_old + lap_flxY[kp];
+							Umain[kp].px() = flx_x_old + Umain[kp].d2vx();
+							Umain[kp].py() = flx_y_old + Umain[kp].d2vy();
 							break;
 				default: ;
 			}
