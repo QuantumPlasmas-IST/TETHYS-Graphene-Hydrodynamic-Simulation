@@ -23,34 +23,28 @@ if(OPENMP_FOUND)
 endif()
 
 
-#add_executable(TEST_laplacian src/laplacian_main.cpp)
-
 
 add_executable(TETHYS_1D src/TETHYS_1D_Main_v262.cpp)
 add_executable(TETHYS_2D src/TETHYS_2D_Main_v262.cpp)
 #add_executable(TETHYS_2D_CNP src/TETHYS_2D_Dirac_main.cpp)
-#add_executable(TETHYS_ELEC_2D src/TETHYS_2D_ElectronicAnalysis.cpp)
+add_executable(TETHYS_ELEC_2D src/TETHYS_2D_ElectronicAnalysis.cpp)
 #add_executable(TETHYS_RADIATION_2D src/TETHYS_2D_Radiation.cpp)
 
-#file(GLOB SRC_LIB_FILES src/*Lib.cpp)
 file(GLOB SRC_LIB_FILES src/*Lib.cpp)
 
 
 
 add_library(tethys_library STATIC ${SRC_LIB_FILES})
 
-#target_link_libraries(TEST_laplacian PUBLIC tethys_library)
 
 target_link_libraries(TETHYS_1D PUBLIC tethys_library)
 
 target_link_libraries(TETHYS_2D PUBLIC tethys_library)
 #target_link_libraries(TETHYS_2D_CNP PUBLIC tethys_library)
-#target_link_libraries(TETHYS_ELEC_2D PUBLIC tethys_library)
+target_link_libraries(TETHYS_ELEC_2D PUBLIC tethys_library)
 
 #target_link_libraries(TETHYS_RADIATION_2D PUBLIC tethys_library)
 
-#target_include_directories(TEST_laplacian PRIVATE ${HDF5_INCLUDE_DIRS})
-#target_link_libraries(TEST_laplacian PRIVATE ${HDF5_CXX_LIBRARIES})
 
 target_include_directories(TETHYS_1D PRIVATE ${HDF5_INCLUDE_DIRS})
 target_link_libraries(TETHYS_1D PRIVATE ${HDF5_CXX_LIBRARIES})
@@ -61,12 +55,12 @@ target_link_libraries(TETHYS_2D PRIVATE ${HDF5_CXX_LIBRARIES})
 #target_include_directories(TETHYS_2D_CNP PRIVATE ${HDF5_INCLUDE_DIRS})
 #target_link_libraries(TETHYS_2D_CNP PRIVATE ${HDF5_CXX_LIBRARIES})
 
-#target_include_directories(TETHYS_ELEC_2D PRIVATE ${HDF5_INCLUDE_DIRS})
-#target_link_libraries(TETHYS_ELEC_2D PRIVATE ${HDF5_CXX_LIBRARIES})
+target_include_directories(TETHYS_ELEC_2D PRIVATE ${HDF5_INCLUDE_DIRS})
+target_link_libraries(TETHYS_ELEC_2D PRIVATE ${HDF5_CXX_LIBRARIES})
 
 
 add_test(test1D TETHYS_1D 23 11 0.8 0.04 0 0 0 1 1)
 add_test(test2D TETHYS_2D 2DTESTparameters.ini)
-set(H5_TEST_FILE "hdf5_2D_S=21.00vF=10.50vis=0.010odd=0.002l=0.001wc=0.00therm=0.45.h5")
+set(H5_TEST_FILE "hdf5_2D_S=21.00vF=10.50vis=0.010odd=0.002l=0.001wc=0.00therm=0.00.h5")
 add_test(testElec2D TETHYS_ELEC_2D ${H5_TEST_FILE})
-add_test(test2DCNP TETHYS_2D_CNP 2DTESTCNPparameters.ini)
+#add_test(test2DCNP TETHYS_2D_CNP 2DTESTCNPparameters.ini)

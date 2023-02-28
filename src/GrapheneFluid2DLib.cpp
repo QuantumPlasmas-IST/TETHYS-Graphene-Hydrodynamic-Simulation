@@ -135,10 +135,10 @@ delete[] Umid;
 delete[] Den;
 delete[] VelX;
 delete[] VelY;
-delete[] den_dx;
-delete[] den_dy;
-delete[] den_dx_mid;
-delete[] den_dy_mid;
+//delete[] den_dx;
+//delete[] den_dy;
+//delete[] den_dx_mid;
+//delete[] den_dy_mid;
 delete[] Tmp;
 }
 

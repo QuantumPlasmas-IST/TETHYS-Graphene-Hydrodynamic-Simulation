@@ -35,13 +35,12 @@ Fluid2D::Fluid2D(const SetUpParameters &input_parameters) : TethysBase{input_par
 	Den 		= new float[Nx * Ny]();
 	VelX 		= new float[Nx * Ny]();
 	VelY 		= new float[Nx * Ny]();
+	CurX 		= new float[Nx * Ny]();
+	CurY 		= new float[Nx * Ny]();
+
 
 	vel_snd_arr	= new float[Nx * Ny]();
 
-	den_dx = new float[Nx * Ny]();
-	den_dy = new float[Nx * Ny]();
-	den_dx_mid = new float[(Nx-1)*(Ny-1)]();
-	den_dy_mid = new float[(Nx-1)*(Ny-1)]();
 
 	Umain = new StateVec2D[Nx*Ny]();
 	Umid = new StateVec2D[(Nx-1)*(Ny-1)]();
@@ -279,7 +278,7 @@ void Fluid2D::SetSimulationTime(){
 }
 
 void Fluid2D::VelocityLaplacianFtcs() {
-	this->MassFluxToVelocity("MainGrid"); //TODO fix thie momemtum velocity conversion
+	this->MassFluxToVelocity();
 //#pragma omp parallel for  default(none) shared(lap_flxX,lap_flxY,VelX,VelY,Nx,Ny)
 	for (int kp = 1 + Nx; kp <= Nx * Ny - Nx - 2; kp++) {
 		int north, south, east, west;
@@ -857,6 +856,22 @@ void Fluid2D::VelocityGradient( StateVec2D *Uarray, int size_x, int size_y) {
 	Uarray[kp].dxvx() = (3.0f * vxC - 4.0f * vxW + vxWW ) / (2.0f * dx);
 	Uarray[kp].dxvy() = (3.0f * vyC - 4.0f * vyW + vyWW ) / (2.0f * dx);
 
+}
+
+void Fluid2D::MassFluxToVelocity() {
+	for (int i = 0; i < Nx*Ny; ++i) {
+		float mass= DensityToMass(Umain[i].n());
+		VelX[i]=Umain[i].px()/mass;
+		VelY[i]=Umain[i].py()/mass;
+	}
+}
+
+void Fluid2D::VelocityToCurrent() {
+	for (int i = 0; i < Nx*Ny; ++i) {
+		float mass= DensityToMass(Umain[i].n());
+		CurX[i]=Den[i]*VelX[i];
+		CurY[i]=Den[i]*VelY[i];
+	}
 }
 
 

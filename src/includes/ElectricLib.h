@@ -9,8 +9,8 @@
  * @brief Header file for the electrical analysis post-processing class
  */
 
-#ifndef ELECTRICLIBNOT_H
-#define ELECTRICLIBNOT_H
+#ifndef ELECTRICLIB_H
+#define ELECTRICLIB_H
 
 #include <H5Cpp.h>
 #include "includes/TethysBaseLib.h"

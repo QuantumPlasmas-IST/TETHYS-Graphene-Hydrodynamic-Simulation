@@ -34,44 +34,11 @@ using namespace std;
 
 class MathUtils{
 
-protected:
-	gsl_matrix * FDmatrix2 ; //matrices to perform finite differenceing
-	gsl_matrix * FDmatrix3 ;
-	void SetFDmatrix2(int size);
-	void SetFDmatrix3(int size);
-
 public:
 	MathUtils()=default;
 	~MathUtils()=default;
 
 
-/*!
- * @brief 1D Function of local anisotropy of S
- *
- * Function to implement the spatial variation of the sound velocity S(x) in 1D
- * corresponding to a variation of substrate permittivity or even the description of a multi gated system.
- *
- * @param x position along x
- * @param s nominal sound velocity
- *
- * @return S(x) the value of local sound velocity
- * */
-static float Sound_Velocity_Anisotropy(float x, float s);
-
-/*!
- * @brief 2D Function of local anisotropy of S
- *
- * Function to implement the spatial variation of the sound velocity S(x,y) in 2D
- * corresponding to a variation of substrate permittivity or even the description of a multi gated system.
- *
- * @param x position along x
- * @param y position along y
- * @param s nominal sound velocity
- *
- * @return S(x,y) the value of local sound velocity
-
- * */
-static float Sound_Velocity_Anisotropy(float x, float y, float s);
 
 /*!
  * @brief Smooth staircase function

@@ -8,14 +8,7 @@
 
 using namespace std;
 
-float MathUtils::Sound_Velocity_Anisotropy(float x, float s) {
-	return s;
-}
-float  MathUtils::Sound_Velocity_Anisotropy(float x, float y, float s) {
-	float s_mod;
-	s_mod=s;
-	return s_mod;
-}
+
 
 float  MathUtils::Integral_1_D(int n, float ds, const float * f){
 	float itg=0.0f;

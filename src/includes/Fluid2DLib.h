@@ -31,11 +31,11 @@ using namespace H5;
  * */
 	class Fluid2D : public TethysBase {
 	protected:
-		float *den_dx;
+		/*float *den_dx;
 		float *den_dy;
 		float *den_dx_mid;
 		float *den_dy_mid;
-
+*/
 
 		std::ofstream data_preview; // file stream for simplified .dat file output
 		int snapshot_per_period = 40;
@@ -70,17 +70,26 @@ using namespace H5;
 		float *VelX;      // fluid velocity x component
 		float *VelY;      // fluid velocity y component
 
-	//	float *FlxX;      // mass density flux x component
-	//	float *FlxY;      // mass density flux y component
-	//	float *CurX;      // current density x component
-	//	float *CurY;      // current density y component
+		float *CurX;      // current density x component
+		float *CurY;      // current density y component
 
 		explicit Fluid2D(const SetUpParameters &input_parameters);
 		~Fluid2D();
 
 		bool Snapshot() const;
 
+
+
 		void SetSound();     ///< sets a constant sound velocity
+		/*!
+		* @brief 2D Function of local anisotropy of S
+		*
+		* Function to implement the spatial variation of the sound velocity S(x,y) in 2D
+		* corresponding to a variation of substrate permittivity or even the description of a multi gated system.
+		*
+		* @param std::function<float(float,float)> real function of real arguments f(x,y)
+		*
+		* */
 		void SetSound(std::function<float(float,float)>);     ///< Applies the anisotropy (in the cases there is one) to the sound velocity array
 		virtual void SetSimulationTime();   ///< Finds and set the appropriate simulation time
 
@@ -140,7 +149,7 @@ using namespace H5;
 		* Since the mass of the fluid element is constant one needs only to perform the transformation
 		@f[ \vec{v} = \frac{\vec{p}}{n} @f]
 		* */
-		void MassFluxToVelocity(string grid){}; // Converts the mass flux density p=mnv to velocity
+		void MassFluxToVelocity(); // Converts the mass flux density p=mnv to velocity
 
 		/*!
 		* @brief Converts velocity field to current density on the entire simulation grid.
@@ -148,7 +157,7 @@ using namespace H5;
 		* The method simply performs
 		@f[ \vec{j} = \vec{v}n @f]
 		* */
-		void VelocityToCurrent(){}; // Converts the mass flux density p=mnv to velocity
+		void VelocityToCurrent(); // Converts the mass flux density p=mnv to velocity
 
 
 		void CreateFluidFile();     ///< creates and opens the simplified .dat file output

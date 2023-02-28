@@ -6,7 +6,7 @@
 
 
 #include "includes/Fluid2DLib.h"
-#include "includes/ElectricLibNOT.h"
+#include "includes/ElectricLib.h"
 #include "includes/SetUpParametersLib.h"
 #include "includes/GrapheneFluid2DLib.h"
 

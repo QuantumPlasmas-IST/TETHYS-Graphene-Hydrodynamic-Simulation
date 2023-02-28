@@ -211,7 +211,7 @@ void Fluid1D::SaveSnapShot(){
 	DataSpace atr_dataspace = DataSpace (1, dim_atr );
 
 	int points_per_period = static_cast<int>((2.0 * MAT_PI / RealFreq()) / dt);
-	snapshot_step = 1; //points_per_period / snapshot_per_period;
+	snapshot_step = points_per_period / snapshot_per_period;
 
 	string str_time = to_string(TimeStepCounter );/// snapshot_step);
 	//TODO TRATAR AQUI DISTO ta a dar asneira porque o numero dos snapshotsé muito pequeno parece quando chega ao snapshot 100000
