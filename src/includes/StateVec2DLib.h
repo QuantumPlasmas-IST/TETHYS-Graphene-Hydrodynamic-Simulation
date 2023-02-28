@@ -17,8 +17,12 @@ private:
 	float momentum_y;
 	float sound=1.0f;
 	float temperature;
-	float velLaplacian_x;
-	float velLaplacian_y;
+	float velXGradient_x;
+	float velXGradient_y;
+	float velYGradient_x;
+	float velYGradient_y;
+	float velXLaplacian;
+	float velYLaplacian;
 	float tmpLaplacian;
 public:
 	StateVec2D()=default; //default constructor
@@ -35,6 +39,11 @@ public:
 	float& d2vx();
 	float& d2vy();
 	float& d2tmp();
+
+	float& dxvx();
+	float& dyvx();
+	float& dxvy();
+	float& dyvy();
 
 	StateVec2D& operator=(const StateVec2D&);
 	StateVec2D operator + (StateVec2D const &obj) const ;

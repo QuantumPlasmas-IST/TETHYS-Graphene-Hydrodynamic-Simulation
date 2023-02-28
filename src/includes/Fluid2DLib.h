@@ -36,6 +36,7 @@ using namespace H5;
 		float *den_dx_mid;
 		float *den_dy_mid;
 
+
 		std::ofstream data_preview; // file stream for simplified .dat file output
 		int snapshot_per_period = 40;
 		int snapshot_step = 1;
@@ -225,6 +226,11 @@ using namespace H5;
 		virtual void ParabolicOperatorWeightedExplicit19(); ///< Forward Time Centered Space method for the diffusive terms
 		virtual void ParabolicOperatorWeightedExplicit19(char field); ///< Forward Time Centered Space method for the diffusive terms
 		void TemperatureLaplacianWeighted19();
+
+
+
+		void VelocityGradient(StateVec2D *Uarray, int size_x, int size_y);
+
 	};
 
 

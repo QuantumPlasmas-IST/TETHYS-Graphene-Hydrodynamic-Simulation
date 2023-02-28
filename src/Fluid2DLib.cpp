@@ -632,3 +632,225 @@ void Fluid2D::CopyFields() {
 	}
 }
 
+void Fluid2D::VelocityGradient( StateVec2D *Uarray, int size_x, int size_y) {
+	int stride = size_x;
+//#pragma omp parallel for default(none) shared(size_x, size_y, dx, dy, stride, array_in, array_out_x, array_out_y)
+	for (int kp = 1 + size_x; kp <= size_x * size_y - size_x - 2; kp++) {
+		if (kp % stride != stride - 1 && kp % stride != 0) {
+			float mE = DensityToMass(Uarray[kp+1].n());
+			float mW = DensityToMass(Uarray[kp-1].n());
+			float mN = DensityToMass(Uarray[kp+stride].n());
+			float mS = DensityToMass(Uarray[kp-stride].n());
+			float vxE = Uarray[kp+1].px()/mE;
+			float vxW = Uarray[kp-1].px()/mW;
+			float vxN = Uarray[kp+stride].px()/mN;
+			float vxS = Uarray[kp-stride].px()/mS;
+			float vyE = Uarray[kp+1].py()/mE;
+			float vyW = Uarray[kp-1].py()/mW;
+			float vyN = Uarray[kp+stride].py()/mN;
+			float vyS = Uarray[kp-stride].py()/mS;
+			Uarray[kp].dxvx() = (vxE - vxW) / (2.0f * dx);
+			Uarray[kp].dyvx() = (vxN - vxS) / (2.0f * dy);
+			Uarray[kp].dxvy() = (vyE - vyW) / (2.0f * dx);
+			Uarray[kp].dyvy() = (vyN - vyS) / (2.0f * dy);
+		}
+	}
+
+	for (int i = 1; i <= size_x - 2; i++) { // topo rede principal, ou seja j=(size_y - 1)
+		int top = i + (size_y - 1) * stride;
+		int southsouth = i + (size_y - 3) * stride;
+		float mC = DensityToMass(Uarray[top].n());
+		float mE = DensityToMass(Uarray[top+1].n());
+		float mW = DensityToMass(Uarray[top-1].n());
+		float mS = DensityToMass(Uarray[top-stride].n());
+		float mSS = DensityToMass(Uarray[southsouth].n());
+		float vxC = Uarray[top].px()/mC;
+		float vxE = Uarray[top+1].px()/mE;
+		float vxW = Uarray[top-1].px()/mW;
+		float vxSS = Uarray[southsouth].px()/mSS;
+		float vxS = Uarray[top-stride].px()/mS;
+		float vyC = Uarray[top].py()/mC;
+		float vyE = Uarray[top+1].py()/mE;
+		float vyW = Uarray[top-1].py()/mW;
+		float vySS = Uarray[southsouth].py()/mSS;
+		float vyS = Uarray[top-stride].py()/mS;
+		Uarray[top].dxvx() = (vxE - vxW) / (2.0f * dx);
+		Uarray[top].dxvy() = (vyE - vyW) / (2.0f * dx);
+		Uarray[top].dyvx() = (3.0f * vxC - 4.0f * vxS + vxSS) /(2.0f * dy); //backward finite difference
+		Uarray[top].dyvx() = (3.0f * vyC - 4.0f * vyS + vySS) /(2.0f * dy); //backward finite difference
+	}
+
+	for (int i = 1; i <= size_x - 2; i++) { // fundo rede principal, ou seja j=0
+		int bottom = i; //i+0*nx
+		int northnorth = i + 2 * stride;
+		float mC = DensityToMass(Uarray[bottom].n());
+		float mE = DensityToMass(Uarray[bottom+1].n());
+		float mW = DensityToMass(Uarray[bottom-1].n());
+		float mN = DensityToMass(Uarray[bottom+stride].n());
+		float mNN = DensityToMass(Uarray[northnorth].n());
+		float vxC = Uarray[bottom].px()/mC;
+		float vxE = Uarray[bottom+1].px()/mE;
+		float vxW = Uarray[bottom-1].px()/mW;
+		float vxNN = Uarray[northnorth].px()/mNN;
+		float vxN = Uarray[bottom+stride].px()/mN;
+		float vyC = Uarray[bottom].py()/mC;
+		float vyE = Uarray[bottom+1].py()/mE;
+		float vyW = Uarray[bottom-1].py()/mW;
+		float vyNN = Uarray[northnorth].py()/mNN;
+		float vyN = Uarray[bottom+stride].py()/mN;
+
+		Uarray[bottom].dxvx() = (vxE - vxW) / (2.0f * dx);
+		Uarray[bottom].dxvy() = (vyE - vyW) / (2.0f * dx);
+		Uarray[bottom].dyvx() = (-3.0f * vxC + 4.0f * vxN - vxNN) /(2.0f * dy); //backward finite difference
+		Uarray[bottom].dyvx() = (-3.0f * vyC + 4.0f * vyN - vyNN) /(2.0f * dy); //backward finite difference
+	}
+	
+	for (int j = 1; j <= size_y - 2; j++) { //lado esquerdo da rede principal ou seja i=0
+		int left = 0 + j * stride;
+		int easteast = left + 2;
+
+
+		float mC = DensityToMass(Uarray[left].n());
+		float mE = DensityToMass(Uarray[left+1].n());
+		float mEE = DensityToMass(Uarray[easteast].n());
+		float mN = DensityToMass(Uarray[left+stride].n());
+		float mS = DensityToMass(Uarray[left-stride].n());
+		float vxC = Uarray[left].px()/mC;
+		float vxE = Uarray[left+1].px()/mE;
+		float vxEE = Uarray[easteast].px()/mEE;
+		float vxN = Uarray[left+stride].px()/mN;
+		float vxS = Uarray[left-stride].px()/mS;
+		float vyC = Uarray[left].px()/mC;
+		float vyE = Uarray[left+1].py()/mE;
+		float vyEE = Uarray[easteast].py()/mEE;
+		float vyN = Uarray[left+stride].py()/mN;
+		float vyS = Uarray[left-stride].py()/mS;
+
+		Uarray[left].dxvx() = (-3.0f * vxC+ 4.0f * vxE - vxEE) /(2.0f * dx); //forward difference
+		Uarray[left].dxvy() = (-3.0f * vyC+ 4.0f * vyE - vyEE) /(2.0f * dx); //forward difference
+		Uarray[left].dyvx() = (vxN - vxS) / (2.0f * dy); //OK
+		Uarray[left].dyvy() = (vyN - vyS) / (2.0f * dy); //OK
+	}
+
+	for (int j = 1; j <= size_y - 2; j++) { //lado direito da rede principal ou seja i=(size_x-1)
+		int right = (size_x - 1) + j * stride;
+		int westwest = right - 2;
+
+
+		float mC = DensityToMass(Uarray[right].n());
+		float mWW = DensityToMass(Uarray[westwest].n());
+		float mW = DensityToMass(Uarray[right-1].n());
+		float mN = DensityToMass(Uarray[right+stride].n());
+		float mS = DensityToMass(Uarray[right-stride].n());
+		float vxC = Uarray[right].px()/mC;
+		float vxWW = Uarray[westwest].px()/mWW;
+		float vxW = Uarray[right-1].px()/mW;
+		float vxN = Uarray[right+stride].px()/mN;
+		float vxS = Uarray[right-stride].px()/mS;
+		float vyC = Uarray[right].px()/mC;
+		float vyWW = Uarray[westwest].py()/mWW;
+		float vyW = Uarray[right-1].py()/mW;
+		float vyN = Uarray[right+stride].py()/mN;
+		float vyS = Uarray[right-stride].py()/mS;
+
+		Uarray[right].dyvx() = (vxN - vxS) / (2.0f * dy); //OK
+		Uarray[right].dyvy() = (vyN - vyS) / (2.0f * dy); //OK
+		Uarray[right].dxvx() = (3.0f * vxC- 4.0f * vxW + vxWW) /(2.0f * dx); //backwar difference
+		Uarray[right].dxvy() = (3.0f * vyC- 4.0f * vyW + vyWW) /(2.0f * dx);//backwar difference
+	}
+
+	int kp;
+// i=0 j=0 forward x forward y
+	kp = 0 + 0 * size_x;
+	float mC = DensityToMass(Uarray[kp].n());
+	float mE = DensityToMass(Uarray[kp+1].n());
+	float mEE = DensityToMass(Uarray[kp+2].n());
+	float mS = DensityToMass(Uarray[kp+stride].n());
+	float mSS = DensityToMass(Uarray[kp+2*stride].n());
+	float vxC = Uarray[kp].px()/mC;
+	float vxE = Uarray[kp+1].px()/mE;
+	float vxEE = Uarray[kp+2].px()/mEE;
+	float vxS = Uarray[kp+stride].px()/mS;
+	float vxSS = Uarray[kp+2*stride].px()/mSS;
+	float vyC = Uarray[kp].px()/mC;
+	float vyE = Uarray[kp+1].px()/mE;
+	float vyEE = Uarray[kp+2].px()/mEE;
+	float vyS = Uarray[kp+stride].px()/mS;
+	float vySS = Uarray[kp+2*stride].px()/mSS;
+	Uarray[kp].dxvx() = (-3.0f * vxC + 4.0f * vxE - vxEE ) / (2.0f * dx);
+	Uarray[kp].dyvx() = (-3.0f * vxC + 4.0f * vxS - vxSS ) / (2.0f * dy);
+	Uarray[kp].dxvy() = (-3.0f * vyC + 4.0f * vyE - vyEE ) / (2.0f * dx);
+	Uarray[kp].dyvy() = (-3.0f * vyC + 4.0f * vyS - vySS ) / (2.0f * dy);
+//-----------------------------------------------------------------------
+// i=(size_x-1) j=0 backward x forward y
+	kp = (size_x - 1) + 0 * size_x;
+	mC = DensityToMass(Uarray[kp].n());
+	float mW = DensityToMass(Uarray[kp-1].n());
+	float mWW = DensityToMass(Uarray[kp-2].n());
+	mS = DensityToMass(Uarray[kp+stride].n());
+	mSS = DensityToMass(Uarray[kp+2*stride].n());
+	vxC = Uarray[kp].px()/mC;
+	float vxW = Uarray[kp-1].px()/mW;
+	float vxWW = Uarray[kp-2].px()/mWW;
+	vxS = Uarray[kp+stride].px()/mS;
+	vxSS = Uarray[kp+2*stride].px()/mSS;
+	vyC = Uarray[kp].px()/mC;
+	float vyW = Uarray[kp-1].px()/mW;
+	float vyWW = Uarray[kp-2].px()/mWW;
+	vyS = Uarray[kp+stride].px()/mS;
+	vySS = Uarray[kp+2*stride].px()/mSS;
+	Uarray[kp].dxvx() = (3.0f * vxC - 4.0f * vxW + vxWW ) / (2.0f * dx);
+	Uarray[kp].dyvx() = (-3.0f * vxC + 4.0f * vxS - vxSS ) / (2.0f * dy);
+	Uarray[kp].dxvy() = (3.0f * vyC - 4.0f * vyW + vyWW ) / (2.0f * dx);
+	Uarray[kp].dyvy() = (-3.0f * vyC + 4.0f * vyS - vySS ) / (2.0f * dy);
+//-----------------------------------------------------------------------
+
+// i=0 j=(size_y-1) forward x backward y
+	kp = 0 + (size_y - 1) * size_x;
+	mC = DensityToMass(Uarray[kp].n());
+	mE = DensityToMass(Uarray[kp+1].n());
+	mEE = DensityToMass(Uarray[kp+2].n());
+	float mN = DensityToMass(Uarray[kp-stride].n());
+	float mNN = DensityToMass(Uarray[kp-2*stride].n());
+	vxC = Uarray[kp].px()/mC;
+	vxE = Uarray[kp+1].px()/mE;
+	vxEE = Uarray[kp+2].px()/mEE;
+	float vxN = Uarray[kp-stride].px()/mN;
+	float vxNN = Uarray[kp-2*stride].px()/mNN;
+	vyC = Uarray[kp].px()/mC;
+	vyE = Uarray[kp+1].px()/mE;
+	vyEE = Uarray[kp+2].px()/mEE;
+	float vyN = Uarray[kp-stride].px()/mN;
+	float vyNN = Uarray[kp-2*stride].px()/mNN;
+	Uarray[kp].dxvx() = (-3.0f * vxC + 4.0f * vxE - vxEE ) / (2.0f * dx);
+	Uarray[kp].dyvx() = (3.0f * vxC - 4.0f * vxN + vxNN ) / (2.0f * dy);
+	Uarray[kp].dxvy() = (-3.0f * vyC + 4.0f * vyE - vyEE ) / (2.0f * dx);
+	Uarray[kp].dyvy() = (3.0f * vyC - 4.0f * vyN + vyNN ) / (2.0f * dy);
+
+//-----------------------------------------------------------------------
+
+// i=(size_x-1) j=(size_y-1) backward x backward y
+	kp = (size_x - 1) + (size_y - 1) * size_x;
+	mC = DensityToMass(Uarray[kp].n());
+	mW = DensityToMass(Uarray[kp+1].n());
+	mWW = DensityToMass(Uarray[kp+2].n());
+	mN = DensityToMass(Uarray[kp-stride].n());
+	mNN = DensityToMass(Uarray[kp-2*stride].n());
+	vxC = Uarray[kp].px()/mC;
+	vxW = Uarray[kp+1].px()/mW;
+	vxWW = Uarray[kp+2].px()/mWW;
+	vxN = Uarray[kp-stride].px()/mN;
+	vxNN = Uarray[kp-2*stride].px()/mNN;
+	vyC = Uarray[kp].px()/mC;
+	vyW = Uarray[kp+1].px()/mW;
+	vyWW = Uarray[kp+2].px()/mWW;
+	vyN = Uarray[kp-stride].px()/mN;
+	vyNN = Uarray[kp-2*stride].px()/mNN;
+	Uarray[kp].dyvx() = (3.0f * vxC - 4.0f * vxN + vxNN ) / (2.0f * dy);
+	Uarray[kp].dyvy() = (3.0f * vyC - 4.0f * vyN + vyNN ) / (2.0f * dy);
+	Uarray[kp].dxvx() = (3.0f * vxC - 4.0f * vxW + vxWW ) / (2.0f * dx);
+	Uarray[kp].dxvy() = (3.0f * vyC - 4.0f * vyW + vyWW ) / (2.0f * dx);
+
+}
+
+

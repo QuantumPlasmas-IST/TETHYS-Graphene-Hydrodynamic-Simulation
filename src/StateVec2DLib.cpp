@@ -45,11 +45,11 @@ float &StateVec2D::py() {
 }
 
 float &StateVec2D::d2vx(){
-	return velLaplacian_x;
+	return velXLaplacian;
 }
 
 float &StateVec2D::d2vy(){
-	return velLaplacian_y;
+	return velYLaplacian;
 }
 
 float &StateVec2D::d2tmp(){
@@ -150,6 +150,22 @@ StateVec2D operator/(const StateVec2D &obj, float value){
 
 std::ostream &operator<<(std::ostream &outstream, const StateVec2D &obj) {
 	return outstream << obj.density << "\t" << obj.momentum_x << "\t" << obj.momentum_y << "\t" << obj.temperature << "\t" << obj.sound;
+}
+
+float &StateVec2D::dxvx() {
+	return velXGradient_x;
+}
+
+float &StateVec2D::dyvx() {
+	return velXGradient_y;
+}
+
+float &StateVec2D::dxvy() {
+	return velYGradient_x;
+}
+
+float &StateVec2D::dyvy() {
+	return velYGradient_y;
 }
 
 
