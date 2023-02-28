@@ -32,27 +32,11 @@ protected:
 	 * */
 	float DensityToMass(float density) override;
 
-	float *hvel_snd_arr;    // array for saving the (potentially varying) S(x,y) function at main grid
-	float *hvel_snd_arr_mid;// array for saving the (potentially varying) S(x,y) function at auxiliary grid
-	float *hden_mid;       // mid or auxiliary grids defined with (Nx-1)*(Ny-1) size
-	float *hflxX_mid;
-	float *hflxY_mid;
-	float *hvelX_mid;
-	float *hvelY_mid;
+	StateVec2D *ptr_StateVecHole;
 
-	float *hlap_flxX;      // mass density flux laplacian component x
-	float *hlap_flxY;      // mass density flux laplacian component y
-	
-	float *hlap_den;
-	float *hlap_den_mid;
 
-	void ForwardTimeOperator() override; ///< Time evolution for the FTCS method employed for the parabolic operators.
+//	void ForwardTimeOperator() override; ///< Time evolution for the FTCS method employed for the parabolic operators.
 	void ChooseGridPointers(const string &grid) override;
-
-	float *hptr_den;
-	float *hptr_px;
-	float *hptr_py;
-	float *hptr_lap_den;
 
 	float vel_therm = 10.0f; //new constant - pressure term
 	float A = 0.1f; //new constant - source function, equilibrium relaxation
@@ -60,9 +44,15 @@ protected:
 
 public :
 
+	StateVec2D * HoleUmain;
+	StateVec2D * HoleUmid;
+
+
 	float *HDen;       // number density
 	float *HVelX;      // fluid velocity x component
 	float *HVelY;      // fluid velocity y component
+
+//estes nao vamos precisar
 	float *HFlxX;      // mass density flux x component
 	float *HFlxY;      // mass density flux y component
 	float *HCurX;      // current density x component
@@ -105,34 +95,35 @@ public :
 		 * */
 //		//void MassFluxToVelocity(string grid) override; // Converts the mass density flux back to velocity, in graphene  v = p n^{-3/2}
 		/*Override fluxes and sources to specifics of graphene physics*/
-		float DensitySource(float n, float flx_x, float flx_y, float hn, float hflx_x, float hflx_y, float mass, float s);   ///< density equation (continuity equation) source term
-		float XMomentumSource(float n, float flx_x, float flx_y, float hn, float hflx_x, float hflx_y, float mass, float s); ///< velocity X component equation (momentum equation) source term
-		float YMomentumSource(float n, float flx_x, float flx_y, float hn, float hflx_x, float hflx_y, float mass, float s); ///< velocity y component equation (momentum equation) source term
+		float EleDensitySource(StateVec2D Uelec , StateVec2D Uholes);   ///< density equation (continuity equation) source term
+		float EleXMomentumSource(StateVec2D Uelec , StateVec2D Uholes); ///< velocity X component equation (momentum equation) source term
+		float EleYMomentumSource(StateVec2D Uelec , StateVec2D Uholes); ///< velocity y component equation (momentum equation) source term
 
-		float DensityFluxX(GridPoint2D p, char side ) override; ///< density equation (continuity equation) conserved flux X component
-		float DensityFluxY(GridPoint2D p, char side ) override; ///< density equation (continuity equation) conserved1 flux Y component
+		float EleDensityFluxX(StateVec2D Uelec , StateVec2D Uholes); ///< density equation (continuity equation) conserved flux X component
+		float EleDensityFluxY(StateVec2D Uelec , StateVec2D Uholes) ; ///< density equation (continuity equation) conserved1 flux Y component
 
-		float XMomentumFluxX(GridPoint2D p, char side ) override; ///< velocity X component equation (momentum equation) conserved flux X component
-		float XMomentumFluxY(GridPoint2D p, char side ) override; ///< velocity X component equation (momentum equation) conserved flux Y component
+		float EleXMomentumFluxX(StateVec2D Uelec , StateVec2D Uholes); ///< velocity X component equation (momentum equation) conserved flux X component
+		float EleXMomentumFluxY(StateVec2D Uelec , StateVec2D Uholes); ///< velocity X component equation (momentum equation) conserved flux Y component
 
-		float YMomentumFluxX(GridPoint2D p, char side ) override; ///< velocity Y component equation (momentum equation) conserved flux X component
-		float YMomentumFluxY(GridPoint2D p, char side ) override; ///< velocity Y component equation (momentum equation) conserved flux Y component
+		float EleYMomentumFluxX(StateVec2D Uelec , StateVec2D Uholes); ///< velocity Y component equation (momentum equation) conserved flux X component
+		float EleYMomentumFluxY(StateVec2D Uelec , StateVec2D Uholes) ; ///< velocity Y component equation (momentum equation) conserved flux Y component
 
-		float HDensitySource(float n, float flx_x, float flx_y, float hn, float hflx_x, float hflx_y, float mass, float s);   ///< density equation (continuity equation) source term
-		float HXMomentumSource(float n, float flx_x, float flx_y, float hn, float hflx_x, float hflx_y, float mass, float s); ///< velocity X component equation (momentum equation) source term
-		float HYMomentumSource(float n, float flx_x, float flx_y, float hn, float hflx_x, float hflx_y, float mass, float s); ///< velocity y component equation (momentum equation) source term
+		float HolDensitySource(StateVec2D Uelec , StateVec2D Uholes);   ///< density equation (continuity equation) source term
+		float HolXMomentumSource(StateVec2D Uelec , StateVec2D Uholes); ///< velocity X component equation (momentum equation) source term
+		float HolYMomentumSource(StateVec2D Uelec , StateVec2D Uholes); ///< velocity y component equation (momentum equation) source term
 
-		float HDensityFluxX(GridPoint2D p, char side ); ///< density equation (continuity equation) conserved flux X component
-		float HDensityFluxY(GridPoint2D p, char side ); ///< density equation (continuity equation) conserved1 flux Y component
+		float HolDensityFluxX(StateVec2D Uelec , StateVec2D Uholes); ///< density equation (continuity equation) conserved flux X component
+		float HolDensityFluxY(StateVec2D Uelec , StateVec2D Uholes); ///< density equation (continuity equation) conserved1 flux Y component
 
-		float HXMomentumFluxX(GridPoint2D p, char side ); ///< velocity X component equation (momentum equation) conserved flux X component
-		float HXMomentumFluxY(GridPoint2D p, char side ); ///< velocity X component equation (momentum equation) conserved flux Y component
+		float HolXMomentumFluxX(StateVec2D Uelec , StateVec2D Uholes); ///< velocity X component equation (momentum equation) conserved flux X component
+		float HolXMomentumFluxY(StateVec2D Uelec , StateVec2D Uholes); ///< velocity X component equation (momentum equation) conserved flux Y component
 
-		float HYMomentumFluxX(GridPoint2D p, char side ); ///< velocity Y component equation (momentum equation) conserved flux X component
-		float HYMomentumFluxY(GridPoint2D p, char side ); ///< velocity Y component equation (momentum equation) conserved flux Y component
+		float HolYMomentumFluxX(StateVec2D Uelec , StateVec2D Uholes); ///< velocity Y component equation (momentum equation) conserved flux X component
+		float HolYMomentumFluxY(StateVec2D Uelec , StateVec2D Uholes); ///< velocity Y component equation (momentum equation) conserved flux Y component
 
-		void Richtmyer() override;
-
+	//	void Richtmyer() override;
+	void RichtmyerStep1() override;
+	void RichtmyerStep2() override;
 		/*!
 		 * @brief Writes the line of time t on the simplified .dat file output
 		 *
@@ -149,8 +140,8 @@ public :
 		 * */
 		void WriteFluidFile(float t) override; // writes the line of time t on the simplified .dat file output
 		
-		void VelocityLaplacianWeighted19() override;
-		void ParabolicOperatorWeightedExplicit19() override; ///< Forward Time Centered Space method for the diffusive terms
+//		void VelocityLaplacianWeighted19() override;
+//		void ParabolicOperatorWeightedExplicit19() override; ///< Forward Time Centered Space method for the diffusive terms
 };
 
 

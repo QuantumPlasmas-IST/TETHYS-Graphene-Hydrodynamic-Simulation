@@ -10,7 +10,7 @@
 #include "includes/SetUpParametersLib.h"
 #include "includes/DirichletBoundaryLib.h"
 #include "includes/DyakonovShurBoundaryLib.h"
-#include "includes/DiracGraphene2DLibNOT.h"
+#include "includes/DiracGraphene2DLib.h"
 #include "TethysBaseLib.h"
 
 #ifndef MAT_PI

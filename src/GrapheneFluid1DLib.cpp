@@ -54,7 +54,7 @@ float GrapheneFluid1D::VelocitySource(StateVec1D U) {
 
 
 
-//float GrapheneFluid1D::DensitySource(__attribute__((unused)) float n, __attribute__((unused)) float v, __attribute__((unused)) float s){
+//float GrapheneFluid1D::EleDensitySource(__attribute__((unused)) float n, __attribute__((unused)) float v, __attribute__((unused)) float s){
 //	return 0.0f;
 //}
 

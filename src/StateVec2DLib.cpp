@@ -16,14 +16,14 @@ StateVec2D::StateVec2D(const StateVec2D & obj) {
 }
 
 
-StateVec2D::StateVec2D(float den, float velx, float vely,float temp) {
+StateVec2D::StateVec2D(float den, float velx, float vely, float temp) {
 	density=den;
 	momentum_x=velx;
 	momentum_y=vely;
 	temperature=temp;
 }
 
-StateVec2D::StateVec2D(float den, float velx, float vely,float temp,float snd) {
+StateVec2D::StateVec2D(float den, float velx, float vely, float temp, float snd) {
 	density=den;
 	momentum_x=velx;
 	momentum_y=vely;

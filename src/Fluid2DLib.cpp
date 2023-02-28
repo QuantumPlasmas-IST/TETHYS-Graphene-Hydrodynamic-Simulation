@@ -42,8 +42,8 @@ Fluid2D::Fluid2D(const SetUpParameters &input_parameters) : TethysBase{input_par
 	vel_snd_arr	= new float[Nx * Ny]();
 
 
-	Umain = new StateVec2D[Nx*Ny]();
-	Umid = new StateVec2D[(Nx-1)*(Ny-1)]();
+	Umain = new StateVec2D[Nx * Ny]();
+	Umid = new StateVec2D[(Nx - 1) * (Ny - 1)]();
 
 }
 
@@ -187,17 +187,17 @@ void Fluid2D::RichtmyerStep1(){
 		Umid[ks].n() =  Uavg.n()
 		                -0.5f*(dt/dx)*(DensityFluxX(UEast) - DensityFluxX(UWest))
 		                -0.5f*(dt/dy)*(DensityFluxY(UNorth) - DensityFluxY(USouth));
-		                //+0.5f*dt* DensitySource(Uavg);
+		                //+0.5f*dt* EleDensitySource(Uavg);
 
 		Umid[ks].px() = Uavg.px()
 		                -0.5f*(dt/dx)*(XMomentumFluxX(UEast) - XMomentumFluxX(UWest))
 		                -0.5f*(dt/dy)*(XMomentumFluxY(UNorth) - XMomentumFluxY(USouth));
-		                //+0.5f*dt*XMomentumSource(Uavg);
+		                //+0.5f*dt*EleXMomentumSource(Uavg);
 
 		Umid[ks].py() = Uavg.py()
 		                -0.5f*(dt/dx)*(YMomentumFluxX(UEast) - YMomentumFluxX(UWest))
 		                -0.5f*(dt/dy)*(YMomentumFluxY(UNorth) - YMomentumFluxY(USouth));
-		                //+0.5f*dt*YMomentumSource(Uavg);
+		                //+0.5f*dt*EleYMomentumSource(Uavg);
 	}
 
 
@@ -232,16 +232,16 @@ void Fluid2D::RichtmyerStep2(){
 			Umain[kp].n() = Uold.n()
 			                - (dt/dx)*(DensityFluxX(UEast) - DensityFluxX(UWest))
 			                - (dt/dy)*(DensityFluxY(UNorth) - DensityFluxY(USouth));
-			                //+ dt*DensitySource(Uold);
+			                //+ dt*EleDensitySource(Uold);
 			Umain[kp].px() = Uold.px()
 			                 - (dt/dx)*(XMomentumFluxX(UEast) - XMomentumFluxX(UWest))
 			                 - (dt/dy)*(XMomentumFluxY(UNorth) - XMomentumFluxY(USouth));
-			                 //+ dt*XMomentumSource(Uold);
+			                 //+ dt*EleXMomentumSource(Uold);
 
 			Umain[kp].py() = Uold.py()
 			                 - (dt/dx)*(YMomentumFluxX(UEast) - YMomentumFluxX(UWest))
 			                 - (dt/dy)*(YMomentumFluxY(UNorth) - YMomentumFluxY(USouth));
-			                 //+ dt*YMomentumSource(Uold);
+			                 //+ dt*EleYMomentumSource(Uold);
 		}
 	}
 
@@ -637,7 +637,7 @@ void Fluid2D::CopyFields() {
 	}
 }
 
-void Fluid2D::VelocityGradient( StateVec2D *Uarray, int size_x, int size_y) {
+void Fluid2D::VelocityGradient(StateVec2D *Uarray, int size_x, int size_y) {
 	int stride = size_x;
 //#pragma omp parallel for default(none) shared(size_x, size_y, dx, dy, stride, array_in, array_out_x, array_out_y)
 	for (int kp = 1 + size_x; kp <= size_x * size_y - size_x - 2; kp++) {

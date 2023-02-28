@@ -31,11 +31,6 @@ using namespace H5;
  * */
 	class Fluid2D : public TethysBase {
 	protected:
-		/*float *den_dx;
-		float *den_dy;
-		float *den_dx_mid;
-		float *den_dy_mid;
-*/
 
 		std::ofstream data_preview; // file stream for simplified .dat file output
 		int snapshot_per_period = 40;
@@ -53,8 +48,8 @@ using namespace H5;
 		StateVec2D SideAverage(const StateVec2D *input_array, GridPoint2D p, char side);
 		StateVec2D *ptr_StateVec;
 
-		void RichtmyerStep1();
-		void RichtmyerStep2();
+		virtual void RichtmyerStep1();
+		virtual void RichtmyerStep2();
 
 	public :
 
@@ -115,18 +110,18 @@ using namespace H5;
 		 *
 		 *
 		 *
-		 * @see DensityFluxX
-		 * @see DensityFluxY
-		 * @see XMomentumFluxX
-		 * @see XMomentumFluxY
-		 * @see YMomentumFluxX
-		 * @see YMomentumFluxY
-		 * @see DensitySource
-		 * @see XMomentumSource
-		 * @see YMomentumSource
+		 * @see EleDensityFluxX
+		 * @see EleDensityFluxY
+		 * @see EleXMomentumFluxX
+		 * @see EleXMomentumFluxY
+		 * @see EleYMomentumFluxX
+		 * @see EleYMomentumFluxY
+		 * @see EleDensitySource
+		 * @see EleXMomentumSource
+		 * @see EleYMomentumSource
 		 *
 		 */
-		virtual void Richtmyer();                   // Central Algorithm for solving the hyperbolic conservation law
+	    void Richtmyer();                   // Central Algorithm for solving the hyperbolic conservation law
 
 		virtual float DensitySource(StateVec2D U); ///< density equation (continuity equation) source term
 		virtual float XMomentumSource(StateVec2D U); ///< velocity X component equation (momentum equation) source term

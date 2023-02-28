@@ -40,7 +40,7 @@ class GrapheneFluid1D : public Fluid1D{
 		float DensitySource(StateVec1D U) override;
 		float VelocitySource(StateVec1D U) override;
 
-		//float DensitySource(__attribute__((unused)) float n,__attribute__((unused)) float v, __attribute__((unused)) float s) override;
+		//float EleDensitySource(__attribute__((unused)) float n,__attribute__((unused)) float v, __attribute__((unused)) float s) override;
 		//float VelocitySource(float n, float v, float s, float d3den) override;
 
 

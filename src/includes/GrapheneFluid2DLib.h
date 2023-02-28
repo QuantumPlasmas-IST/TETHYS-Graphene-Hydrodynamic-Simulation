@@ -58,24 +58,6 @@ public :
 		 */
 		void SetSimulationTime() override;
 
-		/*!
-		 * @brief Converts the mass density flux to velocity on the entire simulation grid.
-		 *
-		 * Since the mass of the fluid element is not a constant the in the graphene electronic fluid, one needs to perform the transformation
-		   @f[ \vec{v} = \frac{\vec{p}}{n^{3/2}} @f]
-		 * */
-//		//void MassFluxToVelocity(string grid) override; // Converts the mass density flux back to velocity, in graphene  v = p n^{-3/2}
-		/*Override fluxes and sources to specifics of graphene physics*/
-
-
-//		float DensityFluxX(GridPoint2D p, char side ) override; ///< density equation (continuity equation) conserved flux X component
-//		float DensityFluxY(GridPoint2D p, char side ) override; ///< density equation (continuity equation) conserved1 flux Y component
-
-//		float XMomentumFluxX(GridPoint2D p, char side ) override; ///< velocity X component equation (momentum equation) conserved flux X component
-//		float XMomentumFluxY(GridPoint2D p, char side ) override; ///< velocity X component equation (momentum equation) conserved flux Y component
-
-//		float YMomentumFluxX(GridPoint2D p, char side ) override; ///< velocity Y component equation (momentum equation) conserved flux X component
-//		float YMomentumFluxY(GridPoint2D p, char side ) override; ///< velocity Y component equation (momentum equation) conserved flux Y component
 
 
 	float DensitySource(StateVec2D U)override;   ///< density equation (continuity equation) source term

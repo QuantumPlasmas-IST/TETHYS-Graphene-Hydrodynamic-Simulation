@@ -5,8 +5,8 @@
 \************************************************************************************************/
 
 
-#ifndef STATEVECLIB2D_H
-#define STATEVECLIB2D_H
+#ifndef STATEVECLIBFERMI2D_H
+#define STATEVECLIBFERMI2D_H
 
 #include <iostream>
 
@@ -27,8 +27,8 @@ private:
 public:
 	StateVec2D()=default; //default constructor
 	StateVec2D(const StateVec2D&); //copy constructor
-	StateVec2D(float den, float velx, float vely,float temp);
-	StateVec2D(float den, float velx, float vely,float temp,float snd);
+	StateVec2D(float den, float velx, float vely, float temp);
+	StateVec2D(float den, float velx, float vely, float temp, float snd);
 	~StateVec2D()=default;
 
 	float& px();
