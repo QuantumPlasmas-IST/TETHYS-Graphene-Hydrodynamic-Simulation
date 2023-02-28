@@ -148,7 +148,13 @@ void Fluid2D::InitialCondTest(){
 
 
 void Fluid2D::Richtmyer(){
+	if(odd_vis){
+		VelocityGradient(Umain,Nx,Ny);
+	}
 	RichtmyerStep1();
+	if(odd_vis){
+		VelocityGradient(Umid,Nx-1,Ny-1);
+	}
 	RichtmyerStep2();
 }
 

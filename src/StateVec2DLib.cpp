@@ -73,7 +73,13 @@ StateVec2D &StateVec2D::operator=(const StateVec2D & obj) {
 		momentum_x=obj.momentum_x;
 		momentum_y=obj.momentum_y;
 		temperature=obj.temperature;
-		sound=obj.sound;
+
+		velXGradient_x=obj.velXGradient_x;
+		velXGradient_y=obj.velXGradient_y;
+		velYGradient_x=obj.velYGradient_x;
+		velYGradient_y=obj.velYGradient_y;
+
+//		sound=obj.sound;
 	}
 	return *this;
 }
@@ -84,6 +90,12 @@ StateVec2D StateVec2D::operator+(const StateVec2D &obj) const {
 	res.momentum_x = momentum_x + obj.momentum_x;
 	res.momentum_y = momentum_y + obj.momentum_y;
 	res.temperature = temperature + obj.temperature;
+
+	res.velXGradient_x=velXGradient_x+obj.velXGradient_x;
+	res.velXGradient_y=velXGradient_y+obj.velXGradient_y;
+	res.velYGradient_x=velYGradient_x+obj.velYGradient_x;
+	res.velYGradient_y=velYGradient_x+obj.velYGradient_y;
+
 //	res.sound = sound + obj.sound;
 	return res;
 }
@@ -94,6 +106,12 @@ StateVec2D StateVec2D::operator-(const StateVec2D &obj) const {
 	res.momentum_x = momentum_x - obj.momentum_x;
 	res.momentum_y = momentum_y - obj.momentum_y;
 	res.temperature = temperature - obj.temperature;
+
+	res.velXGradient_x=velXGradient_x-obj.velXGradient_x;
+	res.velXGradient_y=velXGradient_y-obj.velXGradient_y;
+	res.velYGradient_x=velYGradient_x-obj.velYGradient_x;
+	res.velYGradient_y=velYGradient_x-obj.velYGradient_y;
+
 //	res.sound = sound - obj.sound;
 	return res;
 }
@@ -104,6 +122,12 @@ StateVec2D StateVec2D::operator*(const StateVec2D &obj) const {
 	res.momentum_x = momentum_x * obj.momentum_x;
 	res.momentum_y = momentum_y * obj.momentum_y;
 	res.temperature = temperature * obj.temperature;
+
+	res.velXGradient_x=velXGradient_x*obj.velXGradient_x;
+	res.velXGradient_y=velXGradient_y*obj.velXGradient_y;
+	res.velYGradient_x=velYGradient_x*obj.velYGradient_x;
+	res.velYGradient_y=velYGradient_x*obj.velYGradient_y;
+
 //	res.sound = sound * obj.sound;
 	return res;
 }
@@ -114,6 +138,8 @@ StateVec2D StateVec2D::operator/(const StateVec2D &obj) const{
 	res.momentum_x = momentum_x / obj.momentum_x;
 	res.momentum_y = momentum_y / obj.momentum_y;
 	res.temperature = temperature / obj.temperature;
+
+
 //	res.sound = sound / obj.sound;
 	return res;
 }
@@ -125,6 +151,12 @@ StateVec2D operator*(const StateVec2D &obj, float value){
 	res.momentum_x = value * obj.momentum_x;
 	res.momentum_y = value * obj.momentum_y;
 	res.temperature = value*obj.temperature;
+
+	res.velXGradient_x=value*obj.velXGradient_x;
+	res.velXGradient_y=value*obj.velXGradient_y;
+	res.velYGradient_x=value*obj.velYGradient_x;
+	res.velYGradient_y=value*obj.velYGradient_y;
+
 //	res.sound = value*obj.sound;
 	return res;
 }
@@ -134,6 +166,12 @@ StateVec2D operator*(float value, const StateVec2D &obj) {
 	res.momentum_x = value * obj.momentum_x;
 	res.momentum_y = value * obj.momentum_y;
 	res.temperature = value*obj.temperature;
+
+	res.velXGradient_x=value*obj.velXGradient_x;
+	res.velXGradient_y=value*obj.velXGradient_y;
+	res.velYGradient_x=value*obj.velYGradient_x;
+	res.velYGradient_y=value*obj.velYGradient_y;
+
 //	res.sound = value*obj.sound;
 	return res;
 }
@@ -144,6 +182,12 @@ StateVec2D operator/(const StateVec2D &obj, float value){
 	res.momentum_x = obj.momentum_x / value;
 	res.momentum_y = obj.momentum_y / value;
 	res.temperature =obj.temperature/value;
+
+	res.velXGradient_x=obj.velXGradient_x / value;
+	res.velXGradient_y=obj.velXGradient_y / value;
+	res.velYGradient_x=obj.velYGradient_x / value;
+	res.velYGradient_y=obj.velYGradient_y / value;
+
 //	res.sound =obj.sound/value;
 	return res;
 }

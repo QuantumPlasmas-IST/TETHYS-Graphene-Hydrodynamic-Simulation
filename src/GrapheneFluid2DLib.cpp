@@ -74,8 +74,9 @@ float GrapheneFluid2D::XMomentumFluxX(StateVec2D U) {
 	float den=U.n();
 	float px=U.px();
 	float mass=DensityToMass(den);
+	float Vxy=U.dxvy();
 
-	return px * px / mass + vel_fer * vel_fer * mass / 3.0f + 0.5f * sound * sound * den * den ;
+	return px * px / mass + vel_fer * vel_fer * mass / 3.0f + 0.5f * sound * sound * den * den - odd_vis*Vxy;
 }
 
 float GrapheneFluid2D::XMomentumFluxY(StateVec2D U) {
@@ -83,7 +84,9 @@ float GrapheneFluid2D::XMomentumFluxY(StateVec2D U) {
 	float px=U.px();
 	float py=U.py();
 	float mass=DensityToMass(den);
-	return px * py / mass ;
+	float Vyy=U.dyvy();
+
+	return px * py / mass - odd_vis*Vyy;
 }
 float GrapheneFluid2D::YMomentumFluxY(StateVec2D U) {
 	//float 	mass=DensityToMass(U.n());
@@ -93,8 +96,9 @@ float GrapheneFluid2D::YMomentumFluxY(StateVec2D U) {
 	float den=U.n();
 	float py=U.py();
 	float mass=DensityToMass(den);
+	float Vyx=U.dyvx();
 
-	return py * py / mass + vel_fer * vel_fer * mass / 3.0f + 0.5f * sound * sound * den * den ;
+	return py * py / mass + vel_fer * vel_fer * mass / 3.0f + 0.5f * sound * sound * den * den + odd_vis*Vyx;
 }
 
 float GrapheneFluid2D::YMomentumFluxX(StateVec2D U) {
@@ -102,8 +106,9 @@ float GrapheneFluid2D::YMomentumFluxX(StateVec2D U) {
 	float den=U.n();
 	float px=U.px();
 	float py=U.py();
+	float Vxx=U.dxvx();
 	float mass=DensityToMass(den);
-	return px * py / mass;
+	return px * py / mass + odd_vis*Vxx;
 }
 
 
