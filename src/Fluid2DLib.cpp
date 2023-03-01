@@ -186,18 +186,18 @@ void Fluid2D::RichtmyerStep1(){
 */
 		Umid[ks].n() =  Uavg.n()
 		                -0.5f*(dt/dx)*(DensityFluxX(UEast) - DensityFluxX(UWest))
-		                -0.5f*(dt/dy)*(DensityFluxY(UNorth) - DensityFluxY(USouth));
-		                //+0.5f*dt* EleDensitySource(Uavg);
+		                -0.5f*(dt/dy)*(DensityFluxY(UNorth) - DensityFluxY(USouth))
+						+0.5f*dt* DensitySource(Uavg);
 
 		Umid[ks].px() = Uavg.px()
 		                -0.5f*(dt/dx)*(XMomentumFluxX(UEast) - XMomentumFluxX(UWest))
-		                -0.5f*(dt/dy)*(XMomentumFluxY(UNorth) - XMomentumFluxY(USouth));
-		                //+0.5f*dt*EleXMomentumSource(Uavg);
+		                -0.5f*(dt/dy)*(XMomentumFluxY(UNorth) - XMomentumFluxY(USouth))
+		                +0.5f*dt*XMomentumSource(Uavg);
 
 		Umid[ks].py() = Uavg.py()
 		                -0.5f*(dt/dx)*(YMomentumFluxX(UEast) - YMomentumFluxX(UWest))
-		                -0.5f*(dt/dy)*(YMomentumFluxY(UNorth) - YMomentumFluxY(USouth));
-		                //+0.5f*dt*EleYMomentumSource(Uavg);
+		                -0.5f*(dt/dy)*(YMomentumFluxY(UNorth) - YMomentumFluxY(USouth))
+		                +0.5f*dt*YMomentumSource(Uavg);
 	}
 
 

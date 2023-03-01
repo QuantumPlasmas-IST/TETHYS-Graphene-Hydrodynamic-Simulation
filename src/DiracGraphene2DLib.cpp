@@ -32,7 +32,8 @@ DiracGraphene2D::DiracGraphene2D(SetUpParametersCNP &input_parameters) : Fluid2D
 	HCurX 		= new float[Nx * Ny]();
 	HCurY 		= new float[Nx * Ny]();
 
-
+	HoleUmain = new StateVec2D[Nx * Ny]();
+	HoleUmid = new StateVec2D[(Nx - 1) * (Ny - 1)]();
 }
 
 void DiracGraphene2D::SetSimulationTime(){
@@ -226,40 +227,45 @@ void DiracGraphene2D::InitialCondRand(){
 	for (int c = 0; c < Nx*Ny; c++ ){
 		float noise;
 		noise =  (float) rd()/maxrand ; //(float) rand()/ (float) RAND_MAX ;
-		Den[c] = 1.0f + 0.05f * (noise - 0.5f);
-
+		//Den[c] = 1.0f + 0.05f * (noise - 0.5f);
+		Umain[c].n()=1.0f + 0.05f * (noise - 0.5f);
 		noise =  (float) rd()/maxrand ; //(float) rand()/ (float) RAND_MAX ;
-        HDen[c] = 1.0f + 0.05f * (noise - 0.5f);
+        //HDen[c] = 1.0f + 0.05f * (noise - 0.5f);
+		HoleUmain[c].n()=1.0f + 0.05f * (noise - 0.5f);
 	}
 }
 
 void DiracGraphene2D::InitialCondPointDen(){
 	for (int c = 0; c < Nx*Ny; c++ ){
-		Den[c] = 1.0f;
-        HDen[c] = 1.0f;
+		//Den[c] = 1.0f;
+        //HDen[c] = 1.0f;
+		Umain[c].n()=1.0f;
+		HoleUmain[c].n()=1.0f;
 	}
-
 	for (int c = 3*Ny/7; c < 4*Ny/7; c++){
 		for (int g = 2*Nx/7; g < 3*Nx/7; g++){
-			Den[c*Nx+g] = 1.2f;
-			HDen[c*Nx+g] = 0.8f;
+			//Den[c*Nx+g] = 1.2f;
+			//HDen[c*Nx+g] = 0.8f;
+			Umain[c*Nx+g].n()=1.2f;
+			HoleUmain[c*Nx+g].n()=0.8f;
 		}
 	}
-
 	for (int c = 3*Ny/7; c < 4*Ny/7; c++){
 		for (int g = 4*Nx/7; g < 5*Nx/7; g++){
-			Den[c*Nx+g] = 0.8f;
-			HDen[c*Nx+g] = 1.2f;
+			//Den[c*Nx+g] = 0.8f;
+			//HDen[c*Nx+g] = 1.2f;
+			Umain[c*Nx+g].n()=0.8f;
+			HoleUmain[c*Nx+g].n()=1.2f;
 		}
 	}
 }
 
 void DiracGraphene2D::InitialCondUniform(){
 	for (int c = 0; c < Nx*Ny; c++ ){
-
-			Den[c] = 1.0f;
-
-        	HDen[c] = 1.0f;
+		//Den[c] = 1.0f;
+        //HDen[c] = 1.0f;
+		Umain[c].n()=1.0f;
+		HoleUmain[c].n()=1.0f;
 	}
 }
 
