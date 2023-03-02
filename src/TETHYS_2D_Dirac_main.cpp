@@ -41,7 +41,7 @@ int main(int argc, char **argv){
 	graph.SetSound();
 	//graph.SetSimulationTime();
 	//graph.SetTmax(2.0f);
-	graph.SetTmax(0.01f);
+	//graph.SetTmax(0.01f);
 	/*................................................................*/
 
 	/*.........Output files and streams...............................*/
