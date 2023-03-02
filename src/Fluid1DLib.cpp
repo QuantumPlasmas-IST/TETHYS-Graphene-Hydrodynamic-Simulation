@@ -41,7 +41,7 @@ Fluid1D::~Fluid1D() = default;
 
 
 float Fluid1D::VelocityFlux(StateVec1D U) {
-	return 0.5f*U.v()*U.v() + vel_fer * vel_fer  *0.5f* log(U.n()+1.0E-6) ;//- kin_vis*U.grad_v();
+	return 0.5f*U.v()*U.v() + vel_fer * vel_fer  *0.5f* log(U.n()+1.0E-6f) ;//- kin_vis*U.grad_v();
 }
 
 
@@ -113,8 +113,8 @@ void Fluid1D::InitialCondRand(){
 void Fluid1D::InitialCondTest(){
  	for (int i = 0; i < Nx; i++ ){
 		//Umain[i].v()= 1.5f; // (i>3*Nx/8 && i<5*Nx/8 ) ? 3.0f : 0.0f; //1.5f;//
-	    Umain[i].v()= 1.0f/(1.0f+5.0f* pow(cosh((i*dx-0.5f)*12.0f),2));
-	    Umain[i].n()= 0.2f+0.2f/ pow(cosh((i*dx-0.5f)*12.0f),2); //(i>3*Nx/8 && i<5*Nx/8 ) ? 1.0f : 0.1f; //0.2f+0.2f/ pow(cosh((i*dx-0.5f)*12.0f),2);//
+	    Umain[i].v()= 1.0f/(1.0f+5.0f* pow(cosh((i*dx-0.5f)*12.0f),2.f));
+	    Umain[i].n()= 0.2f+0.2f/ pow(cosh((i*dx-0.5f)*12.0f),2.f); //(i>3*Nx/8 && i<5*Nx/8 ) ? 1.0f : 0.1f; //0.2f+0.2f/ pow(cosh((i*dx-0.5f)*12.0f),2);//
 	}
 	this->SetSound();
 }

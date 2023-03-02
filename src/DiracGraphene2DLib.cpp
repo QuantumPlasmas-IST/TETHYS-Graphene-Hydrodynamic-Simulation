@@ -10,6 +10,17 @@
 
 
 DiracGraphene2D::DiracGraphene2D(SetUpParametersCNP &input_parameters) : Fluid2D(input_parameters) {
+
+	hsize_t dimsf[2];
+	dimsf[0] = static_cast<hsize_t>(Ny);
+	dimsf[1] = static_cast<hsize_t>(Nx);
+	DataspaceHDen = new DataSpace(RANK, dimsf );
+	DataspaceHVelX = new DataSpace(RANK, dimsf );
+	DataspaceHVelY = new DataSpace(RANK, dimsf );
+	GrpHDen = nullptr;
+	GrpHVelX = nullptr;
+	GrpHVelY = nullptr;
+
 	vel_fer = input_parameters.FermiVelocity ;//fermi_velocity;
 	col_freq = input_parameters.CollisionFrequency ; // collision_frequency
 	cyc_freq = input_parameters.CyclotronFrequency ; //cyclotron_frequency
@@ -27,10 +38,6 @@ DiracGraphene2D::DiracGraphene2D(SetUpParametersCNP &input_parameters) : Fluid2D
 	HDen 		= new float[Nx * Ny]();
 	HVelX 		= new float[Nx * Ny]();
 	HVelY 		= new float[Nx * Ny]();
-	HFlxX 		= new float[Nx * Ny]();
-	HFlxY 		= new float[Nx * Ny]();
-	HCurX 		= new float[Nx * Ny]();
-	HCurY 		= new float[Nx * Ny]();
 
 	HoleUmain = new StateVec2D[Nx * Ny]();
 	HoleUmid = new StateVec2D[(Nx - 1) * (Ny - 1)]();
@@ -46,9 +53,9 @@ void DiracGraphene2D::CflCondition(){ // Eventual redefinition
 	dy = lengY / ( float ) ( Ny - 1 );
 	float lambda;
 	if(vel_therm<vel_snd){
-		lambda=0.75f+sqrt(1.6+3.0f*vel_snd*vel_snd);
+		lambda=0.75f+sqrt(1.6f+3.0f*vel_snd*vel_snd);
 	}else{
-		lambda=0.75f+sqrt(1.6+3.0f*vel_therm*vel_therm);
+		lambda=0.75f+sqrt(1.6f+3.0f*vel_therm*vel_therm);
 	}
 	float dt1 = 0.5f * dx/abs(lambda);
 	dt = dt1;
@@ -203,6 +210,8 @@ delete[] HDen;
 delete[] HVelX;
 delete[] HVelY;
 delete[] vel_snd_arr;
+delete[] HoleUmain;
+delete[] HoleUmid;
 }
 
 float DiracGraphene2D::DensityToMass(float density) {
@@ -503,45 +512,180 @@ void DiracGraphene2D::RichtmyerStep2(){
 	}
 }
 
-/*
 void DiracGraphene2D::ForwardTimeOperator() {
-#pragma omp parallel for default(none) shared(Nx,Ny,FlxX,FlxY,lap_flxX,lap_flxY,HFlxX,HFlxY,hlap_flxX,hlap_flxY,dt)
 	for (int kp = 1 + Nx; kp <= Nx * Ny - Nx - 2; kp++) {
-		float flx_x_old, flx_y_old, hflx_x_old, hflx_y_old;
+		float flx_x_old, flx_y_old,hflx_x_old, hflx_y_old, tmp_old;
 		if (kp % Nx != Nx - 1 && kp % Nx != 0) {
-			flx_x_old = FlxX[kp];
-			flx_y_old = FlxY[kp];
+			flx_x_old = Umain[kp].px();
+			flx_y_old = Umain[kp].py();
+			Umain[kp].px() = flx_x_old + Umain[kp].d2vx();
+			Umain[kp].py() = flx_y_old + Umain[kp].d2vy();
 
-            FlxX[kp] = flx_x_old + lap_flxX[kp];
-			FlxY[kp] = flx_y_old + lap_flxY[kp];
+			hflx_x_old = HoleUmain[kp].px();
+			hflx_y_old = HoleUmain[kp].py();
+			HoleUmain[kp].px() = hflx_x_old + HoleUmain[kp].d2vx();
+			HoleUmain[kp].py() = hflx_y_old + HoleUmain[kp].d2vy();
 
-			hflx_x_old = HFlxX[kp];
-			hflx_y_old = HFlxY[kp];
+			tmp_old = Umain[kp].tmp();
+			Umain[kp].tmp() = tmp_old + Umain[kp].d2tmp();
 
-            HFlxX[kp] = hflx_x_old + hlap_flxX[kp];
-			HFlxY[kp] = hflx_y_old + hlap_flxY[kp];
-        }
+
+		}
 	}
 }
-
-void DiracGraphene2D::VelocityLaplacianWeighted19() {
-	this->MassFluxToVelocity("MainGrid");
-
-#pragma omp parallel for default(none) shared(lap_flxX,lap_flxY,hlap_flxX,hlap_flxY,VelX,VelY,HVelX,HVelY)
+void DiracGraphene2D::ForwardTimeOperator(char field) {
 	for (int kp = 1 + Nx; kp <= Nx * Ny - Nx - 2; kp++) {
-		GridPoint2D point(kp,Nx,Ny,false);
-		if (kp % Nx != Nx - 1 && kp % Nx != 0){
-			lap_flxX[kp] = Laplacian19( point, VelX, kin_vis);
-			lap_flxY[kp] = Laplacian19( point, VelY, kin_vis);
-
-			hlap_flxX[kp] = Laplacian19( point, HVelX, kin_vis);
-			hlap_flxY[kp] = Laplacian19( point, HVelY, kin_vis);
+		float flx_x_old, flx_y_old,hflx_x_old, hflx_y_old, tmp_old;
+		if (kp % Nx != Nx - 1 && kp % Nx != 0) {
+			switch(field) {
+				case 'T': 	tmp_old = Umain[kp].tmp();
+					Umain[kp].tmp() = tmp_old + Umain[kp].d2tmp();
+					break;
+				case 'V':
+					flx_x_old = Umain[kp].px();
+					flx_y_old = Umain[kp].py();
+					Umain[kp].px() = flx_x_old + Umain[kp].d2vx();
+					Umain[kp].py() = flx_y_old + Umain[kp].d2vy();
+					hflx_x_old = HoleUmain[kp].px();
+					hflx_y_old = HoleUmain[kp].py();
+					HoleUmain[kp].px() = hflx_x_old + HoleUmain[kp].d2vx();
+					HoleUmain[kp].py() = hflx_y_old + HoleUmain[kp].d2vy();
+					break;
+				default: ;
+			}
 		}
 	}
 }
 
-void DiracGraphene2D::ParabolicOperatorWeightedExplicit19() {
-	VelocityLaplacianWeighted19();
-	ForwardTimeOperator();
+
+
+void DiracGraphene2D::VelocityLaplacianWeighted19() {
+
+
+	for (int kp = 0; kp < Nx * Ny ; kp++) {
+		float den =Umain[kp].n();
+		float mass = DensityToMass(den);
+		VelX[kp] = Umain[kp].px()/mass;
+		VelY[kp] = Umain[kp].py()/mass;
+		float hden =HoleUmain[kp].n();
+		float hmass = DensityToMass(hden);
+		HVelX[kp] = HoleUmain[kp].px()/hmass;
+		HVelY[kp] = HoleUmain[kp].py()/hmass;
+	}
+
+#pragma omp parallel for default(none) shared(Umain,VelX,VelY)
+	for (int kp = 1 + Nx; kp <= Nx * Ny - Nx - 2; kp++) {
+		GridPoint2D point(kp,Nx,Ny,false);
+		if (kp % Nx != Nx - 1 && kp % Nx != 0){
+			Umain[kp].d2vx() = Laplacian19( point, VelX, kin_vis);
+			Umain[kp].d2vy() = Laplacian19( point, VelY, kin_vis);
+			HoleUmain[kp].d2vx() = Laplacian19( point, HVelX, kin_vis);
+			HoleUmain[kp].d2vy() = Laplacian19( point, HVelY, kin_vis);
+		}
+	}
 }
-*/
+
+void DiracGraphene2D::CopyFields() {
+	float mass, hmass;
+	for (int i = 0; i < Nx*Ny; ++i) {
+		Den[i]=Umain[i].n();
+		mass= DensityToMass(Den[i]);
+		VelX[i]=Umain[i].px()/mass;
+		VelY[i]=Umain[i].py()/mass;
+		Tmp[i] =Umain[i].tmp();
+		HDen[i]=HoleUmain[i].n();
+		hmass= DensityToMass(HDen[i]);
+		HVelX[i]=HoleUmain[i].px()/hmass;
+		HVelY[i]=HoleUmain[i].py()/hmass;
+	}
+}
+
+void DiracGraphene2D::SaveSnapShot() {
+	hsize_t dim_atr[1] = { 1 };
+	DataSpace atr_dataspace = DataSpace (1, dim_atr );
+
+	int points_per_period = static_cast<int>((2.0 * MAT_PI / this->RealFreq()) / dt);
+	snapshot_step = points_per_period / snapshot_per_period;
+
+	this->CopyFields();
+
+	string str_time = to_string(TimeStepCounter / snapshot_step);
+	str_time.insert(str_time.begin(), 5 - str_time.length(), '0');
+	string name_dataset = "snapshot_" + str_time;
+
+	float currenttime=static_cast<float>(TimeStepCounter) * dt;
+
+	DataSet dataset_den = GrpDen->createDataSet(name_dataset, HDF5FLOAT, *DataspaceDen);
+	Attribute atr_step_den = dataset_den.createAttribute("time step", HDF5INT, atr_dataspace);
+	Attribute atr_time_den = dataset_den.createAttribute("time", HDF5FLOAT, atr_dataspace);
+	dataset_den.write(Den, HDF5FLOAT);
+	dataset_den.close();
+	atr_step_den.write(HDF5INT, &TimeStepCounter);
+	atr_time_den.write(HDF5FLOAT , &currenttime);
+	atr_step_den.close();
+	atr_time_den.close();
+
+	DataSet dataset_hden = GrpHDen->createDataSet(name_dataset, HDF5FLOAT, *DataspaceHDen);
+	Attribute atr_step_hden = dataset_den.createAttribute("time step", HDF5INT, atr_dataspace);
+	Attribute atr_time_hden = dataset_den.createAttribute("time", HDF5FLOAT, atr_dataspace);
+	dataset_den.write(HDen, HDF5FLOAT);
+	dataset_den.close();
+	atr_step_hden.write(HDF5INT, &TimeStepCounter);
+	atr_time_hden.write(HDF5FLOAT , &currenttime);
+	atr_step_hden.close();
+	atr_time_hden.close();
+
+
+	DataSet dataset_vel_x = GrpVelX->createDataSet(name_dataset, HDF5FLOAT, *DataspaceVelX);
+	Attribute atr_step_vel_x = dataset_vel_x.createAttribute("time step", HDF5INT, atr_dataspace);
+	Attribute atr_time_vel_x = dataset_vel_x.createAttribute("time", HDF5FLOAT, atr_dataspace);
+	dataset_vel_x.write(VelX, HDF5FLOAT);
+	dataset_vel_x.close();
+	atr_step_vel_x.write(HDF5INT, &TimeStepCounter);
+	atr_time_vel_x.write(HDF5FLOAT , &currenttime);
+	atr_step_vel_x.close();
+	atr_time_vel_x.close();
+
+	DataSet dataset_vel_y = GrpVelY->createDataSet(name_dataset, HDF5FLOAT, *DataspaceVelY);
+	Attribute atr_step_vel_y = dataset_vel_y.createAttribute("time step", HDF5INT, atr_dataspace);
+	Attribute atr_time_vel_y = dataset_vel_y.createAttribute("time", HDF5FLOAT, atr_dataspace);
+	dataset_vel_y.write(VelY, HDF5FLOAT);
+	dataset_vel_y.close();
+	atr_step_vel_y.write(HDF5INT, &TimeStepCounter);
+	atr_time_vel_y.write(HDF5FLOAT , &currenttime);
+	atr_step_vel_y.close();
+	atr_time_vel_y.close();
+
+	DataSet dataset_hvel_x = GrpHVelX->createDataSet(name_dataset, HDF5FLOAT, *DataspaceHVelX);
+	Attribute atr_step_hvel_x = dataset_hvel_x.createAttribute("time step", HDF5INT, atr_dataspace);
+	Attribute atr_time_hvel_x = dataset_hvel_x.createAttribute("time", HDF5FLOAT, atr_dataspace);
+	dataset_hvel_x.write(VelX, HDF5FLOAT);
+	dataset_hvel_x.close();
+	atr_step_hvel_x.write(HDF5INT, &TimeStepCounter);
+	atr_time_hvel_x.write(HDF5FLOAT , &currenttime);
+	atr_step_hvel_x.close();
+	atr_time_hvel_x.close();
+
+	DataSet dataset_hvel_y = GrpHVelY->createDataSet(name_dataset, HDF5FLOAT, *DataspaceHVelY);
+	Attribute atr_step_hvel_y = dataset_hvel_y.createAttribute("time step", HDF5INT, atr_dataspace);
+	Attribute atr_time_hvel_y = dataset_hvel_y.createAttribute("time", HDF5FLOAT, atr_dataspace);
+	dataset_hvel_y.write(VelY, HDF5FLOAT);
+	dataset_hvel_y.close();
+	atr_step_hvel_y.write(HDF5INT, &TimeStepCounter);
+	atr_time_hvel_y.write(HDF5FLOAT , &currenttime);
+	atr_step_hvel_y.close();
+	atr_time_hvel_y.close();
+
+	if(therm_diff!=0){
+		DataSet dataset_tmp = GrpTmp->createDataSet(name_dataset, HDF5FLOAT, *DataspaceTmp);
+		Attribute atr_step_tmp = dataset_tmp.createAttribute("time step", HDF5INT, atr_dataspace);
+		Attribute atr_time_tmp = dataset_tmp.createAttribute("time", HDF5FLOAT, atr_dataspace);
+		dataset_tmp.write(Tmp, HDF5FLOAT);
+		dataset_tmp.close();
+		atr_step_tmp.write(HDF5INT, &TimeStepCounter);
+		atr_time_tmp.write(HDF5FLOAT, &currenttime);
+		atr_step_tmp.close();
+		atr_time_tmp.close();
+	}
+}
+

@@ -53,7 +53,7 @@ using namespace H5;
 
 	public :
 
-		void CopyFields();
+		virtual void CopyFields();
 
 		StateVec2D * Umain;
 		StateVec2D * Umid;
@@ -174,7 +174,7 @@ using namespace H5;
 		 *
 		 *
 		 * */
-		void SaveSnapShot();
+		virtual void SaveSnapShot();
 
 		/*!
 		 * @brief Imports snapshot to a Fluid2D class

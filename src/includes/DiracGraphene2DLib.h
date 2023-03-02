@@ -47,16 +47,17 @@ public :
 	StateVec2D * HoleUmain;
 	StateVec2D * HoleUmid;
 
+	Group* GrpHDen ;     ///< group for ALL Hole Density snapshots
+	Group* GrpHVelX ;    ///< group for ALL Hole Velocity X snapshots
+	Group* GrpHVelY ;    ///< group for ALL Holes Velocity X snapshots
+	DataSpace* DataspaceHDen;    ///< dataspace for EACH Hole Density snapshots
+	DataSpace* DataspaceHVelX;   ///< dataspace for EACH Hole Velocity X snapshots
+	DataSpace* DataspaceHVelY;   ///< dataspace for EACH Hole Velocity Y snapshots
 
 	float *HDen;       // number density
 	float *HVelX;      // fluid velocity x component
 	float *HVelY;      // fluid velocity y component
 
-//estes nao vamos precisar
-	float *HFlxX;      // mass density flux x component
-	float *HFlxY;      // mass density flux y component
-	float *HCurX;      // current density x component
-	float *HCurY;      // current density y component
 
 	explicit DiracGraphene2D(SetUpParametersCNP &input_parameters);
 		~DiracGraphene2D();
@@ -121,7 +122,7 @@ public :
 		float HolYMomentumFluxX(StateVec2D Uelec , StateVec2D Uholes); ///< velocity Y component equation (momentum equation) conserved flux X component
 		float HolYMomentumFluxY(StateVec2D Uelec , StateVec2D Uholes); ///< velocity Y component equation (momentum equation) conserved flux Y component
 
-	//	void Richtmyer() override;
+
 	void RichtmyerStep1() override;
 	void RichtmyerStep2() override;
 		/*!
@@ -140,8 +141,12 @@ public :
 		 * */
 		void WriteFluidFile(float t) override; // writes the line of time t on the simplified .dat file output
 		
-//		void VelocityLaplacianWeighted19() override;
-//		void ParabolicOperatorWeightedExplicit19() override; ///< Forward Time Centered Space method for the diffusive terms
+		void VelocityLaplacianWeighted19() override;
+	    void ForwardTimeOperator() override; ///< Time evolution for the FTCS method employed for the parabolic operators.
+		void ForwardTimeOperator(char field) override; ///< Time evolution for the FTCS method employed for the parabolic operators.
+
+	void CopyFields() override;
+	void SaveSnapShot() override;
 };
 
 

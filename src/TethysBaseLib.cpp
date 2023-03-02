@@ -41,9 +41,9 @@ TethysBase:: TethysBase(int size_nx, int size_ny, int dimension){
 		DataspaceVelX = new DataSpace(RANK, dimsf );
 		DataspaceVelY = new DataSpace(RANK, dimsf );
 		DataspaceTmp = new DataSpace(RANK, dimsf );
-		dimsf[0] = static_cast<hsize_t>(Ny-1);
-		dimsf[1] = static_cast<hsize_t>(Nx-1);
-		DataspaceVelSndMid = new DataSpace(RANK, dimsf );
+	//	dimsf[0] = static_cast<hsize_t>(Ny-1);
+	//	dimsf[1] = static_cast<hsize_t>(Nx-1);
+	//	DataspaceVelSndMid = new DataSpace(RANK, dimsf );
 	}
 
 	Hdf5File = nullptr;
@@ -242,7 +242,7 @@ TethysBase::~TethysBase(){
 		if (RANK == 2) {
 			delete GrpVelY;
 			delete DataspaceVelY;
-			delete DataspaceVelSndMid;
+			//delete DataspaceVelSndMid;
 			delete DataspaceTmp;
 		}
 		delete Hdf5File;

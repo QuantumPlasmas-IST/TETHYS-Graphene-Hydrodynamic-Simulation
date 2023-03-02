@@ -490,7 +490,7 @@ void Fluid2D::ForwardTimeOperator() {
 		}
 	}
 }
-void Fluid2D::ForwardTimeOperator(char field) {  //TODO meter o switch
+void Fluid2D::ForwardTimeOperator(char field) {
 //#pragma omp parallel for default(none) shared(Nx,Ny,FlxX,FlxY,lap_flxX,lap_flxY,dt,cyc_freq)
 	for (int kp = 1 + Nx; kp <= Nx * Ny - Nx - 2; kp++) {
 		float flx_x_old, flx_y_old, tmp_old;
