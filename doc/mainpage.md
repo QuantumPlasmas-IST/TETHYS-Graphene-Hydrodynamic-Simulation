@@ -122,3 +122,6 @@ hdf5_2D<...>.h5
 <br>&emsp;**2.5.1** Initialization by .ini file import  *[30 Jun. 2021]*
 <br>&emsp;**2.5.2** cmake update   *[29 Aug. 2021]*
 <br>&emsp;**2.6.0** Joule heating source added  *[6 Oct. 2021]*
+<br>&emsp;**2.6.1** Documentation revision  *[8 Oct. 2021]*
+<br>&emsp;**2.6.2** Feedback w/ delay in the 1D boundary conditions   *[15 Jun. 2022]*
+<br>&emsp;**2.7.0** Reaction diffusion module of charge neutrality point   *[22 Jun. 2022]*
