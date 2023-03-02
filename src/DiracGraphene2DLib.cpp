@@ -21,6 +21,8 @@ DiracGraphene2D::DiracGraphene2D(SetUpParametersCNP &input_parameters) : Fluid2D
 	GrpHVelX = nullptr;
 	GrpHVelY = nullptr;
 
+
+
 	vel_fer = input_parameters.FermiVelocity ;//fermi_velocity;
 	col_freq = input_parameters.CollisionFrequency ; // collision_frequency
 	cyc_freq = input_parameters.CyclotronFrequency ; //cyclotron_frequency
@@ -626,10 +628,10 @@ void DiracGraphene2D::SaveSnapShot() {
 	atr_time_den.close();
 
 	DataSet dataset_hden = GrpHDen->createDataSet(name_dataset, HDF5FLOAT, *DataspaceHDen);
-	Attribute atr_step_hden = dataset_den.createAttribute("time step", HDF5INT, atr_dataspace);
-	Attribute atr_time_hden = dataset_den.createAttribute("time", HDF5FLOAT, atr_dataspace);
-	dataset_den.write(HDen, HDF5FLOAT);
-	dataset_den.close();
+	Attribute atr_step_hden = dataset_hden.createAttribute("time step", HDF5INT, atr_dataspace);
+	Attribute atr_time_hden = dataset_hden.createAttribute("time", HDF5FLOAT, atr_dataspace);
+	dataset_hden.write(HDen, HDF5FLOAT);
+	dataset_hden.close();
 	atr_step_hden.write(HDF5INT, &TimeStepCounter);
 	atr_time_hden.write(HDF5FLOAT , &currenttime);
 	atr_step_hden.close();
@@ -687,5 +689,12 @@ void DiracGraphene2D::SaveSnapShot() {
 		atr_step_tmp.close();
 		atr_time_tmp.close();
 	}
+}
+
+void DiracGraphene2D::CreateHdf5File() {
+	TethysBase::CreateHdf5File();
+	GrpHDen = new Group(Hdf5File->createGroup("/Data/HoleDensity" ));
+	GrpHVelX = new Group(Hdf5File->createGroup("/Data/HoleVelocityX" ));
+	GrpHVelY = new Group(Hdf5File->createGroup("/Data/HoleVelocityY"));
 }
 

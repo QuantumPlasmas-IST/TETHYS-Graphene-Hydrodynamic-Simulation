@@ -165,7 +165,7 @@ class TethysBase : public MathUtils {
 		std::string GetInfix() const;   ///< @returns   file name infix
 
 
-		void CreateHdf5File();          ///< creates the HDF5 files with the necessary structure
+		virtual void CreateHdf5File();          ///< creates the HDF5 files with the necessary structure
 		void OpenHdf5File(const std::string& hdf5name); ///< opens an existing HDF5 file with the necessary structure @param hdf5name HDF5 file name
 		void CloseHdf5File() const;           ///< closes the HDF5 file
 		void WriteAttributes();          ///< saves the simulation attributes (either physical and simulation parameters)
