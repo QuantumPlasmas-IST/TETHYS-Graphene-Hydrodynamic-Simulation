@@ -167,7 +167,7 @@ void Fluid2D::RichtmyerStep1(){
 	for(int ks=0; ks<=Nx*Ny-Nx-Ny; ks++){ //correr todos os pontos da grelha secundaria de den_mid
 		GridPoint2D midpoint(ks, Nx, Ny, true);
 
-		StateVec2D Uavg{};
+		StateVec2D Uavg(Umain[ks]);
 		Uavg = 0.25f * (Umain[midpoint.SW] + Umain[midpoint.SE] + Umain[midpoint.NW] + Umain[midpoint.NE]);
 
 		StateVec2D UNorth{};

@@ -79,7 +79,7 @@ StateVec2D &StateVec2D::operator=(const StateVec2D & obj) {
 		velYGradient_x=obj.velYGradient_x;
 		velYGradient_y=obj.velYGradient_y;
 
-//		sound=obj.sound;
+		sound=obj.sound;
 	}
 	return *this;
 }
@@ -96,7 +96,7 @@ StateVec2D StateVec2D::operator+(const StateVec2D &obj) const {
 	res.velYGradient_x=velYGradient_x+obj.velYGradient_x;
 	res.velYGradient_y=velYGradient_x+obj.velYGradient_y;
 
-//	res.sound = sound + obj.sound;
+	res.sound = obj.sound; //simplesmente atribuir o valore de vel do som do obj
 	return res;
 }
 
@@ -112,7 +112,7 @@ StateVec2D StateVec2D::operator-(const StateVec2D &obj) const {
 	res.velYGradient_x=velYGradient_x-obj.velYGradient_x;
 	res.velYGradient_y=velYGradient_x-obj.velYGradient_y;
 
-//	res.sound = sound - obj.sound;
+	res.sound = obj.sound; //simplesmente atribuir o valore de vel do som do obj
 	return res;
 }
 
@@ -128,7 +128,7 @@ StateVec2D StateVec2D::operator*(const StateVec2D &obj) const {
 	res.velYGradient_x=velYGradient_x*obj.velYGradient_x;
 	res.velYGradient_y=velYGradient_x*obj.velYGradient_y;
 
-//	res.sound = sound * obj.sound;
+	res.sound = obj.sound; //simplesmente atribuir o valore de vel do som do obj
 	return res;
 }
 
@@ -140,7 +140,7 @@ StateVec2D StateVec2D::operator/(const StateVec2D &obj) const{
 	res.temperature = temperature / obj.temperature;
 
 
-//	res.sound = sound / obj.sound;
+	res.sound = obj.sound; //simplesmente atribuir o valore de vel do som do obj
 	return res;
 }
 
@@ -157,7 +157,7 @@ StateVec2D operator*(const StateVec2D &obj, float value){
 	res.velYGradient_x=value*obj.velYGradient_x;
 	res.velYGradient_y=value*obj.velYGradient_y;
 
-//	res.sound = value*obj.sound;
+	res.sound = obj.sound; //simplesmente atribuir o valore de vel do som do obj
 	return res;
 }
 StateVec2D operator*(float value, const StateVec2D &obj) {
@@ -172,7 +172,7 @@ StateVec2D operator*(float value, const StateVec2D &obj) {
 	res.velYGradient_x=value*obj.velYGradient_x;
 	res.velYGradient_y=value*obj.velYGradient_y;
 
-//	res.sound = value*obj.sound;
+	res.sound = obj.sound; //simplesmente atribuir o valore de vel do som do obj
 	return res;
 }
 
@@ -188,7 +188,7 @@ StateVec2D operator/(const StateVec2D &obj, float value){
 	res.velYGradient_x=obj.velYGradient_x / value;
 	res.velYGradient_y=obj.velYGradient_y / value;
 
-//	res.sound =obj.sound/value;
+	res.sound = obj.sound; //simplesmente atribuir o valore de vel do som do obj
 	return res;
 }
 

@@ -70,7 +70,8 @@ float GrapheneFluid2D::XMomentumFluxX(StateVec2D U) {
 	//float 	mass=DensityToMass(U.n());
 	//return U.px()*U.px()/mass + vel_fer * vel_fer * mass / 3.0f + 0.5f * U.S()* U.S()* U.n()* U.n();
 
-	float sound=vel_snd;
+	//float sound=vel_snd;
+	float sound=U.S();
 	float den=U.n();
 	float px=U.px();
 	float mass=DensityToMass(den);
@@ -92,7 +93,8 @@ float GrapheneFluid2D::YMomentumFluxY(StateVec2D U) {
 	//float 	mass=DensityToMass(U.n());
 	//return U.py()*U.py()/mass + vel_fer * vel_fer * mass / 3.0f + 0.5f * U.S()*U.S()*U.n()*U.n();
 
-	float sound=vel_snd;
+	//float sound=vel_snd;
+	float sound=U.S();
 	float den=U.n();
 	float py=U.py();
 	float mass=DensityToMass(den);
