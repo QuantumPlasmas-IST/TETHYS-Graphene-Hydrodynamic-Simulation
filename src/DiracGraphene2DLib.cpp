@@ -80,7 +80,7 @@ float DiracGraphene2D::EleDensityFluxX(StateVec2D Uelec , __attribute__((unused)
 	return px / sqrt(den);
 }
 
-float DiracGraphene2D::EleDensityFluxY(StateVec2D Uelec , StateVec2D Uholes) {
+float DiracGraphene2D::EleDensityFluxY(StateVec2D Uelec , __attribute__((unused)) StateVec2D Uholes) {
 	float den=Uelec.n();
 	float py=Uelec.py();
 	return py / sqrt(den);
