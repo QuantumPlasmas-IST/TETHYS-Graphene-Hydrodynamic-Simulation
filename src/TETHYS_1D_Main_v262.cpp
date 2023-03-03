@@ -1,5 +1,4 @@
 #include "includes/Fluid1DLib.h"
-#include "includes/ElectricLib.h"
 #include "includes/SetUpParametersLib.h"
 #include "includes/DyakonovShurBoundaryLib.h"
 #include "includes/GrapheneFluid1DLib.h"

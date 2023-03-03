@@ -74,7 +74,7 @@ void DiracGraphene2D::CflCondition(){ // Eventual redefinition
 
 
 
-float DiracGraphene2D::EleDensityFluxX(StateVec2D Uelec , StateVec2D Uholes) {
+float DiracGraphene2D::EleDensityFluxX(StateVec2D Uelec , __attribute__((unused)) StateVec2D Uholes) {
 	float den=Uelec.n();
 	float px=Uelec.px();
 	return px / sqrt(den);

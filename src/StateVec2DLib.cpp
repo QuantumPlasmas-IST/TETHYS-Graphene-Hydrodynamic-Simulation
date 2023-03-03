@@ -11,24 +11,40 @@ StateVec2D::StateVec2D(const StateVec2D & obj) {
 	density=obj.density;
 	momentum_x=obj.momentum_x;
 	momentum_y=obj.momentum_y;
+
+	velXGradient_x = obj.velXGradient_x ;
+	velXGradient_y = obj.velXGradient_y;
+	velYGradient_x = obj.velYGradient_x;
+	velYGradient_y = obj.velYGradient_y;
+	velXLaplacian = obj.velXLaplacian;
+	velYLaplacian = obj.velYLaplacian;
+	tmpLaplacian = obj.tmpLaplacian;
+
 	temperature=obj.temperature;
 	sound=obj.sound;
 }
 
 
-StateVec2D::StateVec2D(float den, float velx, float vely, float temp) {
+
+StateVec2D::StateVec2D(float den, float velx, float vely) {
 	density=den;
 	momentum_x=velx;
 	momentum_y=vely;
-	temperature=temp;
+	velXGradient_x = 0.0f;
+	velXGradient_y = 0.0f;
+	velYGradient_x = 0.0f;
+	velYGradient_y = 0.0f;
+	velXLaplacian = 0.0f;
+	velYLaplacian = 0.0f;
+	tmpLaplacian = 0.0f;
 }
 
-StateVec2D::StateVec2D(float den, float velx, float vely, float temp, float snd) {
-	density=den;
-	momentum_x=velx;
-	momentum_y=vely;
-	temperature=temp;
-	sound=snd;
+StateVec2D::StateVec2D(float den, float velx, float vely, float temp) : StateVec2D(den, velx, vely)  {
+	this->temperature=temp;
+}
+
+StateVec2D::StateVec2D(float den, float velx, float vely, float temp, float snd) : StateVec2D(den, velx, vely, temp) {
+	this->sound=snd;
 }
 
 

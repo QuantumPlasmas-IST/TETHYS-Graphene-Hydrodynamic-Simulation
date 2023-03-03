@@ -100,7 +100,7 @@ public :
 		float EleXMomentumSource(StateVec2D Uelec , StateVec2D Uholes); ///< velocity X component equation (momentum equation) source term
 		float EleYMomentumSource(StateVec2D Uelec , StateVec2D Uholes); ///< velocity y component equation (momentum equation) source term
 
-		float EleDensityFluxX(StateVec2D Uelec , StateVec2D Uholes); ///< density equation (continuity equation) conserved flux X component
+		float EleDensityFluxX(StateVec2D Uelec , __attribute__((unused)) StateVec2D Uholes); ///< density equation (continuity equation) conserved flux X component
 		float EleDensityFluxY(StateVec2D Uelec , StateVec2D Uholes) ; ///< density equation (continuity equation) conserved1 flux Y component
 
 		float EleXMomentumFluxX(StateVec2D Uelec , StateVec2D Uholes); ///< velocity X component equation (momentum equation) conserved flux X component

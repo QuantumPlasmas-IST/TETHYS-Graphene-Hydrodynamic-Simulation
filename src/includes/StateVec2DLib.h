@@ -16,7 +16,7 @@ private:
 	float momentum_x;
 	float momentum_y;
 	float sound=1.0f;
-	float temperature;
+	float temperature=1.0f;
 	float velXGradient_x;
 	float velXGradient_y;
 	float velYGradient_x;
@@ -27,8 +27,9 @@ private:
 public:
 	StateVec2D()=default; //default constructor
 	StateVec2D(const StateVec2D&); //copy constructor
+	StateVec2D(float den, float velx, float vely);
 	StateVec2D(float den, float velx, float vely, float temp);
-	StateVec2D(float den, float velx, float vely, float temp, float snd);
+	StateVec2D(float den, float velx, float vely, float temp, float snd) ;
 	~StateVec2D()=default;
 
 	float& px();
