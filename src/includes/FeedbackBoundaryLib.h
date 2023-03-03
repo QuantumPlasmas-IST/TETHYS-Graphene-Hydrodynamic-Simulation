@@ -33,13 +33,13 @@ public:
 	 * Implementation of single transistor feedback boundary conditions (1D case) of free current and same voltage at source and drain
 	 * @f[ n(x=0)=n(x=L)  @f]
 	 * */
-	static void VoltageFeedbackBc(GrapheneFluid1D &fluid_class, float* Trans, float intens, float omega, float t);
-    static void CurrentFeedbackBc(GrapheneFluid1D &fluid_class, float* Trans, float intens, float omega, float t);
+	static void VoltageFeedbackBc(GrapheneFluid1D &fluid_class, const float* Trans, float intens, float omega, float t);
+    static void CurrentFeedbackBc(GrapheneFluid1D &fluid_class, const float* Trans, float intens, float omega, float t);
 
     FeedbackBoundaryCondition(float time_delay, float delta);
     ~FeedbackBoundaryCondition();
-    void VoltageDelayFeedbackBc(GrapheneFluid1D &fluid_class, float* Trans, float intens, float omega, float t);
-    void CurrentDelayFeedbackBc(GrapheneFluid1D &fluid_class, float* Trans, float intens, float omega, float t);
+    void VoltageDelayFeedbackBc(GrapheneFluid1D &fluid_class, const float* Trans, float intens, float omega, float t);
+    void CurrentDelayFeedbackBc(GrapheneFluid1D &fluid_class, const float* Trans, float intens, float omega, float t);
 
 protected:
     int count;

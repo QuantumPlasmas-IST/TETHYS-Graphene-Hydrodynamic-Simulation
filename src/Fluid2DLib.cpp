@@ -41,7 +41,6 @@ Fluid2D::Fluid2D(const SetUpParameters &input_parameters) : TethysBase{input_par
 
 	vel_snd_arr	= new float[Nx * Ny]();
 
-
 	Umain = new StateVec2D[Nx * Ny]();
 	Umid = new StateVec2D[(Nx - 1) * (Ny - 1)]();
 

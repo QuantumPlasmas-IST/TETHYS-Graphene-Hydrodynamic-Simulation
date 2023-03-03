@@ -46,7 +46,7 @@ using namespace H5;
 
 		float SideAverage(const float *input_array, GridPoint2D p, char side);
 		StateVec2D SideAverage(const StateVec2D *input_array, GridPoint2D p, char side);
-		StateVec2D *ptr_StateVec;
+		StateVec2D *ptr_StateVec = nullptr;
 
 		virtual void RichtmyerStep1();
 		virtual void RichtmyerStep2();

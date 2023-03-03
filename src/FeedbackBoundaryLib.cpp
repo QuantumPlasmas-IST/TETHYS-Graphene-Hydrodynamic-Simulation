@@ -20,7 +20,7 @@ FeedbackBoundaryCondition::FeedbackBoundaryCondition(float time_delay, float del
 
 FeedbackBoundaryCondition::~FeedbackBoundaryCondition()=default;
 
-void FeedbackBoundaryCondition::VoltageFeedbackBc(GrapheneFluid1D& fluid_class, float* Trans, float intens, float omega, float t) {
+void FeedbackBoundaryCondition::VoltageFeedbackBc(GrapheneFluid1D& fluid_class, const float* Trans, float intens, float omega, float t) {
 	int nx=fluid_class.SizeX();
     float Vi = fluid_class.Den[nx-1];
     float Ii = fluid_class.Vel[nx-1]*fluid_class.Den[nx-1];
@@ -32,7 +32,7 @@ void FeedbackBoundaryCondition::VoltageFeedbackBc(GrapheneFluid1D& fluid_class, 
     fluid_class.Vel[0]+=If/fluid_class.Den[0];
 }
 
-void FeedbackBoundaryCondition::CurrentFeedbackBc(GrapheneFluid1D& fluid_class, float* Trans, float intens, float omega, float t) {
+void FeedbackBoundaryCondition::CurrentFeedbackBc(GrapheneFluid1D& fluid_class, const float* Trans, float intens, float omega, float t) {
 	int nx=fluid_class.SizeX();
     float Vi = fluid_class.Den[nx-1];
     float Ii = fluid_class.Vel[nx-1]*fluid_class.Den[nx-1];
@@ -44,7 +44,7 @@ void FeedbackBoundaryCondition::CurrentFeedbackBc(GrapheneFluid1D& fluid_class, 
     fluid_class.Vel[0]+=(If+intens*cos(omega*t))/fluid_class.Den[0];
 }
 
-void FeedbackBoundaryCondition::VoltageDelayFeedbackBc(GrapheneFluid1D& fluid_class, float* Trans, float intens, float omega, float t) {
+void FeedbackBoundaryCondition::VoltageDelayFeedbackBc(GrapheneFluid1D& fluid_class, const float* Trans, float intens, float omega, float t) {
 	int nx=fluid_class.SizeX();
     Dens[count%Nsteps] = fluid_class.Den[nx-1];
     Curr[count%Nsteps] = fluid_class.Vel[nx-1]*fluid_class.Den[nx-1];
@@ -57,7 +57,7 @@ void FeedbackBoundaryCondition::VoltageDelayFeedbackBc(GrapheneFluid1D& fluid_cl
     fluid_class.Vel[0]+=If/fluid_class.Den[0];
 }
 
-void FeedbackBoundaryCondition::CurrentDelayFeedbackBc(GrapheneFluid1D& fluid_class, float* Trans, float intens, float omega, float t) {
+void FeedbackBoundaryCondition::CurrentDelayFeedbackBc(GrapheneFluid1D& fluid_class, const float* Trans, float intens, float omega, float t) {
 	int nx=fluid_class.SizeX();
     Dens[count%Nsteps] = fluid_class.Den[nx-1];
     Curr[count%Nsteps] = fluid_class.Vel[nx-1]*fluid_class.Den[nx-1];

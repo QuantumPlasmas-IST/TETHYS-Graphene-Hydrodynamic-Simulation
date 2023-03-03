@@ -32,7 +32,7 @@ protected:
 	 * */
 	float DensityToMass(float density) override;
 
-	StateVec2D *ptr_StateVecHole;
+	StateVec2D *ptr_StateVecHole = nullptr;
 
 
 //	void ForwardTimeOperator() override; ///< Time evolution for the FTCS method employed for the parabolic operators.
@@ -104,7 +104,7 @@ public :
 		float EleDensityFluxY(StateVec2D Uelec , __attribute__((unused)) StateVec2D Uholes) ; ///< density equation (continuity equation) conserved1 flux Y component
 
 		float EleXMomentumFluxX(StateVec2D Uelec , StateVec2D Uholes); ///< velocity X component equation (momentum equation) conserved flux X component
-		float EleXMomentumFluxY(StateVec2D Uelec , StateVec2D Uholes); ///< velocity X component equation (momentum equation) conserved flux Y component
+		float EleXMomentumFluxY(StateVec2D Uelec , __attribute__((unused)) StateVec2D Uholes); ///< velocity X component equation (momentum equation) conserved flux Y component
 
 		float EleYMomentumFluxX(StateVec2D Uelec , StateVec2D Uholes); ///< velocity Y component equation (momentum equation) conserved flux X component
 		float EleYMomentumFluxY(StateVec2D Uelec , StateVec2D Uholes) ; ///< velocity Y component equation (momentum equation) conserved flux Y component

@@ -97,7 +97,7 @@ float DiracGraphene2D::EleXMomentumFluxX(StateVec2D Uelec , StateVec2D Uholes) {
 	return px * px / mass + sound * sound * (den - hden) + vel_therm * vel_therm * (den + hden);
 }
 
-float DiracGraphene2D::EleXMomentumFluxY(StateVec2D Uelec , StateVec2D Uholes) {
+float DiracGraphene2D::EleXMomentumFluxY(StateVec2D Uelec , __attribute__((unused)) StateVec2D Uholes) {
 	float den=Uelec.n();
 	float px=Uelec.px();
 	float py=Uelec.py();
