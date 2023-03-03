@@ -23,12 +23,18 @@
 
 *.backup
 
+#VSCODE stuff
+/src/.vscode
+.vscode/settings.json
+
+
 #CMAke and Clion stuff
 .idea/
 build/
 #!CMakeLists.txt
 USING_HDF5_CMake.txt
 cmake-build-debug/
+cmake-build-debug-coverage/
 venv/
 #Doxygen output
 doc/html
@@ -100,3 +106,4 @@ dkms.conf
 !/.images/FlowchartTETHYS_2D.png
 !/.images/FlowchartTETHYS_ELEC_2D.png
 !/.images/UML_Class_Diagram.png
+

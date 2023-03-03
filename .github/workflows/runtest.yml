@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - name: Install HDF5
       run: |
@@ -34,3 +34,6 @@ jobs:
 
     - name: Run test 2
       run: ctest --extra-verbose -I 2,2,,2
+
+    - name: Run test 3
+      run: ctest --extra-verbose -I 3,3,,3

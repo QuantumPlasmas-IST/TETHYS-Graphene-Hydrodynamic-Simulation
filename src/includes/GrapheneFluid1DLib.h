@@ -15,6 +15,7 @@
 
 #include "includes/Fluid1DLib.h"
 
+
 /*!
  * @brief Graphene electronic fluid class in one dimension.
  *
@@ -22,16 +23,27 @@
  * It overrides class Fluid1D necessary methods in order to describe the semi-classical electronic fluid.
  * */
 class GrapheneFluid1D : public Fluid1D{
+	private:
+		//float JacobianSpectralRadius( StateVec1D U) override;
+		friend class NumericalFlux;
+
 	public :
 		explicit GrapheneFluid1D(SetUpParameters &input_parameters);
 		~GrapheneFluid1D();
 		/*Override CFL condition to the case of graphene equations */
 		void CflCondition() override;
 		/*Override fluxes and sources to specifics of graphene physics*/
-		float DensityFlux(float n,float v,__attribute__((unused)) float s) override;
-		float VelocityFlux(float n,float v,float dv,float s) override;
-		float DensitySource(__attribute__((unused)) float n,__attribute__((unused)) float v, __attribute__((unused)) float s) override;
-		float VelocitySource(__attribute__((unused)) float n,float v,__attribute__((unused)) float s) override;
+
+		float DensityFlux(StateVec1D U) override;
+		float VelocityFlux(StateVec1D U) override;
+
+		float DensitySource(StateVec1D U) override;
+		float VelocitySource(StateVec1D U) override;
+
+		//float EleDensitySource(__attribute__((unused)) float n,__attribute__((unused)) float v, __attribute__((unused)) float s) override;
+		//float VelocitySource(float n, float v, float s, float d3den) override;
+
+
 };
 
 #endif //GRAPHENEFLUID1DLIB_H

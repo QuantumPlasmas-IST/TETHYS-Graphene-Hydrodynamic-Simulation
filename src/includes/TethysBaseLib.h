@@ -1,5 +1,5 @@
 /************************************************************************************************\
-* 2020 Pedro Cosme , João Santos and Ivan Figueiredo                                             *
+* 2020 Pedro Cosme , João Santos, Ivan Figueiredom, João Rebelo, Diogo Simões                    *
 * DOI: 10.5281/zenodo.4319281																	 *
 * Distributed under the MIT License (license terms are at http://opensource.org/licenses/MIT).   *
 \************************************************************************************************/
@@ -25,8 +25,17 @@
 #include <exception>
 #include <functional>
 
+
+#include <gsl/gsl_vector.h>
+#include <gsl/gsl_linalg.h>
+#include <gsl/gsl_multiroots.h>
+
+#include <gsl/gsl_cblas.h>
+
 #include <H5Cpp.h>
 #include <omp.h>
+#include "includes/TethysMathLib.h"
+//#include "includes/TethysBaseLib.h"
 
 using namespace std;
 using namespace H5;
@@ -47,6 +56,16 @@ using namespace H5;
 const FloatType      HDF5FLOAT(PredType::NATIVE_FLOAT);
 const IntType        HDF5INT(PredType::NATIVE_INT);
 
+struct PhysicalParameters{
+	float VSnd =50.0f;   // sound velocity parameter
+	float VFer =10.0f;
+	float CycF =0.0f;
+	float VisS =0.0f;    // kinetic shear viscosity parameter
+	float VisH =0.0f;    // kinetic odd viscosity parameter
+	float Diff =0.0f; // thermal diffusivity parameter
+	float ColF =0.0f;   // colision frequency parameter
+	float Bohm =0.0f;   // Bohm
+};
 
 /*!
  * @brief Base class for the fluid classes
@@ -54,7 +73,7 @@ const IntType        HDF5INT(PredType::NATIVE_INT);
  * This base class, from which the subsequent fluid classes are derived, establish the dimensios of the simulation grid and manage the creation of the HDF5 structures
  *
  * */
-class TethysBase {
+class TethysBase : public MathUtils {
 	protected:
 		int   Nx ;          // Simulation region (dataset) dimensions
 		int   Ny ;
@@ -64,6 +83,7 @@ class TethysBase {
 		float dt=1.0f;      // temporal discretization. will later be redifined by the CFL condition
 		float lengX=1.0f;   // physical length along x. dx will be redifined as lengX/Nx
 		float lengY=1.0f;   // physical length along y. dy will be redifined as lengY/Ny
+
 		float vel_snd =50.0f;   // sound velocity parameter
 		float vel_fer =10.0f;
 		float cyc_freq =0.0f;
@@ -71,8 +91,11 @@ class TethysBase {
 		float odd_vis =0.0f;    // kinetic odd viscosity parameter
 		float therm_diff = 0.0f; // thermal diffusivity parameter
 		float col_freq =0.0f;   // colision frequency parameter
+
 		std::string file_infix; // base name for the output files
 		float Tmax=2.0f;          // total time of simulation
+
+		PhysicalParameters param;
 
 	public:
 		/*!
@@ -96,7 +119,7 @@ class TethysBase {
         Group* GrpTmp ;    ///< group for ALL Temperature snapshots
 
         DataSpace* DataspaceVelSnd; ///< dataspace for the sound anisotropy
-		DataSpace* DataspaceVelSndMid; ///< dataspace for the sound anisotropy
+		//DataSpace* DataspaceVelSndMid; ///< dataspace for the sound anisotropy
 		DataSpace* DataspaceDen;    ///< dataspace for EACH Density snapshots
 		DataSpace* DataspaceVelX;   ///< dataspace for EACH Velocity X snapshots
 		DataSpace* DataspaceVelY;   ///< dataspace for EACH Velocity Y snapshots
@@ -142,13 +165,18 @@ class TethysBase {
 		std::string GetInfix() const;   ///< @returns   file name infix
 
 
-		void CreateHdf5File();          ///< creates the HDF5 files with the necessary structure
+		virtual void CreateHdf5File();          ///< creates the HDF5 files with the necessary structure
 		void OpenHdf5File(const std::string& hdf5name); ///< opens an existing HDF5 file with the necessary structure @param hdf5name HDF5 file name
 		void CloseHdf5File() const;           ///< closes the HDF5 file
 		void WriteAttributes();          ///< saves the simulation attributes (either physical and simulation parameters)
 
 		static void BannerDisplay() ; ///< launches the initial ASCII art banner
 		void WelcomeScreen() const; ///< launches screen with the relevant info
+
+
+
 };
+
+
 #endif
 

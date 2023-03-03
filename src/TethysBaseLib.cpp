@@ -1,13 +1,58 @@
 /************************************************************************************************\
-* 2020 Pedro Cosme , João Santos and Ivan Figueiredo                                             *
+* 2020 Pedro Cosme , João Santos, Ivan Figueiredom, João Rebelo, Diogo Simões                    *
 * DOI: 10.5281/zenodo.4319281																	 *
 * Distributed under the MIT License (license terms are at http://opensource.org/licenses/MIT).   *
 \************************************************************************************************/
+
 
 #include "includes/TethysBaseLib.h"
 
 using namespace H5;
 using namespace std;
+
+
+TethysBase:: TethysBase(int size_nx, int size_ny, int dimension){
+	Nx = size_nx;
+	Ny = size_ny;
+	RANK=dimension;
+
+	char buffer [50];
+	if(RANK==1) {
+		sprintf(buffer, "Fluido1D_Nx=%d", Nx);
+	}
+	if(RANK==2) {
+		sprintf(buffer, "Fluido2D_Nx=%d_Ny=%d", Nx, Ny);
+	}
+	file_infix = buffer;
+
+	if(RANK==1){
+		hsize_t dimsf[1];// dataset dimensions
+		dimsf[0] = static_cast<hsize_t>(Nx);
+		DataspaceDen = new DataSpace(RANK, dimsf );
+		DataspaceVelX = new DataSpace(RANK, dimsf );
+		DataspaceVelSnd = new DataSpace(RANK, dimsf );
+	}
+	if(RANK==2){
+		hsize_t dimsf[2];
+		dimsf[0] = static_cast<hsize_t>(Ny);
+		dimsf[1] = static_cast<hsize_t>(Nx);
+		DataspaceVelSnd = new DataSpace(RANK, dimsf );
+		DataspaceDen = new DataSpace(RANK, dimsf );
+		DataspaceVelX = new DataSpace(RANK, dimsf );
+		DataspaceVelY = new DataSpace(RANK, dimsf );
+		DataspaceTmp = new DataSpace(RANK, dimsf );
+	//	dimsf[0] = static_cast<hsize_t>(Ny-1);
+	//	dimsf[1] = static_cast<hsize_t>(Nx-1);
+	//	DataspaceVelSndMid = new DataSpace(RANK, dimsf );
+	}
+
+	Hdf5File = nullptr;
+	GrpDat = nullptr;
+	GrpDen = nullptr;
+	GrpVelX = nullptr;
+	GrpVelY = nullptr;
+	GrpTmp = nullptr;
+}
 
 
 void TethysBase::BannerDisplay() {
@@ -19,7 +64,7 @@ cout<<"\n" ;
 	cout<<"║\033[2m      ▐█▌      ▐█▌    ▗▉      ▐█▌      ▐█▌   ▐█▌      ▐█▌    ▗       ██  \033[0m║\n";
 	cout<<"║\033[2m     ▆███▆    ▆███▆▆▆██▉     ▆███▆    ▆███▆ ▆███▆    ▆███▆   ▐█▆▆▆▆▆██▘  \033[0m║\n";
 	cout<<"║                                                                         ║\n";
-	cout<<"║ \033[1mTwo-dimensional Emitter of THz, Hydrodynamic Simulation.  Version 2.6.1\033[0m ║\n";
+	cout<<"║ \033[1mTwo-dimensional Emitter of THz, Hydrodynamic Simulation.  Version 2.7.0\033[0m ║\n";
 	cout<<"╚═════════════════════════════════════════════════════════════════════════╝\n";
 }
 
@@ -197,7 +242,7 @@ TethysBase::~TethysBase(){
 		if (RANK == 2) {
 			delete GrpVelY;
 			delete DataspaceVelY;
-			delete DataspaceVelSndMid;
+			//delete DataspaceVelSndMid;
 			delete DataspaceTmp;
 		}
 		delete Hdf5File;
@@ -213,49 +258,6 @@ TethysBase::~TethysBase(){
 bool TethysBase::Hdf5FileOpen=false;
 int TethysBase::TimeStepCounter=0;
 float TethysBase::TimeStamp=0.0f;
-
-TethysBase::TethysBase(int size_nx, int size_ny, int dimension){
-	Nx = size_nx;
-	Ny = size_ny;
-	RANK=dimension;
-
-	char buffer [50];
-	if(RANK==1) {
-		sprintf(buffer, "Fluido1D_Nx=%d", Nx);
-	}
-	if(RANK==2) {
-		sprintf(buffer, "Fluido2D_Nx=%d_Ny=%d", Nx, Ny);
-	}
-	file_infix = buffer;
-
-	if(RANK==1){
-		hsize_t dimsf[1];// dataset dimensions
-		dimsf[0] = static_cast<hsize_t>(Nx);
-		DataspaceDen = new DataSpace(RANK, dimsf );
-		DataspaceVelX = new DataSpace(RANK, dimsf );
-		DataspaceVelSnd = new DataSpace(RANK, dimsf );
-	}
-	if(RANK==2){
-		hsize_t dimsf[2];
-		dimsf[0] = static_cast<hsize_t>(Ny);
-		dimsf[1] = static_cast<hsize_t>(Nx);
-		DataspaceVelSnd = new DataSpace(RANK, dimsf );
-		DataspaceDen = new DataSpace(RANK, dimsf );
-		DataspaceVelX = new DataSpace(RANK, dimsf );
-		DataspaceVelY = new DataSpace(RANK, dimsf );
-		DataspaceTmp = new DataSpace(RANK, dimsf );
-		dimsf[0] = static_cast<hsize_t>(Ny-1);
-		dimsf[1] = static_cast<hsize_t>(Nx-1);
-		DataspaceVelSndMid = new DataSpace(RANK, dimsf );
-	}
-
-	Hdf5File = nullptr;
-	GrpDat = nullptr;
-	GrpDen = nullptr;
-	GrpVelX = nullptr;
-	GrpVelY = nullptr;
-	GrpTmp = nullptr;
-}
 
 
 void TethysBase::CreateHdf5File(){
@@ -336,6 +338,5 @@ void TethysBase::SetThermDiff(float x) {
 float TethysBase::GetThermDiff() const {
 	return therm_diff;
 }
-
 
 

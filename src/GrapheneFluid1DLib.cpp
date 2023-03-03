@@ -6,9 +6,14 @@
 
 #include "includes/GrapheneFluid1DLib.h"
 
+
+
 GrapheneFluid1D::GrapheneFluid1D(SetUpParameters &input_parameters) : Fluid1D(input_parameters) {
 	vel_fer = input_parameters.FermiVelocity;
 	col_freq = input_parameters.CollisionFrequency;
+
+	param = {vel_snd,vel_fer,0.0f,kin_vis,0.0f,therm_diff,col_freq,0.0f};
+
 	char buffer [50];
 	sprintf (buffer, "S=%.2fvF=%.2fvis=%.2fl=%.2f", vel_snd, vel_fer, kin_vis, col_freq);
 	file_infix = buffer;
@@ -18,36 +23,44 @@ GrapheneFluid1D::~GrapheneFluid1D(){
 	delete Den;
 	delete Vel ;
 	delete Cur ;
-	delete den_mid ;
-	delete vel_mid ;
-	delete DenCor ;
-	delete VelCor ;
-	delete CurCor ;
+	delete Umain;
+	delete Umid;
+	delete Uaux;
 	delete vel_snd_arr ;
-	delete GradVel ;
-	delete grad_vel_mid ;
+	//	delete GradVel ;
 }
 
 
-float GrapheneFluid1D::DensityFlux(float n,float v,float __attribute__((unused)) s){
-	float f_1;
-	f_1 = n * v;
-	return f_1;
+
+float GrapheneFluid1D::VelocityFlux(StateVec1D U) {
+	return 0.25f * U.v() * U.v() + vel_fer * vel_fer * 0.5f * log(U.n()+1E-6f) + 2.0f * U.S() * U.S() * sqrt(U.n()) - kin_vis*U.grad_v();
 }
 
-float GrapheneFluid1D::VelocityFlux(float n, float v, __attribute__((unused))float dv, float s){
-	float f_2;
-		f_2 = 0.25f * v * v + vel_fer * vel_fer * 0.5f * log(n) + 2.0f * s * s * sqrt(n);//- kin_vis * dv;
-	return f_2;
+
+float GrapheneFluid1D::DensityFlux(StateVec1D U) {
+	return U.n()*U.v();
 }
 
-float GrapheneFluid1D::DensitySource(__attribute__((unused)) float n, __attribute__((unused)) float v, __attribute__((unused)) float s){
+float GrapheneFluid1D::DensitySource(StateVec1D U){
 	return 0.0f;
 }
 
-float GrapheneFluid1D::VelocitySource(__attribute__((unused)) float n, float v, __attribute__((unused)) float s){
-	return -1.0f * col_freq * v ;
+float GrapheneFluid1D::VelocitySource(StateVec1D U) {
+	return -1.0f * col_freq * U.v();
 }
+
+
+
+
+
+
+//float GrapheneFluid1D::EleDensitySource(__attribute__((unused)) float n, __attribute__((unused)) float v, __attribute__((unused)) float s){
+//	return 0.0f;
+//}
+
+//float GrapheneFluid1D::VelocitySource(float n, float v, float s, float d3den) {
+//	return -1.0f * col_freq * v;
+//}
 
 void GrapheneFluid1D::CflCondition(){
 	dx = lengX / ( float ) ( Nx - 1 );
@@ -59,3 +72,12 @@ void GrapheneFluid1D::CflCondition(){
 	}
 	dt = dx/lambda;
 }
+
+/*
+float GrapheneFluid1D::JacobianSpectralRadius(StateVec1D U) {
+	float SQRT = sqrt(16.0f*sqrt(U.n())*vel_snd*vel_snd+U.v()*U.v() );
+	float l1 = abs(3.0f*U.v() + SQRT);
+	float l2 = abs(3.0f*U.v() - SQRT);
+	return 0.25f*max(l1,l2);
+}
+*/

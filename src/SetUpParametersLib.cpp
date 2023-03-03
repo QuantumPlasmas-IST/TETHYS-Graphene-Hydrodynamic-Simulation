@@ -1,5 +1,5 @@
 /************************************************************************************************\
-* 2020 Pedro Cosme , João Santos and Ivan Figueiredo                                             *
+* 2020 Pedro Cosme , João Santos, Ivan Figueiredom, João Rebelo, Diogo Simões                    *
 * DOI: 10.5281/zenodo.4319281																	 *
 * Distributed under the MIT License (license terms are at http://opensource.org/licenses/MIT).   *
 \************************************************************************************************/
@@ -61,7 +61,7 @@ SetUpParameters::SetUpParameters(int argc, char ** argv) {
 			}
 		}
 		else {
-			PromptParameters();
+			this->PromptParameters();
 		}
 	}
 	ParametersChecking();
@@ -75,7 +75,7 @@ void SetUpParameters::ParametersChecking() const{
 		cerr << msg <<"\nExiting"<< endl;
 		exit(EXIT_FAILURE);
 	}
-	if(FermiVelocity<=0.0f){
+	if(FermiVelocity<0.0f){
 		msg = "ERROR: Unphysical Fermi Velocity";
 		cerr << msg <<"\nExiting"<< endl;
 		exit(EXIT_FAILURE);
@@ -163,7 +163,7 @@ void SetUpParameters::ParametersFromHdf5File(const string& hdf5name){
 }
 
 void SetUpParameters::DefineGeometry() {
-	int sampling=151;
+	int sampling=201;
 	if(AspectRatio>1.0f){
 		Length=1.0f*AspectRatio;
 		Width=1.0f;
@@ -257,3 +257,176 @@ void SetUpParameters::PromptParameters() {
 	cout << "Define data_save_mode value (0-> light save | 1-> full data): ";
 	cin >> SaveMode;
 }
+
+
+void SetUpParametersCNP::PromptParameters() {
+	cout << "Define S value: ";
+	cin >> SoundVelocity;
+	cout << "Define vF value: ";
+	cin >> FermiVelocity;
+	cout << "Define vT value (Dirac): ";
+	cin >> ThermalVelocity;
+	cout << "Define A source term value (Dirac): ";
+	cin >> Diffusive_sourceterm;
+	cout << "Define B source term value (Dirac): ";
+	cin >> Creation_sourceterm;
+	cout << "Define kinetic shear viscosity: ";
+	cin >> ShearViscosity;
+	cout << "Define kinetic odd viscosity: ";
+	cin >> OddViscosity;
+	cout << "Define collision frequency: ";
+	cin >> CollisionFrequency;
+	cout << "Define cyclotron frequency: ";
+	cin >> CyclotronFrequency;
+	cout << "Define thermal diffusivity: ";
+	cin >> ThermalDiffusivity;
+	cout << "Define the aspect ratio x:y ";
+	cin >> AspectRatio;
+	cout << "Define data_save_mode value (0-> light save | 1-> full data): ";
+	cin >> SaveMode;
+}
+
+
+void SetUpParametersCNP::ReadIniFile(char *  file_name) {
+	string line;
+	ifstream file(file_name);
+
+	vector<string> veclines;
+
+	while(getline(file, line)){
+		veclines.push_back(line);
+	}
+	file.close();
+
+	for(auto & vecline : veclines){
+		line = vecline;
+		vector<char> num_part, txt_part;
+		if(line[0]!=';' && line[0]!='[') {
+			for (char &i : line) {
+				if (isdigit(i) || int(i) == 46)
+					num_part.push_back(i);
+				else {
+					if ((int(i) >= 65 && int(i) <= 90) || (int(i) >= 97 && int(i) <= 122))
+						txt_part.push_back(i);
+				}
+			}
+		}
+		string num(num_part.begin(), num_part.end());
+		string txt(txt_part.begin(), txt_part.end());
+
+		if(txt == "vth,") ThermalVelocity = stof(num);
+		if(txt == "sourceDiff") Diffusive_sourceterm = stof(num);
+		if(txt == "sourceCrea") Creation_sourceterm = stof(num);
+
+		if(txt == "sound") SoundVelocity = stof(num);
+		if(txt == "fermi") FermiVelocity = stof(num);
+		if(txt == "shear") ShearViscosity = stof(num);
+		if(txt == "odd") OddViscosity = stof(num);
+		if(txt == "col") CollisionFrequency = stof(num);
+		if(txt == "cycl") CyclotronFrequency = stof(num);
+		if(txt == "therm") ThermalDiffusivity = stof(num);
+		if(txt == "aspect") AspectRatio = stof(num);
+		if(txt == "time") SimulationTime = stof(num);
+		if(txt == "save") SaveMode = stoi(num);
+	}
+}
+
+
+SetUpParametersCNP::SetUpParametersCNP(int argc, char ** argv) {
+	SizeX=101;
+	SizeY=101;
+
+	if(argc==2){
+		this->ReadIniFile(argv[1]);
+	}
+
+	else{
+		if (argc == 9 || argc == 10) {
+			SoundVelocity = strtof(argv[1], nullptr);
+			FermiVelocity = strtof(argv[2], nullptr);
+			CollisionFrequency = strtof(argv[3], nullptr);
+			ShearViscosity = strtof(argv[4], nullptr);
+			OddViscosity = strtof(argv[5], nullptr);
+			ThermalDiffusivity = strtof(argv[6], nullptr);
+			CyclotronFrequency = strtof(argv[7], nullptr);
+			SaveMode = (int) strtol(argv[8], nullptr, 10);    // full data or light save option
+			if (argc == 10) {
+				AspectRatio = strtof(argv[9], nullptr);
+			}
+		}
+		else {
+			this->PromptParameters();
+		}
+	}
+	this->ParametersChecking();
+	DefineGeometry();
+}
+
+
+SetUpParametersCNP::SetUpParametersCNP(){
+	SizeX=101;
+	SizeY=101;
+	SoundVelocity = 30.0f;
+	FermiVelocity = 10.0f;
+	CollisionFrequency = 0.01f;
+	ShearViscosity = 0.0f;
+	CyclotronFrequency = 0.0f;
+	OddViscosity=0.0f;
+	ThermalDiffusivity=0.0f;
+	SaveMode = 1;
+	this->DefineGeometry();
+}
+
+/*
+void SetUpParameters1D::PromptParameters() {
+	cout << "Define S value: ";
+	cin >> SoundVelocity;
+	cout << "Define vF value: ";
+	cin >> FermiVelocity;
+	cout << "Define kinetic shear viscosity: ";
+	cin >> ShearViscosity;
+	cout << "Define kinetic odd viscosity: ";
+	cin >> CollisionFrequency;
+	cout << "Define thermal diffusivity: ";
+	cin >> ThermalDiffusivity;
+	cout << "Define data_save_mode value (0-> light save | 1-> full data): ";
+	cin >> SaveMode;
+}
+
+void SetUpParameters1D::ReadIniFile(char *  file_name) {
+	string line;
+	ifstream file(file_name);
+
+	vector<string> veclines;
+
+	while(getline(file, line)){
+		veclines.push_back(line);
+	}
+	file.close();
+
+	for(auto & vecline : veclines){
+		line = vecline;
+		vector<char> num_part, txt_part;
+		if(line[0]!=';' && line[0]!='[') {
+			for (char &i : line) {
+				if (isdigit(i) || int(i) == 46)
+					num_part.push_back(i);
+				else {
+					if ((int(i) >= 65 && int(i) <= 90) || (int(i) >= 97 && int(i) <= 122))
+						txt_part.push_back(i);
+				}
+			}
+		}
+		string num(num_part.begin(), num_part.end());
+		string txt(txt_part.begin(), txt_part.end());
+
+		if(txt == "sound") SoundVelocity = stof(num);
+		if(txt == "fermi") FermiVelocity = stof(num);
+		if(txt == "shear") ShearViscosity = stof(num);
+		if(txt == "col") CollisionFrequency = stof(num);
+		if(txt == "therm") ThermalDiffusivity = stof(num);
+		if(txt == "time") SimulationTime = stof(num);
+		if(txt == "save") SaveMode = stoi(num);
+	}
+}
+ */

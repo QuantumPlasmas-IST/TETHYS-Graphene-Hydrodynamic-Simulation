@@ -1,5 +1,5 @@
 /************************************************************************************************\
-* 2020 Pedro Cosme , João Santos and Ivan Figueiredo                                             *
+* 2020 Pedro Cosme , João Santos, Ivan Figueiredom, João Rebelo, Diogo Simões                    *
 * DOI: 10.5281/zenodo.4319281																	 *
 * Distributed under the MIT License (license terms are at http://opensource.org/licenses/MIT).   *
 \************************************************************************************************/
@@ -44,6 +44,7 @@ class SetUpParameters {
 		float Length=1.0f;
 		float Width=1.0f;
 		float AspectRatio=1.0f;
+
 		float SoundVelocity;
 		float FermiVelocity;
 		float CollisionFrequency;
@@ -51,8 +52,10 @@ class SetUpParameters {
 		float OddViscosity;
 		float CyclotronFrequency;
 		float ThermalDiffusivity;
-	    float SimulationTime=0.0f;
-		void ParametersChecking() const; ///< Runs a checking on the physical feasibility of the parameters
+
+
+	    float SimulationTime=1.0f;
+		virtual void ParametersChecking() const; ///< Runs a checking on the physical feasibility of the parameters
 		/*!
 		 * @brief Sets up the 2D grid dimensions
 		 *
@@ -62,8 +65,8 @@ class SetUpParameters {
 		 * */
 		void DefineGeometry();
 		void ParametersFromHdf5File(const std::string& hdf5name); ///< Imports the parameters from a saved HDF5 file
-        void PrintParameters() const; ///< Prints the read parameters to standard output
-		void PromptParameters() ; ///< Asks the user for the simulation parameters
+        virtual void PrintParameters() const; ///< Prints the read parameters to standard output
+	    virtual void PromptParameters() ; ///< Asks the user for the simulation parameters
 		/*!
 		 * @brief Imports the parameters from a saved .ini file
 		 *
@@ -83,9 +86,33 @@ class SetUpParameters {
 		 * |  aspect   |  Aspect ratio    | @f$ AR @f$    |
 		 * |  save   |  Save mode    | -    |
 		 * */
-        void ReadIniFile(char * file_name);
+        virtual void ReadIniFile(char * file_name);
 };
 
+class  SetUpParametersCNP  : public  SetUpParameters{
+
+	public:
+	explicit SetUpParametersCNP();
+	explicit SetUpParametersCNP(int argc, char ** argv);
+//explicit SetUpParametersCNP():SetUpParameters(){};
+//		explicit SetUpParametersCNP(int argc, char ** argv):SetUpParameters(argc,argv){};
+		float ThermalVelocity=1.0f;  //new Dirac terms
+		float Diffusive_sourceterm=.1f; //new Dirac terms
+		float Creation_sourceterm=.1f; //new Dirac terms
+
+		void ReadIniFile(char * file_name) override;
+		void PromptParameters() override; ///< Asks the user for the simulation parameters
+
+};
+
+/*
+class  SetUpParameters1D  : public  SetUpParameters{
+	public:
+		void ReadIniFile(char * file_name) override;
+		void PromptParameters() override; ///< Asks the user for the simulation parameters
+		virtual void PrintParameters() const override;
+};
+*/
 
 
 #endif //SETUPPARAMETERSLIB_H
