@@ -97,8 +97,8 @@ public :
 //		//void MassFluxToVelocity(string grid) override; // Converts the mass density flux back to velocity, in graphene  v = p n^{-3/2}
 		/*Override fluxes and sources to specifics of graphene physics*/
 		float EleDensitySource(StateVec2D Uelec , StateVec2D Uholes);   ///< density equation (continuity equation) source term
-		float EleXMomentumSource(StateVec2D Uelec , StateVec2D Uholes); ///< velocity X component equation (momentum equation) source term
-		float EleYMomentumSource(StateVec2D Uelec , StateVec2D Uholes); ///< velocity y component equation (momentum equation) source term
+		float EleXMomentumSource( __attribute__((unused)) StateVec2D Uelec , __attribute__((unused)) StateVec2D Uholes); ///< velocity X component equation (momentum equation) source term
+		float EleYMomentumSource( __attribute__((unused)) StateVec2D Uelec , __attribute__((unused)) StateVec2D Uholes); ///< velocity y component equation (momentum equation) source term
 
 		float EleDensityFluxX(StateVec2D Uelec , __attribute__((unused)) StateVec2D Uholes); ///< density equation (continuity equation) conserved flux X component
 		float EleDensityFluxY(StateVec2D Uelec , __attribute__((unused)) StateVec2D Uholes) ; ///< density equation (continuity equation) conserved1 flux Y component
@@ -106,20 +106,20 @@ public :
 		float EleXMomentumFluxX(StateVec2D Uelec , StateVec2D Uholes); ///< velocity X component equation (momentum equation) conserved flux X component
 		float EleXMomentumFluxY(StateVec2D Uelec , __attribute__((unused)) StateVec2D Uholes); ///< velocity X component equation (momentum equation) conserved flux Y component
 
-		float EleYMomentumFluxX(StateVec2D Uelec , StateVec2D Uholes); ///< velocity Y component equation (momentum equation) conserved flux X component
+		float EleYMomentumFluxX(StateVec2D Uelec , __attribute__((unused))  StateVec2D Uholes); ///< velocity Y component equation (momentum equation) conserved flux X component
 		float EleYMomentumFluxY(StateVec2D Uelec , StateVec2D Uholes) ; ///< velocity Y component equation (momentum equation) conserved flux Y component
 
 		float HolDensitySource(StateVec2D Uelec , StateVec2D Uholes);   ///< density equation (continuity equation) source term
-		float HolXMomentumSource(StateVec2D Uelec , StateVec2D Uholes); ///< velocity X component equation (momentum equation) source term
-		float HolYMomentumSource(StateVec2D Uelec , StateVec2D Uholes); ///< velocity y component equation (momentum equation) source term
+		float HolXMomentumSource(__attribute__((unused)) StateVec2D Uelec , __attribute__((unused)) StateVec2D Uholes); ///< velocity X component equation (momentum equation) source term
+		float HolYMomentumSource(__attribute__((unused)) StateVec2D Uelec , __attribute__((unused)) StateVec2D Uholes); ///< velocity y component equation (momentum equation) source term
 
-		float HolDensityFluxX(StateVec2D Uelec , StateVec2D Uholes); ///< density equation (continuity equation) conserved flux X component
-		float HolDensityFluxY(StateVec2D Uelec , StateVec2D Uholes); ///< density equation (continuity equation) conserved1 flux Y component
+		float HolDensityFluxX(__attribute__((unused)) StateVec2D Uelec , StateVec2D Uholes); ///< density equation (continuity equation) conserved flux X component
+		float HolDensityFluxY(__attribute__((unused)) StateVec2D Uelec , StateVec2D Uholes); ///< density equation (continuity equation) conserved1 flux Y component
 
 		float HolXMomentumFluxX(StateVec2D Uelec , StateVec2D Uholes); ///< velocity X component equation (momentum equation) conserved flux X component
-		float HolXMomentumFluxY(StateVec2D Uelec , StateVec2D Uholes); ///< velocity X component equation (momentum equation) conserved flux Y component
+		float HolXMomentumFluxY(__attribute__((unused))  StateVec2D Uelec , StateVec2D Uholes); ///< velocity X component equation (momentum equation) conserved flux Y component
 
-		float HolYMomentumFluxX(StateVec2D Uelec , StateVec2D Uholes); ///< velocity Y component equation (momentum equation) conserved flux X component
+		float HolYMomentumFluxX(__attribute__((unused)) StateVec2D Uelec , StateVec2D Uholes); ///< velocity Y component equation (momentum equation) conserved flux X component
 		float HolYMomentumFluxY(StateVec2D Uelec , StateVec2D Uholes); ///< velocity Y component equation (momentum equation) conserved flux Y component
 
 

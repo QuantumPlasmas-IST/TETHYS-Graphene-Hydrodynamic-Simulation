@@ -115,7 +115,7 @@ float DiracGraphene2D::EleYMomentumFluxY(StateVec2D Uelec , StateVec2D Uholes) {
 	return py * py / mass + sound * sound * (den - hden) + vel_therm * vel_therm * (den + hden);
 }
 
-float DiracGraphene2D::EleYMomentumFluxX(StateVec2D Uelec , StateVec2D Uholes) {
+float DiracGraphene2D::EleYMomentumFluxX(StateVec2D Uelec , __attribute__((unused)) StateVec2D Uholes) {
 	float den=Uelec.n();
 	float px=Uelec.px();
 	float py=Uelec.py();
@@ -129,24 +129,24 @@ float DiracGraphene2D::EleDensitySource(StateVec2D Uelec , StateVec2D Uholes) {
 	return A*(1.0f - Uelec.n()) + B*(Uelec.n()*Uholes.n() - 1.0f);
 }
 
-float DiracGraphene2D::EleXMomentumSource(StateVec2D Uelec , StateVec2D Uholes) {
+float DiracGraphene2D::EleXMomentumSource( __attribute__((unused))StateVec2D Uelec , __attribute__((unused)) StateVec2D Uholes) {
 	return 0.0f;
 }
 
-float DiracGraphene2D::EleYMomentumSource(StateVec2D Uelec , StateVec2D Uholes) {
+float DiracGraphene2D::EleYMomentumSource( __attribute__((unused)) StateVec2D Uelec , __attribute__((unused)) StateVec2D Uholes) {
 	return 0.0f;
 }
 
 
 //________________________________ HOLE ____________________________
 
-float DiracGraphene2D::HolDensityFluxX(StateVec2D Uelec , StateVec2D Uholes) {
+float DiracGraphene2D::HolDensityFluxX(__attribute__((unused))  StateVec2D Uelec , StateVec2D Uholes) {
 	float hden=Uholes.n();
 	float px=Uholes.px();
 	return px / sqrt(hden);
 }
 
-float DiracGraphene2D::HolDensityFluxY(StateVec2D Uelec , StateVec2D Uholes) {
+float DiracGraphene2D::HolDensityFluxY(__attribute__((unused)) StateVec2D Uelec , StateVec2D Uholes) {
 	float hden=Uholes.n();
 	float py=Uholes.py();
 	return py / sqrt(hden);
@@ -163,7 +163,7 @@ float DiracGraphene2D::HolXMomentumFluxX(StateVec2D Uelec , StateVec2D Uholes) {
 	return px * px / mass - sound * sound * (den - hden) + vel_therm * vel_therm * (den + hden);
 }
 
-float DiracGraphene2D::HolXMomentumFluxY(StateVec2D Uelec , StateVec2D Uholes) {
+float DiracGraphene2D::HolXMomentumFluxY(__attribute__((unused)) StateVec2D Uelec , StateVec2D Uholes) {
 	float hden=Uholes.n();
 	float px=Uholes.px();
 	float py=Uholes.py();
@@ -181,7 +181,7 @@ float DiracGraphene2D::HolYMomentumFluxY(StateVec2D Uelec , StateVec2D Uholes) {
 	return py * py / mass - sound * sound * (den - hden) + vel_therm * vel_therm * (den + hden);
 }
 
-float DiracGraphene2D::HolYMomentumFluxX(StateVec2D Uelec , StateVec2D Uholes) {
+float DiracGraphene2D::HolYMomentumFluxX(__attribute__((unused)) StateVec2D Uelec , StateVec2D Uholes) {
 	float hden=Uholes.n();
 	float px=Uholes.px();
 	float py=Uholes.py();
@@ -193,11 +193,11 @@ float DiracGraphene2D::HolDensitySource(StateVec2D Uelec , StateVec2D Uholes) {
 	return A*(1.0f - Uholes.n()) + B*(Uelec.n()*Uholes.n() - 1.0f);
 }
 
-float DiracGraphene2D::HolXMomentumSource(StateVec2D Uelec , StateVec2D Uholes) {
+float DiracGraphene2D::HolXMomentumSource(__attribute__((unused)) StateVec2D Uelec ,__attribute__((unused))  StateVec2D Uholes) {
 	return 0.0f;
 }
 
-float DiracGraphene2D::HolYMomentumSource(StateVec2D Uelec , StateVec2D Uholes) {
+float DiracGraphene2D::HolYMomentumSource(__attribute__((unused)) StateVec2D Uelec ,__attribute__((unused))  StateVec2D Uholes) {
 	return 0.0f;
 }
 
