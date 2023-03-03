@@ -603,6 +603,9 @@ void DiracGraphene2D::CopyFields() {
 }
 
 void DiracGraphene2D::SaveSnapShot() {
+
+	Fluid2D::SaveSnapShot();
+
 	hsize_t dim_atr[1] = { 1 };
 	DataSpace atr_dataspace = DataSpace (1, dim_atr );
 
@@ -617,16 +620,6 @@ void DiracGraphene2D::SaveSnapShot() {
 
 	float currenttime=static_cast<float>(TimeStepCounter) * dt;
 
-	DataSet dataset_den = GrpDen->createDataSet(name_dataset, HDF5FLOAT, *DataspaceDen);
-	Attribute atr_step_den = dataset_den.createAttribute("time step", HDF5INT, atr_dataspace);
-	Attribute atr_time_den = dataset_den.createAttribute("time", HDF5FLOAT, atr_dataspace);
-	dataset_den.write(Den, HDF5FLOAT);
-	dataset_den.close();
-	atr_step_den.write(HDF5INT, &TimeStepCounter);
-	atr_time_den.write(HDF5FLOAT , &currenttime);
-	atr_step_den.close();
-	atr_time_den.close();
-
 	DataSet dataset_hden = GrpHDen->createDataSet(name_dataset, HDF5FLOAT, *DataspaceHDen);
 	Attribute atr_step_hden = dataset_hden.createAttribute("time step", HDF5INT, atr_dataspace);
 	Attribute atr_time_hden = dataset_hden.createAttribute("time", HDF5FLOAT, atr_dataspace);
@@ -637,26 +630,6 @@ void DiracGraphene2D::SaveSnapShot() {
 	atr_step_hden.close();
 	atr_time_hden.close();
 
-
-	DataSet dataset_vel_x = GrpVelX->createDataSet(name_dataset, HDF5FLOAT, *DataspaceVelX);
-	Attribute atr_step_vel_x = dataset_vel_x.createAttribute("time step", HDF5INT, atr_dataspace);
-	Attribute atr_time_vel_x = dataset_vel_x.createAttribute("time", HDF5FLOAT, atr_dataspace);
-	dataset_vel_x.write(VelX, HDF5FLOAT);
-	dataset_vel_x.close();
-	atr_step_vel_x.write(HDF5INT, &TimeStepCounter);
-	atr_time_vel_x.write(HDF5FLOAT , &currenttime);
-	atr_step_vel_x.close();
-	atr_time_vel_x.close();
-
-	DataSet dataset_vel_y = GrpVelY->createDataSet(name_dataset, HDF5FLOAT, *DataspaceVelY);
-	Attribute atr_step_vel_y = dataset_vel_y.createAttribute("time step", HDF5INT, atr_dataspace);
-	Attribute atr_time_vel_y = dataset_vel_y.createAttribute("time", HDF5FLOAT, atr_dataspace);
-	dataset_vel_y.write(VelY, HDF5FLOAT);
-	dataset_vel_y.close();
-	atr_step_vel_y.write(HDF5INT, &TimeStepCounter);
-	atr_time_vel_y.write(HDF5FLOAT , &currenttime);
-	atr_step_vel_y.close();
-	atr_time_vel_y.close();
 
 	DataSet dataset_hvel_x = GrpHVelX->createDataSet(name_dataset, HDF5FLOAT, *DataspaceHVelX);
 	Attribute atr_step_hvel_x = dataset_hvel_x.createAttribute("time step", HDF5INT, atr_dataspace);
@@ -678,17 +651,6 @@ void DiracGraphene2D::SaveSnapShot() {
 	atr_step_hvel_y.close();
 	atr_time_hvel_y.close();
 
-	if(therm_diff!=0){
-		DataSet dataset_tmp = GrpTmp->createDataSet(name_dataset, HDF5FLOAT, *DataspaceTmp);
-		Attribute atr_step_tmp = dataset_tmp.createAttribute("time step", HDF5INT, atr_dataspace);
-		Attribute atr_time_tmp = dataset_tmp.createAttribute("time", HDF5FLOAT, atr_dataspace);
-		dataset_tmp.write(Tmp, HDF5FLOAT);
-		dataset_tmp.close();
-		atr_step_tmp.write(HDF5INT, &TimeStepCounter);
-		atr_time_tmp.write(HDF5FLOAT, &currenttime);
-		atr_step_tmp.close();
-		atr_time_tmp.close();
-	}
 }
 
 void DiracGraphene2D::CreateHdf5File() {
