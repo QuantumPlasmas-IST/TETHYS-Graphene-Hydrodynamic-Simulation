@@ -23,7 +23,7 @@
 using namespace H5;
 using namespace std;
 
-class CellHandler1D; //forward declaration
+//class CellHandler1D; //forward declaration
 
 
 
