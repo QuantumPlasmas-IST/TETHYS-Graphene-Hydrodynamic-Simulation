@@ -43,9 +43,9 @@ int main(int argc, char **argv){
 	//graph.GetLengthX();
 
 	//std::function<float(float,float)> variationS = [=](float x,float y){ return sound+5.f* tanh(6.0f*cos(2.0f*MAT_PI*2.0f*x)); };
-	std::function<float(float,float)> variationS = [=](float x,float y){ return sound*(1+0.3f*x* abs(y-0.5*ly)); };
-	graph.SetSound(variationS);
-	//graph.SetSound();
+	//std::function<float(float,float)> variationS = [=](float x,float y){ return sound*(1+0.3f*x* abs(y-0.5*ly)); };
+	//graph.SetSound(variationS);
+	graph.SetSound();
 	//graph.SetSimulationTime();
 	//graph.SetTmax(0.01f);
 
