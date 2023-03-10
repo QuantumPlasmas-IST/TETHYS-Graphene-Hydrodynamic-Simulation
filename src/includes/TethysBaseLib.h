@@ -25,13 +25,13 @@
 #include <exception>
 #include <functional>
 
-
+/*
 #include <gsl/gsl_vector.h>
 #include <gsl/gsl_linalg.h>
 #include <gsl/gsl_multiroots.h>
 
 #include <gsl/gsl_cblas.h>
-
+*/
 #include <H5Cpp.h>
 #include <omp.h>
 #include "includes/TethysMathLib.h"

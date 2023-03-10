@@ -16,9 +16,10 @@
 #include <cmath>
 #include <functional>
 
+/*
 #include <gsl/gsl_vector.h>
 #include <gsl/gsl_multiroots.h>
-
+*/
 #include <H5Cpp.h>
 
 using namespace std;
