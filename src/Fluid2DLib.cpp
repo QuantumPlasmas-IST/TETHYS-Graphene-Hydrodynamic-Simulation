@@ -231,16 +231,16 @@ void Fluid2D::RichtmyerStep2(){
 			Umain[kp].n() = Uold.n()
 			                - (dt/dx)*(DensityFluxX(UEast) - DensityFluxX(UWest))
 			                - (dt/dy)*(DensityFluxY(UNorth) - DensityFluxY(USouth));
-			                //+ dt*EleDensitySource(Uold);
+			                + dt*DensitySource(Uold);
 			Umain[kp].px() = Uold.px()
 			                 - (dt/dx)*(XMomentumFluxX(UEast) - XMomentumFluxX(UWest))
 			                 - (dt/dy)*(XMomentumFluxY(UNorth) - XMomentumFluxY(USouth));
-			                 //+ dt*EleXMomentumSource(Uold);
+			                 + dt*XMomentumSource(Uold);
 
 			Umain[kp].py() = Uold.py()
 			                 - (dt/dx)*(YMomentumFluxX(UEast) - YMomentumFluxX(UWest))
 			                 - (dt/dy)*(YMomentumFluxY(UNorth) - YMomentumFluxY(USouth));
-			                 //+ dt*EleYMomentumSource(Uold);
+			                 + dt*YMomentumSource(Uold);
 		}
 	}
 
