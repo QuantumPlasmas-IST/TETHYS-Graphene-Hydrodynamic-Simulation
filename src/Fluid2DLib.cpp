@@ -645,14 +645,17 @@ void Fluid2D::VelocityGradient(StateVec2D *Uarray, int size_x, int size_y) {
 			float mW = DensityToMass(Uarray[kp-1].n());
 			float mN = DensityToMass(Uarray[kp+stride].n());
 			float mS = DensityToMass(Uarray[kp-stride].n());
+
 			float vxE = Uarray[kp+1].px()/mE;
 			float vxW = Uarray[kp-1].px()/mW;
 			float vxN = Uarray[kp+stride].px()/mN;
 			float vxS = Uarray[kp-stride].px()/mS;
+
 			float vyE = Uarray[kp+1].py()/mE;
 			float vyW = Uarray[kp-1].py()/mW;
 			float vyN = Uarray[kp+stride].py()/mN;
 			float vyS = Uarray[kp-stride].py()/mS;
+
 			Uarray[kp].dxvx() = (vxE - vxW) / (2.0f * dx);
 			Uarray[kp].dyvx() = (vxN - vxS) / (2.0f * dy);
 			Uarray[kp].dxvy() = (vyE - vyW) / (2.0f * dx);
@@ -668,16 +671,19 @@ void Fluid2D::VelocityGradient(StateVec2D *Uarray, int size_x, int size_y) {
 		float mW = DensityToMass(Uarray[top-1].n());
 		float mS = DensityToMass(Uarray[top-stride].n());
 		float mSS = DensityToMass(Uarray[southsouth].n());
+
 		float vxC = Uarray[top].px()/mC;
 		float vxE = Uarray[top+1].px()/mE;
 		float vxW = Uarray[top-1].px()/mW;
 		float vxSS = Uarray[southsouth].px()/mSS;
 		float vxS = Uarray[top-stride].px()/mS;
+
 		float vyC = Uarray[top].py()/mC;
 		float vyE = Uarray[top+1].py()/mE;
 		float vyW = Uarray[top-1].py()/mW;
 		float vySS = Uarray[southsouth].py()/mSS;
 		float vyS = Uarray[top-stride].py()/mS;
+
 		Uarray[top].dxvx() = (vxE - vxW) / (2.0f * dx);
 		Uarray[top].dxvy() = (vyE - vyW) / (2.0f * dx);
 		Uarray[top].dyvx() = (3.0f * vxC - 4.0f * vxS + vxSS) /(2.0f * dy); //backward finite difference
@@ -692,11 +698,13 @@ void Fluid2D::VelocityGradient(StateVec2D *Uarray, int size_x, int size_y) {
 		float mW = DensityToMass(Uarray[bottom-1].n());
 		float mN = DensityToMass(Uarray[bottom+stride].n());
 		float mNN = DensityToMass(Uarray[northnorth].n());
+
 		float vxC = Uarray[bottom].px()/mC;
 		float vxE = Uarray[bottom+1].px()/mE;
 		float vxW = Uarray[bottom-1].px()/mW;
 		float vxNN = Uarray[northnorth].px()/mNN;
 		float vxN = Uarray[bottom+stride].px()/mN;
+
 		float vyC = Uarray[bottom].py()/mC;
 		float vyE = Uarray[bottom+1].py()/mE;
 		float vyW = Uarray[bottom-1].py()/mW;
@@ -719,12 +727,14 @@ void Fluid2D::VelocityGradient(StateVec2D *Uarray, int size_x, int size_y) {
 		float mEE = DensityToMass(Uarray[easteast].n());
 		float mN = DensityToMass(Uarray[left+stride].n());
 		float mS = DensityToMass(Uarray[left-stride].n());
+
 		float vxC = Uarray[left].px()/mC;
 		float vxE = Uarray[left+1].px()/mE;
 		float vxEE = Uarray[easteast].px()/mEE;
 		float vxN = Uarray[left+stride].px()/mN;
 		float vxS = Uarray[left-stride].px()/mS;
-		float vyC = Uarray[left].px()/mC;
+
+		float vyC = Uarray[left].py()/mC;
 		float vyE = Uarray[left+1].py()/mE;
 		float vyEE = Uarray[easteast].py()/mEE;
 		float vyN = Uarray[left+stride].py()/mN;
@@ -746,12 +756,14 @@ void Fluid2D::VelocityGradient(StateVec2D *Uarray, int size_x, int size_y) {
 		float mW = DensityToMass(Uarray[right-1].n());
 		float mN = DensityToMass(Uarray[right+stride].n());
 		float mS = DensityToMass(Uarray[right-stride].n());
+
 		float vxC = Uarray[right].px()/mC;
 		float vxWW = Uarray[westwest].px()/mWW;
 		float vxW = Uarray[right-1].px()/mW;
 		float vxN = Uarray[right+stride].px()/mN;
 		float vxS = Uarray[right-stride].px()/mS;
-		float vyC = Uarray[right].px()/mC;
+
+		float vyC = Uarray[right].py()/mC;
 		float vyWW = Uarray[westwest].py()/mWW;
 		float vyW = Uarray[right-1].py()/mW;
 		float vyN = Uarray[right+stride].py()/mN;
@@ -776,6 +788,7 @@ void Fluid2D::VelocityGradient(StateVec2D *Uarray, int size_x, int size_y) {
 	float vxEE = Uarray[kp+2].px()/mEE;
 	float vxS = Uarray[kp+stride].px()/mS;
 	float vxSS = Uarray[kp+2*stride].px()/mSS;
+
 	float vyC = Uarray[kp].py()/mC;
 	float vyE = Uarray[kp+1].py()/mE;
 	float vyEE = Uarray[kp+2].py()/mEE;
@@ -798,6 +811,7 @@ void Fluid2D::VelocityGradient(StateVec2D *Uarray, int size_x, int size_y) {
 	float vxWW = Uarray[kp-2].px()/mWW;
 	vxS = Uarray[kp+stride].px()/mS;
 	vxSS = Uarray[kp+2*stride].px()/mSS;
+
 	vyC = Uarray[kp].py()/mC;
 	float vyW = Uarray[kp-1].py()/mW;
 	float vyWW = Uarray[kp-2].py()/mWW;
