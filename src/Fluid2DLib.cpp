@@ -850,18 +850,20 @@ void Fluid2D::VelocityGradient(StateVec2D *Uarray, int size_x, int size_y) {
 // i=(size_x-1) j=(size_y-1) backward x backward y
 	kp = (size_x - 1) + (size_y - 1) * size_x;
 	mC = DensityToMass(Uarray[kp].n());
-	mW = DensityToMass(Uarray[kp+1].n());
-	mWW = DensityToMass(Uarray[kp+2].n());
+	mW = DensityToMass(Uarray[kp-1].n());
+	mWW = DensityToMass(Uarray[kp-2].n());
 	mN = DensityToMass(Uarray[kp-stride].n());
 	mNN = DensityToMass(Uarray[kp-2*stride].n());
+
 	vxC = Uarray[kp].px()/mC;
-	vxW = Uarray[kp+1].px()/mW;
-	vxWW = Uarray[kp+2].px()/mWW;
+	vxW = Uarray[kp-1].px()/mW;
+	vxWW = Uarray[kp-2].px()/mWW;
 	vxN = Uarray[kp-stride].px()/mN;
 	vxNN = Uarray[kp-2*stride].px()/mNN;
+
 	vyC = Uarray[kp].py()/mC;
-	vyW = Uarray[kp+1].py()/mW;
-	vyWW = Uarray[kp+2].py()/mWW;
+	vyW = Uarray[kp-1].py()/mW;
+	vyWW = Uarray[kp-2].py()/mWW;
 	vyN = Uarray[kp-stride].py()/mN;
 	vyNN = Uarray[kp-2*stride].py()/mNN;
 	Uarray[kp].dyvx() = (3.0f * vxC - 4.0f * vxN + vxNN ) / (2.0f * dy);
