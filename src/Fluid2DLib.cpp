@@ -460,7 +460,7 @@ void Fluid2D::SaveSnapShot() {
 int Fluid2D::GetSnapshotStep() const { return snapshot_step;}
 int Fluid2D::GetSnapshotFreq() const {return snapshot_per_period;}
 
-bool Fluid2D::Snapshot() const {
+bool Fluid2D::Snapshot() const { //TODO rever a frequencia d gravacao de hdf5
 	bool state;
 	if(TimeStepCounter % snapshot_step == 0){
 		state = true;
