@@ -146,11 +146,11 @@ void Fluid2D::InitialCondTest(){
 
 
 void Fluid2D::Richtmyer(){
-	if(odd_vis){
+	if(odd_vis!=0){
 		VelocityGradient(Umain,Nx,Ny);
 	}
 	RichtmyerStep1();
-	if(odd_vis){
+	if(odd_vis!=0){
 		VelocityGradient(Umid,Nx-1,Ny-1);
 	}
 	RichtmyerStep2();
@@ -776,11 +776,11 @@ void Fluid2D::VelocityGradient(StateVec2D *Uarray, int size_x, int size_y) {
 	float vxEE = Uarray[kp+2].px()/mEE;
 	float vxS = Uarray[kp+stride].px()/mS;
 	float vxSS = Uarray[kp+2*stride].px()/mSS;
-	float vyC = Uarray[kp].px()/mC;
-	float vyE = Uarray[kp+1].px()/mE;
-	float vyEE = Uarray[kp+2].px()/mEE;
-	float vyS = Uarray[kp+stride].px()/mS;
-	float vySS = Uarray[kp+2*stride].px()/mSS;
+	float vyC = Uarray[kp].py()/mC;
+	float vyE = Uarray[kp+1].py()/mE;
+	float vyEE = Uarray[kp+2].py()/mEE;
+	float vyS = Uarray[kp+stride].py()/mS;
+	float vySS = Uarray[kp+2*stride].py()/mSS;
 	Uarray[kp].dxvx() = (-3.0f * vxC + 4.0f * vxE - vxEE ) / (2.0f * dx);
 	Uarray[kp].dyvx() = (-3.0f * vxC + 4.0f * vxS - vxSS ) / (2.0f * dy);
 	Uarray[kp].dxvy() = (-3.0f * vyC + 4.0f * vyE - vyEE ) / (2.0f * dx);
@@ -798,11 +798,11 @@ void Fluid2D::VelocityGradient(StateVec2D *Uarray, int size_x, int size_y) {
 	float vxWW = Uarray[kp-2].px()/mWW;
 	vxS = Uarray[kp+stride].px()/mS;
 	vxSS = Uarray[kp+2*stride].px()/mSS;
-	vyC = Uarray[kp].px()/mC;
-	float vyW = Uarray[kp-1].px()/mW;
-	float vyWW = Uarray[kp-2].px()/mWW;
-	vyS = Uarray[kp+stride].px()/mS;
-	vySS = Uarray[kp+2*stride].px()/mSS;
+	vyC = Uarray[kp].py()/mC;
+	float vyW = Uarray[kp-1].py()/mW;
+	float vyWW = Uarray[kp-2].py()/mWW;
+	vyS = Uarray[kp+stride].py()/mS;
+	vySS = Uarray[kp+2*stride].py()/mSS;
 	Uarray[kp].dxvx() = (3.0f * vxC - 4.0f * vxW + vxWW ) / (2.0f * dx);
 	Uarray[kp].dyvx() = (-3.0f * vxC + 4.0f * vxS - vxSS ) / (2.0f * dy);
 	Uarray[kp].dxvy() = (3.0f * vyC - 4.0f * vyW + vyWW ) / (2.0f * dx);
@@ -821,11 +821,11 @@ void Fluid2D::VelocityGradient(StateVec2D *Uarray, int size_x, int size_y) {
 	vxEE = Uarray[kp+2].px()/mEE;
 	float vxN = Uarray[kp-stride].px()/mN;
 	float vxNN = Uarray[kp-2*stride].px()/mNN;
-	vyC = Uarray[kp].px()/mC;
-	vyE = Uarray[kp+1].px()/mE;
-	vyEE = Uarray[kp+2].px()/mEE;
-	float vyN = Uarray[kp-stride].px()/mN;
-	float vyNN = Uarray[kp-2*stride].px()/mNN;
+	vyC = Uarray[kp].py()/mC;
+	vyE = Uarray[kp+1].py()/mE;
+	vyEE = Uarray[kp+2].py()/mEE;
+	float vyN = Uarray[kp-stride].py()/mN;
+	float vyNN = Uarray[kp-2*stride].py()/mNN;
 	Uarray[kp].dxvx() = (-3.0f * vxC + 4.0f * vxE - vxEE ) / (2.0f * dx);
 	Uarray[kp].dyvx() = (3.0f * vxC - 4.0f * vxN + vxNN ) / (2.0f * dy);
 	Uarray[kp].dxvy() = (-3.0f * vyC + 4.0f * vyE - vyEE ) / (2.0f * dx);
@@ -845,11 +845,11 @@ void Fluid2D::VelocityGradient(StateVec2D *Uarray, int size_x, int size_y) {
 	vxWW = Uarray[kp+2].px()/mWW;
 	vxN = Uarray[kp-stride].px()/mN;
 	vxNN = Uarray[kp-2*stride].px()/mNN;
-	vyC = Uarray[kp].px()/mC;
-	vyW = Uarray[kp+1].px()/mW;
-	vyWW = Uarray[kp+2].px()/mWW;
-	vyN = Uarray[kp-stride].px()/mN;
-	vyNN = Uarray[kp-2*stride].px()/mNN;
+	vyC = Uarray[kp].py()/mC;
+	vyW = Uarray[kp+1].py()/mW;
+	vyWW = Uarray[kp+2].py()/mWW;
+	vyN = Uarray[kp-stride].py()/mN;
+	vyNN = Uarray[kp-2*stride].py()/mNN;
 	Uarray[kp].dyvx() = (3.0f * vxC - 4.0f * vxN + vxNN ) / (2.0f * dy);
 	Uarray[kp].dyvy() = (3.0f * vyC - 4.0f * vyN + vyNN ) / (2.0f * dy);
 	Uarray[kp].dxvx() = (3.0f * vxC - 4.0f * vxW + vxWW ) / (2.0f * dx);
