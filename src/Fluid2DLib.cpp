@@ -916,8 +916,9 @@ void Fluid2D::VelocityGradient(StateVec2D *Uarray, int size_x, int size_y) {
 
 void Fluid2D::VelocityXGradient_bulk(StateVec2D *Uarray, int size_x, int size_y) {
 	int stride = size_x;
-	int N,S,E,W;
+#pragma omp parallel for default(none) shared(Uarray,stride,size_x,size_y)
 	for (int kp = 1 + size_x; kp <= size_x * size_y - size_x - 2; kp++) {
+		int N,S,E,W;
 		if (kp % stride != stride - 1 && kp % stride != 0) {
 			N=kp+stride;
 			S=kp-stride;
@@ -1126,9 +1127,12 @@ void Fluid2D::VelocityXGradient_corners(StateVec2D *Uarray, int size_x, int size
 
 void Fluid2D::VelocityYGradient_bulk(StateVec2D *Uarray, int size_x, int size_y) {
 	int stride = size_x;
-	int N,S,E,W;
+
 //#pragma omp parallel for default(none) shared(size_x, size_y, dx, dy, stride, array_in, array_out_x, array_out_y)
+
+#pragma omp parallel for default(none) shared(Uarray,stride,size_x,size_y)
 	for (int kp = 1 + size_x; kp <= size_x * size_y - size_x - 2; kp++) {
+		int N,S,E,W;
 		if (kp % stride != stride - 1 && kp % stride != 0) {
 			N=kp+stride;
 			S=kp-stride;
