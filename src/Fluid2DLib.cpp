@@ -687,9 +687,9 @@ void Fluid2D::VelocityGradient(StateVec2D *Uarray, int size_x, int size_y) {
 		float vyS = Uarray[top-stride].py()/mS;
 
 		Uarray[top].dxvx() = (vxE - vxW) / (2.0f * dx);
-		Uarray[top].dxvy() = (vyE - vyW) / (2.0f * dx);
 		Uarray[top].dyvx() = (3.0f * vxC - 4.0f * vxS + vxSS) /(2.0f * dy); //backward finite difference
-		Uarray[top].dyvx() = (3.0f * vyC - 4.0f * vyS + vySS) /(2.0f * dy); //backward finite difference
+		Uarray[top].dxvy() = (vyE - vyW) / (2.0f * dx);
+		Uarray[top].dyvy() = (3.0f * vyC - 4.0f * vyS + vySS) /(2.0f * dy); //backward finite difference
 	}
 
 	for (int i = 1; i <= size_x - 2; i++) { // fundo rede principal, ou seja j=0
@@ -714,9 +714,9 @@ void Fluid2D::VelocityGradient(StateVec2D *Uarray, int size_x, int size_y) {
 		float vyN = Uarray[bottom+stride].py()/mN;
 
 		Uarray[bottom].dxvx() = (vxE - vxW) / (2.0f * dx);
-		Uarray[bottom].dxvy() = (vyE - vyW) / (2.0f * dx);
 		Uarray[bottom].dyvx() = (-3.0f * vxC + 4.0f * vxN - vxNN) /(2.0f * dy); //backward finite difference
-		Uarray[bottom].dyvx() = (-3.0f * vyC + 4.0f * vyN - vyNN) /(2.0f * dy); //backward finite difference
+		Uarray[bottom].dxvy() = (vyE - vyW) / (2.0f * dx);
+		Uarray[bottom].dyvy() = (-3.0f * vyC + 4.0f * vyN - vyNN) /(2.0f * dy); //backward finite difference
 	}
 	
 	for (int j = 1; j <= size_y - 2; j++) { //lado esquerdo da rede principal ou seja i=0
@@ -875,6 +875,18 @@ void Fluid2D::VelocityGradient(StateVec2D *Uarray, int size_x, int size_y) {
 
 }
 
+
+void Fluid2D::VelocityXGradient(StateVec2D *Uarray, int size_x, int size_y) {
+
+}
+
+void Fluid2D::VelocityYGradient(StateVec2D *Uarray, int size_x, int size_y) {
+
+}
+
+
+
+
 void Fluid2D::MassFluxToVelocity() {
 	for (int i = 0; i < Nx*Ny; ++i) {
 		float mass= DensityToMass(Umain[i].n());
@@ -883,6 +895,7 @@ void Fluid2D::MassFluxToVelocity() {
 	}
 }
 
+
 void Fluid2D::VelocityToCurrent() {
 	for (int i = 0; i < Nx*Ny; ++i) {
 		float mass= DensityToMass(Umain[i].n());
@@ -890,5 +903,6 @@ void Fluid2D::VelocityToCurrent() {
 		CurY[i]=Den[i]*VelY[i];
 	}
 }
+
 
 

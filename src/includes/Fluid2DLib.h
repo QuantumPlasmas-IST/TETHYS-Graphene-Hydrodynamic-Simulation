@@ -51,6 +51,10 @@ using namespace H5;
 		virtual void RichtmyerStep1();
 		virtual void RichtmyerStep2();
 
+
+		void VelocityXGradient(StateVec2D *Uarray, int size_x, int size_y);
+		void VelocityYGradient(StateVec2D *Uarray, int size_x, int size_y);
+
 	public :
 
 		virtual void CopyFields();
