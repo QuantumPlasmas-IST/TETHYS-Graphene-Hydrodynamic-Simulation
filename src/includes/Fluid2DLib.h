@@ -51,6 +51,21 @@ using namespace H5;
 		virtual void RichtmyerStep1();
 		virtual void RichtmyerStep2();
 
+
+		void VelocityXGradient_bulk(StateVec2D *Uarray, int size_x, int size_y);
+		void VelocityXGradient_top(StateVec2D *Uarray, int size_x, int size_y);
+		void VelocityXGradient_bottom(StateVec2D *Uarray, int size_x, int size_y);
+		void VelocityXGradient_left(StateVec2D *Uarray, int size_x, int size_y);
+		void VelocityXGradient_right(StateVec2D *Uarray, int size_x, int size_y);
+		void VelocityXGradient_corners(StateVec2D *Uarray, int size_x, int size_y);
+
+		void VelocityYGradient_bulk(StateVec2D *Uarray, int size_x, int size_y);
+		void VelocityYGradient_top(StateVec2D *Uarray, int size_x, int size_y);
+		void VelocityYGradient_bottom(StateVec2D *Uarray, int size_x, int size_y);
+		void VelocityYGradient_left(StateVec2D *Uarray, int size_x, int size_y);
+		void VelocityYGradient_right(StateVec2D *Uarray, int size_x, int size_y);
+		void VelocityYGradient_corners(StateVec2D *Uarray, int size_x, int size_y);
+
 	public :
 
 		virtual void CopyFields();

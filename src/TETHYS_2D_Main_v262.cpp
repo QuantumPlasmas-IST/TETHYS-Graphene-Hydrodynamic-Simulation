@@ -47,7 +47,7 @@ int main(int argc, char **argv){
 	//graph.SetSound(variationS);
 	graph.SetSound();
 	//graph.SetSimulationTime();
-	//graph.SetTmax(0.01f);
+	//graph.SetTmax(3.f);
 
 	/*................................................................*/
 
@@ -103,8 +103,8 @@ int main(int argc, char **argv){
 		 * Change the boundary conditions here *
 		 *+++++++++++++++++++++++++++++++++++++*/
 		DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
-		//DirichletBoundaryCondition::YClosedNoSlip(graph);
-		DirichletBoundaryCondition::YClosedFreeSlip(graph);
+		DirichletBoundaryCondition::YClosedNoSlip(graph);
+		//DirichletBoundaryCondition::YClosedFreeSlip(graph);
 
 //		BoundaryCondition::XPeriodic(graph);
 //		BoundaryCondition::YPeriodic(graph);
@@ -119,8 +119,8 @@ int main(int argc, char **argv){
 			// * Change the boundary conditions here *
 			// *+++++++++++++++++++++++++++++++++++++
 			DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
-			//DirichletBoundaryCondition::YClosedNoSlip(graph);
-			DirichletBoundaryCondition::YClosedFreeSlip(graph);
+			DirichletBoundaryCondition::YClosedNoSlip(graph);
+			//DirichletBoundaryCondition::YClosedFreeSlip(graph);
 		}
 		//Record full hdf5 data
 		if (parameters.SaveMode  && graph.Snapshot()) {
