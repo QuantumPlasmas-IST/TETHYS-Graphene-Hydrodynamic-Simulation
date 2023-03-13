@@ -163,6 +163,7 @@ void Fluid2D::RichtmyerStep1(){
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	ChooseGridPointers("MidGrid");
 //#pragma omp parallel for default(none) shared(Nx,Ny,dt,dx,dy,Den,FlxX,FlxY,Tmp,den_dx,den_dy,ptr_den,ptr_px,ptr_py,ptr_snd,ptr_tmp,ptr_velXdx,ptr_velXdy,ptr_velYdx,ptr_velYdy,ptr_dendx,ptr_dendy)
+#pragma omp parallel for default(none) shared(Umain,Umid)
 	for(int ks=0; ks<=Nx*Ny-Nx-Ny; ks++){ //correr todos os pontos da grelha secundaria de den_mid
 		GridPoint2D midpoint(ks, Nx, Ny, true);
 
@@ -208,6 +209,7 @@ void Fluid2D::RichtmyerStep2(){
 
 	ChooseGridPointers("MainGrid");
 //#pragma omp parallel for default(none) shared(Nx,Ny,dt,dx,dy,FlxX,FlxY,Den,Tmp,den_dx,den_dy,ptr_den,ptr_px,ptr_py,ptr_snd,ptr_tmp,ptr_velXdx,ptr_velXdy,ptr_velYdx,ptr_velYdy,ptr_dendx,ptr_dendy)
+#pragma omp parallel for default(none) shared(Umain,Umid)
 	for(int kp=1+Nx; kp<=Nx*Ny-Nx-2; kp++){ //correr a grelha principal evitando as fronteiras
 		GridPoint2D mainpoint(kp, Nx, Ny, false);
 		if( kp%Nx!=Nx-1 && kp%Nx!=0){
@@ -230,16 +232,16 @@ void Fluid2D::RichtmyerStep2(){
 
 			Umain[kp].n() = Uold.n()
 			                - (dt/dx)*(DensityFluxX(UEast) - DensityFluxX(UWest))
-			                - (dt/dy)*(DensityFluxY(UNorth) - DensityFluxY(USouth));
+			                - (dt/dy)*(DensityFluxY(UNorth) - DensityFluxY(USouth))
 			                + dt*DensitySource(Uold);
 			Umain[kp].px() = Uold.px()
 			                 - (dt/dx)*(XMomentumFluxX(UEast) - XMomentumFluxX(UWest))
-			                 - (dt/dy)*(XMomentumFluxY(UNorth) - XMomentumFluxY(USouth));
+			                 - (dt/dy)*(XMomentumFluxY(UNorth) - XMomentumFluxY(USouth))
 			                 + dt*XMomentumSource(Uold);
 
 			Umain[kp].py() = Uold.py()
 			                 - (dt/dx)*(YMomentumFluxX(UEast) - YMomentumFluxX(UWest))
-			                 - (dt/dy)*(YMomentumFluxY(UNorth) - YMomentumFluxY(USouth));
+			                 - (dt/dy)*(YMomentumFluxY(UNorth) - YMomentumFluxY(USouth))
 			                 + dt*YMomentumSource(Uold);
 		}
 	}
@@ -278,7 +280,7 @@ void Fluid2D::SetSimulationTime(){
 
 void Fluid2D::VelocityLaplacianFtcs() {
 	this->MassFluxToVelocity();
-//#pragma omp parallel for  default(none) shared(lap_flxX,lap_flxY,VelX,VelY,Nx,Ny)
+#pragma omp parallel for default(none) shared(Umain,VelX,VelY)
 	for (int kp = 1 + Nx; kp <= Nx * Ny - Nx - 2; kp++) {
 		int north, south, east, west;
 		div_t divresult;
@@ -473,7 +475,7 @@ bool Fluid2D::Snapshot() const { //TODO rever a frequencia d gravacao de hdf5
 
 
 void Fluid2D::ForwardTimeOperator() {
-//#pragma omp parallel for default(none) shared(Nx,Ny,FlxX,FlxY,lap_flxX,lap_flxY,dt,cyc_freq)
+#pragma omp parallel for default(none) shared(Umain)
 	for (int kp = 1 + Nx; kp <= Nx * Ny - Nx - 2; kp++) {
 		float flx_x_old, flx_y_old, tmp_old;
 		if (kp % Nx != Nx - 1 && kp % Nx != 0) {
@@ -490,7 +492,7 @@ void Fluid2D::ForwardTimeOperator() {
 	}
 }
 void Fluid2D::ForwardTimeOperator(char field) {
-//#pragma omp parallel for default(none) shared(Nx,Ny,FlxX,FlxY,lap_flxX,lap_flxY,dt,cyc_freq)
+#pragma omp parallel for default(none) shared(Umain,Tmp,field)
 	for (int kp = 1 + Nx; kp <= Nx * Ny - Nx - 2; kp++) {
 		float flx_x_old, flx_y_old, tmp_old;
 		if (kp % Nx != Nx - 1 && kp % Nx != 0) {
