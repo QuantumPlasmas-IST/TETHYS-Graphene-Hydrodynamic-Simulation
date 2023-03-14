@@ -7,7 +7,16 @@
 #include "InitialConditionLib.h"
 
 void InitialCondition::Rand(Fluid1D &fluid_class) {
+	random_device rd;
+	float maxrand;
+	maxrand = (float) random_device::max();
 
+	for (int i = 0; i < fluid_class.Nx; i++ ){
+		float noise = (float) rd()/ maxrand ;
+		fluid_class.Umain[i].n()= 1.0f + 0.0001f * (noise - 0.5f);
+		fluid_class.Umain[i].v()= 0.0f;
+	}
+	fluid_class.SetSound();
 }
 
 void InitialCondition::Rand(Fluid2D &fluid_class) {
@@ -100,4 +109,22 @@ void InitialCondition::InitialCondUniform(DiracGraphene2D &fluid_class){
 		fluid_class.Umain[c].n()=1.0f;
 		fluid_class.HoleUmain[c].n()=1.0f;
 	}
+}
+
+void InitialCondition::InitialCondTest(Fluid1D &fluid_class) {
+	for (int i = 0; i < fluid_class.Nx; i++ ){
+		fluid_class.Umain[i].v()= 1.0f/(1.0f+5.0f* pow(cosh((i*fluid_class.dx-0.5f)*12.0f),2.f));
+		fluid_class.Umain[i].n()= 0.2f+0.2f/ pow(cosh((i*fluid_class.dx-0.5f)*12.0f),2.f); //(i>3*Nx/8 && i<5*Nx/8 ) ? 1.0f : 0.1f; //0.2f+0.2f/ pow(cosh((i*dx-0.5f)*12.0f),2);//
+	}
+	fluid_class.SetSound();
+}
+
+void InitialCondition::InitialCondGeneral(Fluid1D &fluid_class, function<float(float)> fden, function<float(float)> fvx) {
+	float x;
+	for (int i = 0; i < fluid_class.Nx; ++i) {
+		x=i*fluid_class.dx;
+		fluid_class.Umain[i].n()=fden(x);
+		fluid_class.Umain[i].v()=fvx(x);
+	}
+	fluid_class.SetSound();
 }
