@@ -6,7 +6,7 @@
 
 
 
-
+#include "includes/InitialConditionLib.h"
 #include "includes/SetUpParametersLib.h"
 #include "includes/DirichletBoundaryLib.h"
 #include "includes/DyakonovShurBoundaryLib.h"
@@ -69,7 +69,10 @@ int main(int argc, char **argv){
 //	graph.InitialCondGeneral([](float x,float y) { return 1.0f+0.1f/cosh(10.0f*(x-.5f)); },[](float x,float y) { return 0.5f/cosh(10.0f*(x-.5f)); },[](float x,float y) { return 0.0f; });
 //	graph.InitialCondGeneral([](float x,float y) { return 0.8; },[](float x,float y) { return 0.5f; },[](float x,float y) { return 0.0f; });
 
-	graph.InitialCondRand();
+	//graph.InitialCondRand();
+
+InitialCondition::Rand(graph);
+
 //	graph.InitialCondTest();
 	/*................................................................*/
 

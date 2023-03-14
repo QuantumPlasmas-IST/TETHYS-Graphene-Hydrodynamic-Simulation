@@ -103,11 +103,12 @@ using namespace H5;
 		void SetSound(std::function<float(float,float)>);     ///< Applies the anisotropy (in the cases there is one) to the sound velocity array
 		virtual void SetSimulationTime();   ///< Finds and set the appropriate simulation time
 
+
+
 		virtual void InitialCondRand();             ///< Initial condition, zero velocity and constant density with 0.5% white noise
 		void InitialCondWave();
 		void InitialCondTest();             ///< Initial condition for testing and debugging
-		void InitialCondGeneral(function<float(float, float)> fden, function<float(float, float)> fvx,
-		                        function<float(float, float)> fvy);
+		void InitialCondGeneral(function<float(float, float)> fden, function<float(float, float)> fvx, function<float(float, float)> fvy);
 
 		/*!
 		 * @brief Calculates @f$\Delta x@f$ and imposes Courant–Friedrichs–Lewy condition to @f$\Delta t@f$
@@ -250,7 +251,9 @@ using namespace H5;
 
 		void VelocityGradient(StateVec2D *Uarray, int size_x, int size_y);
 
+		friend class InitialCondition;
 	};
+
 
 
 #endif
