@@ -29,11 +29,9 @@ void InitialCondition::Rand(DiracGraphene2D &fluid_class) {
 	maxrand = (float) random_device::max();
 	for (int c = 0; c < fluid_class.Nx*fluid_class.Ny; c++ ){
 		float noise;
-		noise =  (float) rd()/maxrand ; //(float) rand()/ (float) RAND_MAX ;
-		//Den[c] = 1.0f + 0.05f * (noise - 0.5f);
+		noise =  (float) rd()/maxrand ;
 		fluid_class.Umain[c].n()=1.0f + 0.05f * (noise - 0.5f);
-		noise =  (float) rd()/maxrand ; //(float) rand()/ (float) RAND_MAX ;
-		//HDen[c] = 1.0f + 0.05f * (noise - 0.5f);
+		noise =  (float) rd()/maxrand ;
 		fluid_class.HoleUmain[c].n()=1.0f + 0.05f * (noise - 0.5f);
 	}
 }
@@ -73,5 +71,33 @@ void InitialCondition::InitialCondGeneral(Fluid2D &fluid_class, function<float(f
 			fluid_class.Umain[i + j * fluid_class.Nx].px() = fvx(x,y);
 			fluid_class.Umain[i + j * fluid_class.Nx].py() = fvy(x,y);
 		}
+	}
+}
+
+
+
+void InitialCondition::InitialCondPointDen(DiracGraphene2D &fluid_class){
+	for (int c = 0; c < fluid_class.Nx*fluid_class.Ny; c++ ){
+		fluid_class.Umain[c].n()=1.0f;
+		fluid_class.HoleUmain[c].n()=1.0f;
+	}
+	for (int c = 3*fluid_class.Ny/7; c < 4*fluid_class.Ny/7; c++){
+		for (int g = 2*fluid_class.Nx/7; g < 3*fluid_class.Nx/7; g++){
+			fluid_class.Umain[c*fluid_class.Nx+g].n()=1.2f;
+			fluid_class.HoleUmain[c*fluid_class.Nx+g].n()=0.8f;
+		}
+	}
+	for (int c = 3*fluid_class.Ny/7; c < 4*fluid_class.Ny/7; c++){
+		for (int g = 4*fluid_class.Nx/7; g < 5*fluid_class.Nx/7; g++){
+			fluid_class.Umain[c*fluid_class.Nx+g].n()=0.8f;
+			fluid_class.HoleUmain[c*fluid_class.Nx+g].n()=1.2f;
+		}
+	}
+}
+
+void InitialCondition::InitialCondUniform(DiracGraphene2D &fluid_class){
+	for (int c = 0; c < fluid_class.Nx*fluid_class.Ny; c++ ){
+		fluid_class.Umain[c].n()=1.0f;
+		fluid_class.HoleUmain[c].n()=1.0f;
 	}
 }

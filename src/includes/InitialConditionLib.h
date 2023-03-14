@@ -20,6 +20,8 @@ public:
 	static void Rand(DiracGraphene2D& fluid_class);
 	static void Test(Fluid2D& fluid_class);
 	static void Wave(Fluid2D& fluid_class);
+	static void InitialCondPointDen(DiracGraphene2D &fluid_class);
+	static void InitialCondUniform(DiracGraphene2D &fluid_class);
 	static void InitialCondGeneral(Fluid2D& fluid_class, function<float(float, float)> fden, function<float(float, float)> fvx, function<float(float, float)> fvy);
 };
 

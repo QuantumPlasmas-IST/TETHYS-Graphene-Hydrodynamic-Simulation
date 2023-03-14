@@ -105,10 +105,10 @@ using namespace H5;
 
 
 
-		virtual void InitialCondRand();             ///< Initial condition, zero velocity and constant density with 0.5% white noise
-		void InitialCondWave();
-		void InitialCondTest();             ///< Initial condition for testing and debugging
-		void InitialCondGeneral(function<float(float, float)> fden, function<float(float, float)> fvx, function<float(float, float)> fvy);
+//		virtual void InitialCondRand();             ///< Initial condition, zero velocity and constant density with 0.5% white noise
+//		void InitialCondWave();
+//		void InitialCondTest();             ///< Initial condition for testing and debugging
+//		void InitialCondGeneral(function<float(float, float)> fden, function<float(float, float)> fvx, function<float(float, float)> fvy);
 
 		/*!
 		 * @brief Calculates @f$\Delta x@f$ and imposes Courant–Friedrichs–Lewy condition to @f$\Delta t@f$
