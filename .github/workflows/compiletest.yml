@@ -39,6 +39,6 @@ jobs:
         export LDFLAGS="-L /usr/local/lib -L/usr/local/opt/llvm/lib"
         export CXX=${COMPILER}
     - name: Configure CMake
-      run: cmake ./
+      run: cmake -S ./ -B build -D CMAKE_C_COMPILER=$(brew --prefix llvm)/bin/clang -D CMAKE_CXX_COMPILER=$(brew --prefix llvm)/bin/clang++
     - name: Build
       run: make all
