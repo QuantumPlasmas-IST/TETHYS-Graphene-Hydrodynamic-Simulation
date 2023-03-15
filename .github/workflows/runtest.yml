@@ -8,32 +8,51 @@ on:
 
 
 jobs:
-  build:
+  build_on_Ubuntu:
     # The CMake configure and build commands are platform agnostic and should work equally
     # well on Windows or Mac.  You can convert this to a matrix build if you need
     # cross-platform coverage.
     # See: https://docs.github.com/en/free-pro-team@latest/actions/learn-github-actions/managing-complex-workflows#using-a-build-matrix
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v3
-
-    - name: Install HDF5
+    - name: Install Dependencies
       run: |
        sudo apt-get update
        sudo apt-get install libhdf5-103 libhdf5-cpp-103 libhdf5-dev libhdf5-openmpi-103
-
     - name: Configure CMake
       run: cmake ./
-
     - name: Build
       run: make all
-
     - name: Run test 1
       run: ctest --extra-verbose -I 1,1,,1
-
     - name: Run test 2
       run: ctest --extra-verbose -I 2,2,,2
-
     - name: Run test 3
       run: ctest --extra-verbose -I 3,3,,3
+  build_on_MacOs:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install Dependencies
+        run: |
+          brew update
+          brew install hdf5 llvm libomp
+      - name: Setting CLang
+        run: |
+          export PATH="$(brew --prefix llvm)/bin:$PATH";
+          export COMPILER=/usr/local/opt/llvm/bin/clang++
+          export CFLAGS="-I /usr/local/include -I/usr/local/opt/llvm/include"
+          export CXXFLAGS="-I /usr/local/include -I/usr/local/opt/llvm/include"
+          export LDFLAGS="-L /usr/local/lib -L/usr/local/opt/llvm/lib"
+          export CXX=${COMPILER}
+      - name: Configure CMake
+        run: cmake -D CMAKE_C_COMPILER=$(brew --prefix llvm)/bin/clang -D CMAKE_CXX_COMPILER=$(brew --prefix llvm)/bin/clang++
+      - name: Build
+        run: make all
+      - name: Run test 1
+        run: ctest --extra-verbose -I 1,1,,1
+      - name: Run test 2
+        run: ctest --extra-verbose -I 2,2,,2
+      - name: Run test 3
+        run: ctest --extra-verbose -I 3,3,,3
