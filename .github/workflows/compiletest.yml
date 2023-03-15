@@ -22,14 +22,15 @@ jobs:
       run: cmake ./
     - name: Build
       run: make all
-#  build_on_MacOs:
-#    runs-on: macos-latest
-#    steps:
-#    - uses: actions/checkout@v2
-#    - name: Install HDF5
-#      run: |
-#       brew update
-#       brew install hdf5
+  build_on_MacOs:
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Install HDF5
+      run: |
+       brew update
+       brew install hdf5
+       brew install libomp
 #    - name: Configure CMake
 #      run: cmake ./
 #    - name: Build
