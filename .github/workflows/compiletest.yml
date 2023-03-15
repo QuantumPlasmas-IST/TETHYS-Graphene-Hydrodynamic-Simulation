@@ -29,8 +29,7 @@ jobs:
     - name: Install HDF5
       run: |
        brew update
-       brew install hdf5
-       brew install libomp
+       brew install hdf5 llvm libomp
     - name: Configure CMake
       run: cmake ./
     - name: Build
