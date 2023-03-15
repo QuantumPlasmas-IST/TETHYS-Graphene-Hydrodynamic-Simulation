@@ -9,6 +9,8 @@
 #include "includes/SetUpParametersLib.h"
 
 
+
+
 using namespace H5;
 using namespace std;
 
@@ -145,15 +147,17 @@ void Fluid2D::InitialCondTest(){
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-
+#include "includes/DiffOperatorLib.h"
 
 void Fluid2D::Richtmyer(){
 	if(odd_vis!=0){
-		VelocityGradient(Umain,Nx,Ny);
+		//VelocityGradient(Umain,Nx,Ny);
+		DiffOperator::VelocityGradient(*this,Umain,Nx,Ny);
 	}
 	RichtmyerStep1();
 	if(odd_vis!=0){
-		VelocityGradient(Umid,Nx-1,Ny-1);
+		//VelocityGradient(Umid,Nx-1,Ny-1);
+		DiffOperator::VelocityGradient(*this,Umid,Nx-1,Ny-1);
 	}
 	RichtmyerStep2();
 }
@@ -307,21 +311,16 @@ void Fluid2D::VelocityLaplacianFtcs() {
 }
 
 void Fluid2D::VelocityLaplacianWeighted19() {
-
-
 	for (int kp = 0; kp < Nx * Ny ; kp++) {
 		float den =Umain[kp].n();
 		float mass = DensityToMass(den);
 		VelX[kp] = Umain[kp].px()/mass;
 		VelY[kp] = Umain[kp].py()/mass;
 	}
-
 #pragma omp parallel for default(none) shared(Umain,VelX,VelY)
 	for (int kp = 1 + Nx; kp <= Nx * Ny - Nx - 2; kp++) {
 		GridPoint2D point(kp,Nx,Ny,false);
 		if (kp % Nx != Nx - 1 && kp % Nx != 0){
-			//lap_flxX[kp] = Laplacian19( point, VelX, kin_vis);
-			//lap_flxY[kp] = Laplacian19( point, VelY, kin_vis);
 			Umain[kp].d2vx() = Laplacian19( point, VelX, kin_vis);
 			Umain[kp].d2vy() = Laplacian19( point, VelY, kin_vis);
 		}

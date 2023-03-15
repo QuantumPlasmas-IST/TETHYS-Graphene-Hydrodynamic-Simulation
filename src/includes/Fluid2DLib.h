@@ -19,7 +19,9 @@
 #include "includes/TethysMathLib.h"
 #include "includes/SetUpParametersLib.h"
 #include "includes/GridLib.h"
+
 #include "includes/StateVec2DLib.h"
+
 
 using namespace H5;
 
@@ -252,6 +254,7 @@ using namespace H5;
 		void VelocityGradient(StateVec2D *Uarray, int size_x, int size_y);
 
 		friend class InitialCondition;
+		friend class DiffOperator;
 	};
 
 
