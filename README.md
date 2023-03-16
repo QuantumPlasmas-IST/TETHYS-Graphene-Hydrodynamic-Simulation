@@ -13,6 +13,7 @@
 
 ![.github/workflows/main.yml](https://github.com/pcosme/TETHYS-Graphene-Hydrodynamic-Simulation/workflows/.github/workflows/main.yml/badge.svg)
 ![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/pcosme/TETHYS-Graphene-Hydrodynamic-Simulation/compiletest.yml?label=Ubuntu-Latest)
+![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/pcosme/TETHYS-Graphene-Hydrodynamic-Simulation/compiletest.yml?label=macOS-Latest)
 ![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/pcosme/TETHYS-Graphene-Hydrodynamic-Simulation/runtest.yml)
 
 [![CodeScore](https://api.codiga.io/project/1694/score/svg)](https://api.codiga.io/project/1694/score/svg)
