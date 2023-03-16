@@ -30,14 +30,14 @@ jobs:
       run: |
        brew update
        brew install hdf5 llvm libomp
-    - name: Setting CLang
-      run: |
-        export PATH="$(brew --prefix llvm)/bin:$PATH";
-        export COMPILER=/usr/local/opt/llvm/bin/clang++
-        export CFLAGS="-I /usr/local/include -I/usr/local/opt/llvm/include"
-        export CXXFLAGS="-I /usr/local/include -I/usr/local/opt/llvm/include"
-        export LDFLAGS="-L /usr/local/lib -L/usr/local/opt/llvm/lib"
-        export CXX=${COMPILER}
+    # - name: Setting CLang
+      # run: |
+        # export PATH="$(brew --prefix llvm)/bin:$PATH";
+        # export COMPILER=/usr/local/opt/llvm/bin/clang++
+        # export CFLAGS="-I /usr/local/include -I/usr/local/opt/llvm/include"
+        # export CXXFLAGS="-I /usr/local/include -I/usr/local/opt/llvm/include"
+        # export LDFLAGS="-L /usr/local/lib -L/usr/local/opt/llvm/lib"
+        # export CXX=${COMPILER}
     - name: Configure CMake
       run: cmake -D CMAKE_C_COMPILER=$(brew --prefix llvm)/bin/clang -D CMAKE_CXX_COMPILER=$(brew --prefix llvm)/bin/clang++
     - name: Build
