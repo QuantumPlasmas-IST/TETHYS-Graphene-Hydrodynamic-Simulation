@@ -62,7 +62,7 @@ from the root directory , and then accessed from the `Documentation.html` file.
   <small>For the writing of the complete data.</small>
   
 _<small>As an example in Fedora systems it should be enough to install the packages: cmake; libgomp; libomp; hdf5; hdf5-devel; hdf5-static. 
-Whereas for Ubuntu,: cmake; libhdf5-103; libhdf5-cpp-103; libhdf5-dev; libhdf5-openmpi-103.
+Whereas for Ubuntu,: cmake; libhdf5-103; libhdf5-cpp-103; libhdf5-dev; libhdf5-openmpi-103. MacOS users should install: cmake; llvm; libomp; hdf5. 
 </small>_
   
   
@@ -90,7 +90,11 @@ And then, for the compilation itself.
 $ cmake ..
 $ make all
 ```
-
+#### macOs users
+For macOS users we recommend to use clang instead of AppleClang, invoking cmake as 
+```console
+$ cmake -D CMAKE_C_COMPILER=$(brew --prefix llvm)/bin/clang -D CMAKE_CXX_COMPILER=$(brew --prefix llvm)/bin/clang++
+```
 #### Files and Directory structure
 At the moment of download the directoy structure looks like the following tree
 ```
