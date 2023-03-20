@@ -106,7 +106,7 @@ float  MathUtils::Stair_Case_Function(float x, float step_width, float smoothnes
 
 void MathUtils::LaplacianField(const float *array_in, float *array_out, float dx, int size_x, int size_y) {
 	int stride = size_x;
-#pragma omp parallel for default(none) shared(size_x,size_y,dx,stride,array_in,array_out)
+//#pragma omp parallel for default(none) shared(size_x,size_y,dx,stride,array_in,array_out)
 	for(int kp=1+size_x; kp<=size_x*size_y-size_x-2; kp++){
 		if( kp%stride!=stride-1 && kp%stride!=0){
 			array_out[kp] = (-4.0f*array_in[kp] +  array_in[kp+stride] + array_in[kp-stride] + array_in[kp+1] + array_in[kp-1] )/(dx*dx);
@@ -175,7 +175,7 @@ void MathUtils::LaplacianField(const float *array_in, float *array_out, float dx
 void
 MathUtils::GradientField(const float *array_in, float *array_out_x, float *array_out_y, float dx, float dy, int size_x, int size_y) {
 	int stride = size_x;
-#pragma omp parallel for default(none) shared(size_x, size_y, dx, dy, stride, array_in, array_out_x, array_out_y)
+//#pragma omp parallel for default(none) shared(size_x, size_y, dx, dy, stride, array_in, array_out_x, array_out_y)
 	for (int kp = 1 + size_x; kp <= size_x * size_y - size_x - 2; kp++) {
 		if (kp % stride != stride - 1 && kp % stride != 0) {
 			array_out_x[kp] = (array_in[kp+1] - array_in[kp-1]) / (2.0f * dx);

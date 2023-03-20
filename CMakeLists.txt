@@ -12,15 +12,18 @@ include_directories(src/includes)
 find_package(HDF5 REQUIRED COMPONENTS CXX)
 include_directories(${HDF5_INCLUDE_DIRS})
 
+#include_directories("/usr/local/include" "/usr/local/opt/llvm/include" "/usr/local/opt/libomp")
+#link_directories("/usr/local/lib" "/usr/local/opt/llvm/lib")
+
 #find_package(GSL REQUIRED)
 #link_libraries(GSL::gsl GSL::gslcblas)
 
 #set(CMAKE_CXX_FLAGS "-Wall -Wextra -Wno-unused-parameter -O2")
 set(CMAKE_CXX_FLAGS "-O2")
-FIND_PACKAGE(OpenMP REQUIRED)
-if(OPENMP_FOUND)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_C_FLAGS}")
-endif()
+#FIND_PACKAGE(OpenMP REQUIRED)
+#if(OPENMP_FOUND)
+#    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_C_FLAGS}")
+#endif()
 
 
 

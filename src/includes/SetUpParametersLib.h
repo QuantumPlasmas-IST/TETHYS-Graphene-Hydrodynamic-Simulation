@@ -24,7 +24,7 @@
 #include <regex>
 #include <exception>
 #include <H5Cpp.h>
-#include <omp.h>
+//#include <omp.h>
 
 /*!
  * @brief Initialization class for the fluid classes.

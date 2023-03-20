@@ -298,7 +298,7 @@ void DiracGraphene2D::Richtmyer(){
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	ChooseGridPointers("MidGrid");
 //#pragma omp parallel for default(none) shared(Nx,Ny,dt,dx,dy,Den,FlxX,FlxY,Tmp,den_dx,den_dy,ptr_den,ptr_px,ptr_py,ptr_snd,ptr_tmp,ptr_velXdx,ptr_velXdy,ptr_velYdx,ptr_velYdy,ptr_dendx,ptr_dendy)
-#pragma omp parallel for default(none) shared(Nx,Ny,dt,dx,dy,Den,FlxX,FlxY,ptr_den,ptr_px,ptr_py,HDen,HFlxX,HFlxY,hptr_den,hptr_px,hptr_py,ptr_snd)
+//#pragma omp parallel for default(none) shared(Nx,Ny,dt,dx,dy,Den,FlxX,FlxY,ptr_den,ptr_px,ptr_py,HDen,HFlxX,HFlxY,hptr_den,hptr_px,hptr_py,ptr_snd)
 		for(int ks=0; ks<=Nx*Ny-Nx-Ny; ks++){ //correr todos os pontos da grelha secundaria de den_mid
 			GridPoint2D midpoint(ks, Nx, Ny, true);
 
@@ -345,7 +345,7 @@ void DiracGraphene2D::Richtmyer(){
 	
 	ChooseGridPointers("MainGrid");
 //#pragma omp parallel for default(none) shared(Nx,Ny,dt,dx,dy,FlxX,FlxY,Den,Tmp,den_dx,den_dy,ptr_den,ptr_px,ptr_py,ptr_snd,ptr_tmp,ptr_velXdx,ptr_velXdy,ptr_velYdx,ptr_velYdy,ptr_dendx,ptr_dendy)
-#pragma omp parallel for default(none) shared(Nx,Ny,dt,dx,dy,Den,FlxX,FlxY,ptr_den,ptr_px,ptr_py,HDen,HFlxX,HFlxY,hptr_den,hptr_px,hptr_py,ptr_snd)
+//#pragma omp parallel for default(none) shared(Nx,Ny,dt,dx,dy,Den,FlxX,FlxY,ptr_den,ptr_px,ptr_py,HDen,HFlxX,HFlxY,hptr_den,hptr_px,hptr_py,ptr_snd)
 		for(int kp=1+Nx; kp<=Nx*Ny-Nx-2; kp++){ //correr a grelha principal evitando as fronteiras
 			GridPoint2D mainpoint(kp, Nx, Ny, false);
 			if( kp%Nx!=Nx-1 && kp%Nx!=0){
@@ -575,7 +575,7 @@ void DiracGraphene2D::VelocityLaplacianWeighted19() {
 		HVelY[kp] = HoleUmain[kp].py()/hmass;
 	}
 
-#pragma omp parallel for default(none) shared(Umain,VelX,VelY)
+//#pragma omp parallel for default(none) shared(Umain,VelX,VelY)
 	for (int kp = 1 + Nx; kp <= Nx * Ny - Nx - 2; kp++) {
 		GridPoint2D point(kp,Nx,Ny,false);
 		if (kp % Nx != Nx - 1 && kp % Nx != 0){

@@ -312,7 +312,7 @@ void Fluid2D::VelocityLaplacianWeighted19() {
 		VelY[kp] = Umain[kp].py()/mass;
 	}
 
-#pragma omp parallel for default(none) shared(Umain,VelX,VelY)
+//#pragma omp parallel for default(none) shared(Umain,VelX,VelY)
 	for (int kp = 1 + Nx; kp <= Nx * Ny - Nx - 2; kp++) {
 		GridPoint2D point(kp,Nx,Ny,false);
 		if (kp % Nx != Nx - 1 && kp % Nx != 0){
@@ -328,7 +328,7 @@ void Fluid2D::TemperatureLaplacianWeighted19() {
 	for (int kp = 0; kp < Nx * Ny ; kp++) {
 		Tmp[kp] = Umain[kp].tmp();
 	}
-#pragma omp parallel for default(none) shared(Umain,Tmp)
+//#pragma omp parallel for default(none) shared(Umain,Tmp)
     for (int kp = 1 + Nx; kp <= Nx * Ny - Nx - 2; kp++) {
 	    GridPoint2D point(kp,Nx,Ny,false);
         if (kp % Nx != Nx - 1 && kp % Nx != 0){

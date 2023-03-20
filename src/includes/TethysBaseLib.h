@@ -33,7 +33,7 @@
 #include <gsl/gsl_cblas.h>
 
 #include <H5Cpp.h>
-#include <omp.h>
+//#include <omp.h>
 #include "includes/TethysMathLib.h"
 //#include "includes/TethysBaseLib.h"
 
