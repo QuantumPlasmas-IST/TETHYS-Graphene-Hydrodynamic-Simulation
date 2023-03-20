@@ -2,7 +2,7 @@
 // Created by pcosme on 04/02/2022.
 //
 
-#include "Cell1DLib.h"
+#include "Cell1DLibNOT.h"
 
 CellHandler1D::CellHandler1D(int i, int total, Fluid1D * ptr_fluid, StateVec1D * ptr_state) {
 	index=i;

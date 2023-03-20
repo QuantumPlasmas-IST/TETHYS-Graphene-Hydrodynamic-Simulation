@@ -59,7 +59,6 @@ public :
 		void SetSimulationTime() override;
 
 
-
 	float DensitySource(StateVec2D U)override;   ///< density equation (continuity equation) source term
 	float TemperatureSource(StateVec2D U) override;   ///< density equation (continuity equation) source term
 	float XMomentumSource(StateVec2D U)override; ///< velocity X component equation (momentum equation) source term

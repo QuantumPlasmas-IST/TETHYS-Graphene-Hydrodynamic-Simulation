@@ -9,7 +9,7 @@
 #include "TethysBaseLib.h"
 #include "includes/TethysMathLib.h"
 
-#include "includes/Cell1DLib.h"
+#include "includes/Cell1DLibNOT.h"
 #include "includes/StateVec1DLib.h"
 
 

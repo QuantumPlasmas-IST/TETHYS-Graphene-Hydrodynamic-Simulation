@@ -5,7 +5,7 @@
 \************************************************************************************************/
 
 #include "includes/Fluid1DLib.h"
-#include "includes/Cell1DLib.h"
+//#include "includes/Cell1DLibNOT.h"
 #include "includes/SetUpParametersLib.h"
 
 
@@ -96,7 +96,7 @@ void Fluid1D::SetSound(const std::function<float(float)>& func) {
 }
 
 
-
+/*
 void Fluid1D::InitialCondRand(){
 	random_device rd;
 	float maxrand;
@@ -127,7 +127,7 @@ void Fluid1D::InitialCondGeneral(function<float(float)> fden, function<float(flo
 	}
 	this->SetSound();
 }
-
+*/
 
 
 void Fluid1D::CreateFluidFile(){
