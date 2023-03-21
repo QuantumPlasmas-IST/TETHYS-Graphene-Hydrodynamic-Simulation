@@ -9,4 +9,4 @@ github_automation:
   -.github/**/*
 documentation:
   -*.md
-  -Doxyfile
+  -Doxyfile.in
