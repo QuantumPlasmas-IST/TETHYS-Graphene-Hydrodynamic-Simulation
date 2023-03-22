@@ -61,27 +61,27 @@ The employed numerical methods are conditionally stable,  the simulation routine
 | @f$ v_{sat} @f$  |   Saturation velocity  |     @f$\sim0.5v_F@f$| | @f$0.5\times10^6 ms^{-1}@f$   |
 | @f$\nu_s@f$  |   Shear kinematic viscosity@f${}^{(a)}@f$     ||   |  @f$\sim 0.2  m^2s^{-1}@f$  |
 | @f$\nu_o@f$  |   Odd kinematic viscosity     || broken time symmetry (@f$B\neq0@f$)  | @f$ \lesssim 0.1  m^2s^{-1}@f$  |
-| @f$C_g@f$ | Capacitance per area   |  @f$= \varepsilon/d_0@f$|  | @f$0.1~0.6 \muFcm^{-2}@f$  |
+| @f$C_g@f$ | Capacitance per area   |  @f$= \varepsilon/d_0@f$|  | @f$0.1~0.6 \mu F cm^{-2}@f$  |
 | @f$L@f$ |   Channel length@f${}^{(b)}@f$  |  | @f$\lambda_{ee} < L <  \lambda_i @f$   | |
 | @f$W@f$ |  Channel width   |  | @f$\lambda_{ee} < W < \lambda_i  @f$  | |
 | @f$x:y@f$ |  Aspect ratio@f${}^{(a)}@f$   | = @f$L/W@f$ |    | |
 | @f$v_0@f$ |   Mean drift velocity@f${}^{(b)}@f$  |  |  @f$\ll v_F and < v_sat@f$| @f$~1x10^5 ms^{-1}@f$|
 | @f$n_0@f$ |   Mean carrier density@f${}^{(b)}@f$  |  | | @f$~ 1\times10^{12} cm^{-2}@f$ |
 | @f$m^\star@f$ | Effective mass  | @f$= \hbar\sqrt{\pi n}/v_F@f$ | | @f$\sim0.02m_e@f$ |
-| @f$S@f$ |  Plasmons velocity@f${}^{(a)}@f$   | @f$= ev_F n_0^{1/4}/\hbarC_g^{1/2}\pi^{1/2}@f$    |  @f$> v_F@f$ |@f$1.17\times10^6 n_0^{1/4}C_g^{-1/2}  ms^{-1}\dagger @f$|
+| @f$S@f$ |  Plasmons velocity@f${}^{(a)}@f$   | @f$= ev_F n_0^{1/4}/\hbar C_g^{1/2}\pi^{1/2}@f$    |  @f$> v_F@f$ |@f$1.17\times10^6 n_0^{1/4}C_g^{-1/2}  ms^{-1}\dagger @f$|
 | @f$Re@f$  |    Reynolds number    | @f$= v_0L/\nu_s@f$   |   | |
 | @f$t_0@f$ |  Time scale@f${}^{(b)}@f$  | = @f$L/v_0@f$   |   | |
 | @f$\omega_0@f$ |  Frequency scale@f${}^{(b)}@f$ |@f$ = v_0/L@f$   |   |  |
 | @f$\omega_c@f$ |  Cyclotron frequency@f${}^{(a)}@f$  |@f$ =eB/m^\star@f$   |  @f$B\ll1 T @f$| @f$\ll 9 THz@f$ |
-| @f$\omega_{DS}@f$ |   Dyakonov-Shur frequency  |  @f$\sim \piS/2L@f$  |   |  |
+| @f$\omega_{DS}@f$ |   Dyakonov-Shur frequency  |  @f$\sim \pi S/2L@f$  |   |  |
 | @f$\gamma_{DS}@f$ |  Dyakonov-Shur growth rate   | @f$\sim0.75 v_0/L@f$ | > @f$1/\tau@f$  |  |
 | @f$U_0@f$ |   Gate mean voltage  | @f$= en_0/C_g@f$  | | @f$160 n_0/C_g mV\dagger@f$ |
-| @f$I_0@f$ |   Typical channel current  | @f$= en_0v_0W@f$ | @f$<1.3 mA/cm for L=25 \mu m@f$  | @f$160 n_0v_0W \muA \ddag@f$ |
+| @f$I_0@f$ |   Typical channel current  | @f$= en_0v_0W@f$ | @f$<1.3 mA/cm for L=25 \mu m@f$  | @f$160 n_0v_0W \mu A \ddagger @f$ |
 
 <p>@f${}^{(a)}@f$ User defined parameter</p>
 <p>@f${}^{(b)}@f$ Normalisation parameter</p>
 <p>@f$\dagger@f$ If the density  @f$n_0@f$ is given in @f$10^12 cm^{-2}@f$  and the capacitance @f$C_g@f$ in @f$\mu Fcm^{-2}@f$ </p>
-<p>@f$\ddag@f$ If the density  @f$n_0 is@f$ given in @f$10^12 cm^{-2}@f$, the drift velocity @f$v_0@f$ in @f$10^5 ms^{-1}@f$ and the channel width W in @f$\mu m@f$ </p>
+<p>@f$\ddagger@f$ If the density  @f$n_0 is@f$ given in @f$10^12 cm^{-2}@f$, the drift velocity @f$v_0@f$ in @f$10^5 ms^{-1}@f$ and the channel width W in @f$\mu m@f$ </p>
 
 
 
