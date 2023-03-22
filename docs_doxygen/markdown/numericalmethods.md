@@ -3,7 +3,7 @@
 
 The simulations of the model described before rely on the division of the problem into two separate routines -- one for the hyperbolic part (convective and conserved terms) and a second one for the parabolic (viscous and source terms). Viewing the model as having the form @f$\partial_t\vec{u}=\mathscr{L}_\text{conservation}(\vec{u})+\mathscr{L}_\text{dissipation}(\vec{u})@f$, so that an operator splitting method could be used, uncoupling the two terms, for instance, for the mass flux equation one has:
 @f[
-\frac{\partial \vec{p}}{\partial t}+\overbrace{\bm{\nabla}\!\cdot\!\left( \frac{ \vec{p}\otimes \vec{p}}{{n}^{3/2}} + v_F^2\frac{n^{3/2}}{3}\mathds{1}+S^2\frac{{n}^2}{2}\mathds{1}\right)}^{\mathscr{L}_\text{conservation}(\vec{p})}+\\
+\frac{\partial \vec{p}}{\partial t}+\overbrace{\vec{\nabla}\!\cdot\!\left( \frac{ \vec{p}\otimes \vec{p}}{{n}^{3/2}} + v_F^2\frac{n^{3/2}}{3}\vec{1}+S^2\frac{{n}^2}{2}\vec{1}\right)}^{\mathscr{L}_\text{conservation}(\vec{p})}+\\
 -\underbrace{\nu_s\nabla^2\frac{\vec{p}}{n^{3/2}} -\nu_o\nabla^2\frac{\vec{p}^\dagger}{n^{3/2}}
 +\omega_c\frac{\vec{p}\times\vec{\hat{z}}}{\sqrt{n}}}_{\mathscr{L}_\text{dissipation}(\vec{p})}=0.
 @f]
@@ -22,14 +22,14 @@ Whereas the dissipation and source terms were then computed with a forward time 
 In the onedimensional case, the hyperbolic system of equations for density and velocity fields is written in a conservation form:
 @f[
 \frac{\partial}{\partial t}\begin{bmatrix}n\\v\end{bmatrix}+\frac{\partial}{\partial x}
-\begin{bmatrix}      nv\\ \frac{v^2}{4}+\frac{v_F^2}{2}\log n + 2S^2\sqrt{n}\\\end{bmatrix} = 0 \iff \frac{\partial}{\partial t}\vec{u}+\frac{\partial}{\partial x}\mathbf{F(u)}=0, \label{eq:conserv}
+\begin{bmatrix}      nv\\ \frac{v^2}{4}+\frac{v_F^2}{2}\log n + 2S^2\sqrt{n}\\\end{bmatrix} = 0 \iff \frac{\partial}{\partial t}\vec{u}+\frac{\partial}{\partial x}\vec{F}(\vec{u})=0, \label{eq:conserv}
 @f]
 
 and was implemented for @f$n@f$ and @f$v@f$ according to
 
 @f{align}
-\vec{u}_{i+1/2}^{k+1/2} &= \frac{1}{2}\left(\vec{u}_{i+1}^k + \vec{u}_{i}^k\right) - \frac{\Delta t}{2\Delta x}\left( \mathbf{F}_{i+1}^k - \mathbf{F}_{i}^k\right)\label{eq:richt_1}\\
-\vec{u}_i^{k+1} &= \vec{u}_i^k - \frac{\Delta t}{\Delta x} \left( \mathbf{F}_{i+1/2}^{k+1/2} - \mathbf{F}_{i-1/2}^{k+1/2}\right)\label{eq:richt_2}
+\vec{u}_{i+1/2}^{k+1/2} &= \frac{1}{2}\left(\vec{u}_{i+1}^k + \vec{u}_{i}^k\right) - \frac{\Delta t}{2\Delta x}\left( \vec{F}_{i+1}^k - \vec{F}_{i}^k\right)\label{eq:richt_1}\\
+\vec{u}_i^{k+1} &= \vec{u}_i^k - \frac{\Delta t}{\Delta x} \left( \vec{F}_{i+1/2}^{k+1/2} - \vec{F}_{i-1/2}^{k+1/2}\right)\label{eq:richt_2}
 @f}
 using @f$\vec{u}@f$ and @f$\mathbf{F}(\vec{u})@f$ as defined by equation and space (indicated at subscript indices) and time (indicated at superscript indices) discretisation where @f$t=k\Delta t@f$ and @f$t=i\Delta x@f$. Since such scheme is second order both in time and space it will not introduce spurious diffusion in the solution as a first order scheme would. It will, however, introduce artificial oscillations, contiguous to discontinuities, which can be corrected by the application of a moving average smoothing filter.
 
@@ -70,12 +70,12 @@ p_xp_yn^{-3/2} \\
 
 The generalisation of leads to a more complex method having, for the first step, the form
 @f[
-\vec{u}^{k+1/2}_{i+1/2,j+1/2}=\frac{1}{4}\left(\vec{u}^{k}_{i,j}+\vec{u}^{k}_{i+1,j}+\vec{u}^{k}_{i,j+1}}+\vec{u}^{k}_{i+1,j+1}\right)
+\vec{u}^{k+1/2}_{i+1/2,j+1/2}=\frac{1}{4}\left(\vec{u}^{k}_{i,j}+\vec{u}^{k}_{i+1,j}+\vec{u}^{k}_{i,j+1}+\vec{u}^{k}_{i+1,j+1}\right)
 -\frac{\Delta t}{2\Delta x}\left(\vec{F}^{k}_{i+1,j+1/2}-\vec{F}^{k}_{i,j+1/2} \right) -\frac{\Delta t}{2\Delta y}\left( \vec{G}^{k}_{i+1/2,j+1}-\vec{G}^{k}_{i+1/2, j}\right)
 @f]
 and then, the corrector is obtained by
 @f[
-\vec{u}^{k+1}_{i,j}=\vec{u}^{k}_{i,j}-\frac{\Delta t}{\Delta x}\left(\vec{F}^{k+1/2}_{i+1/2,j}-\vec{F}^{k+1/2}_{i-1/2,j}\right)-\frac{\Delta t}{\Delta y}\left(\vec{G}^{k+1/2}_{i,j+1/2}}-\vec{G}^{k+1/2}_{i,j-1/2}\right)
+\vec{u}^{k+1}_{i,j}=\vec{u}^{k}_{i,j}-\frac{\Delta t}{\Delta x}\left(\vec{F}^{k+1/2}_{i+1/2,j}-\vec{F}^{k+1/2}_{i-1/2,j}\right)-\frac{\Delta t}{\Delta y}\left(\vec{G}^{k+1/2}_{i,j+1/2}-\vec{G}^{k+1/2}_{i,j-1/2}\right)
 @f]
 In the matter of this scheme stability, for equal spacing @f$\Delta y=\Delta x@f$, the previous condition, defined for the one-dimensional case, has hitherto been sufficient to guarantee stability.
 
@@ -86,7 +86,7 @@ Here we briefly present the weighted FTCS method \cite Hayman1988, which is used
 @f[
 \frac{\partial \vec{u}}{\partial t}=\vec{\alpha}\cdot \nabla^2\vec{u},
 @f]
-with @f$vec{\alpha}= \left[0, \nu_s, \nu_s, \alpha\right]^\top@f$ a vector of diffusion coefficients. It must be noted that, for this method, the mass flux is converted to velocity before applying the algorithm, so @f$\vec{u}=\left[n, v_x, v_y, T\right]^\top@f$.
+with @f$\vec{\alpha}= \left[0, \nu_s, \nu_s, \alpha\right]^\top@f$ a vector of diffusion coefficients. It must be noted that, for this method, the mass flux is converted to velocity before applying the algorithm, so @f$\vec{u}=\left[n, v_x, v_y, T\right]^\top@f$.
 Instead of simply applying the central difference operator at each grid point, a stencil of 9 points (the central point and its 1<sup>st</sup> and 2<sup>nd</sup> neighbours) is used to calculate the Laplacian. The contribution of each term is taken into account using a weight parameter @f$\theta@f$ such that
 @f[
 \frac{\partial^2 u}{\partial x^2}\approx (1-2\theta)\delta^2_xu_{i,j}+\theta\left(\delta^2_xu_{i,j-1}+\delta^2_xu_{i,j+1}\right)

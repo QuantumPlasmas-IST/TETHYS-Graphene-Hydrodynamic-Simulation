@@ -20,14 +20,14 @@ all quantities are henceforth are implied to be dimensionless, even though the a
 The complete model that the code aims to simulate is given by the following equations, already written in the form of conservation laws;
 
 @f[
-  \frac{\partial n}{\partial t}+\bm{\nabla} \cdot \frac{\vec{p}}{\sqrt{n}}=0,
+  \frac{\partial n}{\partial t}+\vec{\nabla} \cdot \frac{\vec{p}}{\sqrt{n}}=0,
 @f]
 @f[
-     \frac{\partial \vec{p}}{\partial t}+\bm{\nabla} \cdot \left( \frac{\vec{p}\otimes \vec{p}}{n^{3/2}}+\frac{v_{F}^{2}}{3}n^{3/2}+\frac{S^{2}}{2}n^{2}\right)
+     \frac{\partial \vec{p}}{\partial t}+\vec{\nabla} \cdot \left( \frac{\vec{p}\otimes \vec{p}}{n^{3/2}}+\frac{v_{F}^{2}}{3}n^{3/2}+\frac{S^{2}}{2}n^{2}\right)
      -\nu_{s}\nabla ^{2} \frac{\vec{p}}{n^{3/2}}-\nu _{o}\nabla ^{2}\frac{\vec{p}^{\dagger}}{n^{3/2}}=-\omega _{c}\frac{\vec{p}^\dagger}{\sqrt{n}}-\frac{\vec{p}}{\tau}
  @f] and 
  @f[
-    \frac{\partial T}{\partial t}+\bm{\nabla} \cdot \left[\left( \frac{T}{n^{\sfrac{3}{2}}}+\frac{3}{4\pi ^{2}}\right) \vec{p}\right]-\alpha \nabla ^{2}T=\frac{S^{2}}{v_{F}^{2}}\frac{\vec{p}}{\sqrt{n}}\cdot \bm{\nabla} n+\Pi,%
+    \frac{\partial T}{\partial t}+\vec{\nabla} \cdot \left[\left( \frac{T}{n^{\frac{3}{2}}}+\frac{3}{4\pi ^{2}}\right) \vec{p}\right]-\alpha \nabla ^{2}T=\frac{S^{2}}{v_{F}^{2}}\frac{\vec{p}}{\sqrt{n}}\cdot \vec{\nabla} n+\Pi,%
 @f]%
 for the number density @f$n@f$, momentum density @f$\vec{p}=m^\star n \vec{v}@f$ (with @f$m^\star@f$ the effective mass of carriers and @f$\vec{v}@f$ the fluid velocity) and temperature @f$T@f$, and where @f$\nu_s@f$ is the kinematic shear viscosity, @f$\nu_o@f$ the odd viscosity \cite Avron1998OddViscosity \cite Narozhny2019MagnetohydrodynamicsViscosities \cite Pellegrino2017NonlocalLiquids , @f$\vec{p}^\dagger=\left[-p_y,p_x\right]^\top@f$,  @f$\omega_c@f$ the cyclotron frequency, @f$\tau@f$ the typical time for inelastic collisions, @f$\alpha@f$ the thermal diffusivity and @f$\Pi@f$ encompasses any possible source terms for the heat flux. The parameter @f$S@f$ can be interpreted as the sound velocity for the plasmons \cite Cosme2021 \cite Cosme2020  and for a GFET with a capacitance per area @f$C_g=\varepsilon/d@f$ it is given by @f$S^2=e^2dv_F\sqrt{ n_0}/ \varepsilon\hbar\sqrt{\pi}@f$, with @f$d@f$ the distance between the gate and the graphene layer, @f$\varepsilon@f$ the medium permittivity, and @f$n_0@f$ the steady state or equilibrium number density.  Finally, @f$m^\star = \hbar \sqrt{\pi n}/v_F@f$ is the effective mass of the carriers, obtained resorting to a Drude model \cite Chaves2017 \cite Cosme2020. The system of equations presented is implemented by separating the hyperbolic, parabolic and source terms in the equation and applying appropriate numerical methods for each one. 
 
