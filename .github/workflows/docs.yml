@@ -32,6 +32,5 @@ jobs:
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
           branch: doc/gh-pages # The branch the action should deploy to.
           folder: docs_doxygen/html # The folder the action should deploy.
