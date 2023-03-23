@@ -1,11 +1,11 @@
-<map id="Fluid1DLib.h" name="Fluid1DLib.h">
-<area shape="rect" id="node1" title="Header file for 1D general fluid." alt="" coords="323,5,426,32"/>
-<area shape="rect" id="node2" href="$df/dbd/_boundary_lib_8h.html" title="Header file for BC base class." alt="" coords="235,80,349,107"/>
-<area shape="rect" id="node3" href="$d0/df4/_dirichlet_boundary_lib_8h.html" title="Header file for Dirichlet BC." alt="" coords="196,155,367,181"/>
-<area shape="rect" id="node4" href="$dd/dd1/_dyakonov_shur_boundary_lib_8h.html" title="Header file for Dyakonov&#45;Shur BC." alt="" coords="182,229,391,256"/>
-<area shape="rect" id="node5" href="$da/dbd/_feedback_boundary_lib_8h.html" title="Header file for Feedback BC." alt="" coords="415,229,593,256"/>
-<area shape="rect" id="node6" href="$d6/dbb/_robin_boundary_lib_8h.html" title="Header file for Robin BC." alt="" coords="5,229,157,256"/>
-<area shape="rect" id="node7" href="$dc/d6d/_electric_lib_8h.html" title="Header file for the electrical analysis post&#45;processing class." alt="" coords="492,155,593,181"/>
-<area shape="rect" id="node8" href="$d4/d66/_graphene_fluid1_d_lib_8h.html" title="Header file for 1D Dirac&#45;Fermi fluid." alt="" coords="374,80,541,107"/>
-<area shape="rect" id="node9" href="$d4/d57/_initial_condition_lib_8h_source.html" title=" " alt="" coords="668,80,820,107"/>
+<map id="src/includes/Fluid1DLib.h" name="src/includes/Fluid1DLib.h">
+<area shape="rect" id="node1" title="Header file for 1D general fluid." alt="" coords="383,5,567,32"/>
+<area shape="rect" id="node2" href="$df/dbd/_boundary_lib_8h.html" title="Header file for BC base class." alt="" coords="265,87,461,114"/>
+<area shape="rect" id="node3" href="$d0/df4/_dirichlet_boundary_lib_8h.html" title="Header file for Dirichlet BC." alt="" coords="217,169,437,211"/>
+<area shape="rect" id="node4" href="$dd/dd1/_dyakonov_shur_boundary_lib_8h.html" title="Header file for Dyakonov&#45;Shur BC." alt="" coords="232,259,429,300"/>
+<area shape="rect" id="node5" href="$da/dbd/_feedback_boundary_lib_8h.html" title="Header file for Feedback BC." alt="" coords="453,259,680,300"/>
+<area shape="rect" id="node6" href="$d6/dbb/_robin_boundary_lib_8h.html" title="Header file for Robin BC." alt="" coords="5,259,208,300"/>
+<area shape="rect" id="node7" href="$dc/d6d/_electric_lib_8h.html" title="Header file for the electrical analysis post&#45;processing class." alt="" coords="563,177,746,203"/>
+<area shape="rect" id="node8" href="$d4/d66/_graphene_fluid1_d_lib_8h.html" title="Header file for 1D Dirac&#45;Fermi fluid." alt="" coords="485,80,691,121"/>
+<area shape="rect" id="node9" href="$d4/d57/_initial_condition_lib_8h_source.html" title=" " alt="" coords="821,80,1024,121"/>
 </map>

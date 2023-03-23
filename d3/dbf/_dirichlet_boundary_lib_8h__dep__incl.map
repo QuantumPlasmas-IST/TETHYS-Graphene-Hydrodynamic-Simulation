@@ -1,6 +1,6 @@
-<map id="DirichletBoundaryLib.h" name="DirichletBoundaryLib.h">
-<area shape="rect" id="node1" title="Header file for Dirichlet BC." alt="" coords="242,5,413,32"/>
-<area shape="rect" id="node2" href="$dd/dd1/_dyakonov_shur_boundary_lib_8h.html" title="Header file for Dyakonov&#45;Shur BC." alt="" coords="5,80,215,107"/>
-<area shape="rect" id="node3" href="$da/dbd/_feedback_boundary_lib_8h.html" title="Header file for Feedback BC." alt="" coords="239,80,416,107"/>
-<area shape="rect" id="node4" href="$d6/dbb/_robin_boundary_lib_8h.html" title="Header file for Robin BC." alt="" coords="441,80,593,107"/>
+<map id="src/includes/DirichletBoundaryLib.h" name="src/includes/DirichletBoundaryLib.h">
+<area shape="rect" id="node1" title="Header file for Dirichlet BC." alt="" coords="230,5,450,47"/>
+<area shape="rect" id="node2" href="$dd/dd1/_dyakonov_shur_boundary_lib_8h.html" title="Header file for Dyakonov&#45;Shur BC." alt="" coords="5,95,203,136"/>
+<area shape="rect" id="node3" href="$da/dbd/_feedback_boundary_lib_8h.html" title="Header file for Feedback BC." alt="" coords="227,95,453,136"/>
+<area shape="rect" id="node4" href="$d6/dbb/_robin_boundary_lib_8h.html" title="Header file for Robin BC." alt="" coords="477,95,680,136"/>
 </map>
