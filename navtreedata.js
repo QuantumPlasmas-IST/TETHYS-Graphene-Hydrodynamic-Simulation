@@ -30,6 +30,7 @@ var NAVTREE =
       [ "Requirements", "index.html#required", null ],
       [ "Usage", "index.html#use", [
         [ "Compilation", "index.html#compile", null ],
+        [ "Testing", "index.html#testing", null ],
         [ "Running a simulation", "index.html#run", null ],
         [ "Output description", "index.html#out", null ]
       ] ],
