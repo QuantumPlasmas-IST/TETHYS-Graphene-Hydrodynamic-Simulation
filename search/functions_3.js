@@ -1,0 +1,18 @@
+var searchData=
+[
+  ['definegeometry_277',['DefineGeometry',['../de/dc8/class_set_up_parameters.html#a1bc495bfea3804014293a3902442b344',1,'SetUpParameters']]],
+  ['density_278',['Density',['../d6/d8f/class_dirichlet_boundary_condition.html#a7a26442a23f4a173e15b97f5058693c0',1,'DirichletBoundaryCondition']]],
+  ['densitybottom_279',['DensityBottom',['../d6/d8f/class_dirichlet_boundary_condition.html#a25f3099d78b07bb374c12c48ffdc6563',1,'DirichletBoundaryCondition']]],
+  ['densityflux_280',['DensityFlux',['../dc/d14/class_fluid1_d.html#a96e421ad1f0b35a735acb12232599a29',1,'Fluid1D::DensityFlux()'],['../d1/dd9/class_graphene_fluid1_d.html#abbd2f64ea18315072e7b9b35e2d8fc39',1,'GrapheneFluid1D::DensityFlux()']]],
+  ['densityfluxx_281',['DensityFluxX',['../de/d17/class_fluid2_d.html#a957e8c204de2fe0b10c1c871ed1bf6b3',1,'Fluid2D::DensityFluxX()'],['../d6/dfb/class_graphene_fluid2_d.html#a3e9e3b4dd3a867eff334747b5425498e',1,'GrapheneFluid2D::DensityFluxX()']]],
+  ['densityfluxy_282',['DensityFluxY',['../de/d17/class_fluid2_d.html#a0d40aea91b87a23ad163d88ff9b614ae',1,'Fluid2D::DensityFluxY()'],['../d6/dfb/class_graphene_fluid2_d.html#a8813deaa96ca55701003efdbe411c477',1,'GrapheneFluid2D::DensityFluxY()']]],
+  ['densityleft_283',['DensityLeft',['../d6/d8f/class_dirichlet_boundary_condition.html#a7be65359947a01c81945ec6f387960a4',1,'DirichletBoundaryCondition']]],
+  ['densityright_284',['DensityRight',['../d6/d8f/class_dirichlet_boundary_condition.html#a11458591f83763bed20d773c3d572e5c',1,'DirichletBoundaryCondition::DensityRight(Fluid1D &amp;fluid_class, float right)'],['../d6/d8f/class_dirichlet_boundary_condition.html#a01a8a950bdd49e288bfb7c856fc6cdf1',1,'DirichletBoundaryCondition::DensityRight(Fluid2D &amp;fluid_class, float right)']]],
+  ['densitysource_285',['DensitySource',['../dc/d14/class_fluid1_d.html#aad26c973b5157c7e7c9e5a9632d81c63',1,'Fluid1D::DensitySource()'],['../d6/dfb/class_graphene_fluid2_d.html#a4697417315a9da27774920b967819206',1,'GrapheneFluid2D::DensitySource()'],['../d1/dd9/class_graphene_fluid1_d.html#a5ea8264f064e3ba904ea0cbbd879fe82',1,'GrapheneFluid1D::DensitySource()'],['../de/d17/class_fluid2_d.html#ae00ef0ecaa82806f61b60922a6676a73',1,'Fluid2D::DensitySource()'],['../dc/d14/class_fluid1_d.html#a5012863e2ef60629ba4145af83d80aa2',1,'Fluid1D::DensitySource()']]],
+  ['densitytomass_286',['DensityToMass',['../dd/db7/class_dirac_graphene2_d.html#a0bb57a8abff9198269914f8bf7875da5',1,'DiracGraphene2D::DensityToMass()'],['../d6/dfb/class_graphene_fluid2_d.html#a67c39869ed7df0da22c91a89eb0a1a96',1,'GrapheneFluid2D::DensityToMass()']]],
+  ['densitytop_287',['DensityTop',['../d6/d8f/class_dirichlet_boundary_condition.html#a197a0b338f32dcec2e7428b6d278ea9f',1,'DirichletBoundaryCondition']]],
+  ['draincurrent_288',['DrainCurrent',['../d2/de1/class_electro_analysis.html#ad875636bfff27ca37ec981adef1956c7',1,'ElectroAnalysis']]],
+  ['draintosourcevoltage_289',['DrainToSourceVoltage',['../d2/de1/class_electro_analysis.html#a4e50316f404fa3cb94d7ea33640f536d',1,'ElectroAnalysis']]],
+  ['dsfeedbackbc_290',['DSFeedbackBc',['../da/df2/class_dyakonov_shur_boundary_condition.html#a9558c7c837139e548cb83b17bf515f09',1,'DyakonovShurBoundaryCondition']]],
+  ['dyakonovshurbc_291',['DyakonovShurBc',['../da/df2/class_dyakonov_shur_boundary_condition.html#ad1a10e143944d88b31160f2738c471e8',1,'DyakonovShurBoundaryCondition::DyakonovShurBc(GrapheneFluid1D &amp;fluid_class)'],['../da/df2/class_dyakonov_shur_boundary_condition.html#aaf99ed04d01543abe33bb5fc95bbf14b',1,'DyakonovShurBoundaryCondition::DyakonovShurBc(GrapheneFluid2D &amp;fluid_class)']]]
+];

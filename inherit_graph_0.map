@@ -1,0 +1,7 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="node1" href="$db/d64/class_boundary_condition.html" title="Base class for boundary conditions." alt="" coords="5,56,152,83"/>
+<area shape="rect" id="node2" href="$d6/d8f/class_dirichlet_boundary_condition.html" title="Class for constant Dirichelet boundary conditions." alt="" coords="200,56,401,83"/>
+<area shape="rect" id="node3" href="$da/df2/class_dyakonov_shur_boundary_condition.html" title="Class for the asymmetric Dyakonov&#45;Shur boundary conditions." alt="" coords="449,5,689,32"/>
+<area shape="rect" id="node4" href="$d3/d48/class_feedback_boundary_condition.html" title="Class for the feedback effects boundary conditions." alt="" coords="465,56,673,83"/>
+<area shape="rect" id="node5" href="$dd/dab/class_robin_boundary_condition.html" title="Class for Robin type boundary conditions." alt="" coords="478,107,661,133"/>
+</map>

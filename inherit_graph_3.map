@@ -1,0 +1,10 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="node1" href="$d1/d84/class_math_utils.html" title=" " alt="" coords="5,31,91,57"/>
+<area shape="rect" id="node2" href="$d2/de1/class_electro_analysis.html" title="Class to obtain the macroscopic electrical quantities." alt="" coords="139,5,261,32"/>
+<area shape="rect" id="node3" href="$df/d84/class_tethys_base.html" title="Base class for the fluid classes." alt="" coords="152,56,248,83"/>
+<area shape="rect" id="node4" href="$dc/d14/class_fluid1_d.html" title="Generalistic fluid class in one dimension, mainly for testing purposes." alt="" coords="309,31,381,57"/>
+<area shape="rect" id="node6" href="$de/d17/class_fluid2_d.html" title="Generalistic fluid class in two dimensions, mainly for testing purposes." alt="" coords="309,81,381,108"/>
+<area shape="rect" id="node5" href="$d1/dd9/class_graphene_fluid1_d.html" title="Graphene electronic fluid class in one dimension." alt="" coords="431,31,565,57"/>
+<area shape="rect" id="node7" href="$dd/db7/class_dirac_graphene2_d.html" title="Graphene electronic fluid class in two dimensions." alt="" coords="429,81,567,108"/>
+<area shape="rect" id="node8" href="$d6/dfb/class_graphene_fluid2_d.html" title="Graphene electronic fluid class in two dimensions." alt="" coords="431,132,565,159"/>
+</map>

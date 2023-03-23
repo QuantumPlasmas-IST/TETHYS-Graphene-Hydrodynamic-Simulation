@@ -1,0 +1,8 @@
+<map id="GrapheneFluid1D" name="GrapheneFluid1D">
+<area shape="rect" id="node1" title="Graphene electronic fluid class in one dimension." alt="" coords="111,289,246,316"/>
+<area shape="rect" id="node2" href="$dc/d14/class_fluid1_d.html" title="Generalistic fluid class in one dimension, mainly for testing purposes." alt="" coords="143,213,215,240"/>
+<area shape="rect" id="node3" href="$df/d84/class_tethys_base.html" title="Base class for the fluid classes." alt="" coords="71,95,167,121"/>
+<area shape="rect" id="node4" href="$d1/d84/class_math_utils.html" title=" " alt="" coords="5,5,91,32"/>
+<area shape="rect" id="node5" href="$d2/d28/struct_physical_parameters.html" title=" " alt="" coords="115,5,266,32"/>
+<area shape="rect" id="node6" href="$d4/d07/class_state_vec1_d.html" title=" " alt="" coords="191,95,289,121"/>
+</map>
