@@ -1,5 +1,5 @@
-<map id="src/includes/Fluid1DLib.h" name="src/includes/Fluid1DLib.h">
-<area shape="rect" id="node1" title="Header file for 1D general fluid." alt="" coords="403,5,587,32"/>
+<map id="Fluid1DLib.h" name="Fluid1DLib.h">
+<area shape="rect" id="node1" title="Header file for 1D general fluid." alt="" coords="444,5,546,32"/>
 <area shape="rect" id="node2" title=" " alt="" coords="12,244,90,271"/>
 <area shape="rect" id="node3" href="$d9/d03/_tethys_base_lib_8h.html" title="Header file for fluid base class and and IO methods." alt="" coords="537,87,722,114"/>
 <area shape="rect" id="node17" href="$d6/d57/_tethys_math_lib_8h.html" title="Header file for general mathematical functions." alt="" coords="35,169,222,196"/>

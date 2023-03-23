@@ -1,12 +1,12 @@
-<map id="src/includes/Fluid2DLib.h" name="src/includes/Fluid2DLib.h">
-<area shape="rect" id="node1" title="Header file for 1D general fluid." alt="" coords="424,5,608,32"/>
-<area shape="rect" id="node2" href="$df/dbd/_boundary_lib_8h.html" title="Header file for BC base class." alt="" coords="114,177,310,203"/>
-<area shape="rect" id="node3" href="$d0/df4/_dirichlet_boundary_lib_8h.html" title="Header file for Dirichlet BC." alt="" coords="302,259,522,300"/>
-<area shape="rect" id="node4" href="$dd/dd1/_dyakonov_shur_boundary_lib_8h.html" title="Header file for Dyakonov&#45;Shur BC." alt="" coords="313,348,511,389"/>
-<area shape="rect" id="node5" href="$da/dbd/_feedback_boundary_lib_8h.html" title="Header file for Feedback BC." alt="" coords="771,348,997,389"/>
-<area shape="rect" id="node6" href="$d6/dbb/_robin_boundary_lib_8h.html" title="Header file for Robin BC." alt="" coords="5,348,208,389"/>
-<area shape="rect" id="node7" href="$d7/d7f/_dirac_graphene2_d_lib_8h.html" title="Header file for 2D Dirac&#45;Fermi fluid." alt="" coords="271,80,479,121"/>
-<area shape="rect" id="node8" href="$d4/d57/_initial_condition_lib_8h_source.html" title=" " alt="" coords="335,169,537,211"/>
-<area shape="rect" id="node9" href="$dc/d6d/_electric_lib_8h.html" title="Header file for the electrical analysis post&#45;processing class." alt="" coords="613,177,795,203"/>
-<area shape="rect" id="node10" href="$d3/dda/_graphene_fluid2_d_lib_8h.html" title="Header file for 2D Dirac&#45;Fermi fluid." alt="" coords="683,80,890,121"/>
+<map id="Fluid2DLib.h" name="Fluid2DLib.h">
+<area shape="rect" id="node1" title="Header file for 1D general fluid." alt="" coords="342,5,445,32"/>
+<area shape="rect" id="node2" href="$df/dbd/_boundary_lib_8h.html" title="Header file for BC base class." alt="" coords="116,155,231,181"/>
+<area shape="rect" id="node3" href="$d0/df4/_dirichlet_boundary_lib_8h.html" title="Header file for Dirichlet BC." alt="" coords="253,229,424,256"/>
+<area shape="rect" id="node4" href="$dd/dd1/_dyakonov_shur_boundary_lib_8h.html" title="Header file for Dyakonov&#45;Shur BC." alt="" coords="234,304,443,331"/>
+<area shape="rect" id="node5" href="$da/dbd/_feedback_boundary_lib_8h.html" title="Header file for Feedback BC." alt="" coords="582,304,759,331"/>
+<area shape="rect" id="node6" href="$d6/dbb/_robin_boundary_lib_8h.html" title="Header file for Robin BC." alt="" coords="5,304,157,331"/>
+<area shape="rect" id="node7" href="$d7/d7f/_dirac_graphene2_d_lib_8h.html" title="Header file for 2D Dirac&#45;Fermi fluid." alt="" coords="188,80,356,107"/>
+<area shape="rect" id="node8" href="$d4/d57/_initial_condition_lib_8h_source.html" title=" " alt="" coords="255,155,407,181"/>
+<area shape="rect" id="node9" href="$dc/d6d/_electric_lib_8h.html" title="Header file for the electrical analysis post&#45;processing class." alt="" coords="481,155,583,181"/>
+<area shape="rect" id="node10" href="$d3/dda/_graphene_fluid2_d_lib_8h.html" title="Header file for 2D Dirac&#45;Fermi fluid." alt="" coords="533,80,699,107"/>
 </map>

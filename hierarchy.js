@@ -2,6 +2,8 @@ var hierarchy =
 [
     [ "BoundaryCondition", "db/d64/class_boundary_condition.html", [
       [ "DirichletBoundaryCondition", "d6/d8f/class_dirichlet_boundary_condition.html", [
+        [ "Companion paper:", "index.html#autotoc_md2", null ],
+        [ "Contributors:", "index.html#autotoc_md3", null ],
         [ "DyakonovShurBoundaryCondition", "da/df2/class_dyakonov_shur_boundary_condition.html", null ],
         [ "FeedbackBoundaryCondition", "d3/d48/class_feedback_boundary_condition.html", null ],
         [ "RobinBoundaryCondition", "dd/dab/class_robin_boundary_condition.html", null ]

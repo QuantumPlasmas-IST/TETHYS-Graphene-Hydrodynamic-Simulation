@@ -1,6 +1,6 @@
-<map id="src/includes/GrapheneFluid1DLib.h" name="src/includes/GrapheneFluid1DLib.h">
-<area shape="rect" id="node1" title="Header file for 1D Dirac&#45;Fermi fluid." alt="" coords="215,5,422,47"/>
-<area shape="rect" id="node2" href="$dd/dd1/_dyakonov_shur_boundary_lib_8h.html" title="Header file for Dyakonov&#45;Shur BC." alt="" coords="5,95,203,136"/>
-<area shape="rect" id="node3" href="$dc/d6d/_electric_lib_8h.html" title="Header file for the electrical analysis post&#45;processing class." alt="" coords="227,102,410,129"/>
-<area shape="rect" id="node4" href="$da/dbd/_feedback_boundary_lib_8h.html" title="Header file for Feedback BC." alt="" coords="435,95,661,136"/>
+<map id="GrapheneFluid1DLib.h" name="GrapheneFluid1DLib.h">
+<area shape="rect" id="node1" title="Header file for 1D Dirac&#45;Fermi fluid." alt="" coords="207,5,373,32"/>
+<area shape="rect" id="node2" href="$dd/dd1/_dyakonov_shur_boundary_lib_8h.html" title="Header file for Dyakonov&#45;Shur BC." alt="" coords="5,80,215,107"/>
+<area shape="rect" id="node3" href="$dc/d6d/_electric_lib_8h.html" title="Header file for the electrical analysis post&#45;processing class." alt="" coords="239,80,341,107"/>
+<area shape="rect" id="node4" href="$da/dbd/_feedback_boundary_lib_8h.html" title="Header file for Feedback BC." alt="" coords="365,80,543,107"/>
 </map>
