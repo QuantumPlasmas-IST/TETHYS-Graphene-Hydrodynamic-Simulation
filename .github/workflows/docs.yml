@@ -24,7 +24,7 @@ jobs:
       - name: Install Dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install doxygen libhdf5-103 libhdf5-cpp-103 libhdf5-dev libhdf5-openmpi-103
+          sudo apt-get install doxygen graphviz libhdf5-103 libhdf5-cpp-103 libhdf5-dev libhdf5-openmpi-103
       - name: Configure CMake
         run: cmake ./
       - name: Build
@@ -36,8 +36,8 @@ jobs:
       - name: Install Dependencies
         run: |
           brew update
-          brew install doxygen hdf5 llvm libomp
+          brew install doxygen graphviz hdf5 llvm libomp
       - name: Configure CMake
         run: cmake -D CMAKE_C_COMPILER=$(brew --prefix llvm)/bin/clang -D CMAKE_CXX_COMPILER=$(brew --prefix llvm)/bin/clang++
-      - name: Build
+      - name: Build Documentation
         run: make docs
