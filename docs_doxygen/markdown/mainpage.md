@@ -3,9 +3,15 @@
 
 @section intro Introduction
 
-TETHYS software, now on its version 2.6.1, is hastily reaching the first point of maturity. Having passed roughly two years in the development of both the analytical models and the source code, it is now a reliable and robust software although yet incomplete. With the prospect of a new widening of the team working for the development of this endeavour, and with the expectancy of a public release in the near future, the creation of a user's and developer's manual is of the utmost importance. However, as a research project, TETHYS source code is ever-changing and so keeping this manual up-to-date is a considerable effort that we wish that the reader may appreciate.
+TETHYS software, now on its version 2.7.0, is hastily reaching the first point of maturity. Having passed roughly two years in the development of both the analytical models and the source code, it is now a reliable and robust software although yet incomplete. With the prospect of a new widening of the team working for the development of this endeavour, and with the expectancy of a public release in the near future, the creation of a user's and developer's manual is of the utmost importance. However, as a research project, TETHYS source code is ever-changing and so keeping this manual up-to-date is a considerable effort that we wish that the reader may appreciate.
 
 This small manual is intended to be a first and broad guide to the usage of TETHYS code, therefore the introduction on the physical model and numerical methods found in this chapter are but a general description aiming to get the reader acquainted with the terms used and approaches to the problem that we have followed. For a more thorough study of the physics and computational or mathematical concepts the reader will find a concise bibliography at the end of this manual and whenever any question, suggestion or commentary arise we urge the reader to send them to pedro.cosme.e.silva@tecnico.ulisboa.pt
+
+##### Companion paper:
+Pedro Cosme, João S. Santos, João P.S. Bizarro, Ivan Figueiredo,
+_TETHYS: A simulation tool for graphene hydrodynamic models,_
+**Computer Physics Communications**,
+Volume 282, (2023) [![DOI:10.1016/j.cpc.2022.108550](http://img.shields.io/badge/DOI-10.1016/j.cpc.2022.108550-B31B1B.svg)](https://doi.org/10.1016/j.cpc.2022.108550)
 
 
 @section required Requirements
@@ -38,6 +44,24 @@ And then, for the compilation itself.
 $ cmake ..
 $ make all
 ```
+
+
+
+@subsection testing Testing
+
+Two automatic test are included by default in the cmake: the first one for the simulation itself, and the second for the electrical computations.
+First of all you should copy or move the test .ini file to the build directory
+```console
+$ mv 2DTESTparameters.ini ./build
+```
+Then, to run them both tests use
+```console
+$ ctest --extra-verbose 
+```
+or, if you want to run each one seperatly `ctest --extra-verbose -I 1,1,,1` or  `ctest --extra-verbose -I 2,2,,2` respectively.
+N.b. those test are intended to simultaneously assess all the different parameters and capabilities of the simulation code but they do not represent any particular physical scenario.
+
+
 @subsection run Running a simulation
 
 
