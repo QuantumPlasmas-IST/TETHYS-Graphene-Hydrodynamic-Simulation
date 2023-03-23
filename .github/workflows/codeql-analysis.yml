@@ -14,11 +14,9 @@ name: "CodeQL"
 on:
   push:
     branches: [ master, EnergyTransfer, TestingArea ]
-    branches-ignore: [dev/Documentation,doc/*]
   pull_request:
     # The branches below must be a subset of the branches above
     branches: [ master ]
-    branches-ignore: [dev/Documentation,doc/*]
   schedule:
     - cron: '16 22 * * 2'
 

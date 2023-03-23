@@ -1,7 +1,10 @@
 name: CompileTest
 
-on: [pull_request, push]
-branches-ignore: [dev/Documentation,doc/*]
+on:
+  push:
+    branches-ignore: [dev/Documentation,doc/*]
+  pull_request:
+    branches-ignore: [dev/Documentation,doc/*]
 
 jobs:
   build_on_Ubuntu:
