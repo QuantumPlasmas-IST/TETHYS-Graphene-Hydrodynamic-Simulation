@@ -29,15 +29,9 @@ jobs:
         run: cmake ./
       - name: Build Documentation
         run: make docs
-  build_on_MacOs:
-    runs-on: macos-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Install Dependencies
-        run: |
-          brew update
-          brew install doxygen graphviz hdf5 llvm libomp
-      - name: Configure CMake
-        run: cmake -D CMAKE_C_COMPILER=$(brew --prefix llvm)/bin/clang -D CMAKE_CXX_COMPILER=$(brew --prefix llvm)/bin/clang++
-      - name: Build Documentation
-        run: make docs
+      - name: Deploy 🚀
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH: doc/gh-pages # The branch the action should deploy to.
+          FOLDER: docs_doxygen/html # The folder the action should deploy.
