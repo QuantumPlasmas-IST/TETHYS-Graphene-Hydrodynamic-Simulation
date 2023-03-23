@@ -1,6 +1,7 @@
 name: Code Evaluation
 
 on: [pull_request, push]
+branches-ignore: [dev/Documentation,doc/*]
 
 jobs:
   build:

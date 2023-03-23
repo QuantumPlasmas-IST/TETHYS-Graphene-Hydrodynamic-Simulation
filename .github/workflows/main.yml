@@ -1,4 +1,5 @@
 on: [push]
+branches-ignore: [dev/Documentation,doc/*]
 
 jobs:
   check-quality:
