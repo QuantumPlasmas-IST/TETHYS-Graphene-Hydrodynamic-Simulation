@@ -24,7 +24,7 @@ jobs:
       - name: Install Dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install doxygen biblatex texlive-bibtex-extra graphviz libhdf5-103 libhdf5-cpp-103 libhdf5-dev libhdf5-openmpi-103
+          sudo apt-get install doxygen texlive-bibtex-extra graphviz libhdf5-103 libhdf5-cpp-103 libhdf5-dev libhdf5-openmpi-103
       - name: Configure CMake
         run: cmake ./
       - name: Build Documentation
