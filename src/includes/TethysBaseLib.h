@@ -56,6 +56,11 @@ using namespace H5;
 const FloatType      HDF5FLOAT(PredType::NATIVE_FLOAT);
 const IntType        HDF5INT(PredType::NATIVE_INT);
 
+/*!
+ * @brief Auxiliar class storing the phyisical parameers of the simulation
+ *
+ *
+ * */
 struct PhysicalParameters{
 	float VSnd =50.0f;   // sound velocity parameter
 	float VFer =10.0f;
@@ -66,7 +71,6 @@ struct PhysicalParameters{
 	float ColF =0.0f;   // colision frequency parameter
 	float Bohm =0.0f;   // Bohm
 };
-
 /*!
  * @brief Base class for the fluid classes
  *

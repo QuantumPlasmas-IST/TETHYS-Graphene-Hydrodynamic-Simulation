@@ -97,7 +97,7 @@ using namespace H5;
 		* Function to implement the spatial variation of the sound velocity S(x,y) in 2D
 		* corresponding to a variation of substrate permittivity or even the description of a multi gated system.
 		*
-		* @param std::function<float(float,float)> real function of real arguments f(x,y)
+		* @param func real function of real arguments f(x,y)
 		*
 		* */
 		void SetSound(std::function<float(float,float)>);     ///< Applies the anisotropy (in the cases there is one) to the sound velocity array

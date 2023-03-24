@@ -10,6 +10,11 @@
 
 #include <iostream>
 
+
+/*!
+ * @brief Class gathering the fluid fields of density adn velocity in 2D.
+ *
+ * */
 class StateVec2D{
 private:
 	float density;

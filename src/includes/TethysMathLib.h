@@ -33,6 +33,11 @@ using namespace std;
 #	define MAT_EULER 2.71828182845905f
 #endif
 
+
+/*!
+ * @brief General class with assorted mathematical utilities.
+ *
+ * */
 class MathUtils{
 
 public:

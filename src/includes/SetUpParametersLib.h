@@ -89,6 +89,11 @@ class SetUpParameters {
         virtual void ReadIniFile(char * file_name);
 };
 
+
+/*!
+ * @brief Initialization class for the fluid classes near the charge neutrality point.
+ *
+ * */
 class  SetUpParametersCNP  : public  SetUpParameters{
 
 	public:
