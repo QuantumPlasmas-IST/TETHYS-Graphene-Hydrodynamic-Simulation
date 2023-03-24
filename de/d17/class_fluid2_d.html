@@ -120,9 +120,9 @@ Collaboration diagram for Fluid2D:</div>
 <map name="a_fluid2_d_coll__map" id="a_fluid2_d_coll__map">
 <area shape="rect" title="Generalistic fluid class in two dimensions, mainly for testing purposes." alt="" coords="143,213,215,240"/>
 <area shape="rect" href="../../df/d84/class_tethys_base.html" title="Base class for the fluid classes." alt="" coords="71,95,167,121"/>
-<area shape="rect" href="../../d1/d84/class_math_utils.html" title=" " alt="" coords="5,5,91,32"/>
-<area shape="rect" href="../../d2/d28/struct_physical_parameters.html" title=" " alt="" coords="115,5,266,32"/>
-<area shape="rect" href="../../dc/d9e/class_state_vec2_d.html" title=" " alt="" coords="191,95,289,121"/>
+<area shape="rect" href="../../d1/d84/class_math_utils.html" title="General class with assorted mathematical utilities." alt="" coords="5,5,91,32"/>
+<area shape="rect" href="../../d2/d28/struct_physical_parameters.html" title="Auxiliar class storing the phyisical parameers of the simulation." alt="" coords="115,5,266,32"/>
+<area shape="rect" href="../../dc/d9e/class_state_vec2_d.html" title="Class gathering the fluid fields of density adn velocity in 2D." alt="" coords="191,95,289,121"/>
 </map>
 </div>
 <table class="memberdecls">
@@ -733,7 +733,7 @@ EleYMomentumSource </dd></dl>
 <p>Function to implement the spatial variation of the sound velocity S(x,y) in 2D corresponding to a variation of substrate permittivity or even the description of a multi gated system.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">std::function&lt;float(float,float)&gt;</td><td>real function of real arguments f(x,y) Applies the anisotropy (in the cases there is one) to the sound velocity array </td></tr>
+    <tr><td class="paramname">func</td><td>real function of real arguments f(x,y) Applies the anisotropy (in the cases there is one) to the sound velocity array </td></tr>
   </table>
   </dd>
 </dl>

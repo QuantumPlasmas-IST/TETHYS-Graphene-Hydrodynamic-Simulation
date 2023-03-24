@@ -1,5 +1,5 @@
 <map id="TethysBase" name="TethysBase">
 <area shape="rect" id="node1" title="Base class for the fluid classes." alt="" coords="71,95,167,121"/>
-<area shape="rect" id="node2" href="$d1/d84/class_math_utils.html" title=" " alt="" coords="5,5,91,32"/>
-<area shape="rect" id="node3" href="$d2/d28/struct_physical_parameters.html" title=" " alt="" coords="115,5,266,32"/>
+<area shape="rect" id="node2" href="$d1/d84/class_math_utils.html" title="General class with assorted mathematical utilities." alt="" coords="5,5,91,32"/>
+<area shape="rect" id="node3" href="$d2/d28/struct_physical_parameters.html" title="Auxiliar class storing the phyisical parameers of the simulation." alt="" coords="115,5,266,32"/>
 </map>
