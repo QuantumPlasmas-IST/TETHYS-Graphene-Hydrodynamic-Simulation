@@ -6,7 +6,7 @@
 
 
 
-
+#include "includes/InitialConditionLib.h"
 #include "includes/SetUpParametersLib.h"
 #include "includes/DirichletBoundaryLib.h"
 #include "includes/DyakonovShurBoundaryLib.h"
@@ -43,11 +43,11 @@ int main(int argc, char **argv){
 	//graph.GetLengthX();
 
 	//std::function<float(float,float)> variationS = [=](float x,float y){ return sound+5.f* tanh(6.0f*cos(2.0f*MAT_PI*2.0f*x)); };
-	std::function<float(float,float)> variationS = [=](float x,float y){ return sound*(1+0.3f*x* abs(y-0.5*ly)); };
-	graph.SetSound(variationS);
-	//graph.SetSound();
+	//std::function<float(float,float)> variationS = [=](float x,float y){ return sound*(1+0.3f*x* abs(y-0.5*ly)); };
+	//graph.SetSound(variationS);
+	graph.SetSound();
 	//graph.SetSimulationTime();
-	//graph.SetTmax(0.01f);
+	//graph.SetTmax(3.f);
 
 	/*................................................................*/
 
@@ -69,7 +69,10 @@ int main(int argc, char **argv){
 //	graph.InitialCondGeneral([](float x,float y) { return 1.0f+0.1f/cosh(10.0f*(x-.5f)); },[](float x,float y) { return 0.5f/cosh(10.0f*(x-.5f)); },[](float x,float y) { return 0.0f; });
 //	graph.InitialCondGeneral([](float x,float y) { return 0.8; },[](float x,float y) { return 0.5f; },[](float x,float y) { return 0.0f; });
 
-	graph.InitialCondRand();
+	//graph.InitialCondRand();
+
+InitialCondition::Rand(graph);
+
 //	graph.InitialCondTest();
 	/*................................................................*/
 
@@ -103,8 +106,8 @@ int main(int argc, char **argv){
 		 * Change the boundary conditions here *
 		 *+++++++++++++++++++++++++++++++++++++*/
 		DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
-		//DirichletBoundaryCondition::YClosedNoSlip(graph);
-		DirichletBoundaryCondition::YClosedFreeSlip(graph);
+		DirichletBoundaryCondition::YClosedNoSlip(graph);
+		//DirichletBoundaryCondition::YClosedFreeSlip(graph);
 
 //		BoundaryCondition::XPeriodic(graph);
 //		BoundaryCondition::YPeriodic(graph);
@@ -119,8 +122,8 @@ int main(int argc, char **argv){
 			// * Change the boundary conditions here *
 			// *+++++++++++++++++++++++++++++++++++++
 			DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
-			//DirichletBoundaryCondition::YClosedNoSlip(graph);
-			DirichletBoundaryCondition::YClosedFreeSlip(graph);
+			DirichletBoundaryCondition::YClosedNoSlip(graph);
+			//DirichletBoundaryCondition::YClosedFreeSlip(graph);
 		}
 		//Record full hdf5 data
 		if (parameters.SaveMode  && graph.Snapshot()) {

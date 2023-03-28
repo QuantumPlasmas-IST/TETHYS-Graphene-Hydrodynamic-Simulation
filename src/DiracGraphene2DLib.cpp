@@ -230,7 +230,7 @@ void DiracGraphene2D::ChooseGridPointers(const string &grid) {
 	}
 }
 
-
+/*
 void DiracGraphene2D::InitialCondRand(){
 	random_device rd;
 	float maxrand;
@@ -245,7 +245,8 @@ void DiracGraphene2D::InitialCondRand(){
 		HoleUmain[c].n()=1.0f + 0.05f * (noise - 0.5f);
 	}
 }
-
+*/
+/*
 void DiracGraphene2D::InitialCondPointDen(){
 	for (int c = 0; c < Nx*Ny; c++ ){
 		//Den[c] = 1.0f;
@@ -279,7 +280,7 @@ void DiracGraphene2D::InitialCondUniform(){
 		HoleUmain[c].n()=1.0f;
 	}
 }
-
+*/
 void DiracGraphene2D::WriteFluidFile(float t){
 	int j=Ny/2;
 	int pos_end = Nx - 1 + j*Nx ;

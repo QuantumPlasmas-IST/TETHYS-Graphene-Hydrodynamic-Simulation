@@ -2,6 +2,7 @@
 #include "includes/SetUpParametersLib.h"
 #include "includes/DyakonovShurBoundaryLib.h"
 #include "includes/GrapheneFluid1DLib.h"
+#include "includes/InitialConditionLib.h"
 #include "includes/FeedbackBoundaryLib.h"
 
 #include <functional>
@@ -56,7 +57,8 @@ int main(int argc, char **argv){
 
 
 	/*...............Initialization...................................*/
-	graph.InitialCondRand();
+
+	InitialCondition::Rand(graph);
 	//DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
 	//graph.InitialCondTest();
 

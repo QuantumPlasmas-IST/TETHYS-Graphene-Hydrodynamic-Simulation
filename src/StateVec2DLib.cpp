@@ -110,7 +110,7 @@ StateVec2D StateVec2D::operator+(const StateVec2D &obj) const {
 	res.velXGradient_x=velXGradient_x+obj.velXGradient_x;
 	res.velXGradient_y=velXGradient_y+obj.velXGradient_y;
 	res.velYGradient_x=velYGradient_x+obj.velYGradient_x;
-	res.velYGradient_y=velYGradient_x+obj.velYGradient_y;
+	res.velYGradient_y=velYGradient_y+obj.velYGradient_y;
 
 	res.sound = obj.sound; //simplesmente atribuir o valore de vel do som do obj
 	return res;
@@ -126,7 +126,7 @@ StateVec2D StateVec2D::operator-(const StateVec2D &obj) const {
 	res.velXGradient_x=velXGradient_x-obj.velXGradient_x;
 	res.velXGradient_y=velXGradient_y-obj.velXGradient_y;
 	res.velYGradient_x=velYGradient_x-obj.velYGradient_x;
-	res.velYGradient_y=velYGradient_x-obj.velYGradient_y;
+	res.velYGradient_y=velYGradient_y-obj.velYGradient_y;
 
 	res.sound = obj.sound; //simplesmente atribuir o valore de vel do som do obj
 	return res;
@@ -142,7 +142,7 @@ StateVec2D StateVec2D::operator*(const StateVec2D &obj) const {
 	res.velXGradient_x=velXGradient_x*obj.velXGradient_x;
 	res.velXGradient_y=velXGradient_y*obj.velXGradient_y;
 	res.velYGradient_x=velYGradient_x*obj.velYGradient_x;
-	res.velYGradient_y=velYGradient_x*obj.velYGradient_y;
+	res.velYGradient_y=velYGradient_y*obj.velYGradient_y;
 
 	res.sound = obj.sound; //simplesmente atribuir o valore de vel do som do obj
 	return res;

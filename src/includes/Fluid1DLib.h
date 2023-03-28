@@ -76,7 +76,7 @@ public :
 		bool Snapshot() const;
 //		void Smooth(int width);     ///< smoothing moving average filter to obtain the "Cor" version of the quantities
 		void SetSimulationTime();   ///< Finds and set the appropriate simulation time that is 1) Longer than the saturation time 2) Contains enough oscillation periods in the saturated region
-		void InitialCondRand();     ///< Initial condition, zero velocity and constant density with 0.5% white noise
+//		void InitialCondRand();     ///< Initial condition, zero velocity and constant density with 0.5% white noise
 		void InitialCondTest();     ///< Initial condition for testing and debugging
 		void InitialCondGeneral(function<float(float)> fden, function<float(float)> fvx);
 
@@ -116,6 +116,7 @@ public :
 		void CalcVelocityGradient(StateVec1D * u_vec , int size_x);
 		void CalcVelocityLaplacian(StateVec1D * u_vec, int size_x);
 		//float SideAverage(const float *input_array, GridPoint1D p, char side);
+		friend class InitialCondition;
 };
 
 

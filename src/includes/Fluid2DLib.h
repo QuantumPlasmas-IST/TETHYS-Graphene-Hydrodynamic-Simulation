@@ -51,6 +51,21 @@ using namespace H5;
 		virtual void RichtmyerStep1();
 		virtual void RichtmyerStep2();
 
+
+		void VelocityXGradient_bulk(StateVec2D *Uarray, int size_x, int size_y);
+		void VelocityXGradient_top(StateVec2D *Uarray, int size_x, int size_y);
+		void VelocityXGradient_bottom(StateVec2D *Uarray, int size_x, int size_y);
+		void VelocityXGradient_left(StateVec2D *Uarray, int size_x, int size_y);
+		void VelocityXGradient_right(StateVec2D *Uarray, int size_x, int size_y);
+		void VelocityXGradient_corners(StateVec2D *Uarray, int size_x, int size_y);
+
+		void VelocityYGradient_bulk(StateVec2D *Uarray, int size_x, int size_y);
+		void VelocityYGradient_top(StateVec2D *Uarray, int size_x, int size_y);
+		void VelocityYGradient_bottom(StateVec2D *Uarray, int size_x, int size_y);
+		void VelocityYGradient_left(StateVec2D *Uarray, int size_x, int size_y);
+		void VelocityYGradient_right(StateVec2D *Uarray, int size_x, int size_y);
+		void VelocityYGradient_corners(StateVec2D *Uarray, int size_x, int size_y);
+
 	public :
 
 		virtual void CopyFields();
@@ -88,11 +103,12 @@ using namespace H5;
 		void SetSound(std::function<float(float,float)>);     ///< Applies the anisotropy (in the cases there is one) to the sound velocity array
 		virtual void SetSimulationTime();   ///< Finds and set the appropriate simulation time
 
-		virtual void InitialCondRand();             ///< Initial condition, zero velocity and constant density with 0.5% white noise
-		void InitialCondWave();
-		void InitialCondTest();             ///< Initial condition for testing and debugging
-		void InitialCondGeneral(function<float(float, float)> fden, function<float(float, float)> fvx,
-		                        function<float(float, float)> fvy);
+
+
+//		virtual void InitialCondRand();             ///< Initial condition, zero velocity and constant density with 0.5% white noise
+//		void InitialCondWave();
+//		void InitialCondTest();             ///< Initial condition for testing and debugging
+//		void InitialCondGeneral(function<float(float, float)> fden, function<float(float, float)> fvx, function<float(float, float)> fvy);
 
 		/*!
 		 * @brief Calculates @f$\Delta x@f$ and imposes Courant–Friedrichs–Lewy condition to @f$\Delta t@f$
@@ -235,7 +251,9 @@ using namespace H5;
 
 		void VelocityGradient(StateVec2D *Uarray, int size_x, int size_y);
 
+		friend class InitialCondition;
 	};
+
 
 
 #endif
