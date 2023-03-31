@@ -34,7 +34,7 @@ int main(int argc, char **argv){
 	/*......CFL routine to determine dt...............................*/
 	graph.CflCondition();
 	//graph.SetDt(graph.GetDt()*0.25f);
-	dt=graph.GetDt();
+	//3dt=graph.GetDt();
 	/*................................................................*/
 	
 	/*.........Fixed or variable vel_snd value........................*/

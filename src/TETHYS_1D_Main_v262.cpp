@@ -32,6 +32,7 @@ int main(int argc, char **argv){
 	GrapheneFluid1D::BannerDisplay();
 	/*......CFL routine to determine dt...............................*/
 	graph.CflCondition();
+//	graph.SetDt(graph.GetDt()*0.05f);
 	dt=graph.GetDt();
 	/*................................................................*/
 	
