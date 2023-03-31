@@ -16,7 +16,13 @@
 #include "includes/GeometryLib.h"
 
 class Domain : public Geometry{
+private:
+	int size_x;
+	int size_y;
 	public:
-        void fill_Domain(Fluid2D &fluid_class);///< fill the domain with the correct points   
+		Domain(int Nx,int Ny);
+		~Domain();
+		bool *dom;///< Domain that contains the fluid
+        void fill_Domain(function<float(float)> f_top,function<float(float)> f_bottom);///< fill the domain with the correct points
 };
 #endif

@@ -15,8 +15,16 @@
 #include "includes/GeometryLib.h"
 
 class Edge : public Geometry{
+	private:
+		int size_x;
+		int size_y;
 	public:
-        void condition_Edge(Fluid2D &fluid_class);///< The limit between   
+		Edge(int Nx, int Ny,bool * dom);
+	    ~Edge();
+
+		bool *edg;///< The limit between the domain and the outside
+
+		void condition_Edge(function<float(float)> f_top,function<float(float)> f_bottom);///< The limit between
 };
 
 #endif

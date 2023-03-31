@@ -1,6 +1,6 @@
 #include "EdgeLib.h"
 
-void Edge::condition_Edge(Fluid2D &fluid_class){
+void Edge::condition_Edge(function<float(float)> f_top,function<float(float)> f_bottom){
     int Nx = fluid_class.SizeX();
     int Ny = fluid_class.SizeY();
     

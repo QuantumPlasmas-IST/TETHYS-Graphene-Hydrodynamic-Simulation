@@ -11,7 +11,11 @@
 #include "includes/Fluid1DLib.h"
 #include "includes/Fluid2DLib.h"
 #include "includes/DiracGraphene2DLib.h"
+#include "includes/DomainLib.h"
+#include "includes/EdgeLib.h"
 #include "BoundaryLib.h"
+
+
 
 class Geometry : public BoundaryCondition{
         public:
@@ -19,8 +23,8 @@ class Geometry : public BoundaryCondition{
                 float top_margin(float x);///< Function that describes the edge on the botton side
 //                bool dom(int x, int y);///< Domain that contains the fluid
 //                bool edg(int x, int y);///< The limit between the domain and the outside  
-                bool *dom;///< Domain that contains the fluid
-                bool *edg;///< The limit between the domain and the outside  
+		Domain dominio;
+		Edge fronteira;
 
 };
 
