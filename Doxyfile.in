@@ -1293,6 +1293,7 @@ HTML_EXTRA_STYLESHEET  = ./docs_doxygen/doxygen-awesome-css/doxygen-awesome.css 
                          ./docs_doxygen/doxygen-awesome-css/doxygen-awesome-sidebar-only.css
 
 FULL_SIDEBAR           = NO
+HTML_COLORSTYLE        = LIGHT # required with Doxygen >= 1.9.5
 
 # The HTML_EXTRA_FILES tag can be used to specify one or more extra images or
 # other source files which should be copied to the HTML output directory. Note
