@@ -13,6 +13,11 @@
 #include "includes/Fluid2DLib.h"
 #include "includes/DiracGraphene2DLib.h"
 
+
+/*!
+ * @brief Class for imposing initial conditions onto the density and velocity fields prior to simulation.
+ *
+ * */
 class InitialCondition {
 public:
 	static void Rand(Fluid1D& fluid_class);

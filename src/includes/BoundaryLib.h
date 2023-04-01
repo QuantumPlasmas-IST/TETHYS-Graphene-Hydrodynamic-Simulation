@@ -44,6 +44,7 @@ class BoundaryCondition {
 		/*!
 		* @brief open boundaries for all variables along designated x edge.
 		* Implemnts open boundaries for all quantities, at x=0 (if x_limit=0) or x=L (if x_limit=0) exclusively.
+		* @param fluid_class fluid do wich apply the boundary condition
 		* @param x_limit label to choose the edge
 		* */
 		static void XFree(Fluid2D &fluid_class, int x_limit);       ///< open boundaries at x=0 for all variables and zero tangent velocity Vy=0
@@ -54,6 +55,7 @@ class BoundaryCondition {
 		/*!
 		 * @brief open boundaries for all variables along designated y edge.
 		 * Implemnts open boundaries for all quantities, at y=0 (if y_limit=0) or y=W (if y_limit=0) exclusively.
+		 * @param fluid_class fluid do wich apply the boundary condition
 		 * @param y_limit label to choose the edge
 		 * */
 		static void YFree(Fluid2D &fluid_class, int y_limit);        ///< open boundaries at y=W for all variables

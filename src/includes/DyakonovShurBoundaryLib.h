@@ -46,9 +46,10 @@ public:
 	 * @brief Feedback Dyakonov-Shur boundary conditions 2D
 	 *
 	 * Implementation of the Dyakonov-Shur boundary conditions (2D case) with positive feedback at the drain side
-	 * @f[ n(x=0)=n_0  @f] and @f[j(x=L)\equiv n(x=L)v(x=L)=n_0v_0 + \epsilon \times n(x=0)v(x=0) @f]
+	 * @f[ n(x=0)=n_0  @f] and @f[j(x=L)\equiv n(x=L)v(x=L)=n_0v_0 + \beta n(x=0)v(x=0) @f]
 	 *
-	 * @param gain feedback gain @f$\epsilon@f$
+	 * @param fluid_class to which aply the boundary condition
+	 * @param gain feedback gain @f$\beta@f$
 	 *
 	 * */
 	static void DSFeedbackBc(GrapheneFluid2D &fluid_class, float gain);
