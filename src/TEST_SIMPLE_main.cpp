@@ -21,7 +21,7 @@ float ff_top(float x){
 }
 
 float ff_bottom(float x){
-    return 0.3*x;
+    return (40+20*cos(x/20.) );
 }
 
 int main(){

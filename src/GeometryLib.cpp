@@ -37,14 +37,18 @@ void Geometry::SaveGeometry() {
         if(fronteira.D.dom[k] == true){
             w[k] = 1;
         }else{
-            w[k] = 0;
+            if(fronteira.edg[k] == true){
+                w[k] = 7;
+            }else{
+                w[k] = 0;
+            }
         }
     }
     
 /*	DataSet dataset_vel_snd = GrpDat->createDataSet("Sound velocity", HDF5FLOAT, *DataspaceVelSnd);
 	dataset_vel_snd.write(w, HDF5FLOAT);
 	dataset_vel_snd.close();*/
-
+    cout << "oo" << endl;
     CreateHdf5File();          ///< creates the HDF5 files with the necessary structure
     cout << "debug 0" << endl;
   
