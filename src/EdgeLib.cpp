@@ -1,18 +1,37 @@
 #include "EdgeLib.h"
+#include "DomainLib.h"
 
-void Edge::condition_Edge(function<float(float)> f_top,function<float(float)> f_bottom){
-    int Nx = fluid_class.SizeX();
-    int Ny = fluid_class.SizeY();
-    
-    for(int i=1; i<=Nx*Ny-1; i++) {
-        printf("i/Nx =%d",i/Nx);
-        if(dom[i/Nx,i%Nx] == 0){
+Edge::Edge(){}
+
+Edge::Edge(int Nx, int Ny /*,bool * domn*/){
+    size_x = Nx;
+    size_y = Ny;
+//    D.dom = domn;
+    D.set_size_x(Nx);
+    D.set_size_y(Ny);
+    edg.resize(Nx*Ny);
+}
+
+Edge::~Edge() = default;
+
+void Edge::set_size_x(int Nx){
+    size_x = Nx;
+    D.set_size_x(Nx);
+}
+
+void Edge::set_size_y(int Ny){
+    size_y = Ny;
+    D.set_size_y(Ny);
+}
+
+void Edge::set_Edge(){
+    for(int k=1; k<=size_x*size_y-1; k++) {
+//        printf("i/size_x =%d",k/size_x);
+        if(D.dom[k] == 0){
             for(int di = -1; di <= 1; di++){
                 for(int dj = -1; dj <= 1; dj++){
-                    if( dom[i/Nx + di,i%Nx + di] == 0){
-                        if( dom[i/Nx + dj,i%Nx + dj] == 1){
-                            edg[i/Nx,i%Nx] == 1;
-                        }
+                    if( D.dom[k + di + size_x*dj] == 1){
+                        edg[k] = 1;
                     }
                 }
             }

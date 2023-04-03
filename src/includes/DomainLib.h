@@ -13,16 +13,21 @@
 #include "includes/Fluid2DLib.h"
 #include "includes/DiracGraphene2DLib.h"
 #include "includes/BoundaryLib.h"
-#include "includes/GeometryLib.h"
+//#include "includes/GeometryLib.h"
 
-class Domain : public Geometry{
-private:
-	int size_x;
-	int size_y;
+class Domain{
+	private:
+		int size_x;
+		int size_y;
 	public:
-		Domain(int Nx,int Ny);
+		Domain();
+		Domain(int Nx,int Ny /*, function<float(float)> f_top,function<float(float)> f_bottom*/);
 		~Domain();
-		bool *dom;///< Domain that contains the fluid
-        void fill_Domain(function<float(float)> f_top,function<float(float)> f_bottom);///< fill the domain with the correct points
+//		bool *dom;///< Domain that contains the fluid
+		std::vector <bool> dom;
+		void set_size_x(int Nx);
+		void set_size_y(int Ny);
+        void set_Domain(function<float(float)> f_top,function<float(float)> f_bottom);///< fill the domain with the correct points
+	
 };
 #endif

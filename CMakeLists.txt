@@ -22,6 +22,8 @@ if(OPENMP_FOUND)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_C_FLAGS}")
 endif()
 
+#minha main para correr coisas simples
+add_executable(TEST_SIMPLE src/TEST_SIMPLE_main.cpp)
 
 
 add_executable(TETHYS_1D src/TETHYS_1D_Main_v262.cpp)
@@ -36,6 +38,7 @@ file(GLOB SRC_LIB_FILES src/*Lib.cpp)
 
 add_library(tethys_library STATIC ${SRC_LIB_FILES})
 
+target_link_libraries(TEST_SIMPLE PUBLIC tethys_library)
 
 target_link_libraries(TETHYS_1D PUBLIC tethys_library)
 
@@ -45,6 +48,8 @@ target_link_libraries(TETHYS_ELEC_2D PUBLIC tethys_library)
 
 #target_link_libraries(TETHYS_RADIATION_2D PUBLIC tethys_library)
 
+target_include_directories(TEST_SIMPLE PRIVATE ${HDF5_INCLUDE_DIRS})
+target_link_libraries(TEST_SIMPLE PRIVATE ${HDF5_CXX_LIBRARIES})
 
 target_include_directories(TETHYS_1D PRIVATE ${HDF5_INCLUDE_DIRS})
 target_link_libraries(TETHYS_1D PRIVATE ${HDF5_CXX_LIBRARIES})
@@ -58,7 +63,7 @@ target_link_libraries(TETHYS_2D_CNP PRIVATE ${HDF5_CXX_LIBRARIES})
 target_include_directories(TETHYS_ELEC_2D PRIVATE ${HDF5_INCLUDE_DIRS})
 target_link_libraries(TETHYS_ELEC_2D PRIVATE ${HDF5_CXX_LIBRARIES})
 
-
+#add_test(testsimple TEST_SIMPLE)
 add_test(test1D TETHYS_1D 23 11 0.8 0.04 0 0 0 1 1)
 add_test(test2D TETHYS_2D 2DTESTparameters.ini)
 set(H5_TEST_FILE "hdf5_2D_S=31.00vF=10.50vis=0.020odd=0.010l=0.400wc=0.70therm=0.00.h5")

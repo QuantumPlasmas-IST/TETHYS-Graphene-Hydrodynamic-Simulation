@@ -12,19 +12,27 @@
 #include "includes/Fluid2DLib.h"
 #include "includes/DiracGraphene2DLib.h"
 #include "BoundaryLib.h"
-#include "includes/GeometryLib.h"
+//#include "includes/DomainLib.h"
+#include "DomainLib.h"
 
-class Edge : public Geometry{
+class Edge{
 	private:
 		int size_x;
 		int size_y;
+		
 	public:
-		Edge(int Nx, int Ny,bool * dom);
+		Edge();
+		Edge(int Nx, int Ny /*,bool * dom*/);
 	    ~Edge();
 
-		bool *edg;///< The limit between the domain and the outside
+		Domain D;
 
-		void condition_Edge(function<float(float)> f_top,function<float(float)> f_bottom);///< The limit between
+//		bool *edg;///< The limit between the domain and the outside
+		std::vector <bool> edg;
+		
+		void set_size_x(int);
+		void set_size_y(int);
+		void set_Edge();///< The limit between
 };
 
 #endif
