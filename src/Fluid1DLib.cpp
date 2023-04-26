@@ -307,3 +307,8 @@ void Fluid1D::ParabolicFTCS() {
 		Umain[i].v() = Umain[i].v() + kin_vis * dt *Umain[i].grad_v() ; //TODO mudar o nome para lap_v se isto funcionar
 	}
 }
+
+
+float Fluid1D::DensityToMass(float density) {
+    return density;
+}
