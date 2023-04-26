@@ -205,39 +205,57 @@ bool Fluid1D::Snapshot() const {
 
 void Fluid1D::SaveSnapShot(){
 
-	CopyFields();
-
 	hsize_t dim_atr[1] = { 1 };
 	DataSpace atr_dataspace = DataSpace (1, dim_atr );
 
 	int points_per_period = static_cast<int>((2.0 * MAT_PI / RealFreq()) / dt);
 	snapshot_step = points_per_period / snapshot_per_period;
 
-	string str_time = to_string(TimeStepCounter );/// snapshot_step);
+    this->CopyFields();
+
+	string str_time = to_string(TimeStepCounter / snapshot_step );/// snapshot_step);
 	//TODO TRATAR AQUI DISTO ta a dar asneira porque o numero dos snapshotsé muito pequeno parece quando chega ao snapshot 100000
 	str_time.insert(str_time.begin(), 7 - str_time.length(), '0');
 	string name_dataset = "snapshot_" + str_time;
 
+    float currenttime= static_cast<float>(TimeStepCounter) * dt;
+
 	DataSet dataset_den = GrpDen->createDataSet(name_dataset, HDF5FLOAT, *DataspaceDen);
 	Attribute atr_step_den = dataset_den.createAttribute("time step", HDF5INT, atr_dataspace);
 	Attribute atr_time_den = dataset_den.createAttribute("time", HDF5FLOAT, atr_dataspace);
-	float currenttime= static_cast<float>(TimeStepCounter) * dt;
-	atr_step_den.write(HDF5INT, &TimeStepCounter);
+    dataset_den.write(Den, HDF5FLOAT);
+    dataset_den.close();
+    atr_step_den.write(HDF5INT, &TimeStepCounter);
 	atr_time_den.write(HDF5FLOAT , &currenttime);
 	atr_step_den.close();
 	atr_time_den.close();
-	dataset_den.write(Den, HDF5FLOAT);
-	dataset_den.close();
+
 
 	DataSet dataset_vel_x = GrpVelX->createDataSet(name_dataset, HDF5FLOAT, *DataspaceVelX);
 	Attribute atr_step_vel_x = dataset_vel_x.createAttribute("time step", HDF5INT, atr_dataspace);
 	Attribute atr_time_vel_x = dataset_vel_x.createAttribute("time", HDF5FLOAT, atr_dataspace);
-	atr_step_vel_x.write(HDF5INT, &TimeStepCounter);
+    dataset_vel_x.write(Vel, HDF5FLOAT);
+    dataset_vel_x.close();
+    atr_step_vel_x.write(HDF5INT, &TimeStepCounter);
 	atr_time_vel_x.write(HDF5FLOAT , &currenttime);
 	atr_step_vel_x.close();
 	atr_time_vel_x.close();
-	dataset_vel_x.write(Vel, HDF5FLOAT);
-	dataset_vel_x.close();
+
+
+/*
+    if(therm_diff!=0){
+        DataSet dataset_tmp = GrpTmp->createDataSet(name_dataset, HDF5FLOAT, *DataspaceTmp);
+        Attribute atr_step_tmp = dataset_tmp.createAttribute("time step", HDF5INT, atr_dataspace);
+        Attribute atr_time_tmp = dataset_tmp.createAttribute("time", HDF5FLOAT, atr_dataspace);
+        dataset_tmp.write(Tmp, HDF5FLOAT);
+        dataset_tmp.close();
+        atr_step_tmp.write(HDF5INT, &TimeStepCounter);
+        atr_time_tmp.write(HDF5FLOAT, &currenttime);
+        atr_step_tmp.close();
+        atr_time_tmp.close();
+    }
+    */
+
 }
 
 
