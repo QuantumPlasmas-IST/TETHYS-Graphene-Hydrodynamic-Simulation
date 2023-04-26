@@ -45,8 +45,8 @@ class Fluid1D : public TethysBase{
 
 
 
-	void RichtmyerStep1();
-	void RichtmyerStep2();
+	virtual void RichtmyerStep1();
+	virtual void RichtmyerStep2();
 
 
 	void VelocityToCurrent();
@@ -56,6 +56,8 @@ class Fluid1D : public TethysBase{
 
 
 	friend class NumericalFlux;
+
+    virtual float DensityToMass(float density);
 
 public :
 
@@ -75,8 +77,8 @@ public :
 		~Fluid1D();
 		bool Snapshot() const;
 //		void Smooth(int width);     ///< smoothing moving average filter to obtain the "Cor" version of the quantities
-		void SetSimulationTime();   ///< Finds and set the appropriate simulation time that is 1) Longer than the saturation time 2) Contains enough oscillation periods in the saturated region
-		void InitialCondRand();     ///< Initial condition, zero velocity and constant density with 0.5% white noise
+		virtual void SetSimulationTime();   ///< Finds and set the appropriate simulation time that is 1) Longer than the saturation time 2) Contains enough oscillation periods in the saturated region
+		virtual void InitialCondRand();     ///< Initial condition, zero velocity and constant density with 0.5% white noise
 		void InitialCondTest();     ///< Initial condition for testing and debugging
 		void InitialCondGeneral(function<float(float)> fden, function<float(float)> fvx);
 
@@ -89,7 +91,7 @@ public :
 
 		void ParabolicFTCS();
 
-		void CopyFields();
+		virtual void CopyFields();
 
 
 		void SetSound();            ///< Applies the anisotropy to the sound velocity array
@@ -108,8 +110,8 @@ public :
 		virtual float VelocitySource(float n, float v, float s, float d3den); ///< velocity equation (momentum equation) source term
 
 		void CreateFluidFile();     ///< create and open the simplified .dat file output
-		void SaveSnapShot(); ///< saves the all the simulated quantities on the appropriate dataspace of the HDF5 file
-		void WriteFluidFile(float t) ; ///< writes the line of time t on the simplified .dat file output
+		virtual void SaveSnapShot(); ///< saves the all the simulated quantities on the appropriate dataspace of the HDF5 file
+		virtual void WriteFluidFile(float t) ; ///< writes the line of time t on the simplified .dat file output
 		int GetSnapshotStep() const;
 		int GetSnapshotFreq() const;
 
