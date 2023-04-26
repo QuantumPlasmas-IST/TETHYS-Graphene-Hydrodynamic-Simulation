@@ -16,6 +16,9 @@ private:
 	float velocity;
 	float velocity_gradient;
 	float sound=1.0f;
+    float momentum;
+    float temperature=1.0f;
+
 public:
 	StateVec1D()=default; //default constructor
 	StateVec1D(const StateVec1D&); //copy constructor
@@ -29,6 +32,9 @@ public:
 	float& v();
 	float& n();
 	float& S();
+    float& tmp();
+
+    float& p();
 
 	StateVec1D& operator=(const StateVec1D&);
 	StateVec1D operator + (StateVec1D const &obj) const ;
