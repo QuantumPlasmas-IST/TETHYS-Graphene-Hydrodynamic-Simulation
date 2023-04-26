@@ -67,7 +67,7 @@ public :
 
 		float * Den ;       // number density
 		float * Vel ;       // fluid velocity
-
+        float * Tmp ;
 
 //		float * GradVel;    // fluid velocity gradient
 
