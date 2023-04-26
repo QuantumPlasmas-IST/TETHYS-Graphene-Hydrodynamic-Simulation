@@ -47,6 +47,14 @@ float &StateVec1D::S() {
 	return sound;
 }
 
+float &StateVec1D::p() {
+    return momentum;
+}
+
+float &StateVec1D::tmp() {
+    return temperature;
+}
+
 StateVec1D &StateVec1D::operator=(const StateVec1D & obj) {
 	if(this != &obj) {
 		this->density=obj.density;
