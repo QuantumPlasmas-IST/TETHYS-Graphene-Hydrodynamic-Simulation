@@ -196,12 +196,12 @@ void DiracGraphene1D::CopyFields() {
     for (int i = 0; i < Nx; ++i) {
         Den[i]=Umain[i].n();
         mass = DensityToMass(Den[i]);
-        Vel[i]=Umain[i].p()/mass;
+        Vel[i]=Umain[i].v();
         Tmp[i] =Umain[i].tmp();
 
         HDen[i]=HoleUmain[i].n();
         hmass = DensityToMass(HDen[i]);
-        HVel[i]=HoleUmain[i].p()/hmass;
+        HVel[i]=HoleUmain[i].v();
     }
 }
 
