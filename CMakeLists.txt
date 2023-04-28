@@ -24,7 +24,7 @@ endif()
 
 
 
-add_executable(TETHYS_1D src/TETHYS_1D_Main_v262.cpp)
+add_executable(TETHYS_1D src/TETHYS_1D_Main_v262.cpp src/DiracGraphene1DLib.cpp src/includes/DiracGraphene1DLib.h)
 add_executable(TETHYS_2D src/TETHYS_2D_Main_v262.cpp)
 add_executable(TETHYS_2D_CNP src/TETHYS_2D_Dirac_main.cpp)
 add_executable(TETHYS_ELEC_2D src/TETHYS_2D_ElectronicAnalysis.cpp)
@@ -34,7 +34,7 @@ file(GLOB SRC_LIB_FILES src/*Lib.cpp)
 
 
 
-add_library(tethys_library STATIC ${SRC_LIB_FILES})
+add_library(tethys_library STATIC ${SRC_LIB_FILES} src/DiracGraphene1DLib.cpp src/includes/DiracGraphene1DLib.h)
 
 
 target_link_libraries(TETHYS_1D PUBLIC tethys_library)
