@@ -51,6 +51,12 @@ float &StateVec1D::tmp() {
     return temperature;
 }
 
+float &StateVec1D::phi() {
+	return potencial;
+}
+
+
+
 StateVec1D &StateVec1D::operator=(const StateVec1D & obj) {
 	if(this != &obj) {
 		this->density=obj.density;

@@ -14,6 +14,7 @@ class StateVec1D{
 private:
 	float density;
 	float velocity;
+	float potencial;
 	float velocity_gradient;
 	float sound=1.0f;
     float temperature=1.0f;
@@ -28,6 +29,7 @@ public:
 
 
 	float& grad_v();
+	float& phi();
 	float& v();
 	float& n();
 	float& S();
