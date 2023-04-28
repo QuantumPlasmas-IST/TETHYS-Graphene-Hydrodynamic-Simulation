@@ -1,8 +1,7 @@
 #include "includes/Fluid1DLib.h"
 #include "includes/SetUpParametersLib.h"
 #include "includes/DyakonovShurBoundaryLib.h"
-#include "includes/GrapheneFluid1DLib.h"
-#include "includes/FeedbackBoundaryLib.h"
+#include "includes/DiracGraphene1DLib.h"
 
 #include <functional>
 
@@ -20,11 +19,10 @@ int main(int argc, char **argv){
 	//float dx;								// spatial discretisation
 	float dt;								// time step
 
-	SetUpParameters parameters(argc, argv);
-	GrapheneFluid1D graph(parameters);
-	//DyakonovShurBoundaryCondition boundary_condition;
+	SetUpParametersCNP parameters(argc, argv);
+	DiracGraphene1D graph(parameters);
 
-	GrapheneFluid1D::BannerDisplay();
+	DiracGraphene1D::BannerDisplay();
 	/*......CFL routine to determine dt...............................*/
 	graph.CflCondition();
 	dt=graph.GetDt();
@@ -41,8 +39,6 @@ int main(int argc, char **argv){
 	/*................................................................*/
 
 	/*.........Output files and streams...............................*/
-//	ElectroAnalysis elec;
-//	elec.CreateElectroFile(graph);
 	graph.CreateFluidFile();
 	graph.CreateHdf5File();
 	/*................................................................*/
@@ -50,10 +46,8 @@ int main(int argc, char **argv){
 	graph.WelcomeScreen();
 
 
-
 	/*...............Initialization...................................*/
 	graph.InitialCondRand();
-	//DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
 	//graph.InitialCondTest();
 
 	/*................................................................*/
@@ -68,23 +62,15 @@ int main(int argc, char **argv){
 		GrapheneFluid1D::TimeStepCounter++;
 		// Main algorithm		
 		graph.Richtmyer();
-		//graph.RungeKuttaTVD();
 
 		// Impose boundary conditions
-		DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
-		//BoundaryCondition::XPeriodic(graph);
+		BoundaryCondition::XPeriodic(graph);
 
-		//graph.BohmOperator(0.015);
-		//BoundaryCondition::XPeriodic(graph);
-
-		// Applying average filters for smoothing 	
-		//graph.Smooth(2);
 		//Record full data
 		if (parameters.SaveMode  && graph.Snapshot()) {
 			graph.SaveSnapShot();
 		}
 		graph.WriteFluidFile(t);
-		//elec.WriteElectroFile(t,graph);
 	}
 	if(parameters.SaveMode ) {
 		graph.WriteAttributes();
