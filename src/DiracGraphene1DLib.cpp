@@ -318,3 +318,7 @@ DiracGraphene1D::~DiracGraphene1D(){
     delete[] HoleUmid;
 }
 
+void DiracGraphene1D::ComputeElectricPotencial() {
+//TODO implementar a funçao nao local para calculo do potencial electrico em cada ponto
+}
+

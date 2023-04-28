@@ -56,6 +56,8 @@ public:
         //void SetSimulationTime() override;
 
 
+		void ComputeElectricPotencial();
+
     void RichtmyerStep1() override;
     void RichtmyerStep2() override;
 
