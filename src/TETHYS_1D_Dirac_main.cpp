@@ -47,8 +47,8 @@ int main(int argc, char **argv){
 
 
 	/*...............Initialization...................................*/
-	graph.InitialCondRand();
-	//graph.InitialCondTest();
+	//graph.InitialCondRand();
+	graph.InitialCondTest();
 
 	/*................................................................*/
 
