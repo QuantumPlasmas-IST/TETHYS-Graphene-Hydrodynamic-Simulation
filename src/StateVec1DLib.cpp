@@ -47,10 +47,6 @@ float &StateVec1D::S() {
 	return sound;
 }
 
-float &StateVec1D::p() {
-    return momentum;
-}
-
 float &StateVec1D::tmp() {
     return temperature;
 }
