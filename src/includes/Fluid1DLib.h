@@ -94,7 +94,7 @@ public :
 		virtual void CopyFields();
 
 
-		void SetSound();            ///< Applies the anisotropy to the sound velocity array
+		virtual void SetSound();            ///< Applies the anisotropy to the sound velocity array
 		void SaveSound();
 	    void SetSound(const std::function<float(float)>& func);            ///< Applies the anisotropy to the sound velocity array
 		virtual void CflCondition();    ///< Calculates dx and imposes Courant–Friedrichs–Lewy condition to dt
