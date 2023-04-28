@@ -84,6 +84,8 @@ void Fluid1D::SetSound(){
 		Umid[i].S()=vel_snd;
 	}
 }
+
+
 void Fluid1D::SetSound(const std::function<float(float)>& func) {
 	for(int i = 0; i<Nx  ;i++){
 		vel_snd_arr[i]= func(i*dx);
