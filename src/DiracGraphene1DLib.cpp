@@ -319,28 +319,29 @@ DiracGraphene1D::~DiracGraphene1D(){
 }
 
 void DiracGraphene1D::ComputeElectricPotencial(const string &grid) {
-//TODO implementar a funçao nao local para calculo do potencial electrico em cada ponto
+//TODO testar com uma distribuição com resultado analitio conhecido
 float integral=0.0f;
 	if(grid == "MidGrid"){
-		for (int i = 0; i < Nx; ++i) {
-			for (int i = 0; i < Nx; ++i) {
-				integral=0.0f;
+		for (int i = 0; i < Nx-1; ++i) {
+			for (int j = 0; j < Nx-1; ++j) {
+				integral += PotencialKernel((i-j+0.5)*dx)*Umid[j].n();
 			}
-			Umid[i].phi() =integral;
+			Umid[i].phi() =integral/Nx;
 		}
 	}if(grid == "MainGrid"){
 		for (int i = 0; i < Nx; ++i) {
-			for (int i = 0; i < Nx; ++i) {
-				integral=0.0f;
+			for (int j = 0; j < Nx; ++j) {
+				integral += PotencialKernel((i-j)*dx)*Umid[j].n();
 			}
-			Umain[i].phi() =integral;
+			Umain[i].phi() =integral/Nx;
 		}
 	}
 }
 
 float DiracGraphene1D::PotencialKernel(float x) {
+	float cutoff=1E-5;
 	float W=1.0f; //width of simulation along y
-	return 2* atanh( 0.5*W/sqrt(x*x+W*W*0.25f) );
+	return 2* atanh( 0.5*W/sqrt(x*x+W*W*0.25f+cutoff) );
 }
 
 
