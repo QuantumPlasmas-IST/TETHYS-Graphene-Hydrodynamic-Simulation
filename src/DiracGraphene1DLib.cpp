@@ -320,9 +320,10 @@ DiracGraphene1D::~DiracGraphene1D(){
 
 void DiracGraphene1D::ComputeElectricPotencial(const string &grid) {
 //TODO testar com uma distribuição com resultado analitio conhecido
-float integral=0.0f;
+
 	if(grid == "MidGrid"){
 		for (int i = 0; i < Nx-1; ++i) {
+			float integral=0.0f;
 			for (int j = 0; j < Nx-1; ++j) {
 				integral += PotencialKernel((i-j+0.5)*dx)*Umid[j].n();
 			}
@@ -330,6 +331,7 @@ float integral=0.0f;
 		}
 	}if(grid == "MainGrid"){
 		for (int i = 0; i < Nx; ++i) {
+			float integral=0.0f;
 			for (int j = 0; j < Nx; ++j) {
 				integral += PotencialKernel((i-j)*dx)*Umid[j].n();
 			}
