@@ -56,7 +56,9 @@ public:
         //void SetSimulationTime() override;
 
 
-		void ComputeElectricPotencial();
+		void ComputeElectricPotencial(const string &grid);
+	float PotencialKernel(float x);
+
 
     void RichtmyerStep1() override;
     void RichtmyerStep2() override;

@@ -318,7 +318,30 @@ DiracGraphene1D::~DiracGraphene1D(){
     delete[] HoleUmid;
 }
 
-void DiracGraphene1D::ComputeElectricPotencial() {
+void DiracGraphene1D::ComputeElectricPotencial(const string &grid) {
 //TODO implementar a funçao nao local para calculo do potencial electrico em cada ponto
+float integral=0.0f;
+	if(grid == "MidGrid"){
+		for (int i = 0; i < Nx; ++i) {
+			for (int i = 0; i < Nx; ++i) {
+				integral=0.0f;
+			}
+			Umid[i].phi() =integral;
+		}
+	}if(grid == "MainGrid"){
+		for (int i = 0; i < Nx; ++i) {
+			for (int i = 0; i < Nx; ++i) {
+				integral=0.0f;
+			}
+			Umain[i].phi() =integral;
+		}
+	}
 }
+
+float DiracGraphene1D::PotencialKernel(float x) {
+	float W=1.0f; //width of simulation along y
+	return 2* atanh( 0.5*W/sqrt(x*x+W*W*0.25f) );
+}
+
+
 
