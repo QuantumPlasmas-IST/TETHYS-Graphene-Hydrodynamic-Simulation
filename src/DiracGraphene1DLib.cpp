@@ -237,7 +237,7 @@ void DiracGraphene1D::SaveSnapShot() {
     DataSet dataset_hvel_x = GrpHVel->createDataSet(name_dataset, HDF5FLOAT, *DataspaceHVel);
     Attribute atr_step_hvel_x = dataset_hvel_x.createAttribute("time step", HDF5INT, atr_dataspace);
     Attribute atr_time_hvel_x = dataset_hvel_x.createAttribute("time", HDF5FLOAT, atr_dataspace);
-    dataset_hvel_x.write(Vel, HDF5FLOAT);
+    dataset_hvel_x.write(HVel, HDF5FLOAT);
     dataset_hvel_x.close();
     atr_step_hvel_x.write(HDF5INT, &TimeStepCounter);
     atr_time_hvel_x.write(HDF5FLOAT , &currenttime);
@@ -259,7 +259,7 @@ float DiracGraphene1D::DensityToMass(float density) {
 }
 
 
-//____________________ Electrons Functions _________________________
+//____________________ Electron Functions _________________________
 
 
 float DiracGraphene1D::EleDensitySource(StateVec1D Uelec, StateVec1D Uholes) {
@@ -281,7 +281,7 @@ float DiracGraphene1D::EleVelocityFlux(StateVec1D Uelec) {
 }
 
 
-//____________________ Holes Functions _________________________
+//____________________ Hole Functions _________________________
 
 
 float DiracGraphene1D::HolDensitySource(StateVec1D Uelec , StateVec1D Uholes) {
@@ -325,17 +325,17 @@ void DiracGraphene1D::ComputeElectricPotencial(const string &grid) {
 		for (int i = 0; i < Nx-1; ++i) {
 			float integral=0.0f;
 			for (int j = 0; j < Nx-1; ++j) {
-				integral += PotencialKernel((i-j+0.5)*dx)*Umid[j].n();
+				integral += PotencialKernel(float (i-j+0.5)*dx)*Umid[j].n();
 			}
-			Umid[i].phi() =integral/Nx;
+			Umid[i].phi() =integral/ float (Nx);
 		}
 	}if(grid == "MainGrid"){
 		for (int i = 0; i < Nx; ++i) {
 			float integral=0.0f;
 			for (int j = 0; j < Nx; ++j) {
-				integral += PotencialKernel((i-j)*dx)*Umid[j].n();
+				integral += PotencialKernel(float (i-j)*dx)*Umid[j].n();
 			}
-			Umain[i].phi() =integral/Nx;
+			Umain[i].phi() =integral/float (Nx);
 		}
 	}
 }
@@ -343,7 +343,7 @@ void DiracGraphene1D::ComputeElectricPotencial(const string &grid) {
 float DiracGraphene1D::PotencialKernel(float x) {
 	float cutoff=1E-5;
 	float W=1.0f; //width of simulation along y
-	return 2* atanh( 0.5*W/sqrt(x*x+W*W*0.25f+cutoff) );
+	return 2.0f * atanh( 0.5f*W/sqrt(x*x+W*W*0.25f+cutoff) );
 }
 
 
