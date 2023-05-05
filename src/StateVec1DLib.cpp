@@ -73,6 +73,7 @@ StateVec1D StateVec1D::operator+(const StateVec1D &obj) const {
 	res.density =this->density + obj.density;
 	res.velocity = this->velocity + obj.velocity;
 	res.velocity_gradient = this->velocity_gradient + obj.velocity_gradient;
+    res.potencial = this->potencial + obj.potencial;
 	return res;
 }
 
@@ -81,6 +82,7 @@ StateVec1D StateVec1D::operator-(const StateVec1D &obj) const {
 	res.density = this->density - obj.density;
 	res.velocity = this->velocity - obj.velocity;
 	res.velocity_gradient = this->velocity_gradient - obj.velocity_gradient;
+    res.potencial = this->potencial - obj.potencial;
 	return res;
 }
 
@@ -89,6 +91,7 @@ StateVec1D StateVec1D::operator*(const StateVec1D &obj) const {
 	res.density = this->density * obj.density;
 	res.velocity = this->velocity * obj.velocity;
 	res.velocity_gradient = this->velocity_gradient * obj.velocity_gradient;
+    res.potencial = this->potencial * obj.potencial;
 	return res;
 }
 
@@ -97,6 +100,7 @@ StateVec1D StateVec1D::operator/(const StateVec1D &obj) const{
 	res.density = this->density / obj.density;
 	res.velocity = this->velocity / obj.velocity;
 	res.velocity_gradient = this->velocity_gradient / obj.velocity_gradient;
+    res.potencial = this->potencial / obj.potencial;
 	return res;
 }
 
@@ -106,6 +110,7 @@ StateVec1D operator*(const StateVec1D &obj, float value){
 	res.density = value*obj.density;
 	res.velocity = value*obj.velocity;
 	res.velocity_gradient = value*obj.velocity_gradient;
+    res.potencial = value*obj.potencial;
 	return res;
 }
 StateVec1D operator*(float value, const StateVec1D &obj) {
@@ -113,6 +118,7 @@ StateVec1D operator*(float value, const StateVec1D &obj) {
 	res.density = value*obj.density;
 	res.velocity = value*obj.velocity;
 	res.velocity_gradient = value*obj.velocity_gradient;
+    res.potencial = value*obj.potencial;
 	return res;
 }
 
@@ -121,6 +127,7 @@ StateVec1D operator/(const StateVec1D &obj, float value){
 	res.density = obj.density/value;
 	res.velocity =obj.velocity/value;
 	res.velocity_gradient =obj.velocity_gradient/value;
+    res.potencial =obj.potencial/value;
 	return res;
 }
 
