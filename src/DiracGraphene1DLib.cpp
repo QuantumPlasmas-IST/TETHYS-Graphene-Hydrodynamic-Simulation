@@ -106,6 +106,9 @@ void DiracGraphene1D::InitialCondRand(){
 
 
 void DiracGraphene1D::RichtmyerStep1() {
+    ComputeElectricPotencial("MainGrid");
+
+
     for( int i = 0; i <= Nx -2; i++){
 
         StateVec1D eUavg{};
@@ -134,6 +137,9 @@ void DiracGraphene1D::RichtmyerStep1() {
 }
 
 void DiracGraphene1D::RichtmyerStep2() {
+
+    ComputeElectricPotencial("MidGrid");
+
     for( int i = 1; i <= Nx -2; i++ ){
 
         StateVec1D eUold(Umain[i]);
@@ -197,7 +203,7 @@ void DiracGraphene1D::CopyFields() {
         Den[i]=Umain[i].n();
         mass = DensityToMass(Den[i]);
         Vel[i]=Umain[i].v();
-        Tmp[i] =Umain[i].tmp();
+//        Tmp[i] =Umain[i].tmp();
 
         HDen[i]=HoleUmain[i].n();
         hmass = DensityToMass(HDen[i]);
@@ -333,7 +339,7 @@ void DiracGraphene1D::ComputeElectricPotencial(const string &grid) {
 		for (int i = 0; i < Nx; ++i) {
 			float integral=0.0f;
 			for (int j = 0; j < Nx; ++j) {
-				integral += PotencialKernel(float (i-j)*dx)*Umid[j].n();
+				integral += PotencialKernel(float (i-j)*dx)*Umain[j].n();
 			}
 			Umain[i].phi() =integral/float (Nx);
 		}

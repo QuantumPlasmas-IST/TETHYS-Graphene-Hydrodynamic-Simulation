@@ -55,11 +55,13 @@ int main(int argc, char **argv){
 	cout << "\033[1;7;5;33m Program Running \033[0m"<<endl;
 
 
-	graph.SetTmax(10.0);
+	graph.SetTmax(.0005);
 	//Main cycle
 	while(t <= graph.GetTmax() ) {
 		t += dt;
 		GrapheneFluid1D::TimeStepCounter++;
+
+
 		// Main algorithm		
 		graph.Richtmyer();
 

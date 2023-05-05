@@ -155,6 +155,7 @@ void Fluid1D::Richtmyer(){
 	if(kin_vis!=0){
 		CalcVelocityGradient(Umain,Nx);
 	}
+    // Compute electric potential
 	RichtmyerStep1();
 	if(kin_vis!=0) {
 		CalcVelocityGradient(Umid, Nx - 1);
