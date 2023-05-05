@@ -62,6 +62,7 @@ StateVec1D &StateVec1D::operator=(const StateVec1D & obj) {
 		this->density=obj.density;
 		this->velocity=obj.velocity;
 		this->sound=obj.sound;
+		this->potencial=obj.potencial;
 		this->velocity_gradient=obj.velocity_gradient;
 	}
 	return *this;
