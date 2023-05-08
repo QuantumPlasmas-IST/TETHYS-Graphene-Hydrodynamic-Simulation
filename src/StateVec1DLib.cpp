@@ -12,6 +12,7 @@ density=obj.density;
 velocity=obj.velocity;
 velocity_gradient=obj.velocity_gradient;
 sound=obj.sound;
+potencial=obj.potencial;
 }
 
 

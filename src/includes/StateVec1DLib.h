@@ -14,7 +14,7 @@ class StateVec1D{
 private:
 	float density;
 	float velocity;
-	float potencial;
+	float potencial=0.0f;
 	float velocity_gradient;
 	float sound=1.0f;
     float temperature=1.0f;
