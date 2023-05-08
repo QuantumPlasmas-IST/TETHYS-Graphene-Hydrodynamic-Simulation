@@ -84,6 +84,14 @@ public:
     void SaveSnapShot() override;
     void CreateHdf5File() override;
 
+    void InitialCondTest() override;
+
+
+    std::ofstream phi_preview;
+    //std::ofstream Hole_phi_preview;
+
+
+    void CreatePhiFile();
 };
 
 #endif //DIRACGRAPHENE1DLIB_H

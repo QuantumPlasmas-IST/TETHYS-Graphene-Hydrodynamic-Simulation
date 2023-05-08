@@ -1,6 +1,9 @@
 
 
 #include "includes/DiracGraphene1DLib.h"
+#include <iostream>
+#include <vector>
+
 
 DiracGraphene1D::DiracGraphene1D(SetUpParametersCNP &input_parameters) : Fluid1D(input_parameters) {
 
@@ -324,6 +327,30 @@ DiracGraphene1D::~DiracGraphene1D(){
     delete[] HoleUmid;
 }
 
+
+void DiracGraphene1D::CreatePhiFile(){
+
+    std::string previewfile = "POT_1D_" + file_infix + ".dat" ;
+    //std::string Hpreviewfile = "HPOT_1D_" + file_infix + ".dat" ;
+
+    phi_preview.open (previewfile);
+    phi_preview << scientific;
+
+    //Hole_phi_preview.open(Hpreviewfile);
+    //Hole_phi_preview << scientific;
+}
+
+void DiracGraphene1D::InitialCondTest(){
+    for (int i = 0; i < Nx; i++ ){
+        //Umain[i].v()= 1.5f; // (i>3*Nx/8 && i<5*Nx/8 ) ? 3.0f : 0.0f; //1.5f;//
+        //Umain[i].v()= 1.0f/(1.0f+5.0f* pow(cosh((i*dx-0.5f)*12.0f),2.f));
+        //Umain[i].n()= 0.2f;
+        HoleUmain[i].n()= 0.2f;//+0.01f/ pow(cosh((i*dx-0.5f)*12.0f),2.f); //(i>3*Nx/8 && i<5*Nx/8 ) ? 1.0f : 0.1f; //0.2f+0.2f/ pow(cosh((i*dx-0.5f)*12.0f),2);//
+        Umain[i].n()= 0.2f+0.01f/ pow(cosh((i*dx-0.5f)*12.0f),2.f); //(i>3*Nx/8 && i<5*Nx/8 ) ? 1.0f : 0.1f; //0.2f+0.2f/ pow(cosh((i*dx-0.5f)*12.0f),2);//
+    }
+    this->SetSound();
+}
+
 void DiracGraphene1D::ComputeElectricPotencial(const string &grid) {
 //TODO testar com uma distribuição com resultado analitio conhecido
 
@@ -331,17 +358,24 @@ void DiracGraphene1D::ComputeElectricPotencial(const string &grid) {
 		for (int i = 0; i < Nx-1; ++i) {
 			float integral=0.0f;
 			for (int j = 0; j < Nx-1; ++j) {
-				integral += PotencialKernel(float (i-j+0.5)*dx)*Umid[j].n();
+				integral += PotencialKernel(float (i-j+0.5)*dx)*(Umid[j].n() - HoleUmid[j].n());
 			}
 			Umid[i].phi() =integral/ float (Nx);
+            HoleUmid[i].phi() = integral / float (Nx);
+
 		}
 	}if(grid == "MainGrid"){
+        phi_preview << "Electrons" << "\t" << "Holes" << endl;
 		for (int i = 0; i < Nx; ++i) {
 			float integral=0.0f;
 			for (int j = 0; j < Nx; ++j) {
-				integral += PotencialKernel(float (i-j)*dx)*Umain[j].n();
+				integral += PotencialKernel(float (i-j)*dx)*(Umain[j].n() - HoleUmain[j].n());
 			}
 			Umain[i].phi() =integral/float (Nx);
+            HoleUmain[i].phi() = integral/ float (Nx);
+
+            phi_preview << Umain[i].phi() << "\t" << HoleUmain[i].phi()<< endl ;
+            //Hole_phi_preview << HoleUmain[i].phi() << endl;
 		}
 	}
 }
