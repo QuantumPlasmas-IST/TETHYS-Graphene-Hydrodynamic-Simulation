@@ -40,6 +40,7 @@ int main(int argc, char **argv){
 
 	/*.........Output files and streams...............................*/
 	graph.CreateFluidFile();
+    graph.CreatePhiFile();
 	graph.CreateHdf5File();
 	/*................................................................*/
 
@@ -55,7 +56,7 @@ int main(int argc, char **argv){
 	cout << "\033[1;7;5;33m Program Running \033[0m"<<endl;
 
 
-	graph.SetTmax(.0005);
+	graph.SetTmax(2);
 	//Main cycle
 	while(t <= graph.GetTmax() ) {
 		t += dt;
@@ -66,7 +67,9 @@ int main(int argc, char **argv){
 		graph.Richtmyer();
 
 		// Impose boundary conditions
-		BoundaryCondition::XPeriodic(graph);
+		//BoundaryCondition::XPeriodic(graph);
+        BoundaryCondition::XFree(graph);
+
 
 		//Record full data
 		if (parameters.SaveMode  && graph.Snapshot()) {
