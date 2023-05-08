@@ -17,6 +17,7 @@
 #include "includes/Fluid1DLib.h"
 #include "includes/Fluid2DLib.h"
 #include "includes/DiracGraphene2DLib.h"
+#include "includes/DiracGraphene1DLib.h"
 
 
 /*Base class for general boundary conditions*/
@@ -38,8 +39,11 @@ class BoundaryCondition {
 //		static void SetSlope(float boundary_slope); ///< Sets the slope of the lateral edges, for the scenarion of non rectangular domains
 //		static float GetSlope() ; ///< Returns the slope of the lateral edges, for the scenarion of non rectangular domains
 		static void XFree(Fluid1D& fluid_class);           ///< open boundaries at x=0 and x=L for all variables and zero tangent velocity
-		static void XFreeLeft(Fluid1D& fluid_class);
+        static void XFree(DiracGraphene1D& fluid_class);
+        static void XFreeLeft(Fluid1D& fluid_class);
+        static void XFreeLeft(DiracGraphene1D& fluid_class);
         static void XFreeRight(Fluid1D& fluid_class);
+        static void XFreeRight(DiracGraphene1D& fluid_class);
         static void XFree(Fluid2D& fluid_class);           ///< open boundaries at x=0 and x=L for all variables and zero tangent velocity
 		/*!
 		* @brief open boundaries for all variables along designated x edge.
@@ -48,6 +52,7 @@ class BoundaryCondition {
 		* */
 		static void XFree(Fluid2D &fluid_class, int x_limit);       ///< open boundaries at x=0 for all variables and zero tangent velocity Vy=0
 		static void XPeriodic(Fluid1D& fluid_class);       ///< periodic boundaries u(x=0)=u(x=L) for all variables  and zero tangent velocity
+		static void XPeriodic(DiracGraphene1D& fluid_class);    ///< periodic boundaries u(x=0)=u(x=L) for all variables and zero tangent velocity (DIRAC Fluid)
 		static void XPeriodic(Fluid2D& fluid_class);       ///< periodic boundaries u(x=0)=u(x=L) for all variables and zero tangent velocity
 		static void XPeriodic(DiracGraphene2D& fluid_class);       ///< periodic boundaries u(x=0)=u(x=L) for all variables and zero tangent velocity (DIRAC Fluid)
 		static void YFree(Fluid2D& fluid_class);           ///< open boundaries at y=0 and y=W for all variables
