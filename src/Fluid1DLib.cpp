@@ -115,8 +115,9 @@ void Fluid1D::InitialCondRand(){
 void Fluid1D::InitialCondTest(){
  	for (int i = 0; i < Nx; i++ ){
 		//Umain[i].v()= 1.5f; // (i>3*Nx/8 && i<5*Nx/8 ) ? 3.0f : 0.0f; //1.5f;//
-	    Umain[i].v()= 1.0f/(1.0f+5.0f* pow(cosh((i*dx-0.5f)*12.0f),2.f));
-	    Umain[i].n()= 0.2f+0.2f/ pow(cosh((i*dx-0.5f)*12.0f),2.f); //(i>3*Nx/8 && i<5*Nx/8 ) ? 1.0f : 0.1f; //0.2f+0.2f/ pow(cosh((i*dx-0.5f)*12.0f),2);//
+	    //Umain[i].v()= 1.0f/(1.0f+5.0f* pow(cosh((i*dx-0.5f)*12.0f),2.f));
+        Umain[i].n()= 0.2f;
+	    //Umain[i].n()= 0.2f+0.05f/ pow(cosh((i*dx-0.5f)*12.0f),2.f); //(i>3*Nx/8 && i<5*Nx/8 ) ? 1.0f : 0.1f; //0.2f+0.2f/ pow(cosh((i*dx-0.5f)*12.0f),2);//
 	}
 	this->SetSound();
 }
@@ -129,8 +130,6 @@ void Fluid1D::InitialCondGeneral(function<float(float)> fden, function<float(flo
 	}
 	this->SetSound();
 }
-
-
 
 void Fluid1D::CreateFluidFile(){
 	std::string previewfile = "preview_1D_" + file_infix + ".dat" ;

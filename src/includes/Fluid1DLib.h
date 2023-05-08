@@ -79,7 +79,7 @@ public :
 //		void Smooth(int width);     ///< smoothing moving average filter to obtain the "Cor" version of the quantities
 		virtual void SetSimulationTime();   ///< Finds and set the appropriate simulation time that is 1) Longer than the saturation time 2) Contains enough oscillation periods in the saturated region
 		virtual void InitialCondRand();     ///< Initial condition, zero velocity and constant density with 0.5% white noise
-		void InitialCondTest();     ///< Initial condition for testing and debugging
+		virtual void InitialCondTest();     ///< Initial condition for testing and debugging
 		void InitialCondGeneral(function<float(float)> fden, function<float(float)> fvx);
 
 		void Richtmyer();
