@@ -108,9 +108,11 @@ void DiracGraphene1D::InitialCondRand(){
 }
 
 
-void DiracGraphene1D::RichtmyerStep1() {
-    ComputeElectricPotencial("MainGrid");
 
+
+void DiracGraphene1D::RichtmyerStep1() {
+
+    ComputeElectricPotencial("MainGrid");
 
     for( int i = 0; i <= Nx -2; i++){
 
@@ -204,12 +206,12 @@ void DiracGraphene1D::CopyFields() {
     float mass, hmass;
     for (int i = 0; i < Nx; ++i) {
         Den[i]=Umain[i].n();
-        mass = DensityToMass(Den[i]);
+     //   mass = DensityToMass(Den[i]);
         Vel[i]=Umain[i].v();
 //        Tmp[i] =Umain[i].tmp();
 
         HDen[i]=HoleUmain[i].n();
-        hmass = DensityToMass(HDen[i]);
+       // hmass = DensityToMass(HDen[i]);
         HVel[i]=HoleUmain[i].v();
     }
 }
@@ -286,7 +288,7 @@ float DiracGraphene1D::EleDensityFlux(StateVec1D Uelec) {
 }
 
 float DiracGraphene1D::EleVelocityFlux(StateVec1D Uelec) {
-    return 0.25f * Uelec.v() * Uelec.v() + vel_fer * vel_fer * 0.5f * log(Uelec.n()+1E-6f) + 2.0f * Uelec.S() * Uelec.S() * sqrt(Uelec.n()) - kin_vis*Uelec.grad_v();
+    return 0.25f * Uelec.v() * Uelec.v() + vel_fer * vel_fer * Uelec.n()+ 2.0f * Uelec.S() * Uelec.S() * Uelec.phi() - kin_vis*Uelec.grad_v();
 }
 
 
@@ -304,11 +306,13 @@ float DiracGraphene1D::HolVelocitySource(StateVec1D Uholes) {
 }
 
 float DiracGraphene1D::HolDensityFlux(StateVec1D Uholes) {
-    return DensityFlux(Uholes);
+    return 0.0f;
+//    return DensityFlux(Uholes);
 }
 
 float DiracGraphene1D::HolVelocityFlux(StateVec1D Uholes) {
-    return 0.25f * Uholes.v() * Uholes.v() + vel_fer * vel_fer * 0.5f * log(Uholes.n()+1E-6f) + 2.0f * Uholes.S() * Uholes.S() * sqrt(Uholes.n()) - kin_vis*Uholes.grad_v();
+    return 0.0f;
+   // return 0.25f * Uholes.v() * Uholes.v() + vel_fer * vel_fer * Uholes.n()+ 2.0f * Uholes.S() * Uholes.S() * Uholes.phi() - kin_vis*Uholes.grad_v();
 }
 
 
