@@ -12,10 +12,10 @@ StateVec2D::StateVec2D(const StateVec2D & obj) {
 	momentum_x=obj.momentum_x;
 	momentum_y=obj.momentum_y;
 
-	velXGradient_x = obj.velXGradient_x ;
-	velXGradient_y = obj.velXGradient_y;
-	velYGradient_x = obj.velYGradient_x;
-	velYGradient_y = obj.velYGradient_y;
+	//velXGradient_x = obj.velXGradient_x ;
+	//velXGradient_y = obj.velXGradient_y;
+	//velYGradient_x = obj.velYGradient_x;
+	//velYGradient_y = obj.velYGradient_y;s
 	velXLaplacian = obj.velXLaplacian;
 	velYLaplacian = obj.velYLaplacian;
 	tmpLaplacian = obj.tmpLaplacian;
