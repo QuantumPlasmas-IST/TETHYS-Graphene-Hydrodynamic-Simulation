@@ -12,10 +12,14 @@ StateVec2D::StateVec2D(const StateVec2D & obj) {
 	momentum_x=obj.momentum_x;
 	momentum_y=obj.momentum_y;
 
-	//velXGradient_x = obj.velXGradient_x ;
-	//velXGradient_y = obj.velXGradient_y;
-	//velYGradient_x = obj.velYGradient_x;
-	//velYGradient_y = obj.velYGradient_y;s
+	velXGradient_x = obj.velXGradient_x ;
+	velXGradient_y = obj.velXGradient_y;
+	velYGradient_x = obj.velYGradient_x;
+	velYGradient_y = obj.velYGradient_y;
+
+	denGradient_x = obj.denGradient_x;
+	denGradient_y = obj.denGradient_y;
+
 	velXLaplacian = obj.velXLaplacian;
 	velYLaplacian = obj.velYLaplacian;
 	tmpLaplacian = obj.tmpLaplacian;
@@ -30,6 +34,8 @@ StateVec2D::StateVec2D(float den, float velx, float vely) {
 	density=den;
 	momentum_x=velx;
 	momentum_y=vely;
+	denGradient_x = 0.0f;
+	denGradient_y = 0.0f;
 	velXGradient_x = 0.0f;
 	velXGradient_y = 0.0f;
 	velYGradient_x = 0.0f;
@@ -95,6 +101,9 @@ StateVec2D &StateVec2D::operator=(const StateVec2D & obj) {
 		velYGradient_x=obj.velYGradient_x;
 		velYGradient_y=obj.velYGradient_y;
 
+		denGradient_x=obj.denGradient_x;
+		denGradient_y=obj.denGradient_y;
+
 		sound=obj.sound;
 	}
 	return *this;
@@ -112,6 +121,9 @@ StateVec2D StateVec2D::operator+(const StateVec2D &obj) const {
 	res.velYGradient_x=velYGradient_x+obj.velYGradient_x;
 	res.velYGradient_y=velYGradient_y+obj.velYGradient_y;
 
+	res.denGradient_x=denGradient_x+obj.denGradient_x;
+	res.denGradient_y=denGradient_y+obj.denGradient_y;
+
 	res.sound = obj.sound; //simplesmente atribuir o valore de vel do som do obj
 	return res;
 }
@@ -128,6 +140,9 @@ StateVec2D StateVec2D::operator-(const StateVec2D &obj) const {
 	res.velYGradient_x=velYGradient_x-obj.velYGradient_x;
 	res.velYGradient_y=velYGradient_y-obj.velYGradient_y;
 
+	res.denGradient_x=denGradient_x-obj.denGradient_x;
+	res.denGradient_y=denGradient_y-obj.denGradient_y;
+
 	res.sound = obj.sound; //simplesmente atribuir o valore de vel do som do obj
 	return res;
 }
@@ -143,6 +158,9 @@ StateVec2D StateVec2D::operator*(const StateVec2D &obj) const {
 	res.velXGradient_y=velXGradient_y*obj.velXGradient_y;
 	res.velYGradient_x=velYGradient_x*obj.velYGradient_x;
 	res.velYGradient_y=velYGradient_y*obj.velYGradient_y;
+
+	res.denGradient_x=denGradient_x*obj.denGradient_x;
+	res.denGradient_y=denGradient_y*obj.denGradient_y;
 
 	res.sound = obj.sound; //simplesmente atribuir o valore de vel do som do obj
 	return res;
@@ -173,6 +191,9 @@ StateVec2D operator*(const StateVec2D &obj, float value){
 	res.velYGradient_x=value*obj.velYGradient_x;
 	res.velYGradient_y=value*obj.velYGradient_y;
 
+	res.denGradient_x=value*obj.denGradient_x;
+	res.denGradient_y=value*obj.denGradient_y;
+
 	res.sound = obj.sound; //simplesmente atribuir o valore de vel do som do obj
 	return res;
 }
@@ -187,6 +208,9 @@ StateVec2D operator*(float value, const StateVec2D &obj) {
 	res.velXGradient_y=value*obj.velXGradient_y;
 	res.velYGradient_x=value*obj.velYGradient_x;
 	res.velYGradient_y=value*obj.velYGradient_y;
+
+	res.denGradient_x=value*obj.denGradient_x;
+	res.denGradient_y=value*obj.denGradient_y;
 
 	res.sound = obj.sound; //simplesmente atribuir o valore de vel do som do obj
 	return res;
@@ -203,6 +227,9 @@ StateVec2D operator/(const StateVec2D &obj, float value){
 	res.velXGradient_y=obj.velXGradient_y / value;
 	res.velYGradient_x=obj.velYGradient_x / value;
 	res.velYGradient_y=obj.velYGradient_y / value;
+
+	res.denGradient_x=obj.denGradient_x / value;
+	res.denGradient_y=obj.denGradient_y / value;
 
 	res.sound = obj.sound; //simplesmente atribuir o valore de vel do som do obj
 	return res;
@@ -228,4 +255,11 @@ float &StateVec2D::dyvy() {
 	return velYGradient_y;
 }
 
+float &StateVec2D::dxn() {
+	return denGradient_x;
+}
+
+float &StateVec2D::dyn() {
+	return denGradient_y;
+}
 

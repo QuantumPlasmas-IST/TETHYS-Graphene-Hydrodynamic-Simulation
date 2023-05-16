@@ -21,7 +21,9 @@ private:
 	float velXGradient_y;
 	float velYGradient_x;
 	float velYGradient_y;
-		
+
+	float denGradient_x;
+	float denGradient_y;
 
 	float velXLaplacian;
 	float velYLaplacian;
@@ -42,6 +44,10 @@ public:
 	float& d2vx();
 	float& d2vy();
 	float& d2tmp();
+
+
+	float& dxn();
+	float& dyn();
 
 	float& dxvx();
 	float& dyvx();
