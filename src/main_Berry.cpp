@@ -10,7 +10,8 @@
 #include "includes/SetUpParametersLib.h"
 #include "includes/DirichletBoundaryLib.h"
 #include "includes/DyakonovShurBoundaryLib.h"
-#include "includes/GrapheneFluid2DLib.h"
+//#include "includes/GrapheneFluid2DLib.h"
+#include "includes/BerryFluidLib.h"
 #include "TethysBaseLib.h"
 
 #ifndef MAT_PI
@@ -65,20 +66,12 @@ int main(int argc, char **argv){
 	graph.WelcomeScreen();
 
 	/*...............Initialization...................................*/
-//	graph.InitialCondGeneral([](float x,float y) { return 1.0f+0.1f/cosh(10.0f*sqrt((x-.5f)*(x-.5f)+(y-.5f)*(y-.5f))); },[](float x,float y) { return 0.5f; },[](float x,float y) { return 0.0f; });
-//	graph.InitialCondGeneral([](float x,float y) { return 1.0f+0.1f/cosh(10.0f*(x-.5f)); },[](float x,float y) { return 0.5f/cosh(10.0f*(x-.5f)); },[](float x,float y) { return 0.0f; });
-//	graph.InitialCondGeneral([](float x,float y) { return 0.8; },[](float x,float y) { return 0.5f; },[](float x,float y) { return 0.0f; });
-
-	//graph.InitialCondRand();
-
-//InitialCondition::Rand(graph);
-	graph.InitialCondGeneral([](float x,float y) { return 1+0.5*gaus(x-0.5; y-0.5; w 0.02); },[](float x,float y) { return 0.0f; },[](float x,float y) { return 0.0f; });
-
-//	graph.InitialCondTest();
+	InitialCondition::InitialCondGeneral(graph,
+										 [](float x,float y) { return 1.0f+0.5f*exp(-1.0f*(x*x+y*y)/2.0); },
+										 [](float x,float y) { return 0.0f; },
+										 [](float x,float y) { return 0.0f; });
 	/*................................................................*/
 
-	
-	//DirichletBoundaryCondition::YClosedFreeSlip(graph);
 
 	BoundaryCondition::XFree(graph);
 	BoundaryCondition::YFree(graph);
@@ -100,12 +93,8 @@ int main(int argc, char **argv){
 		/*+++++++++++++++++++++++++++++++++++++*
 		 * Change the boundary conditions here *
 		 *+++++++++++++++++++++++++++++++++++++*/
-		DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
-		DirichletBoundaryCondition::YClosedNoSlip(graph);
-		//DirichletBoundaryCondition::YClosedFreeSlip(graph);
-
-//		BoundaryCondition::XPeriodic(graph);
-//		BoundaryCondition::YPeriodic(graph);
+		BoundaryCondition::XFree(graph);
+		BoundaryCondition::YFree(graph);
 
 
 	//	if(graph.GetThermDiff()!=0.0){
@@ -116,9 +105,8 @@ int main(int argc, char **argv){
 			//*+++++++++++++++++++++++++++++++++++++*
 			// * Change the boundary conditions here *
 			// *+++++++++++++++++++++++++++++++++++++
-			DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
-			DirichletBoundaryCondition::YClosedNoSlip(graph);
-			//DirichletBoundaryCondition::YClosedFreeSlip(graph);
+			BoundaryCondition::XFree(graph);
+			BoundaryCondition::YFree(graph);
 		}
 		//Record full hdf5 data
 		if (parameters.SaveMode  && graph.Snapshot()) {

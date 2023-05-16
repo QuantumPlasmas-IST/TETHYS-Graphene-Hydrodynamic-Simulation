@@ -20,7 +20,7 @@ private:
 	float velXGradient_x;
 	float velXGradient_y;
 	float velYGradient_x;
-	float velYGradient_x;
+	float velYGradient_y;
 		
 
 	float velXLaplacian;
