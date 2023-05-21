@@ -326,9 +326,12 @@ DiracGraphene1D::~DiracGraphene1D(){
     delete[] Cur;
     delete[] HDen;
     delete[] HVel;
-    delete[] vel_snd_arr;
+    delete[] Umain;
+    delete[] Umid;
     delete[] HoleUmain;
     delete[] HoleUmid;
+    delete[] Cur;
+    delete[] vel_snd_arr;
 }
 
 
