@@ -64,17 +64,17 @@ public:
     void RichtmyerStep2() override;
 
 
-        float EleDensitySource(StateVec1D Uelec , StateVec1D Uholes);   ///< density equation (continuity equation) source term
-        float EleVelocitySource(StateVec1D Uelec); ///< velocity X component equation (momentum equation) source term
+        virtual float EleDensitySource(StateVec1D Uelec , StateVec1D Uholes);   ///< density equation (continuity equation) source term
+        virtual float EleVelocitySource(StateVec1D Uelec); ///< velocity X component equation (momentum equation) source term
 
-        float EleDensityFlux(StateVec1D Uelec); ///< density equation (continuity equation) conserved flux
-        float EleVelocityFlux(StateVec1D Uelec); ///< velocity X component equation (momentum equation) conserved flux
+        virtual float EleDensityFlux(StateVec1D Uelec); ///< density equation (continuity equation) conserved flux
+        virtual float EleVelocityFlux(StateVec1D Uelec); ///< velocity X component equation (momentum equation) conserved flux
 
-        float HolDensitySource(StateVec1D Uelec , StateVec1D Uholes);   ///< density equation (continuity equation) source term
-        float HolVelocitySource(StateVec1D Uholes); ///< velocity equation (momentum equation) source term
+        virtual float HolDensitySource(StateVec1D Uelec , StateVec1D Uholes);   ///< density equation (continuity equation) source term
+        virtual float HolVelocitySource(StateVec1D Uholes); ///< velocity equation (momentum equation) source term
 
-        float HolDensityFlux(StateVec1D Uholes); ///< density equation (continuity equation) conserved flux
-        float HolVelocityFlux(StateVec1D Uholes); ///< velocity equation (momentum equation) conserved flux
+        virtual float HolDensityFlux(StateVec1D Uholes); ///< density equation (continuity equation) conserved flux
+        virtual float HolVelocityFlux(StateVec1D Uholes); ///< velocity equation (momentum equation) conserved flux
 
         void WriteFluidFile(float t) override; // writes the line of time t on the simplified .dat file output
 
