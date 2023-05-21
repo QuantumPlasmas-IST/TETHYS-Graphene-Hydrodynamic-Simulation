@@ -56,7 +56,7 @@ int main(int argc, char **argv){
 	cout << "\033[1;7;5;33m Program Running \033[0m"<<endl;
 
 
-	graph.SetTmax(2);
+	graph.SetTmax(0.2);
 	//Main cycle
 	while(t <= graph.GetTmax() ) {
 		t += dt;
