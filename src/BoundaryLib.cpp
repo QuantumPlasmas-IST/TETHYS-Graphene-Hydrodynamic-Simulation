@@ -49,6 +49,20 @@ void BoundaryCondition::XFree(DiracGraphene1D& fluid_class){
     fluid_class.HoleUmain[nx-1] =fluid_class.HoleUmain[nx-2];
 }
 
+void BoundaryCondition::XFree(TripleGraphene1D& fluid_class){
+    int nx=fluid_class.SizeX();
+    fluid_class.Umain[0] =fluid_class.Umain[1];
+    fluid_class.Uaux[0] =fluid_class.Uaux[1];
+    fluid_class.Umain[nx-1] =fluid_class.Umain[nx-2];
+    fluid_class.Uaux[nx-1] =fluid_class.Uaux[nx-2];
+
+    fluid_class.HoleUmain[0] =fluid_class.HoleUmain[1];
+    fluid_class.HoleUmain[nx-1] =fluid_class.HoleUmain[nx-2];
+
+    fluid_class.BUmain[0] =fluid_class.BUmain[1];
+    fluid_class.BUmain[nx-1] =fluid_class.BUmain[nx-2];
+}
+
 void BoundaryCondition::XFreeLeft(Fluid1D &fluid_class) {
 	fluid_class.Umain[0] =fluid_class.Umain[1];
 	fluid_class.Uaux[0] =fluid_class.Uaux[1];
@@ -59,6 +73,15 @@ void BoundaryCondition::XFreeLeft(DiracGraphene1D &fluid_class) {
     fluid_class.Uaux[0] =fluid_class.Uaux[1];
 
     fluid_class.HoleUmain[0] =fluid_class.HoleUmain[1];
+}
+
+void BoundaryCondition::XFreeLeft(TripleGraphene1D &fluid_class) {
+    fluid_class.Umain[0] =fluid_class.Umain[1];
+    fluid_class.Uaux[0] =fluid_class.Uaux[1];
+
+    fluid_class.HoleUmain[0] =fluid_class.HoleUmain[1];
+
+    fluid_class.BUmain[0] = fluid_class.BUmain[1];
 }
 
 void BoundaryCondition::XFreeRight(Fluid1D &fluid_class) {
@@ -73,6 +96,16 @@ void BoundaryCondition::XFreeRight(DiracGraphene1D &fluid_class) {
     fluid_class.Uaux[nx-1] =fluid_class.Uaux[nx-2];
 
     fluid_class.HoleUmain[nx-1] =fluid_class.HoleUmain[nx-2];
+}
+
+void BoundaryCondition::XFreeRight(TripleGraphene1D &fluid_class) {
+    int nx=fluid_class.SizeX();
+    fluid_class.Umain[nx-1] =fluid_class.Umain[nx-2];
+    fluid_class.Uaux[nx-1] =fluid_class.Uaux[nx-2];
+
+    fluid_class.HoleUmain[nx-1] =fluid_class.HoleUmain[nx-2];
+
+    fluid_class.BUmain[nx-1] =fluid_class.BUmain[nx-2];
 }
 
 void BoundaryCondition::XPeriodic(Fluid1D& fluid_class){
@@ -92,6 +125,20 @@ void BoundaryCondition::XPeriodic(DiracGraphene1D& fluid_class){
 
     fluid_class.HoleUmain[0] =fluid_class.HoleUmain[nx-2];
     fluid_class.HoleUmain[nx-1] =fluid_class.HoleUmain[1];
+}
+
+void BoundaryCondition::XPeriodic(TripleGraphene1D& fluid_class){
+    int nx=fluid_class.SizeX();
+    fluid_class.Umain[0] =fluid_class.Umain[nx-2];
+    fluid_class.Uaux[0] =fluid_class.Uaux[nx-2];
+    fluid_class.Umain[nx-1] =fluid_class.Umain[1];
+    fluid_class.Uaux[nx-1] =fluid_class.Uaux[1];
+
+    fluid_class.HoleUmain[0] =fluid_class.HoleUmain[nx-2];
+    fluid_class.HoleUmain[nx-1] =fluid_class.HoleUmain[1];
+
+    fluid_class.BUmain[0] =fluid_class.BUmain[nx-2];
+    fluid_class.BUmain[nx-1] =fluid_class.BUmain[1];
 }
 
 //TODO condicoes fronteira para os diracs e ver o que se passa com as periodicas
