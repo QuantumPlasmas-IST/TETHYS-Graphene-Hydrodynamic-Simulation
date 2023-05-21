@@ -340,6 +340,8 @@ void DiracGraphene1D::CreatePhiFile(){
     phi_preview.open (previewfile);
     phi_preview << scientific;
 
+    phi_preview << "Electrons" << "\t" << "Holes" << endl;
+
     //Hole_phi_preview.open(Hpreviewfile);
     //Hole_phi_preview << scientific;
 }
@@ -369,7 +371,7 @@ void DiracGraphene1D::ComputeElectricPotencial(const string &grid) {
 
 		}
 	}if(grid == "MainGrid"){
-        phi_preview << "Electrons" << "\t" << "Holes" << endl;
+
 		for (int i = 0; i < Nx; ++i) {
 			float integral=0.0f;
 			for (int j = 0; j < Nx; ++j) {
