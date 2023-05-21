@@ -285,10 +285,12 @@ float DiracGraphene1D::EleVelocitySource(StateVec1D Uelec) {
 
 float DiracGraphene1D::EleDensityFlux(StateVec1D Uelec) {
    return DensityFlux(Uelec);
+   //return 0.0f;
 }
 
 float DiracGraphene1D::EleVelocityFlux(StateVec1D Uelec) {
     return 0.25f * Uelec.v() * Uelec.v() + vel_fer * vel_fer * Uelec.n()+ 2.0f * Uelec.S() * Uelec.S() * Uelec.phi() - kin_vis*Uelec.grad_v();
+    //return 0.0f;
 }
 
 
@@ -306,13 +308,13 @@ float DiracGraphene1D::HolVelocitySource(StateVec1D Uholes) {
 }
 
 float DiracGraphene1D::HolDensityFlux(StateVec1D Uholes) {
-    return 0.0f;
-//    return DensityFlux(Uholes);
+    //return 0.0f;
+    return DensityFlux(Uholes);
 }
 
 float DiracGraphene1D::HolVelocityFlux(StateVec1D Uholes) {
-    return 0.0f;
-   // return 0.25f * Uholes.v() * Uholes.v() + vel_fer * vel_fer * Uholes.n()+ 2.0f * Uholes.S() * Uholes.S() * Uholes.phi() - kin_vis*Uholes.grad_v();
+    //return 0.0f;
+    return 0.25f * Uholes.v() * Uholes.v() + vel_fer * vel_fer * Uholes.n() - 2.0f * Uholes.S() * Uholes.S() * Uholes.phi() - kin_vis*Uholes.grad_v();
 }
 
 
@@ -323,7 +325,6 @@ float DiracGraphene1D::HolVelocityFlux(StateVec1D Uholes) {
 DiracGraphene1D::~DiracGraphene1D(){
     delete[] Den;
     delete[] Vel;
-    delete[] Cur;
     delete[] HDen;
     delete[] HVel;
     delete[] Umain;
@@ -354,7 +355,7 @@ void DiracGraphene1D::InitialCondTest(){
         //Umain[i].v()= 1.5f; // (i>3*Nx/8 && i<5*Nx/8 ) ? 3.0f : 0.0f; //1.5f;//
         //Umain[i].v()= 1.0f/(1.0f+5.0f* pow(cosh((i*dx-0.5f)*12.0f),2.f));
         //Umain[i].n()= 0.2f;
-        HoleUmain[i].n()= 0.2f;//+0.01f/ pow(cosh((i*dx-0.5f)*12.0f),2.f); //(i>3*Nx/8 && i<5*Nx/8 ) ? 1.0f : 0.1f; //0.2f+0.2f/ pow(cosh((i*dx-0.5f)*12.0f),2);//
+        HoleUmain[i].n()= 0.2f + 0.01f/ pow(cosh((i*dx-0.5f)*12.0f),2.f); //(i>3*Nx/8 && i<5*Nx/8 ) ? 1.0f : 0.1f; //0.2f+0.2f/ pow(cosh((i*dx-0.5f)*12.0f),2);//
         Umain[i].n()= 0.2f+0.01f/ pow(cosh((i*dx-0.5f)*12.0f),2.f); //(i>3*Nx/8 && i<5*Nx/8 ) ? 1.0f : 0.1f; //0.2f+0.2f/ pow(cosh((i*dx-0.5f)*12.0f),2);//
     }
     this->SetSound();
