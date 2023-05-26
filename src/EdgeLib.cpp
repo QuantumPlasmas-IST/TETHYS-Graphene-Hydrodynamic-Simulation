@@ -32,6 +32,7 @@ void Edge::set_Edge(){
                 for(int dj = -1; dj <= 1; dj++){
                     if( D.dom[k + di + size_x*dj] == 1){
                         edg[k] = 1;
+                        edgint.push_back(k);
                     }
                 }
             }

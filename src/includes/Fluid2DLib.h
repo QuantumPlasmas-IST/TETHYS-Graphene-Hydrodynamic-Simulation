@@ -20,6 +20,7 @@
 #include "includes/SetUpParametersLib.h"
 #include "includes/GridLib.h"
 #include "includes/StateVec2DLib.h"
+#include "includes/GeometryLib.h"
 
 using namespace H5;
 
@@ -49,7 +50,9 @@ using namespace H5;
 		StateVec2D *ptr_StateVec = nullptr;
 
 		virtual void RichtmyerStep1();
+		virtual void RichtmyerStep1(Geometry Geom);
 		virtual void RichtmyerStep2();
+		virtual void RichtmyerStep2(Geometry Geom);
 
 
 		void VelocityXGradient_bulk(StateVec2D *Uarray, int size_x, int size_y);
@@ -138,6 +141,8 @@ using namespace H5;
 		 *
 		 */
 	    void Richtmyer();                   // Central Algorithm for solving the hyperbolic conservation law
+		void Richtmyer(Geometry Geom);                   // Central Algorithm for solving the hyperbolic conservation law
+
 
 		virtual float DensitySource(StateVec2D U); ///< density equation (continuity equation) source term
 		virtual float XMomentumSource(StateVec2D U); ///< velocity X component equation (momentum equation) source term

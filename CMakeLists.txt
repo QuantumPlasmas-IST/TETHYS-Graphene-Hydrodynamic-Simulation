@@ -23,7 +23,7 @@ if(OPENMP_FOUND)
 endif()
 
 #minha main para correr coisas simples
-add_executable(TEST_SIMPLE src/TEST_SIMPLE_main.cpp)
+add_executable(TEST_SIMPLE src/TEST_2main.cpp)
 
 
 add_executable(TETHYS_1D src/TETHYS_1D_Main_v262.cpp)

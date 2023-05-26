@@ -17,7 +17,7 @@
 #include "includes/Fluid1DLib.h"
 #include "includes/Fluid2DLib.h"
 #include "includes/DiracGraphene2DLib.h"
-
+#include "includes/GeometryLib.h"
 
 //TODO nova classe para fronteira f(x)  
 
@@ -63,6 +63,7 @@ class BoundaryCondition {
 		static void YPeriodic(DiracGraphene2D& fluid_class);       ///< periodic boundaries u(y=0)=u(y=W) for all variables (DIRAC Fluid)
 		static void YClosedFreeSlip(Fluid2D& fluid_class); ///< zero flux across y=0 and y=W and free tangent velocity Vx
 		static void YClosedNoSlip(Fluid2D& fluid_class);   ///< zero flux across y=0 and y=W and zero tangent velocity Vx=0
+		static void YClosedNoSlip(Fluid2D& fluid_class, Geometry Geom);   ///< zero flux across y=0 and y=W and zero tangent velocity Vx=0
 
 		static void XFreeLeft(Fluid2D &fluid_class); ///< open boundaries at x=0 for all variables
 		static void XFreeRight(Fluid2D &fluid_class); ///< open boundaries at x=L for all variables

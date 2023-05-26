@@ -158,7 +158,16 @@ void Fluid2D::Richtmyer(){
 	RichtmyerStep2();
 }
 
-
+void Fluid2D::Richtmyer(Geometry Geom){
+	if(odd_vis!=0){
+		VelocityGradient(Umain,Nx,Ny);
+	}
+	RichtmyerStep1(Geom);
+	if(odd_vis!=0){
+		VelocityGradient(Umid,Nx-1,Ny-1);
+	}
+	RichtmyerStep2(Geom);
+}
 
 void Fluid2D::RichtmyerStep1(){
 
@@ -207,6 +216,57 @@ void Fluid2D::RichtmyerStep1(){
 }
 
 
+
+void Fluid2D::RichtmyerStep1(Geometry Geom){
+
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	ChooseGridPointers("MidGrid");
+//#pragma omp parallel for default(none) shared(Nx,Ny,dt,dx,dy,Den,FlxX,FlxY,Tmp,den_dx,den_dy,ptr_den,ptr_px,ptr_py,ptr_snd,ptr_tmp,ptr_velXdx,ptr_velXdy,ptr_velYdx,ptr_velYdy,ptr_dendx,ptr_dendy)
+#pragma omp parallel for default(none) shared(Umain,Umid,Geom)
+	for(int ks=0; ks<=Nx*Ny-Nx-Ny; ks++){ //correr todos os pontos da grelha secundaria de den_mid
+		if(Geom.dominio.dom[ks] == true){
+			GridPoint2D midpoint(ks, Nx, Ny, true);
+
+			StateVec2D Uavg(Umain[ks]);
+			Uavg = 0.25f * (Umain[midpoint.SW] + Umain[midpoint.SE] + Umain[midpoint.NW] + Umain[midpoint.NE]);
+
+			StateVec2D UNorth{};
+			StateVec2D USouth{};
+			StateVec2D UEast{};
+			StateVec2D UWest{};
+			UNorth = 0.5f*(Umain[midpoint.NE]+Umain[midpoint.NW]);
+			USouth = 0.5f*(Umain[midpoint.SE]+Umain[midpoint.SW]);
+			UEast = 0.5f*(Umain[midpoint.NE]+Umain[midpoint.SE]);
+			UWest = 0.5f*(Umain[midpoint.NW]+Umain[midpoint.SW]);
+
+	/*		UEast = SideAverage(ptr_StateVec,midpoint,'E');
+			UWest = SideAverage(ptr_StateVec,midpoint,'W');
+			UNorth = SideAverage(ptr_StateVec,midpoint,'N');
+			USouth = SideAverage(ptr_StateVec,midpoint,'S');
+	*/
+			Umid[ks].n() =  Uavg.n()
+							-0.5f*(dt/dx)*(DensityFluxX(UEast) - DensityFluxX(UWest))
+							-0.5f*(dt/dy)*(DensityFluxY(UNorth) - DensityFluxY(USouth))
+							+0.5f*dt* DensitySource(Uavg);
+
+			Umid[ks].px() = Uavg.px()
+							-0.5f*(dt/dx)*(XMomentumFluxX(UEast) - XMomentumFluxX(UWest))
+							-0.5f*(dt/dy)*(XMomentumFluxY(UNorth) - XMomentumFluxY(USouth))
+							+0.5f*dt*XMomentumSource(Uavg);
+
+			Umid[ks].py() = Uavg.py()
+							-0.5f*(dt/dx)*(YMomentumFluxX(UEast) - YMomentumFluxX(UWest))
+							-0.5f*(dt/dy)*(YMomentumFluxY(UNorth) - YMomentumFluxY(USouth))
+							+0.5f*dt*YMomentumSource(Uavg);
+		}
+	}
+
+
+
+}
+
+
+
 void Fluid2D::RichtmyerStep2(){
 
 	ChooseGridPointers("MainGrid");
@@ -245,6 +305,53 @@ void Fluid2D::RichtmyerStep2(){
 			                 - (dt/dx)*(YMomentumFluxX(UEast) - YMomentumFluxX(UWest))
 			                 - (dt/dy)*(YMomentumFluxY(UNorth) - YMomentumFluxY(USouth))
 			                 + dt*YMomentumSource(Uold);
+		}
+	}
+
+}
+
+
+
+void Fluid2D::RichtmyerStep2(Geometry Geom){
+
+	ChooseGridPointers("MainGrid");
+//#pragma omp parallel for default(none) shared(Nx,Ny,dt,dx,dy,FlxX,FlxY,Den,Tmp,den_dx,den_dy,ptr_den,ptr_px,ptr_py,ptr_snd,ptr_tmp,ptr_velXdx,ptr_velXdy,ptr_velYdx,ptr_velYdy,ptr_dendx,ptr_dendy)
+#pragma omp parallel for default(none) shared(Umain,Umid,Geom)
+	for(int kp=1+Nx; kp<=Nx*Ny-Nx-2; kp++){ //correr a grelha principal evitando as fronteiras
+		if(Geom.dominio.dom[kp] == true){
+			GridPoint2D mainpoint(kp, Nx, Ny, false);
+			if( kp%Nx!=Nx-1 && kp%Nx!=0){
+				StateVec2D Uold(Umain[kp]);
+				StateVec2D UNorth{};
+				StateVec2D USouth{};
+				StateVec2D UEast{};
+				StateVec2D UWest{};
+
+				UNorth = 0.5f*(Umid[mainpoint.NE]+Umid[mainpoint.NW]);
+				USouth = 0.5f*(Umid[mainpoint.SE]+Umid[mainpoint.SW]);
+				UEast = 0.5f*(Umid[mainpoint.NE]+Umid[mainpoint.SE]);
+				UWest = 0.5f*(Umid[mainpoint.NW]+Umid[mainpoint.SW]);
+
+
+		//		UEast = SideAverage(ptr_StateVec,mainpoint,'E');
+		//		UWest = SideAverage(ptr_StateVec,mainpoint,'W');
+		//		UNorth = SideAverage(ptr_StateVec,mainpoint,'N');
+		//		USouth = SideAverage(ptr_StateVec,mainpoint,'S');
+
+				Umain[kp].n() = Uold.n()
+								- (dt/dx)*(DensityFluxX(UEast) - DensityFluxX(UWest))
+								- (dt/dy)*(DensityFluxY(UNorth) - DensityFluxY(USouth))
+								+ dt*DensitySource(Uold);
+				Umain[kp].px() = Uold.px()
+								- (dt/dx)*(XMomentumFluxX(UEast) - XMomentumFluxX(UWest))
+								- (dt/dy)*(XMomentumFluxY(UNorth) - XMomentumFluxY(USouth))
+								+ dt*XMomentumSource(Uold);
+
+				Umain[kp].py() = Uold.py()
+								- (dt/dx)*(YMomentumFluxX(UEast) - YMomentumFluxX(UWest))
+								- (dt/dy)*(YMomentumFluxY(UNorth) - YMomentumFluxY(USouth))
+								+ dt*YMomentumSource(Uold);
+			}
 		}
 	}
 

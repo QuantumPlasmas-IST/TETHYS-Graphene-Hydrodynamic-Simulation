@@ -6,12 +6,12 @@
 #define EDGE_H
 
 #include <H5Cpp.h>
-#include "includes/TethysBaseLib.h"
+/*#include "includes/TethysBaseLib.h"
 #include "includes/TethysMathLib.h"
 #include "includes/Fluid1DLib.h"
 #include "includes/Fluid2DLib.h"
 #include "includes/DiracGraphene2DLib.h"
-#include "BoundaryLib.h"
+#include "BoundaryLib.h"*/
 //#include "includes/DomainLib.h"
 #include "DomainLib.h"
 
@@ -29,6 +29,7 @@ class Edge{
 
 //		bool *edg;///< The limit between the domain and the outside
 		std::vector <bool> edg;
+		std::vector <bool> edgint;
 		
 		void set_size_x(int);
 		void set_size_y(int);
