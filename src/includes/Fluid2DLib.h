@@ -141,7 +141,7 @@ using namespace H5;
 		 *
 		 */
 	    void Richtmyer();                   // Central Algorithm for solving the hyperbolic conservation law
-		void Richtmyer(Geometry Geom);                   // Central Algorithm for solving the hyperbolic conservation law
+		void Richtmyer(Geometry Geom);                   // Central Algorithm for solving the hyperbolic conservation law considering any type of boundaries
 
 
 		virtual float DensitySource(StateVec2D U); ///< density equation (continuity equation) source term

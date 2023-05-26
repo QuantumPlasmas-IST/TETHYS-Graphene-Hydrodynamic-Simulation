@@ -232,7 +232,25 @@ void BoundaryCondition::YClosedNoSlip(Fluid2D& fluid_class){
 	}
 }
 
+void BoundaryCondition::YClosedNoSlip(Fluid2D& fluid_class, Geometry Geom){
+	int nx=fluid_class.SizeX();
+	int ny=fluid_class.SizeY();
+	for (int i=0; i < nx; i++) {
+		int bottom;
+//		bottom = i; //i+0*nx
+		bottom = Geom.fronteira.edgint[i];
+		int top;
+//		top = i + (ny - 1) * nx;
+		top = Geom.fronteira.edgint[nx+i];
+		fluid_class.Umain[bottom].n() = fluid_class.Umain[bottom+nx].n();
+		fluid_class.Umain[top].n() = fluid_class.Umain[top-nx].n();
+		fluid_class.Umain[bottom].px() = 0.0f;
+		fluid_class.Umain[bottom].py() = 0.0f; //Slope * fluid_class.FlxX[top - nx];
+		fluid_class.Umain[top].px() = 0.0f;
+		fluid_class.Umain[top].py() = 0.0f; //-1.0f * Slope * fluid_class.FlxX[bottom + nx];
 
+	}
+}
 
 
 

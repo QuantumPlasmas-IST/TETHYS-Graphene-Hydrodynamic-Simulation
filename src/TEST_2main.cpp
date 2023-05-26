@@ -20,14 +20,30 @@
 
 using namespace std;
 
+float ff_top(float x){
+	return 0.2*x;
+}
+
+float ff_bottom(float x){
+	return (40+20*cos(x/20.) );
+}
 
 int main(int argc, char **argv){
+
+	int NX = 400;
+    int NY = 200;
+	Geometry Geom(NX,NY);
+	Geom.fronteira.D.set_Domain(ff_top,ff_bottom);
+    Geom.fronteira.set_Edge();
+	Geom.dominio.dom = Geom.fronteira.D.dom;
 
 	SetUpParameters parameters(argc, argv);
 	parameters.DefineGeometry();
 
 	float t=0.0;
 	float dt;		// time step
+
+	
 
 	GrapheneFluid2D graph(parameters);
 
@@ -99,14 +115,14 @@ InitialCondition::Rand(graph);
 
 
 
-		graph.Richtmyer();
+		graph.Richtmyer(Geom);
 
 
 		/*+++++++++++++++++++++++++++++++++++++*
 		 * Change the boundary conditions here *
 		 *+++++++++++++++++++++++++++++++++++++*/
 		DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
-		DirichletBoundaryCondition::YClosedNoSlip(graph);
+		DirichletBoundaryCondition::YClosedNoSlip(graph,Geom);
 		//DirichletBoundaryCondition::YClosedFreeSlip(graph);
 
 //		BoundaryCondition::XPeriodic(graph);
