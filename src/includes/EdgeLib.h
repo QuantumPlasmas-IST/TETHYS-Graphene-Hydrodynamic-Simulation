@@ -29,7 +29,7 @@ class Edge{
 
 //		bool *edg;///< The limit between the domain and the outside
 		std::vector <bool> edg;
-		std::vector <bool> edgint;
+		std::vector <int> edgint;
 		
 		void set_size_x(int);
 		void set_size_y(int);

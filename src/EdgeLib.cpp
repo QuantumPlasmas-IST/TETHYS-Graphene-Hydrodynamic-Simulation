@@ -10,6 +10,7 @@ Edge::Edge(int Nx, int Ny /*,bool * domn*/){
     D.set_size_x(Nx);
     D.set_size_y(Ny);
     edg.resize(Nx*Ny);
+//    edgint.resize(Ny*Nx);
 }
 
 Edge::~Edge() = default;
@@ -25,19 +26,29 @@ void Edge::set_size_y(int Ny){
 }
 
 void Edge::set_Edge(){
+    int edgctr = 0;
     for(int k=1; k<=size_x*size_y-1; k++) {
+//        cout << "k = " << k << endl;
 //        printf("i/size_x =%d",k/size_x);
+//        cout << "D.dom[" << k << "] = " << D.dom[k] << endl;
         if(D.dom[k] == 0){
             for(int di = -1; di <= 1; di++){
                 for(int dj = -1; dj <= 1; dj++){
+//                    cout << "D.dom[" << k + di + size_x*dj << "] = " << D.dom[k + di + size_x*dj] << endl;
                     if( D.dom[k + di + size_x*dj] == 1){
+//                        cout << "edgctr =" << edgctr << endl;
+//                        cout << "edgint =" << edgint[edgctr] << endl;
                         edg[k] = 1;
+                        edgctr ++;
                         edgint.push_back(k);
+                    //    edgint[edgctr]=k;
+                    //    edgctr++; 
                     }
                 }
             }
         }
-    }                 
+    }
+    cout << "edgctr = " << edgctr << endl;                 
 }
 
 /* codigo em python dado pelo Cosme

@@ -50,9 +50,9 @@ using namespace H5;
 		StateVec2D *ptr_StateVec = nullptr;
 
 		virtual void RichtmyerStep1();
-		virtual void RichtmyerStep1(Geometry Geom);
+		virtual void RichtmyerStep1G(Geometry *Geom);
 		virtual void RichtmyerStep2();
-		virtual void RichtmyerStep2(Geometry Geom);
+		virtual void RichtmyerStep2G(Geometry *Geom);
 
 
 		void VelocityXGradient_bulk(StateVec2D *Uarray, int size_x, int size_y);
@@ -141,7 +141,7 @@ using namespace H5;
 		 *
 		 */
 	    void Richtmyer();                   // Central Algorithm for solving the hyperbolic conservation law
-		void Richtmyer(Geometry Geom);                   // Central Algorithm for solving the hyperbolic conservation law considering any type of boundaries
+		void Richtmyer(Geometry *Geom);                   // Central Algorithm for solving the hyperbolic conservation law considering any type of boundaries
 
 
 		virtual float DensitySource(StateVec2D U); ///< density equation (continuity equation) source term

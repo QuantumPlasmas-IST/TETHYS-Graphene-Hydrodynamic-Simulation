@@ -19,15 +19,15 @@ void Domain::set_size_y(int Ny){
 }
 
 void Domain::set_Domain(function<float(float)> f_top,function<float(float)> f_bottom){
-    printf("wow\n");
+//    printf("wow\n");
 //    dom.SetZero();
     cout << size_x << " and " << size_y << endl;
     cout << "dom size = " << dom.size() << endl;
     for(int k=1; k<=size_x*size_y-1; k++) {
-        cout << "k = " << k << endl;
+//        cout << "k = " << k << endl;
         dom[k] = false;
         if( ( k/size_x > f_top(k%size_x) ) && ( k/size_x < size_y - f_bottom(k%size_x) ) ){
-            cout << "k true = " << k << endl;
+//            cout << "k true = " << k << endl;
             dom[k] = true;
         }
     }                 

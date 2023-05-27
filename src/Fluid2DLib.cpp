@@ -158,15 +158,18 @@ void Fluid2D::Richtmyer(){
 	RichtmyerStep2();
 }
 
-void Fluid2D::Richtmyer(Geometry Geom){
+void Fluid2D::Richtmyer(Geometry *Geom){
+	cout << "here 0R" << endl;
 	if(odd_vis!=0){
 		VelocityGradient(Umain,Nx,Ny);
 	}
-	RichtmyerStep1(Geom);
+	RichtmyerStep1G(Geom);
+	cout << "here 1R" << endl;
 	if(odd_vis!=0){
 		VelocityGradient(Umid,Nx-1,Ny-1);
 	}
-	RichtmyerStep2(Geom);
+	RichtmyerStep2G(Geom);
+	cout << "here 2R" << endl;
 }
 
 void Fluid2D::RichtmyerStep1(){
@@ -215,16 +218,14 @@ void Fluid2D::RichtmyerStep1(){
 
 }
 
-
-
-void Fluid2D::RichtmyerStep1(Geometry Geom){
+void Fluid2D::RichtmyerStep1G(Geometry *Geom){
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	ChooseGridPointers("MidGrid");
 //#pragma omp parallel for default(none) shared(Nx,Ny,dt,dx,dy,Den,FlxX,FlxY,Tmp,den_dx,den_dy,ptr_den,ptr_px,ptr_py,ptr_snd,ptr_tmp,ptr_velXdx,ptr_velXdy,ptr_velYdx,ptr_velYdy,ptr_dendx,ptr_dendy)
 #pragma omp parallel for default(none) shared(Umain,Umid,Geom)
 	for(int ks=0; ks<=Nx*Ny-Nx-Ny; ks++){ //correr todos os pontos da grelha secundaria de den_mid
-		if(Geom.dominio.dom[ks] == true){
+		if(Geom->dominio.dom[ks] == true){
 			GridPoint2D midpoint(ks, Nx, Ny, true);
 
 			StateVec2D Uavg(Umain[ks]);
@@ -264,8 +265,6 @@ void Fluid2D::RichtmyerStep1(Geometry Geom){
 
 
 }
-
-
 
 void Fluid2D::RichtmyerStep2(){
 
@@ -310,15 +309,13 @@ void Fluid2D::RichtmyerStep2(){
 
 }
 
-
-
-void Fluid2D::RichtmyerStep2(Geometry Geom){
+void Fluid2D::RichtmyerStep2G(Geometry *Geom){
 
 	ChooseGridPointers("MainGrid");
 //#pragma omp parallel for default(none) shared(Nx,Ny,dt,dx,dy,FlxX,FlxY,Den,Tmp,den_dx,den_dy,ptr_den,ptr_px,ptr_py,ptr_snd,ptr_tmp,ptr_velXdx,ptr_velXdy,ptr_velYdx,ptr_velYdy,ptr_dendx,ptr_dendy)
 #pragma omp parallel for default(none) shared(Umain,Umid,Geom)
 	for(int kp=1+Nx; kp<=Nx*Ny-Nx-2; kp++){ //correr a grelha principal evitando as fronteiras
-		if(Geom.dominio.dom[kp] == true){
+		if(Geom->dominio.dom[kp] == true){
 			GridPoint2D mainpoint(kp, Nx, Ny, false);
 			if( kp%Nx!=Nx-1 && kp%Nx!=0){
 				StateVec2D Uold(Umain[kp]);
@@ -356,8 +353,6 @@ void Fluid2D::RichtmyerStep2(Geometry Geom){
 	}
 
 }
-
-
 
 void Fluid2D::CflCondition(){
 		dx = lengX / ( float ) ( Nx - 1 );
@@ -447,7 +442,6 @@ void Fluid2D::TemperatureLaplacianWeighted19() {
         }
     }
 }
-
 
 void Fluid2D:: ParabolicOperatorFtcs() {
 	VelocityLaplacianFtcs();

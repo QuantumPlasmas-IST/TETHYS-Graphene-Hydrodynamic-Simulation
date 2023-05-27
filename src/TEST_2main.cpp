@@ -25,17 +25,10 @@ float ff_top(float x){
 }
 
 float ff_bottom(float x){
-	return (40+20*cos(x/20.) );
+	return 0.3*x;
 }
 
 int main(int argc, char **argv){
-
-	int NX = 400;
-    int NY = 200;
-	Geometry Geom(NX,NY);
-	Geom.fronteira.D.set_Domain(ff_top,ff_bottom);
-    Geom.fronteira.set_Edge();
-	Geom.dominio.dom = Geom.fronteira.D.dom;
 
 	SetUpParameters parameters(argc, argv);
 	parameters.DefineGeometry();
@@ -43,7 +36,12 @@ int main(int argc, char **argv){
 	float t=0.0;
 	float dt;		// time step
 
-	
+	int NX = 400;
+    int NY = 200;
+	Geometry Geom(NX,NY);
+	Geom.fronteira.D.set_Domain(ff_top,ff_bottom);
+    Geom.fronteira.set_Edge();
+	Geom.dominio.dom = Geom.fronteira.D.dom;
 
 	GrapheneFluid2D graph(parameters);
 
@@ -109,20 +107,17 @@ InitialCondition::Rand(graph);
 	while (t <= graph.GetTmax() ){
 		int percentage=100*GrapheneFluid2D::TimeStepCounter/(graph.GetTmax()/dt);
 		cout << percentage<<"%\033[?25l"; //prints the percentage of simulation completed
-
+		cout << "t = " << t << endl;
 		t += dt;
 		GrapheneFluid2D::TimeStepCounter++;
-
-
-
-		graph.Richtmyer(Geom);
-
+		
+		graph.Richtmyer(&Geom);
 
 		/*+++++++++++++++++++++++++++++++++++++*
 		 * Change the boundary conditions here *
 		 *+++++++++++++++++++++++++++++++++++++*/
 		DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
-		DirichletBoundaryCondition::YClosedNoSlip(graph,Geom);
+		DirichletBoundaryCondition::YClosedNoSlipG(graph,&Geom);
 		//DirichletBoundaryCondition::YClosedFreeSlip(graph);
 
 //		BoundaryCondition::XPeriodic(graph);
@@ -145,6 +140,7 @@ InitialCondition::Rand(graph);
 		if (parameters.SaveMode  && graph.Snapshot()) {
 			graph.SaveSnapShot();
 		}
+
 		if( !( GrapheneFluid2D::TimeStepCounter % 2) ){
 			graph.WriteFluidFile(t);
 		}

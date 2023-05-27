@@ -232,24 +232,32 @@ void BoundaryCondition::YClosedNoSlip(Fluid2D& fluid_class){
 	}
 }
 
-void BoundaryCondition::YClosedNoSlip(Fluid2D& fluid_class, Geometry Geom){
+void BoundaryCondition::YClosedNoSlipG(Fluid2D& fluid_class, Geometry *Geo){
 	int nx=fluid_class.SizeX();
 	int ny=fluid_class.SizeY();
-	for (int i=0; i < nx; i++) {
+	int EDGSIZE = Geo->fronteira.edgint.size();
+	for (int i=0; i < EDGSIZE/2; i++) {
+//		cout << "i = " << i << endl;
 		int bottom;
 //		bottom = i; //i+0*nx
-		bottom = Geom.fronteira.edgint[i];
+		bottom = Geo->fronteira.edgint[i];
 		int top;
 //		top = i + (ny - 1) * nx;
-		top = Geom.fronteira.edgint[nx+i];
+		top = Geo->fronteira.edgint[EDGSIZE/2+i];
+//		cout << "top = " << top << endl;
+//		cout << "bottom = " << bottom << endl;
 		fluid_class.Umain[bottom].n() = fluid_class.Umain[bottom+nx].n();
 		fluid_class.Umain[top].n() = fluid_class.Umain[top-nx].n();
 		fluid_class.Umain[bottom].px() = 0.0f;
 		fluid_class.Umain[bottom].py() = 0.0f; //Slope * fluid_class.FlxX[top - nx];
 		fluid_class.Umain[top].px() = 0.0f;
 		fluid_class.Umain[top].py() = 0.0f; //-1.0f * Slope * fluid_class.FlxX[bottom + nx];
-
 	}
+/*	for (int i = 0; i < Geom.fronteira.edgint.size(); i++){
+		cout << "Geom.fronteira.edgint[" << i << "] = " << Geom.fronteira.edgint[i] << endl;
+	}*/
+	cout << EDGSIZE << endl;
+	cout << "print what" << endl;
 }
 
 
