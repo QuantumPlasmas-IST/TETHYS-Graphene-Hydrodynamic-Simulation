@@ -21,11 +21,11 @@
 using namespace std;
 
 float ff_top(float x){
-	return 0.2*x;
+	return 0;
 }
 
 float ff_bottom(float x){
-	return 0.3*x;
+	return 0;
 }
 
 int main(int argc, char **argv){
@@ -42,6 +42,10 @@ int main(int argc, char **argv){
 	Geom.fronteira.D.set_Domain(ff_top,ff_bottom);
     Geom.fronteira.set_Edge();
 	Geom.dominio.dom = Geom.fronteira.D.dom;
+
+	for(int i = 0; i < Geom.fronteira.edgint.size(); i++){
+		cout << "edgint[" << i << "] = " << Geom.fronteira.edgint[i] << "      "; 
+	}
 
 	GrapheneFluid2D graph(parameters);
 
@@ -133,7 +137,7 @@ InitialCondition::Rand(graph);
 			// * Change the boundary conditions here *
 			// *+++++++++++++++++++++++++++++++++++++
 			DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
-			DirichletBoundaryCondition::YClosedNoSlip(graph);
+			DirichletBoundaryCondition::YClosedNoSlipG(graph, &Geom);
 			//DirichletBoundaryCondition::YClosedFreeSlip(graph);
 		}
 		//Record full hdf5 data

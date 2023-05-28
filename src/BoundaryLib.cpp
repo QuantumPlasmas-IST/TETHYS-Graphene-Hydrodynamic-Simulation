@@ -256,8 +256,8 @@ void BoundaryCondition::YClosedNoSlipG(Fluid2D& fluid_class, Geometry *Geo){
 /*	for (int i = 0; i < Geom.fronteira.edgint.size(); i++){
 		cout << "Geom.fronteira.edgint[" << i << "] = " << Geom.fronteira.edgint[i] << endl;
 	}*/
-	cout << EDGSIZE << endl;
-	cout << "print what" << endl;
+//	cout << EDGSIZE << endl;
+//	cout << "print what" << endl;
 }
 
 
