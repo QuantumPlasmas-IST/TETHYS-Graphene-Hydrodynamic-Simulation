@@ -27,8 +27,8 @@ void Edge::set_size_y(int Ny){
 
 void Edge::set_Edge(){
     int edgctr = 0;
-    int k_ant = 0;
-    for(int k=1; k<=size_x*size_y-1; k++) {
+    int k_ant = 1;
+    for(int k=0; k<=size_x*size_y-1; k++) {
 //        cout << "k = " << k << endl;
 //        printf("i/size_x =%d",k/size_x);
 //        cout << "D.dom[" << k << "] = " << D.dom[k] << endl;
@@ -39,6 +39,9 @@ void Edge::set_Edge(){
                     if( D.dom[k + di + size_x*dj] == 1){
 //                        cout << "edgctr =" << edgctr << endl;
 //                        cout << "edgint =" << edgint[edgctr] << endl;
+                        if(k == 79800){
+                            cout << "D.dom[" << k + di + size_x*dj << "] = " << D.dom[k + di + size_x*dj] << endl;
+                        }
                         edg[k] = 1;
                         if(k != k_ant){
                             edgint.push_back(k);

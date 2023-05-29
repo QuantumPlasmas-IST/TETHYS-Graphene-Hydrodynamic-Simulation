@@ -220,7 +220,7 @@ void Fluid2D::RichtmyerStep1G(Geometry *Geom){
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	ChooseGridPointers("MidGrid");
 //#pragma omp parallel for default(none) shared(Nx,Ny,dt,dx,dy,Den,FlxX,FlxY,Tmp,den_dx,den_dy,ptr_den,ptr_px,ptr_py,ptr_snd,ptr_tmp,ptr_velXdx,ptr_velXdy,ptr_velYdx,ptr_velYdy,ptr_dendx,ptr_dendy)
-#pragma omp parallel for default(none) shared(Umain,Umid,Geom)
+#pragma omp parallel for default(none) shared(Umain,Umid,Geom,cout)
 	for(int ks=0; ks<=Nx*Ny-Nx-Ny; ks++){ //correr todos os pontos da grelha secundaria de den_mid
 		if(Geom->dominio.dom[ks] == true){
 			GridPoint2D midpoint(ks, Nx, Ny, true);
@@ -256,11 +256,17 @@ void Fluid2D::RichtmyerStep1G(Geometry *Geom){
 							-0.5f*(dt/dx)*(YMomentumFluxX(UEast) - YMomentumFluxX(UWest))
 							-0.5f*(dt/dy)*(YMomentumFluxY(UNorth) - YMomentumFluxY(USouth))
 							+0.5f*dt*YMomentumSource(Uavg);
+			
+			if(ks <= 40450 && ks >= 40415){
+				cout << "ks = " << ks << endl;
+				cout << "dx = " << dx << " XMfluxX(UEast) = " << XMomentumFluxX(UEast) << " XMFluxX(UWest) = " << XMomentumFluxX(UEast) << endl;
+				cout << "dy = " << dy << " XMfluxX(UNorth) = " << XMomentumFluxX(UNorth) << " XMFluxX(USouth) = " << XMomentumFluxX(USouth) << endl;
+//				cout << " Ueast.px = " << UEast.px() << "   Ueast.n = " << UEast.n() << endl; 
+//				cout << "UmidXFlux = " << Umid[].px() << "   UmidSE = " << Umid[].px() << endl;
+				cout << " more values " << Umid[ks].px() << " = " << Uavg.px() << " - " << (dt/dx)*(XMomentumFluxX(UEast) - XMomentumFluxX(UWest)) << " - " << (dt/dy)*(XMomentumFluxY(UNorth) - XMomentumFluxY(USouth)) << " + " << dt*XMomentumSource(Uavg) << endl;
+			}
 		}
 	}
-
-
-
 }
 
 void Fluid2D::RichtmyerStep2(){
@@ -311,7 +317,7 @@ void Fluid2D::RichtmyerStep2G(Geometry *Geom){
 	ChooseGridPointers("MainGrid");
 //#pragma omp parallel for default(none) shared(Nx,Ny,dt,dx,dy,FlxX,FlxY,Den,Tmp,den_dx,den_dy,ptr_den,ptr_px,ptr_py,ptr_snd,ptr_tmp,ptr_velXdx,ptr_velXdy,ptr_velYdx,ptr_velYdy,ptr_dendx,ptr_dendy)
 #pragma omp parallel for default(none) shared(Umain,Umid,Geom, cout)
-	for(int kp=1+Nx; kp<=Nx*Ny-Nx-2; kp++){ //correr a grelha principal evitando as fronteiras
+	for(int kp=0; kp<=Nx*Ny-1; kp++){ //correr a grelha principal evitando as fronteiras
 		if(Geom->dominio.dom[kp] == true){
 			GridPoint2D mainpoint(kp, Nx, Ny, false);
 			if( kp%Nx!=Nx-1 && kp%Nx!=0){
@@ -345,10 +351,18 @@ void Fluid2D::RichtmyerStep2G(Geometry *Geom){
 								- (dt/dx)*(YMomentumFluxX(UEast) - YMomentumFluxX(UWest))
 								- (dt/dy)*(YMomentumFluxY(UNorth) - YMomentumFluxY(USouth))
 								+ dt*YMomentumSource(Uold);
+				
+//				cout << "kp = " << kp << endl;
+/*				if(kp <= 40418 && kp >= 40415){
+					cout << "kp = " << kp << endl;
+					cout << "dx = " << dx << " XMflux = " << XMomentumFluxX(UEast) << endl;
+					cout << " Ueast.px = " << UEast.px() << "   Ueast.n = " << UEast.n() << endl; 
+					cout << "UmidNE = " << Umid[mainpoint.NE].px() << "   UmidSE = " << Umid[mainpoint.SE].px() << endl;
+					cout << " more values " << Umain[kp].px() << " = " << Uold.px() << " - " << (dt/dx)*(XMomentumFluxX(UEast) - XMomentumFluxX(UWest)) << " - " << (dt/dy)*(XMomentumFluxY(UNorth) - XMomentumFluxY(USouth)) << " + " << dt*XMomentumSource(Uold) << endl;
+				}*/				
 			}
 		}
 	}
-
 }
 
 void Fluid2D::CflCondition(){
@@ -366,7 +380,9 @@ void Fluid2D::CreateFluidFile(){
 void Fluid2D::WriteFluidFile(float t){
 	int j=Ny/2;
 	int pos_end = Nx - 1 + j*Nx ;
-	int pos_ini = j*Nx ;
+	int pos_ini = j*Nx;
+//	cout << "pos_end " << Nx -1 + j*Nx << endl;
+//	cout << "values: " << Umain[pos_ini].n() << " " << Umain[pos_end].n() << " " << Umain[pos_ini].px() << " " << Umain[pos_end].px() << endl;
 		if(!isfinite(Umain[pos_ini].n()) || !isfinite(Umain[pos_end].n()) || !isfinite(Umain[pos_ini].px()) || !isfinite(Umain[pos_end].px())){
 			cerr << "ERROR: numerical method failed to converge" <<"\nExiting"<< endl;
 			CloseHdf5File();

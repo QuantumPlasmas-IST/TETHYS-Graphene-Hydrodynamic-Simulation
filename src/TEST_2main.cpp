@@ -21,11 +21,11 @@
 using namespace std;
 
 float ff_top(float x){
-	return 0;
+	return 0.125*x;
 }
 
 float ff_bottom(float x){
-	return 0;
+	return 0.125*x;
 }
 
 int main(int argc, char **argv){
@@ -41,12 +41,18 @@ int main(int argc, char **argv){
 	Geometry Geom(NX,NY);
 	Geom.fronteira.D.set_Domain(ff_top,ff_bottom);
     Geom.fronteira.set_Edge();
+	
 	Geom.dominio.dom = Geom.fronteira.D.dom;
-
-	for(int i = 0; i < Geom.fronteira.edgint.size(); i++){
+/*	for(int i = 0; i < Geom.fronteira.edgint.size(); i++){
 		cout << "edgint[" << i << "] = " << Geom.fronteira.edgint[i] << "      "; 
 	}
+*/
+//	cout << "edgint size  " << Geom.fronteira.edgint.size() << endl;
 
+/*	for(int i = 0; i < Geom.fronteira.edg.size(); i++){
+		cout << "edg[" << i << "] = " << Geom.fronteira.edg[i] << "      "; 
+	}
+*/
 	GrapheneFluid2D graph(parameters);
 
 	/*......CFL routine to determine dt...............................*/
@@ -111,12 +117,12 @@ InitialCondition::Rand(graph);
 	while (t <= graph.GetTmax() ){
 		int percentage=100*GrapheneFluid2D::TimeStepCounter/(graph.GetTmax()/dt);
 		cout << percentage<<"%\033[?25l"; //prints the percentage of simulation completed
-		cout << "t = " << t << endl;
+		cout << " t = " << t << endl;
 		t += dt;
 		GrapheneFluid2D::TimeStepCounter++;
 		
 		graph.Richtmyer(&Geom);
-
+//		graph.Richtmyer();
 		/*+++++++++++++++++++++++++++++++++++++*
 		 * Change the boundary conditions here *
 		 *+++++++++++++++++++++++++++++++++++++*/
