@@ -22,9 +22,9 @@ if(OPENMP_FOUND)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_C_FLAGS}")
 endif()
 
-#minha main para correr coisas simples
-add_executable(TEST_SIMPLE src/TEST_2main.cpp)
-
+#minhas mains para correr coisas simples (para BCGeometries)
+add_executable(TEST_2M src/TEST_2main.cpp)
+add_executable(TEST_SIMPLE src/TEST_SIMPLE_main.cpp)
 
 add_executable(TETHYS_1D src/TETHYS_1D_Main_v262.cpp)
 add_executable(TETHYS_2D src/TETHYS_2D_Main_v262.cpp)
@@ -38,6 +38,7 @@ file(GLOB SRC_LIB_FILES src/*Lib.cpp)
 
 add_library(tethys_library STATIC ${SRC_LIB_FILES})
 
+target_link_libraries(TEST_2M PUBLIC tethys_library)
 target_link_libraries(TEST_SIMPLE PUBLIC tethys_library)
 
 target_link_libraries(TETHYS_1D PUBLIC tethys_library)
@@ -47,6 +48,9 @@ target_link_libraries(TETHYS_2D_CNP PUBLIC tethys_library)
 target_link_libraries(TETHYS_ELEC_2D PUBLIC tethys_library)
 
 #target_link_libraries(TETHYS_RADIATION_2D PUBLIC tethys_library)
+
+target_include_directories(TEST_2M PRIVATE ${HDF5_INCLUDE_DIRS})
+target_link_libraries(TEST_2M PRIVATE ${HDF5_CXX_LIBRARIES})
 
 target_include_directories(TEST_SIMPLE PRIVATE ${HDF5_INCLUDE_DIRS})
 target_link_libraries(TEST_SIMPLE PRIVATE ${HDF5_CXX_LIBRARIES})

@@ -97,7 +97,17 @@ void BoundaryCondition::XFreeRight(Fluid2D &fluid_class) {
 		fluid_class.Umain[right] = fluid_class.Umain[right-1];
 	}
 }
-
+void BoundaryCondition::XFreeRight(Fluid2D &fluid_class, Geometry *Geom) {
+	int nx=fluid_class.SizeX();
+	int ny=fluid_class.SizeY();
+	for(int j=0; j < ny; j++){
+		if(Geom->dominio.dom[(j+1)*nx-1]){
+			int right;
+			right = nx - 1 + j * nx;
+			fluid_class.Umain[right] = fluid_class.Umain[right-1];
+		}
+	}
+}
 void BoundaryCondition::XPeriodic(Fluid2D& fluid_class){
 	int nx=fluid_class.SizeX();
 	int ny=fluid_class.SizeY();
@@ -253,6 +263,7 @@ void BoundaryCondition::YClosedNoSlipG(Fluid2D& fluid_class, Geometry *Geo){
 		fluid_class.Umain[top].px() = 0.0f;
 		fluid_class.Umain[top].py() = 0.0f; //-1.0f * Slope * fluid_class.FlxX[bottom + nx];
 	}
+//	Geo->fronteira.edgint.clear();
 /*	for (int i = 0; i < Geom.fronteira.edgint.size(); i++){
 		cout << "Geom.fronteira.edgint[" << i << "] = " << Geom.fronteira.edgint[i] << endl;
 	}*/

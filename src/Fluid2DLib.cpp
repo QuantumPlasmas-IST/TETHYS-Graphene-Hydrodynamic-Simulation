@@ -222,7 +222,7 @@ void Fluid2D::RichtmyerStep1G(Geometry *Geom){
 //#pragma omp parallel for default(none) shared(Nx,Ny,dt,dx,dy,Den,FlxX,FlxY,Tmp,den_dx,den_dy,ptr_den,ptr_px,ptr_py,ptr_snd,ptr_tmp,ptr_velXdx,ptr_velXdy,ptr_velYdx,ptr_velYdy,ptr_dendx,ptr_dendy)
 #pragma omp parallel for default(none) shared(Umain,Umid,Geom,cout)
 	for(int ks=0; ks<=Nx*Ny-Nx-Ny; ks++){ //correr todos os pontos da grelha secundaria de den_mid
-		if(Geom->dominio.dom[ks] == true){
+		if(Geom->dominio.dom[ks] == true || Geom->fronteira.edg[ks] == true){
 			GridPoint2D midpoint(ks, Nx, Ny, true);
 
 			StateVec2D Uavg(Umain[ks]);
@@ -257,14 +257,14 @@ void Fluid2D::RichtmyerStep1G(Geometry *Geom){
 							-0.5f*(dt/dy)*(YMomentumFluxY(UNorth) - YMomentumFluxY(USouth))
 							+0.5f*dt*YMomentumSource(Uavg);
 			
-			if(ks <= 40450 && ks >= 40415){
+/*			if(ks <= 40450 && ks >= 40415){
 				cout << "ks = " << ks << endl;
 				cout << "dx = " << dx << " XMfluxX(UEast) = " << XMomentumFluxX(UEast) << " XMFluxX(UWest) = " << XMomentumFluxX(UEast) << endl;
 				cout << "dy = " << dy << " XMfluxX(UNorth) = " << XMomentumFluxX(UNorth) << " XMFluxX(USouth) = " << XMomentumFluxX(USouth) << endl;
 //				cout << " Ueast.px = " << UEast.px() << "   Ueast.n = " << UEast.n() << endl; 
 //				cout << "UmidXFlux = " << Umid[].px() << "   UmidSE = " << Umid[].px() << endl;
 				cout << " more values " << Umid[ks].px() << " = " << Uavg.px() << " - " << (dt/dx)*(XMomentumFluxX(UEast) - XMomentumFluxX(UWest)) << " - " << (dt/dy)*(XMomentumFluxY(UNorth) - XMomentumFluxY(USouth)) << " + " << dt*XMomentumSource(Uavg) << endl;
-			}
+			}*/
 		}
 	}
 }
@@ -317,8 +317,11 @@ void Fluid2D::RichtmyerStep2G(Geometry *Geom){
 	ChooseGridPointers("MainGrid");
 //#pragma omp parallel for default(none) shared(Nx,Ny,dt,dx,dy,FlxX,FlxY,Den,Tmp,den_dx,den_dy,ptr_den,ptr_px,ptr_py,ptr_snd,ptr_tmp,ptr_velXdx,ptr_velXdy,ptr_velYdx,ptr_velYdy,ptr_dendx,ptr_dendy)
 #pragma omp parallel for default(none) shared(Umain,Umid,Geom, cout)
-	for(int kp=0; kp<=Nx*Ny-1; kp++){ //correr a grelha principal evitando as fronteiras
-		if(Geom->dominio.dom[kp] == true){
+	for(int kp=1+Nx; kp<=Nx*Ny-Nx-2; kp++){ //correr a grelha principal evitando as fronteiras
+		if(Geom->dominio.dom[kp] == false){
+			//cout << "kp = " << kp << " " << endl;
+		}
+		if(Geom->dominio.dom[kp] == true || Geom->fronteira.edg[kp] == true){
 			GridPoint2D mainpoint(kp, Nx, Ny, false);
 			if( kp%Nx!=Nx-1 && kp%Nx!=0){
 				StateVec2D Uold(Umain[kp]);
@@ -443,6 +446,32 @@ void Fluid2D::VelocityLaplacianWeighted19() {
 	}
 }
 
+void Fluid2D::VelocityLaplacianWeighted19(Geometry *Geom) {
+
+
+	for (int kp = 0; kp < Nx * Ny ; kp++) {
+		if(Geom->dominio.dom[kp] == true){
+			float den =Umain[kp].n();
+			float mass = DensityToMass(den);
+			VelX[kp] = Umain[kp].px()/mass;
+			VelY[kp] = Umain[kp].py()/mass;
+		}
+	}
+
+#pragma omp parallel for default(none) shared(Umain,VelX,VelY,Geom)
+	for (int kp = 1 + Nx; kp <= Nx * Ny - Nx - 2; kp++) {
+		if(Geom->dominio.dom[kp] == true){
+			GridPoint2D point(kp,Nx,Ny,false);
+			if (kp % Nx != Nx - 1 && kp % Nx != 0){
+				//lap_flxX[kp] = Laplacian19( point, VelX, kin_vis);
+				//lap_flxY[kp] = Laplacian19( point, VelY, kin_vis);
+				Umain[kp].d2vx() = Laplacian19( point, VelX, kin_vis);
+				Umain[kp].d2vy() = Laplacian19( point, VelY, kin_vis);
+			}
+		}
+	}
+}
+
 void Fluid2D::TemperatureLaplacianWeighted19() {
 	for (int kp = 0; kp < Nx * Ny ; kp++) {
 		Tmp[kp] = Umain[kp].tmp();
@@ -470,6 +499,18 @@ void Fluid2D::ParabolicOperatorWeightedExplicit19(char field) {
 	switch(field) {
 		case 'V': VelocityLaplacianWeighted19();
 			ForwardTimeOperator(field);
+			break;
+		case 'T': TemperatureLaplacianWeighted19();
+			ForwardTimeOperator(field);
+			break;
+		default: ;
+	}
+}
+
+void Fluid2D::ParabolicOperatorWeightedExplicit19(char field, Geometry *Geom) {
+	switch(field) {
+		case 'V': VelocityLaplacianWeighted19(Geom);
+			ForwardTimeOperator(field, Geom);
 			break;
 		case 'T': TemperatureLaplacianWeighted19();
 			ForwardTimeOperator(field);
@@ -626,6 +667,29 @@ void Fluid2D::ForwardTimeOperator(char field) {
 		}
 	}
 }
+
+void Fluid2D::ForwardTimeOperator(char field, Geometry *Geom) {
+#pragma omp parallel for default(none) shared(Umain,Tmp,field, Geom)
+	for (int kp = 1 + Nx; kp <= Nx * Ny - Nx - 2; kp++) {
+		if(Geom->dominio.dom[kp] == true){
+			float flx_x_old, flx_y_old, tmp_old;
+			if (kp % Nx != Nx - 1 && kp % Nx != 0) {
+				switch(field) {
+					case 'T': 	tmp_old = Umain[kp].tmp();
+								Umain[kp].tmp() = tmp_old + Umain[kp].d2tmp();
+								break;
+					case 'V': 	flx_x_old = Umain[kp].px();
+								flx_y_old = Umain[kp].py();
+								Umain[kp].px() = flx_x_old + Umain[kp].d2vx();
+								Umain[kp].py() = flx_y_old + Umain[kp].d2vy();
+								break;
+					default: ;
+				}
+			}
+		}
+	}
+}
+
 
 float Fluid2D::DensityToMass(float density) {
 	return density;

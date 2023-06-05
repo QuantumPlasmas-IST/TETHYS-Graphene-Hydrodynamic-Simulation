@@ -39,6 +39,7 @@ using namespace H5;
 
 		virtual void ForwardTimeOperator(); ///< Time evolution for the FTCS method employed for the parabolic operators.
 		virtual void ForwardTimeOperator(char field); ///< Time evolution for the FTCS method employed for the parabolic operators.
+		virtual void ForwardTimeOperator(char field, Geometry *Geom); ///< Time evolution for the FTCS method employed for the parabolic operators.
 
 
 		virtual float DensityToMass(float density);
@@ -236,6 +237,7 @@ using namespace H5;
 		float Laplacian19(GridPoint2D p, float *input_ptr, float constant);
 
 		virtual void VelocityLaplacianWeighted19();
+		virtual void VelocityLaplacianWeighted19(Geometry *Geom);
 
 		/*!
 		* @brief Forward Time Centered Space method for the viscous terms
@@ -250,6 +252,7 @@ using namespace H5;
 		* */
 		virtual void ParabolicOperatorWeightedExplicit19(); ///< Forward Time Centered Space method for the diffusive terms
 		virtual void ParabolicOperatorWeightedExplicit19(char field); ///< Forward Time Centered Space method for the diffusive terms
+		virtual void ParabolicOperatorWeightedExplicit19(char field, Geometry *Geom); ///< Forward Time Centered Space method for the diffusive terms, with boundaries geometry into account
 		void TemperatureLaplacianWeighted19();
 
 

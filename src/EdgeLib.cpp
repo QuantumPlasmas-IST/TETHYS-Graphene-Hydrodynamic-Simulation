@@ -45,7 +45,6 @@ void Edge::set_Edge(){
                         edg[k] = 1;
                         if(k != k_ant){
                             edgint.push_back(k);
-                            edgctr ++;
                             k_ant = k;
                         }
                         

@@ -23,9 +23,10 @@ void Domain::set_Domain(function<float(float)> f_top,function<float(float)> f_bo
 //    dom.SetZero();
     cout << size_x << " and " << size_y << endl;
     cout << "dom size = " << dom.size() << endl;
-    for(int k=1; k<=size_x*size_y-1; k++) {
-//        cout << "k = " << k << endl;
+    for(int k=1; k<=size_x*size_y-1; k++){
         dom[k] = false;
+//        cout << "f_top [" << k%size_x << "] = " << f_top(k%size_x) << endl;
+//        cout << "f_bottom [" << k%size_x << "] = " << f_bottom(k%size_x) << endl;
         if( ( k/size_x > f_top(k%size_x) ) && ( k/size_x < size_y - 1 - f_bottom(k%size_x) ) ){
 //            cout << "k true = " << k << endl;
             dom[k] = true;

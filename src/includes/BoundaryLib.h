@@ -42,7 +42,7 @@ class BoundaryCondition {
 		static void XFree(Fluid1D& fluid_class);           ///< open boundaries at x=0 and x=L for all variables and zero tangent velocity
 		static void XFreeLeft(Fluid1D& fluid_class);
         static void XFreeRight(Fluid1D& fluid_class);
-        static void XFree(Fluid2D& fluid_class);           ///< open boundaries at x=0 and x=L for all variables and zero tangent velocity
+		static void XFree(Fluid2D& fluid_class);           ///< open boundaries at x=0 and x=L for all variables and zero tangent velocity
 		/*!
 		* @brief open boundaries for all variables along designated x edge.
 		* Implemnts open boundaries for all quantities, at x=0 (if x_limit=0) or x=L (if x_limit=0) exclusively.
@@ -67,6 +67,7 @@ class BoundaryCondition {
 
 		static void XFreeLeft(Fluid2D &fluid_class); ///< open boundaries at x=0 for all variables
 		static void XFreeRight(Fluid2D &fluid_class); ///< open boundaries at x=L for all variables
+		static void XFreeRight(Fluid2D &fluid_class, Geometry *Geom); ///< open boundaries at x=L for all variables
 		static void YFreeTop(Fluid2D &fluid_class); ///< open boundaries at y=W for all variables
 		static void YFreeBottom(Fluid2D &fluid_class); ///< open boundaries at y=0 for all variables
 };

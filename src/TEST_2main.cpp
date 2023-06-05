@@ -21,11 +21,11 @@
 using namespace std;
 
 float ff_top(float x){
-	return 0.125*x;
+	return 0.12*x;
 }
 
 float ff_bottom(float x){
-	return 0.125*x;
+	return 0.12*x;
 }
 
 int main(int argc, char **argv){
@@ -43,10 +43,12 @@ int main(int argc, char **argv){
     Geom.fronteira.set_Edge();
 	
 	Geom.dominio.dom = Geom.fronteira.D.dom;
-/*	for(int i = 0; i < Geom.fronteira.edgint.size(); i++){
-		cout << "edgint[" << i << "] = " << Geom.fronteira.edgint[i] << "      "; 
+	for(int i = 0; i < Geom.fronteira.edgint.size(); i++){
+		if(Geom.dominio.dom[i] == false){
+			//cout << "edgint[" << i << "] = " << Geom.fronteira.edgint[i] << "      "; 
+		}
 	}
-*/
+
 //	cout << "edgint size  " << Geom.fronteira.edgint.size() << endl;
 
 /*	for(int i = 0; i < Geom.fronteira.edg.size(); i++){
@@ -106,7 +108,9 @@ InitialCondition::Rand(graph);
 	//BoundaryCondition::SetTopEdge(graph);
 	/*................................................................*/
 
-	DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
+//	DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
+	DirichletBoundaryCondition::XFreeLeft(graph);
+	DirichletBoundaryCondition::XFreeRight(graph);
 	DirichletBoundaryCondition::YClosedFreeSlip(graph);
 
 //	BoundaryCondition::XPeriodic(graph);
@@ -126,7 +130,9 @@ InitialCondition::Rand(graph);
 		/*+++++++++++++++++++++++++++++++++++++*
 		 * Change the boundary conditions here *
 		 *+++++++++++++++++++++++++++++++++++++*/
-		DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
+//		DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
+		DirichletBoundaryCondition::XFreeLeft(graph);
+		DirichletBoundaryCondition::XFreeRight(graph, &Geom);
 		DirichletBoundaryCondition::YClosedNoSlipG(graph,&Geom);
 		//DirichletBoundaryCondition::YClosedFreeSlip(graph);
 
@@ -138,11 +144,13 @@ InitialCondition::Rand(graph);
 	//		DirichletBoundaryCondition::Temperature(graph,0.22f, 0.22f, 0.22f, 0.22f);  // 300K corresponds to 0.22*Fermi temperature
 	//	}
 		if(graph.GetKinVis()!=0.0f ) {
-			graph.ParabolicOperatorWeightedExplicit19('V');
+			graph.ParabolicOperatorWeightedExplicit19('V',&Geom);
 			//*+++++++++++++++++++++++++++++++++++++*
 			// * Change the boundary conditions here *
 			// *+++++++++++++++++++++++++++++++++++++
-			DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
+			//DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
+			DirichletBoundaryCondition::XFreeLeft(graph);
+			DirichletBoundaryCondition::XFreeRight(graph, &Geom);
 			DirichletBoundaryCondition::YClosedNoSlipG(graph, &Geom);
 			//DirichletBoundaryCondition::YClosedFreeSlip(graph);
 		}
