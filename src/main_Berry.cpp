@@ -48,7 +48,7 @@ int main(int argc, char **argv){
 	//graph.SetSound(variationS);
 	graph.SetSound();
 	//graph.SetSimulationTime();
-	//graph.SetTmax(3.f);
+	graph.SetTmax(.1f);
 
 	/*................................................................*/
 
@@ -67,7 +67,7 @@ int main(int argc, char **argv){
 
 	/*...............Initialization...................................*/
 	InitialCondition::InitialCondGeneral(graph,
-										 [](float x,float y) { return 1.0f+0.5f*exp(-1.0f*(x*x+y*y)/2.0); },
+										 [](float x,float y) { return 1.0f+0.03f*exp(-1.0f*((x-.5)*(x-.5)+(y-.5)*(y-.5))/0.02f); },
 										 [](float x,float y) { return 0.0f; },
 										 [](float x,float y) { return 0.0f; });
 	/*................................................................*/

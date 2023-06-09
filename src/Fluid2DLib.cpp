@@ -157,7 +157,7 @@ void Fluid2D::Richtmyer(){
 	if(odd_vis!=0){
 		VelocityGradient(Umid,Nx-1,Ny-1);
 	}
-	denGradient(Umid,Nx-1,Ny-1); 
+	denGradient(Umid,Nx-1,Ny-1);
 	RichtmyerStep2();
 }
 
@@ -271,11 +271,11 @@ void Fluid2D::WriteFluidFile(float t){
 	int j=Ny/2;
 	int pos_end = Nx - 1 + j*Nx ;
 	int pos_ini = j*Nx ;
-		if(!isfinite(Umain[pos_ini].n()) || !isfinite(Umain[pos_end].n()) || !isfinite(Umain[pos_ini].px()) || !isfinite(Umain[pos_end].px())){
-			cerr << "ERROR: numerical method failed to converge" <<"\nExiting"<< endl;
-			CloseHdf5File();
-			exit(EXIT_FAILURE);
-		}
+		//if(!isfinite(Umain[pos_ini].n()) || !isfinite(Umain[pos_end].n()) || !isfinite(Umain[pos_ini].px()) || !isfinite(Umain[pos_end].px())){
+		//	cerr << "ERROR: numerical method failed to converge" <<"\nExiting"<< endl;
+		//	CloseHdf5File();
+		//	exit(EXIT_FAILURE);
+		//}
 	data_preview << t <<"\t"<< Umain[pos_ini] <<"\t"<<Umain[pos_end]<< "\n";
 }
 
