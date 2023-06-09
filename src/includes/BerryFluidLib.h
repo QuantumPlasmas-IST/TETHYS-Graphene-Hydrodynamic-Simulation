@@ -12,6 +12,8 @@ public :
     explicit BerryFluid(SetUpParameters &input_parameters);
         ~BerryFluid();
 
+	void CflCondition() override;
+
     float XMomentumSource(StateVec2D U)override; ///< velocity X component equation (momentum equation) source term
     float YMomentumSource(StateVec2D U)override; ///< velocity y component equation (momentum equation) source term
 
