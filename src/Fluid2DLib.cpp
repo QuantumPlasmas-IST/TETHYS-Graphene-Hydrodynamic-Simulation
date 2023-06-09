@@ -451,7 +451,7 @@ void Fluid2D::SaveSnapShot() {
 	atr_step_vel_y.close();
 	atr_time_vel_y.close();
 
-	if(therm_diff!=0){
+	//if(therm_diff!=0){
 		DataSet dataset_tmp = GrpTmp->createDataSet(name_dataset, HDF5FLOAT, *DataspaceTmp);
 		Attribute atr_step_tmp = dataset_tmp.createAttribute("time step", HDF5INT, atr_dataspace);
 		Attribute atr_time_tmp = dataset_tmp.createAttribute("time", HDF5FLOAT, atr_dataspace);
@@ -461,7 +461,7 @@ void Fluid2D::SaveSnapShot() {
 		atr_time_tmp.write(HDF5FLOAT, &currenttime);
 		atr_step_tmp.close();
 		atr_time_tmp.close();
-	}
+	//}
 }
 
 int Fluid2D::GetSnapshotStep() const { return snapshot_step;}
@@ -657,7 +657,8 @@ void Fluid2D::CopyFields() {
 		mass= DensityToMass(Den[i]);
 		VelX[i]=Umain[i].px()/mass;
 		VelY[i]=Umain[i].py()/mass;
-		Tmp[i] =Umain[i].tmp();
+//		Tmp[i] =Umain[i].tmp();
+		Tmp[i] =Umain[i].dxn()+Umain[i].dyn() ;
 	}
 }
 
@@ -681,9 +682,7 @@ void Fluid2D::VelocityGradient(StateVec2D *Uarray, int size_x, int size_y) {
 
 
 void Fluid2D::denGradient(StateVec2D *Uarray, int size_x, int size_y) {
-
 	denGradient_bulk(Uarray,size_x,size_y); //já paralelo
-
 	denGradient_top(Uarray,size_x,size_y);
 	denGradient_bottom(Uarray,size_x,size_y);
 	denGradient_left(Uarray,size_x,size_y);
