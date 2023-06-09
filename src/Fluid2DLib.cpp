@@ -148,13 +148,16 @@ void Fluid2D::InitialCondTest(){
 
 
 void Fluid2D::Richtmyer(){
+	//float Berry=
 	if(odd_vis!=0){
 		VelocityGradient(Umain,Nx,Ny);
 	}
+	denGradient(Umain,Nx,Ny);
 	RichtmyerStep1();
 	if(odd_vis!=0){
 		VelocityGradient(Umid,Nx-1,Ny-1);
 	}
+	denGradient(Umid,Nx-1,Ny-1); 
 	RichtmyerStep2();
 }
 
@@ -674,10 +677,181 @@ void Fluid2D::VelocityGradient(StateVec2D *Uarray, int size_x, int size_y) {
 	VelocityYGradient_left(Uarray,size_x,size_y);
 	VelocityYGradient_right(Uarray,size_x,size_y);
 	VelocityYGradient_corners(Uarray,size_x,size_y);
-
-
-
 }
+
+
+void Fluid2D::denGradient(StateVec2D *Uarray, int size_x, int size_y) {
+
+	denGradient_bulk(Uarray,size_x,size_y); //já paralelo
+
+	denGradient_top(Uarray,size_x,size_y);
+	denGradient_bottom(Uarray,size_x,size_y);
+	denGradient_left(Uarray,size_x,size_y);
+	denGradient_right(Uarray,size_x,size_y);
+	denGradient_corners(Uarray,size_x,size_y);
+}
+
+
+void Fluid2D::denGradient_bulk(StateVec2D *Uarray, int size_x, int size_y) {
+	int stride = size_x;
+#pragma omp parallel for default(none) shared(Uarray,stride,size_x,size_y)
+	for (int kp = 1 + size_x; kp <= size_x * size_y - size_x - 2; kp++) {
+		int N,S,E,W;
+		if (kp % stride != stride - 1 && kp % stride != 0) {
+			N=kp+stride;
+			S=kp-stride;
+			E=kp+1;
+			W=kp-1;
+
+			float nE = Uarray[E].n();
+			float nW = Uarray[W].n();
+			float nN = Uarray[N].n();
+			float nS = Uarray[S].n();
+
+			Uarray[kp].dxn() = (nE - nW) / (2.0f * dx);
+			Uarray[kp].dyn() = (nN - nS) / (2.0f * dy);
+		}
+	}
+}
+
+
+void Fluid2D::denGradient_top(StateVec2D *Uarray, int size_x, int size_y) {
+	int stride = size_x;
+	int N,S,E,W;
+	for (int i = 1; i <= size_x - 2; i++) { // topo rede principal, ou seja j=(size_y - 1)
+		int top = i + (size_y - 1) * stride;
+		int southsouth = i + (size_y - 3) * stride;
+		S=top-stride;
+		E=top+1;
+		W=top-1;
+		float nC = Uarray[top].n();
+		float nE = Uarray[E].n();
+		float nW = Uarray[W].n();
+		float nS = Uarray[S].n();
+		float nSS = Uarray[southsouth].n();
+
+		Uarray[top].dxn() = (nE - nW) / (2.0f * dx);
+		Uarray[top].dyn() = (3.0f * nC - 4.0f * nS + nSS) /(2.0f * dy); //backward finite difference
+	}
+}
+
+void Fluid2D::denGradient_bottom(StateVec2D *Uarray, int size_x, int size_y) {
+	int stride = size_x;
+	int N,S,E,W;
+	for (int i = 1; i <= size_x - 2; i++) { // fundo rede principal, ou seja j=0
+		int bottom = i; //i+0*nx
+		int northnorth = i + 2 * stride;
+		N=bottom+stride;
+		E=bottom+1;
+		W=bottom-1;
+		float nC = Uarray[bottom].n();
+		float nE = Uarray[E].n();
+		float nW = Uarray[W].n();
+		float nN = Uarray[N].n();
+		float nNN = Uarray[northnorth].n();
+
+		Uarray[bottom].dxn() = (nE - nW) / (2.0f * dx);
+		Uarray[bottom].dyn() = (-3.0f * nC + 4.0f * nN - nNN) /(2.0f * dy); //backward finite difference
+	}
+}
+
+
+void Fluid2D::denGradient_left(StateVec2D *Uarray, int size_x, int size_y) {
+	int stride = size_x;
+	int N,S,E,W;
+	for (int j = 1; j <= size_y - 2; j++) { //lado esquerdo da rede principal ou seja i=0
+		int left = 0 + j * stride;
+		int easteast = left + 2;
+		N=left+stride;
+		S=left-stride;
+		E=left+1;
+
+		float nC = Uarray[left].n();
+		float nE = Uarray[E].n();
+		float nEE = Uarray[easteast].n();
+		float nN = Uarray[N].n();
+		float nS = Uarray[S].n();
+
+		Uarray[left].dxn() = (-3.0f * nC+ 4.0f * nE - nEE) /(2.0f * dx); //forward difference
+		Uarray[left].dyn() = (nN - nS) / (2.0f * dy); //OK
+	}
+}
+
+
+void Fluid2D::denGradient_right(StateVec2D *Uarray, int size_x, int size_y) {
+	int stride = size_x;
+	int N,S,E,W;
+	for (int j = 1; j <= size_y - 2; j++) { //lado direito da rede principal ou seja i=(size_x-1)
+		int right = (size_x - 1) + j * stride;
+		int westwest = right - 2;
+		N=right+stride;
+		S=right-stride;
+		W=right-1;
+
+		float nC = Uarray[right].n();
+		float nWW = Uarray[westwest].n();
+		float nW = Uarray[W].n();
+		float nN = Uarray[N].n();
+		float nS = Uarray[S].n();
+
+		Uarray[right].dyn() = (nN - nS) / (2.0f * dy); //OK
+		Uarray[right].dxn() = (3.0f * nC- 4.0f * nW + nWW) /(2.0f * dx); //backwar difference
+	}
+}
+
+
+void Fluid2D::denGradient_corners(StateVec2D *Uarray, int size_x, int size_y) {
+	int stride = size_x;
+	int N,S,E,W;
+	int kp;
+// i=0 j=0 forward x forward y
+	kp = 0 + 0 * size_x;
+	float nC = Uarray[kp].n();
+	float nE = Uarray[kp+1].n();
+	float nEE = Uarray[kp+2].n();
+	float nS = Uarray[kp+stride].n();
+	float nSS = Uarray[kp+2*stride].n();
+
+	Uarray[kp].dxn() = (-3.0f * nC + 4.0f * nE - nEE ) / (2.0f * dx);
+	Uarray[kp].dyn() = (-3.0f * nC + 4.0f * nS - nSS ) / (2.0f * dy);
+//-----------------------------------------------------------------------
+// i=(size_x-1) j=0 backward x forward y
+	kp = (size_x - 1) + 0 * size_x;
+	nC = Uarray[kp].n();
+	float nW = Uarray[kp-1].n();
+	float nWW = Uarray[kp-2].n();
+	nS = Uarray[kp+stride].n();
+	nSS = Uarray[kp+2*stride].n();
+
+	Uarray[kp].dxn() = (3.0f * nC - 4.0f * nW + nWW ) / (2.0f * dx);
+	Uarray[kp].dyn() = (-3.0f * nC + 4.0f * nS - nSS ) / (2.0f * dy);
+//-----------------------------------------------------------------------
+
+// i=0 j=(size_y-1) forward x backward y
+	kp = 0 + (size_y - 1) * size_x;
+	nC = Uarray[kp].n();
+	nE = Uarray[kp+1].n();
+	nEE = Uarray[kp+2].n();
+	float nN = Uarray[kp-stride].n();
+	float nNN = Uarray[kp-2*stride].n();
+
+	Uarray[kp].dxn() = (-3.0f * nC + 4.0f * nE - nEE ) / (2.0f * dx);
+	Uarray[kp].dyn() = (3.0f * nC - 4.0f * nN + nNN ) / (2.0f * dy);
+
+//-----------------------------------------------------------------------
+
+// i=(size_x-1) j=(size_y-1) backward x backward y
+	kp = (size_x - 1) + (size_y - 1) * size_x;
+	nC = Uarray[kp].n();
+	nW = Uarray[kp-1].n();
+	nWW = Uarray[kp-2].n();
+	nN = Uarray[kp-stride].n();
+	nNN = Uarray[kp-2*stride].n();
+
+	Uarray[kp].dyn() = (3.0f * nC - 4.0f * nN + nNN ) / (2.0f * dy);
+	Uarray[kp].dxn() = (3.0f * nC - 4.0f * nW + nWW ) / (2.0f * dx);
+}
+
 
 
 void Fluid2D::VelocityXGradient_bulk(StateVec2D *Uarray, int size_x, int size_y) {

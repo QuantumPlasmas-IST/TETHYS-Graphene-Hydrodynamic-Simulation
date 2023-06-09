@@ -66,6 +66,13 @@ using namespace H5;
 		void VelocityYGradient_right(StateVec2D *Uarray, int size_x, int size_y);
 		void VelocityYGradient_corners(StateVec2D *Uarray, int size_x, int size_y);
 
+		void denGradient_bulk(StateVec2D *Uarray, int size_x, int size_y);
+		void denGradient_top(StateVec2D *Uarray, int size_x, int size_y);
+		void denGradient_bottom(StateVec2D *Uarray, int size_x, int size_y);
+		void denGradient_left(StateVec2D *Uarray, int size_x, int size_y);
+		void denGradient_right(StateVec2D *Uarray, int size_x, int size_y);
+		void denGradient_corners(StateVec2D *Uarray, int size_x, int size_y);
+
 	public :
 
 		virtual void CopyFields();
@@ -250,6 +257,7 @@ using namespace H5;
 
 
 		void VelocityGradient(StateVec2D *Uarray, int size_x, int size_y);
+		void denGradient(StateVec2D *Uarray, int size_x, int size_y);
 
 		friend class InitialCondition;
 	};

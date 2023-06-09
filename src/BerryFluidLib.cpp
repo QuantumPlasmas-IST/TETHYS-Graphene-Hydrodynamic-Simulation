@@ -10,17 +10,18 @@
 
 //float theta = .0;
 //float A = .01;
-float elec_charge=1.60217663*pow(10, -19);
-float d0 = 0.001;
-float permitivity=8.85418782*pow(10, -12);
-float gap = 1.60*pow(10, -20); //100meV
-float hbar = 1.05457182*pow(10, -34);
-float chem_pot = 0.1;
+//float elec_charge=1.60217663*pow(10, -19);
+//float d0 = 0.001;
+//float permitivity=8.85418782*pow(10, -12);
+//float gap = 1.60*pow(10, -20); //100meV
+//float hbar = 1.05457182*pow(10, -34);
+//float chem_pot = 0.1;
 
 BerryFluid::BerryFluid(SetUpParameters &input_parameters) : Fluid2D(input_parameters) {
     vel_fer = input_parameters.FermiVelocity ;//fermi_velocity;
     col_freq = input_parameters.CollisionFrequency ;
-    //therm_diff = input_parameters.ThermalDiffusivity; //thermal diffusivity
+    therm_diff = input_parameters.ThermalDiffusivity; //thermal diffusivity
+    cyc_freq = input_parameters.CyclotronFrequency ; //cyclotron_frequency;
     //theta = input_parameters.ElectricFieldAngle; //angle described by the electric field in relation to xx
     //delta = input_parameters.BandGap; //band gap
     //miu = input_parameters.ChemicalPotential
@@ -34,13 +35,6 @@ float BerryFluid::DensityToMass(float density)
 {
     return sqrt(density*density*density);
 }
-
-/*
-void BerryFluid::SetSimulationTime(){
-    float s;
-    s=this->GetVelSnd();
-    this->SetTmax(5.0f+0.02f*s+20.0f/s);
-}*/
 
 
 /*
@@ -75,13 +69,12 @@ float BerryFluid::XMomentumFluxX(StateVec2D U) {
     float px=U.px();
     float mass=DensityToMass(den);
     float Vxy=U.dxvy();
-    float ny=U.dyn();
-    float temp = U.tmp();
+    //float ny=U.dyn();
     //float D = AnomalousStressTensor(temp, chem_pot, gap);
     float D = 0.1;
-    float anomalousXX = px/mass*elec_charge*d0*ny*D/permitivity;
+    //float anomalousXX = px*ny/mass;
 
-    return px * px / mass + vel_fer * vel_fer * mass / 3.0f + 0.5f * sound * sound * den * den + odd_vis*Vxy + anomalousXX;
+    return px * px / mass + vel_fer * vel_fer * mass / 3.0f + 0.5f * sound * sound * den * den + odd_vis*Vxy  /*0*anomalousXX*/;
 }
 
 float BerryFluid::XMomentumFluxY(StateVec2D U) {
@@ -90,13 +83,12 @@ float BerryFluid::XMomentumFluxY(StateVec2D U) {
     float py=U.py();
     float mass=DensityToMass(den);
     float Vyy=U.dyvy();
-    float nx=U.dxn();
-    float temp = U.tmp();
+    //float nx=U.dxn();
     //float D = AnomalousStressTensor(temp, chem_pot, gap);
-    float D = 0.1;
-    float anomalousXY = -px/mass*elec_charge*d0*nx*D/permitivity;
+    float D = 0.01;
+    //float anomalousXY = -px*nx/mass;
 
-    return px * py / mass + odd_vis*Vyy + anomalousXY;
+    return px * py / mass + odd_vis*Vyy  /*anomalousXY*0*/;
 }
 
 float BerryFluid::YMomentumFluxX(StateVec2D U) {
@@ -105,13 +97,12 @@ float BerryFluid::YMomentumFluxX(StateVec2D U) {
     float py=U.py();
     float Vxx=U.dxvx();
     float mass=DensityToMass(den);
-    float ny=U.dyn();
-    float temp = U.tmp();
+    //float ny=U.dyn();
     //float D = AnomalousStressTensor(temp, chem_pot, gap);
-    float D = 0.1;
-    float anomalousYX = py/mass*elec_charge*d0*ny*D/permitivity;
+    float D = 0.01;
+    //float anomalousYX = py*ny/mass;
 
-    return px * py / mass - odd_vis*Vxx + anomalousYX;
+    return px * py / mass - odd_vis*Vxx  /*anomalousYX*0*/;
 }
 
 float BerryFluid::YMomentumFluxY(StateVec2D U) {
@@ -120,13 +111,12 @@ float BerryFluid::YMomentumFluxY(StateVec2D U) {
     float py=U.py();
     float mass=DensityToMass(den);
     float Vyx=U.dyvx();
-    float nx=U.dxn();
-    float temp = U.tmp();
+    //float nx=U.dxn();
     //float D = AnomalousStressTensor(temp, chem_pot, gap);
-    float D = 0.1;
-    float anomalousYY = -py/mass*elec_charge*d0*nx*D/permitivity;
+    float D = 0.01;
+    //float anomalousYY = -py*nx/mass;
 
-    return py * py / mass + vel_fer * vel_fer * mass / 3.0f + 0.5f * sound * sound * den * den - odd_vis*Vyx + anomalousYY;
+    return py * py / mass + vel_fer * vel_fer * mass / 3.0f + 0.5f * sound * sound * den * den - odd_vis*Vyx  /*anomalousYY*0*/;
 }
 
 BerryFluid::~BerryFluid(){
