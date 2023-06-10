@@ -36,20 +36,28 @@ void Edge::set_Edge(){
             for(int di = -1; di <= 1; di++){
                 for(int dj = -1; dj <= 1; dj++){
 //                    cout << "D.dom[" << k + di + size_x*dj << "] = " << D.dom[k + di + size_x*dj] << endl;
-                    if( D.dom[k + di + size_x*dj] == 1){
-//                        cout << "edgctr =" << edgctr << endl;
-//                        cout << "edgint =" << edgint[edgctr] << endl;
-                        if(k == 79800){
-                            cout << "D.dom[" << k + di + size_x*dj << "] = " << D.dom[k + di + size_x*dj] << endl;
+                    if( ((k + di + size_x*dj) >= 0) && ((k + di + size_x*dj) <= (size_x*size_y-1)) ){
+                        if( D.dom[k + di + size_x*dj] == 1){
+    //                        cout << "edgctr =" << edgctr << endl;
+    //                        cout << "edgint =" << edgint[edgctr] << endl;
+                            if(k == 79800){
+                                cout << "D.dom[" << k + di + size_x*dj << "] = " << D.dom[k + di + size_x*dj] << endl;
+                            }
+                            edg[k] = 1;
+                            if(k != k_ant){
+                                edgint.push_back(k);
+                                k_ant = k;
+                            }
+                            
+                        //    edgint[edgctr]=k;
+                        //    edgctr++; 
                         }
+                    } else{
                         edg[k] = 1;
                         if(k != k_ant){
                             edgint.push_back(k);
                             k_ant = k;
                         }
-                        
-                    //    edgint[edgctr]=k;
-                    //    edgctr++; 
                     }
                 }
             }

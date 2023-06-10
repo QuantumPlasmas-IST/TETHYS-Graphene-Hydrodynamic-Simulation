@@ -433,8 +433,8 @@ void Fluid2D::WriteFluidFile(float t){
 	int pos_ini = j*Nx;
 //	cout << "pos_end " << Nx -1 + j*Nx << endl;
 //	cout << "values: " << Umain[pos_ini].n() << " " << Umain[pos_end].n() << " " << Umain[pos_ini].px() << " " << Umain[pos_end].px() << endl;
-		if(t >= 0.00000 && t <= 0.00003){
-			cout << "t = " << t << endl;
+		//if(t >= 0.00000 && t <= 0.00003){
+		//	cout << "t = " << t << endl;
 		/*	for(int i = 0; i <= pos_end/(Nx-1); i++){
 				cout << "Umain[" << pos_end - i*(Nx-1) << "].px = " << Umain[pos_end-i*(Nx-1)].px() << "   ";
 				cout << "Umain[" << pos_end - i*(Nx-1) << "].n = " << Umain[pos_end-i*(Nx-1)].n() << endl;
@@ -449,7 +449,7 @@ void Fluid2D::WriteFluidFile(float t){
 			//for(int i = 0; i < Ny; i++){
 				//cout << "Umain[" << i*(Nx-1) + 1<< "].px = " << Umain[i*(Nx-1)+1].px() << endl;
 			//}
-		}
+		//}
 		
 	if(!isfinite(Umain[pos_ini].n()) || !isfinite(Umain[pos_end].n()) || !isfinite(Umain[pos_ini].px()) || !isfinite(Umain[pos_end].px())){
 		cerr << "ERROR: numerical method failed to converge" <<"\nExiting"<< endl;
