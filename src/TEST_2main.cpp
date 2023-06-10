@@ -21,11 +21,11 @@
 using namespace std;
 
 float ff_top(float x){
-	return 0.12*x;
+	return 0.012*x;
 }
 
 float ff_bottom(float x){
-	return 0.12*x;
+	return 0.012*x;
 }
 
 int main(int argc, char **argv){
@@ -36,18 +36,22 @@ int main(int argc, char **argv){
 	float t=0.0;
 	float dt;		// time step
 
-	int NX = 400;
-    int NY = 200;
+	int NX = 401;
+    int NY = 201;
 	Geometry Geom(NX,NY);
 	Geom.fronteira.D.set_Domain(ff_top,ff_bottom);
     Geom.fronteira.set_Edge();
 	
 	Geom.dominio.dom = Geom.fronteira.D.dom;
-	for(int i = 0; i < Geom.fronteira.edgint.size(); i++){
-		if(Geom.dominio.dom[i] == false){
+/*	cout << "evaluating" << endl;
+	for(int i = 0; i < Geom.fronteira.D.dom.size(); i++){
+		if(Geom.fronteira.edg[i] == true){
+			if(Geom.fronteira.edg[i-1] == false && Geom.fronteira.edg[i+1] == false && Geom.fronteira.edg[i-NX] == false && Geom.fronteira.edg[i+NX] == false ){
+				cout << "wait wait wait" << endl;
+			}
 			//cout << "edgint[" << i << "] = " << Geom.fronteira.edgint[i] << "      "; 
 		}
-	}
+	}*/
 
 //	cout << "edgint size  " << Geom.fronteira.edgint.size() << endl;
 
@@ -97,8 +101,13 @@ int main(int argc, char **argv){
 
 	//graph.InitialCondRand();
 
-InitialCondition::Rand(graph);
+//InitialCondition::Rand(graph);
+//InitialCondition::InitialCondUniform(graph);
+InitialCondition::InitialCondGeneral(graph, [](float x,float y) {return 1.0f;},[](float x,float y) { return 0.005f; },[](float x,float y) { return 0.0f; });
 
+/*for(int k = 0; k < 201*401; k++){
+	cout << graph.Umain[k].px() << endl;
+}*/
 //	graph.InitialCondTest();
 	/*................................................................*/
 
@@ -107,25 +116,42 @@ InitialCondition::Rand(graph);
 	//BoundaryCondition::SetBottomEdge(graph);
 	//BoundaryCondition::SetTopEdge(graph);
 	/*................................................................*/
-
+	
 //	DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
 	DirichletBoundaryCondition::XFreeLeft(graph);
-	DirichletBoundaryCondition::XFreeRight(graph);
-	DirichletBoundaryCondition::YClosedFreeSlip(graph);
-
+	DirichletBoundaryCondition::XFreeRight(graph, &Geom);
+//	DirichletBoundaryCondition::YClosedFreeSlip(graph);
+	DirichletBoundaryCondition::YClosedNoSlipG(graph, &Geom);
 //	BoundaryCondition::XPeriodic(graph);
 //	BoundaryCondition::YPeriodic(graph);
-
 
 	cout << "\033[1;7;5;33m Program Running \033[0m"<<endl;
 	while (t <= graph.GetTmax() ){
 		int percentage=100*GrapheneFluid2D::TimeStepCounter/(graph.GetTmax()/dt);
 		cout << percentage<<"%\033[?25l"; //prints the percentage of simulation completed
-		cout << " t = " << t << endl;
+//		cout << " t = " << t << endl;
 		t += dt;
 		GrapheneFluid2D::TimeStepCounter++;
-		
 		graph.Richtmyer(&Geom);
+/*		if(t >= 0 && t <= 0.000003){
+			bool debug_flag = 0;
+			float fails[201*401];
+			cout << "debugging" << endl;
+			for(int k = 0; k < 201*401; k++){
+				//cout << graph.Umain[k].px() << endl;
+				if(!isfinite(graph.Umain[k].px()) || !isfinite(graph.Umain[k].n())){
+					cout << "oops - Umain[" << k << "] = " << graph.Umain[k].n() << "      ";
+					cout << k << "       ";
+					debug_flag = 1;
+				}
+			}
+			cout << endl;
+			if(debug_flag == 1){
+				cout << "oops"<< endl;
+			}else{
+				cout << "seems okay" << endl;
+			}
+		}*/
 //		graph.Richtmyer();
 		/*+++++++++++++++++++++++++++++++++++++*
 		 * Change the boundary conditions here *
@@ -154,6 +180,21 @@ InitialCondition::Rand(graph);
 			DirichletBoundaryCondition::YClosedNoSlipG(graph, &Geom);
 			//DirichletBoundaryCondition::YClosedFreeSlip(graph);
 		}
+
+/*		if(t >= 0.000185714){
+			cout << "values debugging" << endl;
+			for (int k = 0; k<NX*NY-NX-NY; k++){
+				//cout << graph.Umain[k] << " ";
+				if(!isfinite(graph.Umain[k].px())){
+					for(int j = 0; j < 3; j++){
+						cout << "Umain[" << k - NX - 1 + j << "].px = " << graph.Umain[k/NX - NX - 1 + j].px() << endl;
+						cout << "Umain[" << k - 1 + j<< "].px = " << graph.Umain[k/NX - 1 + j].px() << endl;
+						cout << "Umain[" << k + NX - 1 + j<< "].px = " << graph.Umain[k/NX + NX - 1 + j].px() << endl;  	
+					}
+				}
+			}
+		}*/
+
 		//Record full hdf5 data
 		if (parameters.SaveMode  && graph.Snapshot()) {
 			graph.SaveSnapShot();

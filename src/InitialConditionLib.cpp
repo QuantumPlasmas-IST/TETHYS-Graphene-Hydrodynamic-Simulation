@@ -111,6 +111,15 @@ void InitialCondition::InitialCondUniform(DiracGraphene2D &fluid_class){
 	}
 }
 
+void InitialCondition::InitialCondUniform(DiracGraphene2D &fluid_class, Geometry *Geom){
+	for (int c = 0; c < fluid_class.Nx*fluid_class.Ny; c++ ){
+		if(Geom->dominio.dom[c] == 1 || Geom->fronteira.edg[c] == 1){
+			fluid_class.Umain[c].n()=1.0f;
+			fluid_class.HoleUmain[c].n()=1.0f;
+		}
+	}
+}
+
 void InitialCondition::InitialCondTest(Fluid1D &fluid_class) {
 	for (int i = 0; i < fluid_class.Nx; i++ ){
 		fluid_class.Umain[i].v()= 1.0f/(1.0f+5.0f* pow(cosh((i*fluid_class.dx-0.5f)*12.0f),2.f));
