@@ -39,6 +39,7 @@ class  DirichletBoundaryCondition : public BoundaryCondition
     static void MassFluxX(Fluid2D& fluid_class, float left, float right, float top, float bottom);         ///< Fixed mass density flux x component at boundary px(x=0)=left, px(x=L)=right, px(y=0)=bottom, px(y=W)=top
 	static void MassFluxY(Fluid2D& fluid_class, float left, float right, float top, float bottom);         ///< Fixed mass density flux y component at boundary py(x=0)=left, py(x=L)=right, py(y=0)=bottom, py(y=W)=top
 	static void Jet(Fluid2D& fluid_class, float left, float left_width, float right, float right_width);   ///< Jet configuration i.e. fixed flux x component at a portion of given with around the center of the edges x=0 and x=L. Useful to study turbulence onset
+	static void JetLeft(Fluid2D &fluid_class, float left, float left_width);
 	static void DensityRight(Fluid2D& fluid_class, float right);       ///< Fixed density at boundary n(x=L)=right
 	static void MassFluxXRight(Fluid2D& fluid_class, float right);     ///< Fixed mass density flux X component at boundary px(x=L)=right
 	static void MassFluxYRight(Fluid2D& fluid_class, float right);     ///< Fixed mass density flux Y component at boundary py(x=L)=right

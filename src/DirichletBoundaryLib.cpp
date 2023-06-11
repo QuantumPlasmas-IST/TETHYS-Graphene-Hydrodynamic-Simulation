@@ -119,6 +119,19 @@ void DirichletBoundaryCondition::Jet(Fluid2D &fluid_class, float left, float lef
 	}
 }
 
+void DirichletBoundaryCondition::JetLeft(Fluid2D &fluid_class, float left, float left_width) {
+	int nx=fluid_class.SizeX();
+	int ny=fluid_class.SizeY();
+	int n_width_left= static_cast<int>(static_cast<float>(ny) * left_width);
+	for (int j=0; j < ny; j++){
+		if( j>=(ny-n_width_left)/2 && j<= (ny+n_width_left)/2){
+			fluid_class.Umain[0 + j * nx].px() = left;
+		} else{
+			fluid_class.Umain[0 + j * nx].px() =0.0f;
+		}
+	}
+}
+
 void DirichletBoundaryCondition::DensityRight(Fluid2D &fluid_class, float right) {
 	int nx=fluid_class.SizeX();
 	int ny=fluid_class.SizeY();

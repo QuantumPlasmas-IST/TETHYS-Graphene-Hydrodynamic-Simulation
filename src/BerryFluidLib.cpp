@@ -71,7 +71,7 @@ float BerryFluid::XMomentumFluxX(StateVec2D U) {
     float Vxy=U.dxvy();
     float ny=U.dyn();
     //float D = AnomalousStressTensor(temp, chem_pot, gap);
-    float D = 0.1;
+    float D = 0.8f;
     float anomalousXX = px*ny/mass;
 
     return px * px / mass + vel_fer * vel_fer * mass / 3.0f + 0.5f * sound * sound * den * den + odd_vis*Vxy + anomalousXX*D;
@@ -85,7 +85,7 @@ float BerryFluid::XMomentumFluxY(StateVec2D U) {
     float Vyy=U.dyvy();
     float nx=U.dxn();
     //float D = AnomalousStressTensor(temp, chem_pot, gap);
-    float D = 0.01;
+    float D = 0.8f;
     float anomalousXY = -px*nx/mass;
 
     return px * py / mass + odd_vis*Vyy  +anomalousXY*D;
@@ -99,7 +99,7 @@ float BerryFluid::YMomentumFluxX(StateVec2D U) {
     float mass=DensityToMass(den);
     float ny=U.dyn();
     //float D = AnomalousStressTensor(temp, chem_pot, gap);
-    float D = 0.01;
+    float D = 0.8f;
     float anomalousYX = py*ny/mass;
 
     return px * py / mass - odd_vis*Vxx  +anomalousYX*D;
@@ -113,7 +113,7 @@ float BerryFluid::YMomentumFluxY(StateVec2D U) {
     float Vyx=U.dyvx();
     float nx=U.dxn();
     //float D = AnomalousStressTensor(temp, chem_pot, gap);
-    float D = 0.01;
+    float D = 0.8f;
     float anomalousYY = -py*nx/mass;
 
     return py * py / mass + vel_fer * vel_fer * mass / 3.0f + 0.5f * sound * sound * den * den - odd_vis*Vyx  +anomalousYY*D;
