@@ -21,11 +21,11 @@
 using namespace std;
 
 float ff_top(float x){
-	return 0.012*x;
+	return 0.125*x;
 }
 
 float ff_bottom(float x){
-	return 0.012*x;
+	return 0.125*x;
 }
 
 int main(int argc, char **argv){
@@ -126,9 +126,9 @@ InitialCondition::InitialCondGeneral(graph, [](float x,float y) {return 1.0f;},[
 //	BoundaryCondition::YPeriodic(graph);
 
 	cout << "\033[1;7;5;33m Program Running \033[0m"<<endl;
-	while (t <= graph.GetTmax() ){
+	while (t <= graph.GetTmax()){
 		int percentage=100*GrapheneFluid2D::TimeStepCounter/(graph.GetTmax()/dt);
-		cout << percentage<<"%\033[?25l"; //prints the percentage of simulation completed
+		cout << percentage<<"%\033[?25l" << endl; //prints the percentage of simulation completed
 //		cout << " t = " << t << endl;
 		t += dt;
 		GrapheneFluid2D::TimeStepCounter++;
