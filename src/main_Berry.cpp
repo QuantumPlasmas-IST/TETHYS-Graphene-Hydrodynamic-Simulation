@@ -68,12 +68,18 @@ int main(int argc, char **argv){
 	/*...............Initialization...................................*/
 	InitialCondition::InitialCondGeneral(graph,
 										 [](float x,float y) { return 1.0f+0.03f*exp(-1.0f*((x-.5)*(x-.5)+(y-.5)*(y-.5))/0.02f); },
-										 [](float x,float y) { return 0.0f; },
+										 [](float x,float y) { return .0f; },
 										 [](float x,float y) { return 0.0f; });
 	/*................................................................*/
 
-
 	BoundaryCondition::XFree(graph);
+	//DirichletBoundaryCondition::DensityLeft(graph,1.2f);
+	//DirichletBoundaryCondition::MassFluxXLeft(graph,.1f);
+	//DirichletBoundaryCondition::MassFluxYLeft(graph,0.0f);
+	//DirichletBoundaryCondition::DensityRight(graph,0.8f);
+	//DirichletBoundaryCondition::MassFluxXRight(graph,.1f);
+	//DirichletBoundaryCondition::MassFluxYRight(graph,0.0f);
+	//BoundaryCondition::XFreeRight(graph);
 	BoundaryCondition::YFree(graph);
 
 
@@ -94,6 +100,13 @@ int main(int argc, char **argv){
 		 * Change the boundary conditions here *
 		 *+++++++++++++++++++++++++++++++++++++*/
 		BoundaryCondition::XFree(graph);
+		//DirichletBoundaryCondition::DensityLeft(graph,1.2f);
+		//DirichletBoundaryCondition::MassFluxXLeft(graph,.1f);
+		//DirichletBoundaryCondition::MassFluxYLeft(graph,0.0f);
+		//DirichletBoundaryCondition::DensityRight(graph,0.8f);
+		//DirichletBoundaryCondition::MassFluxXRight(graph,.1f);
+		//DirichletBoundaryCondition::MassFluxYRight(graph,0.0f);
+		//BoundaryCondition::XFreeRight(graph);
 		BoundaryCondition::YFree(graph);
 
 
@@ -106,6 +119,13 @@ int main(int argc, char **argv){
 			// * Change the boundary conditions here *
 			// *+++++++++++++++++++++++++++++++++++++
 			BoundaryCondition::XFree(graph);
+			//DirichletBoundaryCondition::DensityLeft(graph,1.2f);
+			//DirichletBoundaryCondition::MassFluxXLeft(graph,.1f);
+			//DirichletBoundaryCondition::MassFluxYLeft(graph,0.0f);
+			//DirichletBoundaryCondition::DensityRight(graph,0.8f);
+			//DirichletBoundaryCondition::MassFluxXRight(graph,.1f);
+			//DirichletBoundaryCondition::MassFluxYRight(graph,0.0f);
+			//BoundaryCondition::XFreeRight(graph);
 			BoundaryCondition::YFree(graph);
 		}
 		//Record full hdf5 data
