@@ -48,7 +48,7 @@ int main(int argc, char **argv){
 	//graph.SetSound(variationS);
 	graph.SetSound();
 	//graph.SetSimulationTime();
-	graph.SetTmax(.1f);
+	graph.SetTmax(4.f);
 
 	/*................................................................*/
 
@@ -67,21 +67,23 @@ int main(int argc, char **argv){
 
 	/*...............Initialization...................................*/
 	InitialCondition::InitialCondGeneral(graph,
-										 [](float x,float y) { return 1.0f+0.03f*exp(-1.0f*((x-.5)*(x-.5)+(y-.5)*(y-.5))/0.02f); },
-										 [](float x,float y) { return .0f; },
+										 /*[](float x,float y) { return 1.0f+0.03f*exp(-1.0f*((x-.5)*(x-.5)+(y-.5)*(y-.5))/0.02f); },*/
+										 [](float x,float y) { return 1.0f; },
+										 [](float x,float y) { return 0.0f; },
 										 [](float x,float y) { return 0.0f; });
 	/*................................................................*/
 
-	BoundaryCondition::XFree(graph);
-	//DirichletBoundaryCondition::DensityLeft(graph,1.2f);
-	//DirichletBoundaryCondition::MassFluxXLeft(graph,.1f);
+	//BoundaryCondition::XFree(graph);
+	//DirichletBoundaryCondition::DensityLeft(graph,1.f);
+	//DirichletBoundaryCondition::MassFluxXLeft(graph,.2f);
 	//DirichletBoundaryCondition::MassFluxYLeft(graph,0.0f);
 	//DirichletBoundaryCondition::DensityRight(graph,0.8f);
 	//DirichletBoundaryCondition::MassFluxXRight(graph,.1f);
 	//DirichletBoundaryCondition::MassFluxYRight(graph,0.0f);
-	//BoundaryCondition::XFreeRight(graph);
+	DirichletBoundaryCondition::JetLeft(graph,1.5f,0.1f);
+	BoundaryCondition::XFreeRight(graph);
 	BoundaryCondition::YFree(graph);
-
+	//DirichletBoundaryCondition::DensityRight(graph,.56f);
 
 	cout << "\033[1;7;5;33m Program Running \033[0m"<<endl;
 	while (t <= graph.GetTmax() ){
@@ -99,15 +101,17 @@ int main(int argc, char **argv){
 		/*+++++++++++++++++++++++++++++++++++++*
 		 * Change the boundary conditions here *
 		 *+++++++++++++++++++++++++++++++++++++*/
-		BoundaryCondition::XFree(graph);
-		//DirichletBoundaryCondition::DensityLeft(graph,1.2f);
-		//DirichletBoundaryCondition::MassFluxXLeft(graph,.1f);
+		//BoundaryCondition::XFree(graph);
+		//DirichletBoundaryCondition::DensityLeft(graph,1.f);
+		//DirichletBoundaryCondition::MassFluxXLeft(graph,.2f);
 		//DirichletBoundaryCondition::MassFluxYLeft(graph,0.0f);
 		//DirichletBoundaryCondition::DensityRight(graph,0.8f);
 		//DirichletBoundaryCondition::MassFluxXRight(graph,.1f);
 		//DirichletBoundaryCondition::MassFluxYRight(graph,0.0f);
-		//BoundaryCondition::XFreeRight(graph);
+		DirichletBoundaryCondition::JetLeft(graph,1.5f,0.1f);
+		BoundaryCondition::XFreeRight(graph);
 		BoundaryCondition::YFree(graph);
+		//DirichletBoundaryCondition::DensityRight(graph,.56f);
 
 
 	//	if(graph.GetThermDiff()!=0.0){
@@ -118,15 +122,17 @@ int main(int argc, char **argv){
 			//*+++++++++++++++++++++++++++++++++++++*
 			// * Change the boundary conditions here *
 			// *+++++++++++++++++++++++++++++++++++++
-			BoundaryCondition::XFree(graph);
-			//DirichletBoundaryCondition::DensityLeft(graph,1.2f);
-			//DirichletBoundaryCondition::MassFluxXLeft(graph,.1f);
+			//BoundaryCondition::XFree(graph);
+			//DirichletBoundaryCondition::DensityLeft(graph,1.f);
+			//DirichletBoundaryCondition::MassFluxXLeft(graph,.2f);
 			//DirichletBoundaryCondition::MassFluxYLeft(graph,0.0f);
 			//DirichletBoundaryCondition::DensityRight(graph,0.8f);
 			//DirichletBoundaryCondition::MassFluxXRight(graph,.1f);
 			//DirichletBoundaryCondition::MassFluxYRight(graph,0.0f);
-			//BoundaryCondition::XFreeRight(graph);
+			DirichletBoundaryCondition::JetLeft(graph,1.5f,0.1f);
+			BoundaryCondition::XFreeRight(graph);
 			BoundaryCondition::YFree(graph);
+			//DirichletBoundaryCondition::DensityRight(graph,.56f);
 		}
 		//Record full hdf5 data
 		if (parameters.SaveMode  && graph.Snapshot()) {

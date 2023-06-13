@@ -408,8 +408,9 @@ void Fluid2D::SaveSnapShot() {
 	hsize_t dim_atr[1] = { 1 };
 	DataSpace atr_dataspace = DataSpace (1, dim_atr );
 
-	int points_per_period = static_cast<int>((2.0 * MAT_PI / this->RealFreq()) / dt);
-	snapshot_step = points_per_period / snapshot_per_period;
+	//int points_per_period = static_cast<int>((2.0 * MAT_PI / this->RealFreq()) / dt);
+	//snapshot_step = points_per_period / snapshot_per_period;
+	snapshot_step =60;
 
 	this->CopyFields();
 
