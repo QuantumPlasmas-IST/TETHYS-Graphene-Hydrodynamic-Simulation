@@ -20,12 +20,16 @@
 
 using namespace std;
 
+//Functions of the borders
+// Pay atention to the oppening, should have at least 100 points between both
 float ff_top(float x){
-	return 0.125*x;
+	//return 0.125*x;
+	return 50*sin(x*MAT_PI/400); //nozzle equation
 }
 
 float ff_bottom(float x){
-	return 0.125*x;
+	//return 0.125*x;
+	return 50*sin(x*MAT_PI/400);
 }
 
 int main(int argc, char **argv){
@@ -103,7 +107,7 @@ int main(int argc, char **argv){
 
 //InitialCondition::Rand(graph);
 //InitialCondition::InitialCondUniform(graph);
-InitialCondition::InitialCondGeneral(graph, [](float x,float y) {return 1.0f;},[](float x,float y) { return 0.005f; },[](float x,float y) { return 0.0f; });
+InitialCondition::InitialCondGeneral(graph, [](float x,float y) {return 1.0f;},[](float x,float y) { return 0.005f; },[](float x,float y) { return 0.0f; }, &Geom);
 
 /*for(int k = 0; k < 201*401; k++){
 	cout << graph.Umain[k].px() << endl;
@@ -126,9 +130,9 @@ InitialCondition::InitialCondGeneral(graph, [](float x,float y) {return 1.0f;},[
 //	BoundaryCondition::YPeriodic(graph);
 
 	cout << "\033[1;7;5;33m Program Running \033[0m"<<endl;
-	while (t <= graph.GetTmax()){
-		int percentage=100*GrapheneFluid2D::TimeStepCounter/(graph.GetTmax()/dt);
-		cout << percentage<<"%\033[?25l" << endl; //prints the percentage of simulation completed
+	while (t <= graph.GetTmax()/100){
+		int percentage=100*GrapheneFluid2D::TimeStepCounter/(graph.GetTmax()/(100*dt));
+		cout << percentage<<"%\033[?25l"<<std::flush; //prints the percentage of simulation completed
 //		cout << " t = " << t << endl;
 		t += dt;
 		GrapheneFluid2D::TimeStepCounter++;

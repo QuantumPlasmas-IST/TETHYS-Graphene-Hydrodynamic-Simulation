@@ -83,7 +83,26 @@ void InitialCondition::InitialCondGeneral(Fluid2D &fluid_class, function<float(f
 	}
 }
 
-
+void InitialCondition::InitialCondGeneral(Fluid2D &fluid_class, function<float(float, float)> fden,function<float(float, float)> fvx, function<float(float, float)> fvy, Geometry *Geom) {
+	float x,y;
+	for (int i = 0; i < fluid_class.Nx; i++ ){
+		for (int j=0; j<fluid_class.Ny; j++){
+			if( (Geom->dominio.dom[i + j * fluid_class.Nx] == 1) || (Geom->fronteira.edg[i + j * fluid_class.Nx] == 1) ){
+				x=i*fluid_class.dx;
+				y=j*fluid_class.dy;
+				fluid_class.Umain[i + j * fluid_class.Nx].n() = fden(x,y);
+				fluid_class.Umain[i + j * fluid_class.Nx].px() = fvx(x,y);
+				fluid_class.Umain[i + j * fluid_class.Nx].py() = fvy(x,y);
+			}else{
+				x=i*fluid_class.dx;
+				y=j*fluid_class.dy;
+				fluid_class.Umain[i + j * fluid_class.Nx].n() = fden(x,y);
+				fluid_class.Umain[i + j * fluid_class.Nx].px() = 0;
+				fluid_class.Umain[i + j * fluid_class.Nx].py() = 0;
+			}
+		}
+	}
+}
 
 void InitialCondition::InitialCondPointDen(DiracGraphene2D &fluid_class){
 	for (int c = 0; c < fluid_class.Nx*fluid_class.Ny; c++ ){

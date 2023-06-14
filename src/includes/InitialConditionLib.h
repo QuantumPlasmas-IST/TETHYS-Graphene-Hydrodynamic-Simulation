@@ -24,6 +24,7 @@ public:
 	static void InitialCondUniform(DiracGraphene2D &fluid_class);
 	static void InitialCondUniform(DiracGraphene2D &fluid_class, Geometry *Geom);
 	static void InitialCondGeneral(Fluid2D& fluid_class, function<float(float, float)> fden, function<float(float, float)> fvx, function<float(float, float)> fvy);
+	static void InitialCondGeneral(Fluid2D& fluid_class, function<float(float, float)> fden, function<float(float, float)> fvx, function<float(float, float)> fvy, Geometry *Geom);
 
 	static void InitialCondTest(Fluid1D& fluid_class);     ///< Initial condition for testing and debugging
 	static void InitialCondGeneral(Fluid1D& fluid_class,function<float(float)> fden, function<float(float)> fvx);
