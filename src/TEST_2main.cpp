@@ -24,12 +24,12 @@ using namespace std;
 // Pay atention to the oppening, should have at least 100 points between both
 float ff_top(float x){
 	//return 0.125*x;
-	return 50*sin(x*MAT_PI/400); //nozzle equation
+	return 40*sin(x*MAT_PI/400); //nozzle equation
 }
 
 float ff_bottom(float x){
 	//return 0.125*x;
-	return 50*sin(x*MAT_PI/400);
+	return 40*sin(x*MAT_PI/400);
 }
 
 int main(int argc, char **argv){
@@ -122,7 +122,9 @@ InitialCondition::InitialCondGeneral(graph, [](float x,float y) {return 1.0f;},[
 	/*................................................................*/
 	
 //	DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
-	DirichletBoundaryCondition::XFreeLeft(graph);
+//	DirichletBoundaryCondition::XFreeLeft(graph);
+//	DirichletBoundaryCondition::MassFluxXLeft(graph,1.0f);
+	DirichletBoundaryCondition::Jet(graph,1.0f,50.0f,0.0f,0.0f);
 	DirichletBoundaryCondition::XFreeRight(graph, &Geom);
 //	DirichletBoundaryCondition::YClosedFreeSlip(graph);
 	DirichletBoundaryCondition::YClosedNoSlipG(graph, &Geom);
@@ -130,8 +132,8 @@ InitialCondition::InitialCondGeneral(graph, [](float x,float y) {return 1.0f;},[
 //	BoundaryCondition::YPeriodic(graph);
 
 	cout << "\033[1;7;5;33m Program Running \033[0m"<<endl;
-	while (t <= graph.GetTmax()/100){
-		int percentage=100*GrapheneFluid2D::TimeStepCounter/(graph.GetTmax()/(100*dt));
+	while (t <= graph.GetTmax()/50){
+		int percentage=100*GrapheneFluid2D::TimeStepCounter/(graph.GetTmax()/(50*dt));
 		cout << percentage<<"%\033[?25l"<<std::flush; //prints the percentage of simulation completed
 //		cout << " t = " << t << endl;
 		t += dt;
