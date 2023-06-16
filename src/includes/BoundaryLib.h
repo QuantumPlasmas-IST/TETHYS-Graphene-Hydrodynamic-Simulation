@@ -66,6 +66,7 @@ class BoundaryCondition {
 		static void YClosedNoSlipG(Fluid2D& fluid_class, Geometry *Geom);   ///< zero flux across y=0 and y=W and zero tangent velocity Vx=0, taken geometry into account
 
 		static void XFreeLeft(Fluid2D &fluid_class); ///< open boundaries at x=0 for all variables
+		static void XFreeLeft(Fluid2D &fluid_class, Geometry *Geom); ///< open boundaries at x=0 for all variables
 		static void XFreeRight(Fluid2D &fluid_class); ///< open boundaries at x=L for all variables
 		static void XFreeRight(Fluid2D &fluid_class, Geometry *Geom); ///< open boundaries at x=L for all variables, taken geometry into account
 		static void YFreeTop(Fluid2D &fluid_class); ///< open boundaries at y=W for all variables

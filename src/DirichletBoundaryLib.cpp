@@ -159,6 +159,16 @@ void DirichletBoundaryCondition::MassFluxXLeft(Fluid2D &fluid_class, float left)
 	}
 }
 
+void DirichletBoundaryCondition::MassFluxXLeft(Fluid2D &fluid_class, float left, Geometry *Geom) {
+	int nx=fluid_class.SizeX();
+	int ny=fluid_class.SizeY();
+	for (int j=0; j < ny; j++){
+		if(Geom->dominio.dom[j*nx]){
+			fluid_class.Umain[j * nx].px() = left;
+		}
+	}
+}
+
 void DirichletBoundaryCondition::MassFluxYLeft(Fluid2D &fluid_class, float left) {
 	int nx=fluid_class.SizeX();
 	int ny=fluid_class.SizeY();

@@ -88,6 +88,17 @@ void BoundaryCondition::XFreeLeft(Fluid2D &fluid_class) {
 		fluid_class.Umain[left] = fluid_class.Umain[left +1];
 	}
 }
+void BoundaryCondition::XFreeLeft(Fluid2D &fluid_class, Geometry *Geom) {
+	int nx=fluid_class.SizeX();
+	int ny=fluid_class.SizeY();
+	for(int j=0; j < ny; j++){
+		if(Geom->dominio.dom[j*nx]){
+			int left;
+			left= 0 + j * nx;
+			fluid_class.Umain[left] = fluid_class.Umain[left +1];
+		}
+	}
+}
 void BoundaryCondition::XFreeRight(Fluid2D &fluid_class) {
 	int nx=fluid_class.SizeX();
 	int ny=fluid_class.SizeY();

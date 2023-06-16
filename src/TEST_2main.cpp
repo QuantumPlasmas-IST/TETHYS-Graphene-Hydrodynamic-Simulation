@@ -25,11 +25,13 @@ using namespace std;
 float ff_top(float x){
 	//return 0.125*x;
 	return 40*sin(x*MAT_PI/400); //nozzle equation
+	//return 0;
 }
 
 float ff_bottom(float x){
 	//return 0.125*x;
 	return 40*sin(x*MAT_PI/400);
+	//return 0;
 }
 
 int main(int argc, char **argv){
@@ -123,17 +125,18 @@ InitialCondition::InitialCondGeneral(graph, [](float x,float y) {return 1.0f;},[
 	
 //	DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
 //	DirichletBoundaryCondition::XFreeLeft(graph);
-//	DirichletBoundaryCondition::MassFluxXLeft(graph,1.0f);
-	DirichletBoundaryCondition::Jet(graph,1.0f,50.0f,0.0f,0.0f);
+	DirichletBoundaryCondition::MassFluxXLeft(graph,15.0f,&Geom);
+//	DirichletBoundaryCondition::Jet(graph,1.0f,50.0f,0.0f,0.0f);
 	DirichletBoundaryCondition::XFreeRight(graph, &Geom);
 //	DirichletBoundaryCondition::YClosedFreeSlip(graph);
 	DirichletBoundaryCondition::YClosedNoSlipG(graph, &Geom);
 //	BoundaryCondition::XPeriodic(graph);
 //	BoundaryCondition::YPeriodic(graph);
 
+
 	cout << "\033[1;7;5;33m Program Running \033[0m"<<endl;
-	while (t <= graph.GetTmax()/50){
-		int percentage=100*GrapheneFluid2D::TimeStepCounter/(graph.GetTmax()/(50*dt));
+	while (t <= graph.GetTmax()){
+		int percentage=100*GrapheneFluid2D::TimeStepCounter/(graph.GetTmax()/(dt));
 		cout << percentage<<"%\033[?25l"<<std::flush; //prints the percentage of simulation completed
 //		cout << " t = " << t << endl;
 		t += dt;
@@ -163,7 +166,7 @@ InitialCondition::InitialCondGeneral(graph, [](float x,float y) {return 1.0f;},[
 		 * Change the boundary conditions here *
 		 *+++++++++++++++++++++++++++++++++++++*/
 //		DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
-		DirichletBoundaryCondition::XFreeLeft(graph);
+		DirichletBoundaryCondition::XFreeLeft(graph, &Geom);
 		DirichletBoundaryCondition::XFreeRight(graph, &Geom);
 		DirichletBoundaryCondition::YClosedNoSlipG(graph,&Geom);
 		//DirichletBoundaryCondition::YClosedFreeSlip(graph);
@@ -181,7 +184,7 @@ InitialCondition::InitialCondGeneral(graph, [](float x,float y) {return 1.0f;},[
 			// * Change the boundary conditions here *
 			// *+++++++++++++++++++++++++++++++++++++
 			//DyakonovShurBoundaryCondition::DyakonovShurBc(graph);
-			DirichletBoundaryCondition::XFreeLeft(graph);
+			DirichletBoundaryCondition::XFreeLeft(graph, &Geom);
 			DirichletBoundaryCondition::XFreeRight(graph, &Geom);
 			DirichletBoundaryCondition::YClosedNoSlipG(graph, &Geom);
 			//DirichletBoundaryCondition::YClosedFreeSlip(graph);
