@@ -37,7 +37,7 @@ class Fluid1D : public TethysBase{
 	protected:
 
 		std::ofstream data_preview; // file stream for simplified .dat file output
-		int snapshot_per_period = 10;
+		int snapshot_per_period = 60;
 		int snapshot_step = 1;
 
 

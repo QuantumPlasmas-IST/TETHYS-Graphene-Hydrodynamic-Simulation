@@ -25,6 +25,7 @@ int main(int argc, char **argv){
     TripleGraphene1D::BannerDisplay();
     /*......CFL routine to determine dt...............................*/
     graph.CflCondition();
+    graph.SetDt(graph.GetDt()*0.5f);
     dt=graph.GetDt();
     /*................................................................*/
 
@@ -56,7 +57,7 @@ int main(int argc, char **argv){
     cout << "\033[1;7;5;33m Program Running \033[0m"<<endl;
 
 
-    graph.SetTmax(0.5);
+    graph.SetTmax(1.0);
     //Main cycle
     while(t <= graph.GetTmax() ) {
         t += dt;
@@ -68,7 +69,7 @@ int main(int argc, char **argv){
 
         // Impose boundary conditions
         //BoundaryCondition::XPeriodic(graph);
-        BoundaryCondition::XFree(graph);
+        BoundaryCondition::XPeriodic(graph);
 
 
         //Record full data
