@@ -82,7 +82,6 @@ void DiracGraphene1D::SetSound(){
         vel_snd_arr[i]= vel_snd;
         Umain[i].S()=vel_snd;
         HoleUmain[i].S()=vel_snd;
-        //Uaux[i].S()=vel_snd;
     }
     for(int i = 0; i<Nx-1  ;i++){
         Umid[i].S()=vel_snd;
@@ -94,7 +93,7 @@ void DiracGraphene1D::SetSound(){
 void DiracGraphene1D::InitialCondRand(){
     random_device rd;
     float maxrand;
-    maxrand = (float) random_device::max();
+     maxrand = (float) random_device::max();
     for (int c = 0; c < Nx; c++ ){
         float noise;
         noise =  (float) rd()/maxrand ; //(float) rand()/ (float) RAND_MAX ;
@@ -355,8 +354,11 @@ void DiracGraphene1D::InitialCondTest(){
         //Umain[i].v()= 1.5f; // (i>3*Nx/8 && i<5*Nx/8 ) ? 3.0f : 0.0f; //1.5f;//
         //Umain[i].v()= 1.0f/(1.0f+5.0f* pow(cosh((i*dx-0.5f)*12.0f),2.f));
         //Umain[i].n()= 0.2f;
-        HoleUmain[i].n()= 0.2f + 0.01f/ pow(cosh((i*dx-0.5f)*12.0f),2.f); //(i>3*Nx/8 && i<5*Nx/8 ) ? 1.0f : 0.1f; //0.2f+0.2f/ pow(cosh((i*dx-0.5f)*12.0f),2);//
-        Umain[i].n()= 0.2f+0.01f/ pow(cosh((i*dx-0.5f)*12.0f),2.f); //(i>3*Nx/8 && i<5*Nx/8 ) ? 1.0f : 0.1f; //0.2f+0.2f/ pow(cosh((i*dx-0.5f)*12.0f),2);//
+        //HoleUmain[i].n()= 0.2f + 0.1f/ pow(cosh((i*dx-0.5f)*12.0f),2.f); //(i>3*Nx/8 && i<5*Nx/8 ) ? 1.0f : 0.1f; //0.2f+0.2f/ pow(cosh((i*dx-0.5f)*12.0f),2);//
+        //Umain[i].n()= 0.2f+0.1f/ pow(cosh((i*dx-0.5f)*12.0f),2.f); //(i>3*Nx/8 && i<5*Nx/8 ) ? 1.0f : 0.1f; //0.2f+0.2f/ pow(cosh((i*dx-0.5f)*12.0f),2);//
+        HoleUmain[i].n()= 0.05f* cos((2*MAT_PI/0.2f)*i*dx)+0.25f;
+        Umain[i].n()= 0.05f* cos((2*MAT_PI/0.2f)*i*dx)+0.25f;
+        //Umain[i].v() = 0.3f*cos(12*i*dx);
     }
     this->SetSound();
 }

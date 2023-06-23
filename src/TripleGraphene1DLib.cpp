@@ -44,7 +44,6 @@ void TripleGraphene1D::SetSound(){
         Umain[i].S()=vel_snd;
         HoleUmain[i].S()=vel_snd;
         BUmain[i].S()=vel_snd;
-        //Uaux[i].S()=vel_snd;
     }
     for(int i = 0; i<Nx-1  ;i++){
         Umid[i].S()=vel_snd;
@@ -77,6 +76,9 @@ void TripleGraphene1D::InitialCondRand(){
 
 
 void TripleGraphene1D::RichtmyerStep1() {
+
+    DiracGraphene1D::ComputeElectricPotencial("MainGrid");
+
     for( int i = 0; i <= Nx -2; i++){
 
         //TODO VERIFICAR EQUACOES E IMPLEMENTAR PARA BOSON
@@ -92,31 +94,34 @@ void TripleGraphene1D::RichtmyerStep1() {
 
         //____________________ Electrons _________________________
 
-        Umid[i].n() = eUavg.n() - 0.5f*(dt/dx)*(EleDensityFlux(Umain[i+1]) - EleDensityFlux(Umain[i]))
-                      + (0.5f*dt) * EleDensitySource(eUavg, hUavg) ;
+        Umid[i].n() = eUavg.n() - 0.5f*(dt/dx)*(EleDensityFlux(BUmain[i+1], Umain[i+1], HoleUmain[i+1]) - EleDensityFlux(BUmain[i], Umain[i], HoleUmain[i]))
+                      + (0.5f*dt) * EleDensitySource(bUavg, eUavg, hUavg) ;
 
-        Umid[i].v() = eUavg.v() - 0.5f*(dt/dx)*(EleVelocityFlux(Umain[i+1]) - EleVelocityFlux(Umain[i]))
-                      + (0.5f*dt) * EleVelocitySource(eUavg) ;
+        Umid[i].v() = eUavg.v() - 0.5f*(dt/dx)*(EleVelocityFlux(BUmain[i+1], Umain[i+1], HoleUmain[i+1]) - EleVelocityFlux(BUmain[i], Umain[i], HoleUmain[i]))
+                      + (0.5f*dt) * EleVelocitySource(bUavg, eUavg, hUavg) ;
 
         //____________________ Holes _____________________________
 
-        HoleUmid[i].n() = hUavg.n() - 0.5f*(dt/dx)*(HolDensityFlux(HoleUmain[i+1]) - HolDensityFlux(HoleUmain[i]))
-                          + (0.5f*dt) * HolDensitySource(eUavg, hUavg) ;
+        HoleUmid[i].n() = hUavg.n() - 0.5f*(dt/dx)*(HolDensityFlux(BUmain[i+1], Umain[i+1], HoleUmain[i+1]) - HolDensityFlux(BUmain[i], Umain[i], HoleUmain[i]))
+                          + (0.5f*dt) * HolDensitySource(bUavg, eUavg, hUavg) ;
 
-        HoleUmid[i].v() = hUavg.v() - 0.5f*(dt/dx)*(HolVelocityFlux(HoleUmain[i+1]) - HolVelocityFlux(HoleUmain[i]))
-                          + (0.5f*dt) * HolVelocitySource(hUavg) ;
+        HoleUmid[i].v() = hUavg.v() - 0.5f*(dt/dx)*(HolVelocityFlux(BUmain[i+1], Umain[i+1], HoleUmain[i+1]) - HolVelocityFlux(BUmain[i], Umain[i], HoleUmain[i]))
+                          + (0.5f*dt) * HolVelocitySource(bUavg, eUavg, hUavg) ;
 
         //____________________ Boson _____________________________
 
-        BUmid[i].n() = bUavg.n() - 0.5f*(dt/dx)*(BDensityFlux(BUmain[i+1]) - BDensityFlux(BUmain[i]))
-                        + (0.5f*dt) * BDensitySource(bUavg) ;
+        BUmid[i].n() = bUavg.n() - 0.5f*(dt/dx)*(BDensityFlux(BUmain[i+1], Umain[i+1], HoleUmain[i+1]) - BDensityFlux(BUmain[i], Umain[i], HoleUmain[i]))
+                       + (0.5f*dt) * BDensitySource(bUavg, eUavg, hUavg) ;
 
-        BUmid[i].v() = bUavg.v() - 0.5f*(dt/dx)*(BVelocityFlux(BUmain[i+1]) - BVelocityFlux(BUmain[i]))
-                          + (0.5f*dt) * BVelocitySource(bUavg) ;
+        BUmid[i].v() = bUavg.v() - 0.5f*(dt/dx)*(BVelocityFlux(BUmain[i+1], Umain[i+1], HoleUmain[i+1]) - BVelocityFlux(BUmain[i], Umain[i], BUmain[i]))
+                       + (0.5f*dt) * BVelocitySource(bUavg, eUavg, hUavg) ;
     }
 }
 
 void TripleGraphene1D::RichtmyerStep2() {
+
+    DiracGraphene1D::ComputeElectricPotencial("MidGrid");
+
     for( int i = 1; i <= Nx -2; i++ ){
 
         //TODO VERIFICAR EQUACOES E IMPLEMENTAR PARA BOSON
@@ -127,27 +132,27 @@ void TripleGraphene1D::RichtmyerStep2() {
 
         //____________________ Electrons _________________________
 
-        Umain[i].n() = eUold.n() - (dt/dx) * (EleDensityFlux(Umid[i]) - EleDensityFlux(Umid[i-1]))
-                       + dt * EleDensitySource(eUold,hUold);
+        Umain[i].n() = eUold.n() - (dt/dx) * (EleDensityFlux(BUmid[i], Umid[i], HoleUmid[i]) - EleDensityFlux(BUmid[i-1], Umid[i-1], HoleUmid[i-1]))
+                       + dt * EleDensitySource(bUold, eUold,hUold);
 
-        Umain[i].v() = eUold.v() - (dt/dx)*(EleVelocityFlux(Umid[i]) - EleVelocityFlux(Umid[i-1]))
-                       + dt * EleVelocitySource(eUold);
-
-        //____________________ Holes _____________________________
-
-        HoleUmain[i].n() = hUold.n() - (dt/dx) * (HolDensityFlux(HoleUmid[i]) - HolDensityFlux(HoleUmid[i-1]))
-                           + dt * HolDensitySource(eUold, hUold);
-
-        HoleUmain[i].v() = hUold.v() - (dt/dx)*(HolVelocityFlux(HoleUmid[i]) - HolVelocityFlux(HoleUmid[i-1]))
-                           + dt * HolVelocitySource(hUold);
+        Umain[i].v() = eUold.v() - (dt/dx)*(EleVelocityFlux(BUmid[i], Umid[i], HoleUmid[i]) - EleVelocityFlux(BUmid[i-1], Umid[i-1], HoleUmid[i-1]))
+                       + dt * EleVelocitySource(bUold, eUold,hUold);
 
         //____________________ Holes _____________________________
 
-        BUmain[i].n() = bUold.n() - (dt/dx) * (BDensityFlux(BUmid[i]) - BDensityFlux(BUmid[i-1]))
-                        + dt * BDensitySource(bUold);
+        HoleUmain[i].n() = hUold.n() - (dt/dx) * (HolDensityFlux(BUmid[i], Umid[i], HoleUmid[i]) - HolDensityFlux(BUmid[i-1], Umid[i-1], HoleUmid[i-1]))
+                           + dt * HolDensitySource(bUold, eUold,hUold);
 
-        BUmain[i].v() = bUold.v() - (dt/dx)*(BVelocityFlux(BUmid[i]) - BVelocityFlux(BUmid[i-1]))
-                           + dt * BVelocitySource(bUold);
+        HoleUmain[i].v() = hUold.v() - (dt/dx)*(HolVelocityFlux(BUmid[i], Umid[i], HoleUmid[i]) - HolVelocityFlux(BUmid[i-1], Umid[i-1], HoleUmid[i-1]))
+                           + dt * HolVelocitySource(bUold, eUold,hUold);
+
+        //____________________ Holes _____________________________
+
+        BUmain[i].n() = bUold.n() - (dt/dx) * (BDensityFlux(BUmid[i], Umid[i], HoleUmid[i]) - BDensityFlux(BUmid[i-1], Umid[i-1], HoleUmid[i-1]))
+                        + dt * BDensitySource(bUold, eUold,hUold);
+
+        BUmain[i].v() = bUold.v() - (dt/dx)*(BVelocityFlux(BUmid[i], Umid[i], HoleUmid[i]) - BVelocityFlux(BUmid[i-1], Umid[i-1], HoleUmid[i-1]))
+                        + dt * BVelocitySource(bUold, eUold,hUold);
 
     }
 }
@@ -165,7 +170,7 @@ void TripleGraphene1D::WriteFluidFile(float t){
 }
 
 void TripleGraphene1D::CopyFields() {
-    float mass, hmass, bmass;
+    //float mass, hmass, bmass;
     for (int i = 0; i < Nx; ++i) {
         Den[i]=Umain[i].n();
         //mass = DensityToMass(Den[i]);
@@ -234,23 +239,23 @@ void TripleGraphene1D::CreateHdf5File() {
 //____________________ Electron Functions _________________________
 
 
-float TripleGraphene1D::EleDensitySource(StateVec1D Uelec, StateVec1D Uholes) {
-    //return A*(1.0f - Uelec.n()) + B*(Uelec.n()*Uholes.n() - 1.0f);
-    return 0.0f;
+float TripleGraphene1D::EleDensitySource(StateVec1D Uboson, StateVec1D Uelec, StateVec1D Uholes) {
+    return -A*(Uboson.n()-Uelec.n());
+    //return 0.0f;
 }
 
-float TripleGraphene1D::EleVelocitySource(StateVec1D Uelec) {
-    //return -1.0f * col_freq * Uelec.v();
-    return 0.0f;
+float TripleGraphene1D::EleVelocitySource(StateVec1D Uboson, StateVec1D Uelec, StateVec1D Uholes) {
+    return (A-B)*DensityFlux(Uelec)+12.0f*A*DensityFlux(Uboson);
+    //return 0.0f;
 }
 
-float TripleGraphene1D::EleDensityFlux(StateVec1D Uelec) {
+float TripleGraphene1D::EleDensityFlux(StateVec1D Uboson, StateVec1D Uelec, StateVec1D Uholes) {
     return DensityFlux(Uelec);
     //return 0.0f;
 }
 
-float TripleGraphene1D::EleVelocityFlux(StateVec1D Uelec) {
-    return 0.25f * Uelec.v() * Uelec.v() + vel_fer * vel_fer * Uelec.n()+ 2.0f * Uelec.S() * Uelec.S() * Uelec.phi() - kin_vis*Uelec.grad_v();
+float TripleGraphene1D::EleVelocityFlux(StateVec1D Uboson, StateVec1D Uelec, StateVec1D Uholes) {
+    return 0.25f * Uelec.v() * Uelec.v() + vel_fer * vel_fer * Uelec.n()+ 2.0f * Uelec.S() * Uelec.S() * Uelec.phi() + vel_pm * vel_pm * Uboson.n();// - kin_vis*Uelec.grad_v();
     //return 0.0f;
 }
 
@@ -258,82 +263,67 @@ float TripleGraphene1D::EleVelocityFlux(StateVec1D Uelec) {
 //____________________ Hole Functions _________________________
 
 
-float TripleGraphene1D::HolDensitySource(StateVec1D Uelec , StateVec1D Uholes) {
-    //return A*(1.0f - Uholes.n()) + B*(Uelec.n()*Uholes.n() - 1.0f);
+float TripleGraphene1D::HolDensitySource(StateVec1D Uboson, StateVec1D Uelec, StateVec1D Uholes) {
+    return -A*(Uboson.n()-Uholes.n());
     return 0.0f;
 }
 
-float TripleGraphene1D::HolVelocitySource(StateVec1D Uholes) {
-    //return -1.0f * col_freq * Uholes.v();
-    return 0.0f;
+float TripleGraphene1D::HolVelocitySource(StateVec1D Uboson, StateVec1D Uelec, StateVec1D Uholes) {
+    return (A-B)*DensityFlux(Uholes)+12.0f*A*DensityFlux(Uboson);
+    //return 0.0f;
 }
 
-float TripleGraphene1D::HolDensityFlux(StateVec1D Uholes) {
+float TripleGraphene1D::HolDensityFlux(StateVec1D Uboson, StateVec1D Uelec, StateVec1D Uholes) {
     //return 0.0f;
     return DensityFlux(Uholes);
 }
 
-float TripleGraphene1D::HolVelocityFlux(StateVec1D Uholes) {
+float TripleGraphene1D::HolVelocityFlux(StateVec1D Uboson, StateVec1D Uelec, StateVec1D Uholes) {
     //return 0.0f;
-    return 0.25f * Uholes.v() * Uholes.v() + vel_fer * vel_fer * Uholes.n() - 2.0f * Uholes.S() * Uholes.S() * Uholes.phi() - kin_vis*Uholes.grad_v();
+    return 0.25f * Uholes.v() * Uholes.v() + vel_fer * vel_fer * Uholes.n() - 2.0f * Uholes.S() * Uholes.S() * Uholes.phi() + vel_pm *vel_pm * Uboson.n();// - kin_vis*Uholes.grad_v();
 }
 
 //____________________ Boson Functions _________________________
 
-float TripleGraphene1D::BDensitySource(StateVec1D Uboson) {
-    //return A*(1.0f - Uholes.n()) + B*(Uelec.n()*Uholes.n() - 1.0f);
-    return 0.0f;
+float TripleGraphene1D::BDensitySource(StateVec1D Uboson, StateVec1D Uelec, StateVec1D Uholes) {
+    return -A*(Uelec.n()+Uholes.n()-2.0f*Uboson.n());
+    //return 0.0f;
 }
 
-float TripleGraphene1D::BVelocitySource(StateVec1D Uboson) {
-    //return -1.0f * col_freq * Uholes.v();
-    return 0.0f;
+float TripleGraphene1D::BVelocitySource(StateVec1D Uboson, StateVec1D Uelec, StateVec1D Uholes) {
+    return (1/12.0f)*A*(DensityFlux(Uelec)+ DensityFlux(Uholes))+2.0f*A* DensityFlux(Uboson);
+    //return 0.0f;
 }
 
-float TripleGraphene1D::BDensityFlux(StateVec1D Uboson) {
+float TripleGraphene1D::BDensityFlux(StateVec1D Uboson, StateVec1D Uelec, StateVec1D Uholes) {
+    //return 0.0f;
     return DensityFlux(Uboson);
 }
 
-float TripleGraphene1D::BVelocityFlux(StateVec1D Uboson) {
-    return 0.0f;
-    //return 0.25f * Uboson.v() * Uboson.v() + vel_fer * vel_fer * Uboson.n() - 2.0f * Uboson.S() * Uboson.S() * Uboson.phi() - kin_vis*Uboson.grad_v();
-
-    //TODO IMPLEMENTAR FUNÇÃO
+float TripleGraphene1D::BVelocityFlux(StateVec1D Uboson, StateVec1D Uelec, StateVec1D Uholes) {
+    //return 0.0f;
+    return 0.25f * Uboson.v() * Uboson.v() - vel_p * vel_p * (Uholes.n() + Uelec.n());
 }
 
 
 void TripleGraphene1D::InitialCondTest(){
     for (int i = 0; i < Nx; i++ ){
 
-        //Umain[i].v()= 1.5f; // (i>3*Nx/8 && i<5*Nx/8 ) ? 3.0f : 0.0f; //1.5f;//
-        //Umain[i].v()= 1.0f/(1.0f+5.0f* pow(cosh((i*dx-0.5f)*12.0f),2.f));
-        HoleUmain[i].n()= 0.2f + 0.01f/ pow(cosh((i*dx-0.5f)*12.0f),2.f); //(i>3*Nx/8 && i<5*Nx/8 ) ? 1.0f : 0.1f; //0.2f+0.2f/ pow(cosh((i*dx-0.5f)*12.0f),2);//
-        Umain[i].n()= 0.2f+0.01f/ pow(cosh((i*dx-0.5f)*12.0f),2.f); //(i>3*Nx/8 && i<5*Nx/8 ) ? 1.0f : 0.1f; //0.2f+0.2f/ pow(cosh((i*dx-0.5f)*12.0f),2);//
-        BUmain[i].n() = 0.2f+0.01f/ pow(cosh((i*dx-0.5f)*12.0f),2.f);
+        //Umain[i].v()= -1.5f; // (i>3*Nx/8 && i<5*Nx/8 ) ? 3.0f : 0.0f; //1.5f;//
+        //HoleUmain[i].v()= 1.5f;//1.0f/(1.0f+5.0f* pow(cosh((i*dx-0.5f)*12.0f),2.f));
+        HoleUmain[i].n()= 0.2f + 0.1f/ pow(cosh((i*dx-0.5f)*12.0f),2.f); //(i>3*Nx/8 && i<5*Nx/8 ) ? 1.0f : 0.1f; //0.2f+0.2f/ pow(cosh((i*dx-0.5f)*12.0f),2);//
+        Umain[i].n()= 0.2f + 0.1f/ pow(cosh((i*dx-0.5f)*12.0f),2.f); //(i>3*Nx/8 && i<5*Nx/8 ) ? 1.0f : 0.1f; //0.2f+0.2f/ pow(cosh((i*dx-0.5f)*12.0f),2);//
+        BUmain[i].n() = 0.2f;//+0.1f/ pow(cosh((i*dx-0.5f)*12.0f),2.f);
+
+        //HoleUmain[i].n()=0.05f* cos((2*MAT_PI/0.2f)*i*dx)+0.25f;
+        //Umain[i].n()=0.05f* cos((2*MAT_PI/0.2f)*i*dx)+0.25f;//
     }
     this->SetSound();
 }
 
-
-
-
-
-
-
-
 TripleGraphene1D::~TripleGraphene1D(){
-    //delete[] Den;
-    //delete[] Vel;
-    //delete[] HDen;
-    //delete[] HVel;
     delete[] BDen;
     delete[] BVel;
-    //delete[] Umain;
-    //delete[] Umid;
-    //delete[] HoleUmain;
-    //delete[] HoleUmid;
     delete[] BUmain;
     delete[] BUmid;
-    //delete[] Cur;
-    //delete[] vel_snd_arr;
 }

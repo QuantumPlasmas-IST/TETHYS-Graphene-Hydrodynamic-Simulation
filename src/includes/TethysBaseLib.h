@@ -86,6 +86,8 @@ class TethysBase : public MathUtils {
 
 		float vel_snd =50.0f;   // sound velocity parameter
 		float vel_fer =10.0f;
+        float vel_p = 1.5f;
+        float vel_pm = 1.0f;
 		float cyc_freq =0.0f;
 		float kin_vis =0.0f;    // kinetic shear viscosity parameter
 		float odd_vis =0.0f;    // kinetic odd viscosity parameter

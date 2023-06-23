@@ -53,23 +53,23 @@ public:
     void RichtmyerStep2() override;
 
 
-    float EleDensitySource(StateVec1D Uelec , StateVec1D Uholes) override;   ///< density equation (continuity equation) source term
-    float EleVelocitySource(StateVec1D Uelec) override; ///< velocity X component equation (momentum equation) source term
+    float EleDensitySource(StateVec1D Uboson , StateVec1D Uelec, StateVec1D Uholes);   ///< density equation (continuity equation) source term
+    float EleVelocitySource(StateVec1D Uboson , StateVec1D Uelec, StateVec1D Uholes); ///< velocity X component equation (momentum equation) source term
 
-    float EleDensityFlux(StateVec1D Uelec) override; ///< density equation (continuity equation) conserved flux
-    float EleVelocityFlux(StateVec1D Uelec) override; ///< velocity X component equation (momentum equation) conserved flux
+    float EleDensityFlux(StateVec1D Uboson , StateVec1D Uelec, StateVec1D Uholes); ///< density equation (continuity equation) conserved flux
+    float EleVelocityFlux(StateVec1D Uboson , StateVec1D Uelec, StateVec1D Uholes); ///< velocity X component equation (momentum equation) conserved flux
 
-    float HolDensitySource(StateVec1D Uelec , StateVec1D Uholes) override;   ///< density equation (continuity equation) source term
-    float HolVelocitySource(StateVec1D Uholes) override; ///< velocity equation (momentum equation) source term
+    float HolDensitySource(StateVec1D Uboson , StateVec1D Uelec, StateVec1D Uholes);  ///< density equation (continuity equation) source term
+    float HolVelocitySource(StateVec1D Uboson , StateVec1D Uelec, StateVec1D Uholes); ///< velocity equation (momentum equation) source term
 
-    float HolDensityFlux(StateVec1D Uholes) override; ///< density equation (continuity equation) conserved flux
-    float HolVelocityFlux(StateVec1D Uholes) override; ///< velocity equation (momentum equation) conserved flux
+    float HolDensityFlux(StateVec1D Uboson , StateVec1D Uelec, StateVec1D Uholes); ///< density equation (continuity equation) conserved flux
+    float HolVelocityFlux(StateVec1D Uboson , StateVec1D Uelec, StateVec1D Uholes); ///< velocity equation (momentum equation) conserved flux
 
-    float BDensitySource(StateVec1D Uboson);   ///< density equation (continuity equation) source term
-    float BVelocitySource(StateVec1D Uboson); ///< velocity X component equation (momentum equation) source term
+    float BDensitySource(StateVec1D Uboson , StateVec1D Uelec, StateVec1D Uholes);  ///< density equation (continuity equation) source term
+    float BVelocitySource(StateVec1D Uboson , StateVec1D Uelec, StateVec1D Uholes);///< velocity X component equation (momentum equation) source term
 
-    float BDensityFlux(StateVec1D Uboson); ///< density equation (continuity equation) conserved flux
-    float BVelocityFlux(StateVec1D Uboson); ///< velocity equation (momentum equation) conserved flux
+    float BDensityFlux(StateVec1D Uboson , StateVec1D Uelec, StateVec1D Uholes); ///< density equation (continuity equation) conserved flux
+    float BVelocityFlux(StateVec1D Uboson, StateVec1D Uelec, StateVec1D Uholes); ///< velocity equation (momentum equation) conserved flux
 
     void WriteFluidFile(float t) override; // writes the line of time t on the simplified .dat file output
 
