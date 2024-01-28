@@ -24,6 +24,8 @@ private:
 	float velXLaplacian;
 	float velYLaplacian;
 	float tmpLaplacian;
+    float potential;
+
 public:
 	StateVec2D()=default; //default constructor
 	StateVec2D(const StateVec2D&); //copy constructor
@@ -31,6 +33,8 @@ public:
 	StateVec2D(float den, float velx, float vely, float temp);
 	StateVec2D(float den, float velx, float vely, float temp, float snd) ;
 	~StateVec2D()=default;
+
+    float& phi();
 
 	float& px();
 	float& py();

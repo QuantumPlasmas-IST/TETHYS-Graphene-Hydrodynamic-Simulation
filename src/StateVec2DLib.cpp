@@ -82,6 +82,10 @@ float &StateVec2D::S() {
 	return sound;
 }
 
+float &StateVec2D::phi() {
+    return potential;
+}
+
 
 StateVec2D &StateVec2D::operator=(const StateVec2D & obj) {
 	if(this != &obj) {
