@@ -32,12 +32,13 @@ add_executable(TETHYS_ELEC_2D src/TETHYS_2D_ElectronicAnalysis.cpp)
 #add_executable(TETHYS_RADIATION_2D src/TETHYS_2D_Radiation.cpp)
 
 add_executable(TETHYS_1D_TRIPLE src/TETHYS_1D_Triple_main.cpp)
+add_executable(TETHYS_2D_TRIPLE src/TETHYS_2D_Triple_main.cpp)
 
 file(GLOB SRC_LIB_FILES src/*Lib.cpp)
 
 
 
-add_library(tethys_library STATIC ${SRC_LIB_FILES} src/DiracGraphene1DLib.cpp src/includes/DiracGraphene1DLib.h src/TripleGraphene1DLib.cpp src/includes/TripleGraphene1DLib.h)
+add_library(tethys_library STATIC ${SRC_LIB_FILES} src/DiracGraphene1DLib.cpp src/includes/DiracGraphene1DLib.h src/TripleGraphene1DLib.cpp src/includes/TripleGraphene1DLib.h src/TripleGraphene2DLib.cpp src/includes/TripleGraphene2DLib.h)
 
 
 target_link_libraries(TETHYS_1D PUBLIC tethys_library)
@@ -48,6 +49,7 @@ target_link_libraries(TETHYS_1D_CNP PUBLIC tethys_library)
 target_link_libraries(TETHYS_ELEC_2D PUBLIC tethys_library)
 
 target_link_libraries(TETHYS_1D_TRIPLE PUBLIC tethys_library)
+target_link_libraries(TETHYS_2D_TRIPLE PUBLIC tethys_library)
 
 #target_link_libraries(TETHYS_RADIATION_2D PUBLIC tethys_library)
 
@@ -66,6 +68,9 @@ target_link_libraries(TETHYS_1D_CNP PRIVATE ${HDF5_CXX_LIBRARIES})
 
 target_include_directories(TETHYS_1D_TRIPLE PRIVATE ${HDF5_INCLUDE_DIRS})
 target_link_libraries(TETHYS_1D_TRIPLE PRIVATE ${HDF5_CXX_LIBRARIES})
+
+target_include_directories(TETHYS_2D_TRIPLE PRIVATE ${HDF5_INCLUDE_DIRS})
+target_link_libraries(TETHYS_2D_TRIPLE PRIVATE ${HDF5_CXX_LIBRARIES})
 
 target_include_directories(TETHYS_ELEC_2D PRIVATE ${HDF5_INCLUDE_DIRS})
 target_link_libraries(TETHYS_ELEC_2D PRIVATE ${HDF5_CXX_LIBRARIES})
