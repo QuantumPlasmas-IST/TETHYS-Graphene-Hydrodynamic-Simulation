@@ -150,7 +150,6 @@ public :
 	void CreateHdf5File() override;
 
     std::ofstream phi_preview;
-    void CreatePhiFile(); //TODO ver se é mesmo preciso
 };
 
 

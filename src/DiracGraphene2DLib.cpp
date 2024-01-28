@@ -634,7 +634,7 @@ void DiracGraphene2D::SaveSnapShot() {
 	DataSet dataset_hvel_x = GrpHVelX->createDataSet(name_dataset, HDF5FLOAT, *DataspaceHVelX);
 	Attribute atr_step_hvel_x = dataset_hvel_x.createAttribute("time step", HDF5INT, atr_dataspace);
 	Attribute atr_time_hvel_x = dataset_hvel_x.createAttribute("time", HDF5FLOAT, atr_dataspace);
-	dataset_hvel_x.write(VelX, HDF5FLOAT);
+	dataset_hvel_x.write(HVelX, HDF5FLOAT);
 	dataset_hvel_x.close();
 	atr_step_hvel_x.write(HDF5INT, &TimeStepCounter);
 	atr_time_hvel_x.write(HDF5FLOAT , &currenttime);
@@ -644,7 +644,7 @@ void DiracGraphene2D::SaveSnapShot() {
 	DataSet dataset_hvel_y = GrpHVelY->createDataSet(name_dataset, HDF5FLOAT, *DataspaceHVelY);
 	Attribute atr_step_hvel_y = dataset_hvel_y.createAttribute("time step", HDF5INT, atr_dataspace);
 	Attribute atr_time_hvel_y = dataset_hvel_y.createAttribute("time", HDF5FLOAT, atr_dataspace);
-	dataset_hvel_y.write(VelY, HDF5FLOAT);
+	dataset_hvel_y.write(HVelY, HDF5FLOAT);
 	dataset_hvel_y.close();
 	atr_step_hvel_y.write(HDF5INT, &TimeStepCounter);
 	atr_time_hvel_y.write(HDF5FLOAT , &currenttime);
@@ -659,4 +659,5 @@ void DiracGraphene2D::CreateHdf5File() {
 	GrpHVelX = new Group(Hdf5File->createGroup("/Data/HoleVelocityX" ));
 	GrpHVelY = new Group(Hdf5File->createGroup("/Data/HoleVelocityY"));
 }
+
 
