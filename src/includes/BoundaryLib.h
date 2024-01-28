@@ -19,7 +19,7 @@
 #include "includes/DiracGraphene2DLib.h"
 #include "includes/DiracGraphene1DLib.h"
 #include "includes/TripleGraphene1DLib.h"
-
+#include "includes/TripleGraphene2DLib.h"
 
 /*Base class for general boundary conditions*/
 
@@ -60,6 +60,7 @@ class BoundaryCondition {
         static void XPeriodic(TripleGraphene1D& fluid_class);    ///< periodic boundaries u(x=0)=u(x=L) for all variables and zero tangent velocity (TRIPLE Fluid)
         static void XPeriodic(Fluid2D& fluid_class);       ///< periodic boundaries u(x=0)=u(x=L) for all variables and zero tangent velocity
 		static void XPeriodic(DiracGraphene2D& fluid_class);       ///< periodic boundaries u(x=0)=u(x=L) for all variables and zero tangent velocity (DIRAC Fluid)
+        static void XPeriodic(TripleGraphene2D& fluid_class);       ///< periodic boundaries u(x=0)=u(x=L) for all variables and zero tangent velocity (Triple Fluid)
 
         static void YFree(Fluid2D& fluid_class);           ///< open boundaries at y=0 and y=W for all variables
 		/*!
@@ -70,13 +71,19 @@ class BoundaryCondition {
 		static void YFree(Fluid2D &fluid_class, int y_limit);        ///< open boundaries at y=W for all variables
 		static void YPeriodic(Fluid2D& fluid_class);       ///< periodic boundaries u(y=0)=u(y=W) for all variables
 		static void YPeriodic(DiracGraphene2D& fluid_class);       ///< periodic boundaries u(y=0)=u(y=W) for all variables (DIRAC Fluid)
-		static void YClosedFreeSlip(Fluid2D& fluid_class); ///< zero flux across y=0 and y=W and free tangent velocity Vx
+        static void YPeriodic(TripleGraphene2D& fluid_class);       ///< periodic boundaries u(y=0)=u(y=W) for all variables (Triple Fluid)
+        static void YClosedFreeSlip(Fluid2D& fluid_class); ///< zero flux across y=0 and y=W and free tangent velocity Vx
 		static void YClosedNoSlip(Fluid2D& fluid_class);   ///< zero flux across y=0 and y=W and zero tangent velocity Vx=0
 
 		static void XFreeLeft(Fluid2D &fluid_class); ///< open boundaries at x=0 for all variables
 		static void XFreeRight(Fluid2D &fluid_class); ///< open boundaries at x=L for all variables
 		static void YFreeTop(Fluid2D &fluid_class); ///< open boundaries at y=W for all variables
 		static void YFreeBottom(Fluid2D &fluid_class); ///< open boundaries at y=0 for all variables
+
+        static void XFreeLeft(TripleGraphene2D &fluid_class); ///< open boundaries at x=0 for all variables
+        static void XFreeRight(TripleGraphene2D &fluid_class); ///< open boundaries at x=L for all variables
+        static void YFreeTop(TripleGraphene2D &fluid_class); ///< open boundaries at y=W for all variables
+        static void YFreeBottom(TripleGraphene2D &fluid_class); ///< open boundaries at y=0 for all variables
 };
 
 #endif

@@ -182,6 +182,29 @@ void BoundaryCondition::XFreeRight(Fluid2D &fluid_class) {
 	}
 }
 
+void BoundaryCondition::XFreeLeft(TripleGraphene2D &fluid_class) {
+    int nx=fluid_class.SizeX();
+    int ny=fluid_class.SizeY();
+    for(int j=0; j < ny; j++){
+        int left;
+        left= 0 + j * nx;
+        fluid_class.Umain[left] = fluid_class.Umain[left +1];
+        fluid_class.HoleUmain[left] = fluid_class.HoleUmain[left +1];
+        fluid_class.BUmain[left] = fluid_class.BUmain[left +1];
+    }
+}
+void BoundaryCondition::XFreeRight(TripleGraphene2D &fluid_class) {
+    int nx=fluid_class.SizeX();
+    int ny=fluid_class.SizeY();
+    for(int j=0; j < ny; j++){
+        int right;
+        right = nx - 1 + j * nx;
+        fluid_class.Umain[right] = fluid_class.Umain[right-1];
+        fluid_class.HoleUmain[right] = fluid_class.HoleUmain[right-1];
+        fluid_class.BUmain[right] = fluid_class.BUmain[right-1];
+    }
+}
+
 void BoundaryCondition::XPeriodic(Fluid2D& fluid_class){
 	int nx=fluid_class.SizeX();
 	int ny=fluid_class.SizeY();
@@ -210,6 +233,23 @@ void BoundaryCondition::XPeriodic(DiracGraphene2D& fluid_class){
 		fluid_class.HoleUmain[left] = fluid_class.HoleUmain[right - 1];
 		fluid_class.HoleUmain[right] =  fluid_class.HoleUmain[left + 1];
 	}	
+}
+
+void BoundaryCondition::XPeriodic(TripleGraphene2D& fluid_class){
+    int nx=fluid_class.SizeX();
+    int ny=fluid_class.SizeY();
+    for(int j=0; j < ny; j++){
+        int left;
+        left = 0 + j * nx;
+        int right;
+        right = nx - 1 + j * nx;
+        fluid_class.Umain[left] = fluid_class.Umain[right - 1];
+        fluid_class.Umain[right] =  fluid_class.Umain[left + 1];
+        fluid_class.HoleUmain[left] = fluid_class.HoleUmain[right - 1];
+        fluid_class.HoleUmain[right] =  fluid_class.HoleUmain[left + 1];
+        fluid_class.BUmain[left] = fluid_class.BUmain[right - 1];
+        fluid_class.BUmain[right] =  fluid_class.BUmain[left + 1];
+    }
 }
 
 void BoundaryCondition::YFree(Fluid2D& fluid_class){
@@ -250,6 +290,30 @@ void BoundaryCondition::YFreeBottom(Fluid2D &fluid_class) {
 		fluid_class.Umain[bottom] = fluid_class.Umain[bottom + nx];
 	}
 }
+
+void BoundaryCondition::YFreeTop(TripleGraphene2D &fluid_class) {
+    int nx=fluid_class.SizeX();
+    int ny=fluid_class.SizeY();
+    for (int i=0; i < nx; i++){
+        int top;
+        top = i + (ny - 1) * nx;
+        fluid_class.Umain[top] = fluid_class.Umain[top - nx];
+        fluid_class.HoleUmain[top] = fluid_class.HoleUmain[top - nx];
+        fluid_class.BUmain[top] = fluid_class.BUmain[top - nx];
+
+    }
+}
+void BoundaryCondition::YFreeBottom(TripleGraphene2D &fluid_class) {
+    int nx=fluid_class.SizeX();
+    for (int i=0; i < nx; i++){
+        int bottom;
+        bottom = i;
+        fluid_class.Umain[bottom] = fluid_class.Umain[bottom + nx];
+        fluid_class.HoleUmain[bottom] = fluid_class.HoleUmain[bottom + nx];
+        fluid_class.BUmain[bottom] = fluid_class.BUmain[bottom + nx];
+    }
+}
+
 void BoundaryCondition::YPeriodic(Fluid2D& fluid_class){
 	int nx=fluid_class.SizeX();
 	int ny=fluid_class.SizeY();
@@ -277,6 +341,24 @@ void BoundaryCondition::YPeriodic(DiracGraphene2D& fluid_class){
 		fluid_class.HoleUmain[bottom] = fluid_class.HoleUmain[top - nx];
 		fluid_class.HoleUmain[top] = fluid_class.HoleUmain[bottom + nx];
 	}
+}
+
+
+void BoundaryCondition::YPeriodic(TripleGraphene2D& fluid_class){
+    int nx=fluid_class.SizeX();
+    int ny=fluid_class.SizeY();
+    for (int i=0; i < nx; i++){
+        int bottom;
+        bottom = i; //i+0*nx
+        int top;
+        top = i + (ny - 1) * nx;
+        fluid_class.Umain[bottom] = fluid_class.Umain[top - nx];
+        fluid_class.Umain[top] = fluid_class.Umain[bottom + nx];
+        fluid_class.HoleUmain[bottom] = fluid_class.HoleUmain[top - nx];
+        fluid_class.HoleUmain[top] = fluid_class.HoleUmain[bottom + nx];
+        fluid_class.BUmain[bottom] = fluid_class.BUmain[top - nx];
+        fluid_class.BUmain[top] = fluid_class.BUmain[bottom + nx];
+    }
 }
 
 void BoundaryCondition::YClosedFreeSlip(Fluid2D& fluid_class){
