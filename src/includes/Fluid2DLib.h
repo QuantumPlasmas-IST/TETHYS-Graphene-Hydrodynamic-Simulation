@@ -89,8 +89,7 @@ using namespace H5;
 		bool Snapshot() const;
 
 
-
-		void SetSound();     ///< sets a constant sound velocity
+        virtual void SetSound();     ///< sets a constant sound velocity
 		/*!
 		* @brief 2D Function of local anisotropy of S
 		*
@@ -105,7 +104,7 @@ using namespace H5;
 
 		virtual void InitialCondRand();             ///< Initial condition, zero velocity and constant density with 0.5% white noise
 		void InitialCondWave();
-		void InitialCondTest();             ///< Initial condition for testing and debugging
+		virtual void InitialCondTest();             ///< Initial condition for testing and debugging
 		void InitialCondGeneral(function<float(float, float)> fden, function<float(float, float)> fvx,
 		                        function<float(float, float)> fvy);
 
