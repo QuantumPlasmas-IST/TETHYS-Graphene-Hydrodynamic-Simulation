@@ -30,7 +30,7 @@ Volume 282, (2023) [![DOI:10.1016/j.cpc.2022.108550](http://img.shields.io/badge
 ## Documentation
 
 You can find the documentation here:
-[![docbadge](https://img.shields.io/badge/github%20pages-121013?style=plastic&logo=github&logoColor=white)](https://pcosme.github.io/TETHYS-Graphene-Hydrodynamic-Simulation/)
+[![docbadge](https://img.shields.io/badge/github%20pages-121013?style=plastic&logo=github&logoColor=white)](https://[pcosme.github.io/TETHYS-Graphene-Hydrodynamic-Simulation/](https://quantumplasmas-ist.github.io/TETHYS-Graphene-Hydrodynamic-Simulation/))
 
 Or you can generate the full documentation yourself with Doxygen simply running 
 ```console
